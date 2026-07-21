@@ -1,60 +1,89 @@
 <!-- ============================================ -->
-<!--                   Footer                     -->
+<!--                   Logos                      -->
 <!-- ============================================ -->
 
-<footer id="cs-footer-275">
+<section id="logos">
     <div class="cs-container">
-        <!-- Logo Group -->
-        <div class="cs-logo-group">
-            <a aria-label="go back to home" class="cs-logo" href="/">
-                <img class="cs-logo-img" aria-hidden="true" loading="lazy" decoding="async" src="/assets/svgs/logo-light.svg" alt="logo" width="240" height="32">
-            </a>
-            <p class="cs-text">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi elementum tincidunt vitae velit dolor cras tellus nisl habitant. Consectetur pellentesque dignissim sed amet.
-            </p>
-            <div class="cs-social">
-                <a class="cs-social-link" aria-label="visit google profile" href="{{ client.address.mapLink }}" target="_blank" rel="noopener">
-                    <img class="cs-social-img" aria-hidden="true" loading="lazy" decoding="async" src="/assets/svgs/google.svg" alt="google" width="11" height="11">
+        <!--Ideally you want to use svg's for the file path image, which is why these aren't wrapped in picture elements for different screen sizes-->
+        <div class="cs-row">
+            <img class="cs-logo logo1" src="https://csimg.nyc3.cdn.digitaloceanspaces.com/Images/Logos/logo7.png" alt="logo" width="287" height="65" loading="lazy" decoding="async">
+            <img class="cs-logo logo2" src="https://csimg.nyc3.cdn.digitaloceanspaces.com/Images/Logos/logo8.png" alt="logo" width="229" height="55" loading="lazy" decoding="async">
+            <img class="cs-logo logo3" src="https://csimg.nyc3.cdn.digitaloceanspaces.com/Images/Logos/logo9.png" alt="logo" width="235" height="53" loading="lazy" decoding="async">
+        </div>
+        <div class="cs-row">
+            <img class="cs-logo logo4" src="https://csimg.nyc3.cdn.digitaloceanspaces.com/Images/Logos/logo10.png" alt="logo" width="228" height="61" loading="lazy" decoding="async">
+            <img class="cs-logo logo5" src="https://csimg.nyc3.cdn.digitaloceanspaces.com/Images/Logos/logo11.png" alt="logo" width="228" height="61" loading="lazy" decoding="async">
+            <img class="cs-logo logo6" src="https://csimg.nyc3.cdn.digitaloceanspaces.com/Images/Logos/logo12.png" alt="logo" width="228" height="61" loading="lazy" decoding="async">
+        </div>
+    </div>
+</section>
+           
+<!-- ============================================ -->
+<!--                  Footer                      -->
+<!-- ============================================ -->
+                                
+<footer id="footer">
+    <div class="cs-container">
+        <div class="cs-cta">
+            <h2 class="cs-title">Ready for a site that's actually fast?</h2>
+            <p class="cs-text">Bryan replies to every consultation request himself, usually within a day.</p>
+            <a href="" class="cs-button-solid">Get a free quote</a>
+        </div>
+        <div class="cs-wrapper">
+            <div class="cs-content">
+                <a href="/" class="cs-logo">
+                    <img class="cs-logo-img" src="https://csimg.nyc3.cdn.digitaloceanspaces.com/Images/Logos/archi-logo.svg" alt="Shoreline Web Design" width="174" height="28" loading="lazy" decoding="async">
                 </a>
-                <a class="cs-social-link" aria-label="visit facebook profile" href="{{ client.socials.facebook }}" target="_blank" rel="noopener">
-                    <img class="cs-social-img" aria-hidden="true" loading="lazy" decoding="async" src="/assets/svgs/facebook.svg" alt="facebook" width="6" height="11">
-                </a>
-                <a class="cs-social-link" aria-label="visit instagram profile" href="{{ client.socials.instagram }}" target="_blank" rel="noopener">
-                    <img class="cs-social-img" aria-hidden="true" loading="lazy" decoding="async" src="/assets/svgs/instagram.svg" alt="instagram" width="11" height="11">
-                </a>
+                <p class="cs-text">
+                    Hand-coded websites for small businesses across North Seattle. Built and supported by one engineer, from Richmond Beach.
+                </p>
+                <ul class="cs-nav">
+                    <li class="cs-nav-li">
+                        <a href="#about" class="cs-nav-link">Story</a>
+                    </li>
+                    <li class="cs-nav-li">
+                        <a href="#work" class="cs-nav-link">Work</a>
+                    </li>
+                    <li class="cs-nav-li">
+                        <a href="#pricing" class="cs-nav-link">Pricing</a>
+                    </li>
+                    <li class="cs-nav-li">
+                        <a href="#service-area" class="cs-nav-link">Service area</a>
+                    </li>
+                    <li class="cs-nav-li">
+                        <a href="mailto:hello@shorelinewebdesign.com" class="cs-nav-link">Contact</a>
+                    </li>
+                </ul>
+            </div>
+            <ul class="cs-ul">
+                <li class="cs-li">
+                    <span class="cs-header">Email</span>
+                    <a href="mailto:hello@shorelinewebdesign.com" class="cs-contact">hello@shorelinewebdesign.com</a>
+                </li>
+                <li class="cs-li">
+                    <span class="cs-header">Based in</span>
+                    <a href="" class="cs-contact">Richmond Beach <br>North Seattle, WA</a>
+                </li>
+                <li class="cs-li">
+                    <span class="cs-header">Response time</span>
+                    <a href="" class="cs-contact">Usually within <br>one business day</a>
+                </li>
+                <li class="cs-li">
+                    <span class="cs-header">Service area</span>
+                    <a href="#service-area" class="cs-contact">Greater Shoreline <br>&amp; North Seattle</a>
+                </li>
+            </ul>
+        </div>
+        <div class="cs-bottom">
+            <span class="cs-copyright">
+                © 2026 <a class="cs-copyright-link" href="/">Shoreline Web Design</a> · Richmond Beach, WA
+            </span>
+            <div class="cs-terms">
+                <a href="" class="cs-copyright-link">Terms & Conditions</a>
+                <span class="cs-divider">|</span>
+                <a href="" class="cs-copyright-link">Privacy Policy</a>
             </div>
         </div>
-        <!-- Links -->
-        <ul class="cs-nav">
-            <li class="cs-nav-li">
-                <span class="cs-header">Sitemap</span>
-            </li>
-            <li class="cs-nav-li">
-                <a class="cs-nav-link" href="/">Home</a>
-            </li>
-            <li class="cs-nav-li">
-                <a class="cs-nav-link" href="/blog/">Blog</a>
-            </li>
-        </ul>
-        <!-- Contact Info -->
-        <ul class="cs-contact">
-            <li class="cs-nav-li">
-                <span class="cs-header">Contact</span>
-            </li>
-            <li class="cs-contact-li">
-                <a class="cs-contact-link cs-address" href="{{ client.address.mapLink }}" target="_blank" rel="noopener">
-                    {{ client.address.lineOne }}, <br>
-                    {{ client.address.lineTwo }}, <br>
-                    {{ client.address.city }}, {{ client.address.state }}
-                    {{ client.address.zip }}
-                </a>
-            </li>
-            <li class="cs-contact-li">
-                <a class="cs-contact-link" href="tel:{{ client.phoneForTel }}">{{ client.phoneFormatted }}</a>
-            </li>
-            <li class="cs-contact-li">
-                <a class="cs-contact-link" href="mailto:{{ client.email }}">{{ client.email }}</a>
-            </li>
-        </ul>
     </div>
 </footer>
+                                

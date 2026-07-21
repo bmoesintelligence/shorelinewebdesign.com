@@ -1,6 +1,6 @@
 ---
-title: "Welcome"
-description: "Your new website"
+title: "Shoreline Web Design"
+description: "Hand-coded websites for small businesses across North Seattle, from $100/month."
 permalink: "/"
 tags: "sitemap" # content/content.json will make sure that all pages in content/ are marked with a "sitemap" tag, for automatic sitemap generation. As index.html is not in content/, we need to add it here to ensure the root page is included in the sitemap generation
 ---
@@ -28,20 +28,508 @@ tags: "sitemap" # content/content.json will make sure that all pages in content/
 {% endblock %}
 
 {% block body %}
-    <section id="welcome">
+    <!-- ============================================ -->
+    <!--                    Hero                      -->
+    <!-- ============================================ -->
+
+    <section id="hero">
         <div class="cs-container">
             <div class="cs-content">
-                <h1>Welcome to Your New Website</h1>
-                <p>
-                    This template has been stripped to its bare minimum. All demo content
-                    has been moved to <code>scripts/deleted/</code> and can be safely deleted
-                    once you no longer need it.
+                <span class="cs-topper"><span class="cs-pin" aria-hidden="true"></span>Richmond Beach, WA</span>
+                <h1 class="cs-title">Hand-coded websites, engineer-built, from $100/month.</h1>
+                <p class="cs-text">
+                    No page builders. No WordPress. Bryan applies the same performance discipline he uses as a professional software engineer to small business sites across North Seattle.
                 </p>
-                <p>
-                    Get started by reading the
-                    Quick Start Guide
-                    section in the README.
+                <div class="cs-button-group">
+                    <a href="" class="cs-button-solid">Get a free consultation</a>
+                    <a href="#work" class="cs-button-transparent">See the work<span class="cs-arrow" aria-hidden="true">&rarr;</span></a>
+                </div>
+            </div>
+            <!-- Floating image cards. Placeholder drop-zones until real photos land. -->
+            <div class="cs-image-group">
+                <span class="cs-badge" aria-hidden="true"><span class="cs-badge-text">Est. Richmond Beach</span></span>
+                <figure class="cs-card cs-card1">
+                    <div class="cs-placeholder">
+                        <svg class="cs-ph-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+                        <span class="cs-ph-label">Richmond Beach pier</span>
+                        <span class="cs-ph-browse">or browse files</span>
+                    </div>
+                    <figcaption class="cs-filename">richmond_beach.jpg</figcaption>
+                </figure>
+                <figure class="cs-card cs-card2">
+                    <div class="cs-placeholder">
+                        <svg class="cs-ph-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+                        <span class="cs-ph-label">Bryan at work</span>
+                        <span class="cs-ph-browse">or browse files</span>
+                    </div>
+                    <figcaption class="cs-filename">workspace.jpg</figcaption>
+                </figure>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!--                    Stats                     -->
+    <!-- ============================================ -->
+
+    <section id="stats">
+        <div class="cs-container">
+            <ul class="cs-card-group">
+                <li class="cs-item">
+                    <a href="" class="cs-link">
+                        <picture class="cs-picture">
+                            <img class="cs-icon" src="https://csimg.nyc3.cdn.digitaloceanspaces.com/Icons/brain.svg" loading="lazy" decoding="async" alt="icon" width="40" height="40" aria-hidden="true">
+                        </picture>
+                        <h3 class="cs-h3">95+</h3>
+                        <p class="cs-item-text">
+                            Average PageSpeed score.
+                        </p>
+                    </a>
+                </li>
+                <li class="cs-item">
+                    <a href="" class="cs-link">
+                        <picture class="cs-picture">
+                            <img class="cs-icon" src="https://csimg.nyc3.cdn.digitaloceanspaces.com/Icons/users.svg" loading="lazy" decoding="async" alt="icon" width="40" height="40" aria-hidden="true">
+                        </picture>
+                        <h3 class="cs-h3">&lt;1s</h3>
+                        <p class="cs-item-text">
+                            Typical load time.
+                        </p>
+                    </a>
+                </li>
+                <li class="cs-item">
+                    <a href="" class="cs-link">
+                        <picture class="cs-picture">
+                            <img class="cs-icon" src="https://csimg.nyc3.cdn.digitaloceanspaces.com/Icons/Layer.svg" loading="lazy" decoding="async" alt="icon" width="40" height="40" aria-hidden="true">
+                        </picture>
+                        <h3 class="cs-h3">10+</h3>
+                        <p class="cs-item-text">
+                            Years engineering experience.
+                        </p>
+                    </a>
+                </li>
+                <li class="cs-item">
+                    <a href="" class="cs-link">
+                        <picture class="cs-picture">
+                            <img class="cs-icon" src="https://csimg.nyc3.cdn.digitaloceanspaces.com/Icons/Layer.svg" loading="lazy" decoding="async" alt="icon" width="40" height="40" aria-hidden="true">
+                        </picture>
+                        <h3 class="cs-h3">100%</h3>
+                        <p class="cs-item-text">
+                            Hand-written code.
+                        </p>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </section>
+
+
+    <!-- ============================================ -->
+    <!--              What You Get                    -->
+    <!-- ============================================ -->
+
+    <section id="services">
+        <div class="cs-container">
+            <!-- Left Content Section-->
+            <div class="cs-content">
+                <span class="cs-topper">The essentials</span>
+                <h2 class="cs-title">What you actually get</h2>
+                <p class="cs-text">
+                    Every site ships with the fundamentals done right, not bolted on later.
                 </p>
+            </div>
+            <ul class="cs-card-group">
+                <li class="cs-item">
+                    <picture class="cs-icon-wrapper">
+                        <img class="cs-icon" loading="lazy" decoding="async" src="https://csimg.nyc3.cdn.digitaloceanspaces.com/Icons/trees-white.svg" alt="" width="40" height="40" aria-hidden="true">
+                    </picture>
+                    <h3 class="cs-h3">Mobile-first</h3>
+                    <p class="cs-item-text">
+                        Fully responsive on every device.
+                    </p>
+                </li>
+                <li class="cs-item">
+                    <picture class="cs-icon-wrapper">
+                        <img class="cs-icon" loading="lazy" decoding="async" src="https://csimg.nyc3.cdn.digitaloceanspaces.com/Icons/trees-white.svg" alt="" width="40" height="40" aria-hidden="true">
+                    </picture>
+                    <h3 class="cs-h3">Optimized for speed</h3>
+                    <p class="cs-item-text">
+                        Sub-second loads, measured and tuned.
+                    </p>
+                </li>
+                <li class="cs-item">
+                    <picture class="cs-icon-wrapper">
+                        <img class="cs-icon" loading="lazy" decoding="async" src="https://csimg.nyc3.cdn.digitaloceanspaces.com/Icons/trees-white.svg" alt="" width="40" height="40" aria-hidden="true">
+                    </picture>
+                    <h3 class="cs-h3">SEO fundamentals</h3>
+                    <p class="cs-item-text">
+                        Clean, semantic markup that ranks.
+                    </p>
+                </li>
+                <li class="cs-item">
+                    <picture class="cs-icon-wrapper">
+                        <img class="cs-icon" loading="lazy" decoding="async" src="https://csimg.nyc3.cdn.digitaloceanspaces.com/Icons/trees-white.svg" alt="" width="40" height="40" aria-hidden="true">
+                    </picture>
+                    <h3 class="cs-h3">Built by a real engineer</h3>
+                    <p class="cs-item-text">
+                        Production-grade discipline, applied here.
+                    </p>
+                </li>
+                <li class="cs-item">
+                    <picture class="cs-icon-wrapper">
+                        <img class="cs-icon" loading="lazy" decoding="async" src="https://csimg.nyc3.cdn.digitaloceanspaces.com/Icons/trees-white.svg" alt="" width="40" height="40" aria-hidden="true">
+                    </picture>
+                    <h3 class="cs-h3">Google Ads management</h3>
+                    <p class="cs-item-text">
+                        Campaigns set up and managed.
+                    </p>
+                </li>
+                <li class="cs-item">
+                    <picture class="cs-icon-wrapper">
+                        <img class="cs-icon" loading="lazy" decoding="async" src="https://csimg.nyc3.cdn.digitaloceanspaces.com/Icons/trees-white.svg" alt="" width="40" height="40" aria-hidden="true">
+                    </picture>
+                    <h3 class="cs-h3">Fully hand-coded</h3>
+                    <p class="cs-item-text">
+                        No builders, no templates, ever.
+                    </p>
+                </li>
+            </ul>
+        </div>
+        <!--Waves Background-->
+        <picture class="cs-waves">
+            <source media="(max-width: 600px)" srcset="https://csimg.nyc3.cdn.digitaloceanspaces.com/Icons/waves-m.svg">
+            <source media="(min-width: 601px)" srcset="https://csimg.nyc3.cdn.digitaloceanspaces.com/Icons/waves.svg">
+            <img loading="lazy" decoding="async" src="https://csimg.nyc3.cdn.digitaloceanspaces.com/Icons/waves.svg" alt="" width="1920" height="331" aria-hidden="true">
+        </picture>
+    </section>
+
+    <!-- ============================================ -->
+    <!--                   About                      -->
+    <!-- ============================================ -->
+
+    <section id="about">
+        <div class="cs-container">
+            <div class="cs-image-group">
+                <!--Main Image-->
+                <div class="cs-picture-wrapper1">
+                    <picture class="cs-picture cs-picture1">
+                        <!--Mobile Image-->
+                        <source media="(max-width: 600px)" srcset="https://csimages2.nyc3.digitaloceanspaces.com/Images/Landscapes/construction-before1.jpg">
+                        <!--Tablet and above Image-->
+                        <source media="(min-width: 601px)" srcset="https://csimages2.nyc3.digitaloceanspaces.com/Images/Landscapes/construction-before1.jpg">
+                        <img loading="lazy" decoding="async" src="https://csimages2.nyc3.digitaloceanspaces.com/Images/Landscapes/construction-before1.jpg" alt="Photo of Bryan" width="272" height="337">
+                    </picture>
+                    <span class="cs-tag">Bryan</span>
+                </div>
+                <!--Small Image-->
+                <div class="cs-picture-wrapper2">
+                    <picture class="cs-picture cs-picture2">
+                        <!--Mobile Image-->
+                        <source media="(max-width: 600px)" srcset="https://csimages2.nyc3.digitaloceanspaces.com/Images/Landscapes/construction-after1.jpg">
+                        <!--Tablet and above Image-->
+                        <source media="(min-width: 601px)" srcset="https://csimages2.nyc3.digitaloceanspaces.com/Images/Landscapes/construction-after1.jpg">
+                        <img loading="lazy" decoding="async" src="https://csimages2.nyc3.digitaloceanspaces.com/Images/Landscapes/construction-after1.jpg" alt="Workspace overlooking the Sound" width="243" height="367">
+                    </picture>
+                    <span class="cs-tag">The Sound</span>
+                </div>
+                <img class="cs-arrow" loading="lazy" decoding="async" src="https://csimg.nyc3.cdn.digitaloceanspaces.com/Images/Icons/before-after-arrow.svg" alt="" width="148" height="54">
+            </div>
+            <div class="cs-content">
+                <span class="cs-topper">Our story</span>
+                <h2 class="cs-title">A software engineer, not a template shop.</h2>
+                <p class="cs-text">
+                    Bryan spent over a decade building production software before he ever built a small business website. Every site is measured, tested, and held to the same bar as the systems he ships professionally.
+                </p>
+                <p class="cs-text">
+                    He started Shoreline Web Design from Richmond Beach because too many local businesses were stuck with slow, bloated sites. Every project here is hand-coded, one client at a time.
+                </p>
+                <ul class="cs-ul">
+                    <li class="cs-li">
+                        <strong>10+ yrs</strong>: engineering experience.
+                    </li>
+                    <li class="cs-li">
+                        <strong>1 engineer</strong>: every line of code.
+                    </li>
+                </ul>
+                <a href="" class="cs-button-solid">Get a free consultation</a>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- ============================================ -->
+    <!--                   Speed                      -->
+    <!-- ============================================ -->
+
+    <section id="speed">
+        <div class="cs-container">
+            <div class="cs-content">
+                <span class="cs-topper">Performance</span>
+                <h2 class="cs-title">Speed isn't a nice-to-have. It's the product.</h2>
+                <p class="cs-text">Every site is measured against the same standards used on high-traffic production systems.
+                </p>
+            </div>
+            <ul class="cs-card-group">
+                <li class="cs-item">
+                    <span class="cs-number">95+</span>
+                    <h3 class="cs-h3">PageSpeed</h3>
+                    <p class="cs-item-text">
+                        Average performance score across every site we ship.
+                    </p>
+                </li>
+                <li class="cs-item">
+                    <span class="cs-number">&lt;1s</span>
+                    <h3 class="cs-h3">Load time</h3>
+                    <p class="cs-item-text">
+                        Sub-second first paint on real-world connections.
+                    </p>
+                </li>
+                <li class="cs-item">
+                    <span class="cs-number">100%</span>
+                    <h3 class="cs-h3">Hand-coded</h3>
+                    <p class="cs-item-text">
+                        No builders, no bloat. Just clean, deliberate code.
+                    </p>
+                </li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!--                  Pricing                     -->
+    <!-- ============================================ -->
+
+    <section id="pricing">
+        <div class="cs-container">
+            <div class="cs-content">
+                <span class="cs-topper">Pricing</span>
+                <h2 class="cs-title">Simple, honest pricing</h2>
+                <p class="cs-text">
+                    One package. No upsells, no hidden hours.
+                </p>
+            </div>
+            <ul class="cs-card-group">
+                <li class="cs-item">
+                    <span class="cs-package">The Everything Plan</span>
+                    <span class="cs-price">$100<span class="cs-period">/mo</span></span>
+                    <p class="cs-item-text">Everything included. Cancel anytime.</p>
+                    <ul class="cs-ul">
+                        <li class="cs-li">
+                            Hand-coded &amp; secure
+                            <img class="cs-icon" aria-hidden="true" loading="lazy" decoding="async" src="https://csimg.nyc3.cdn.digitaloceanspaces.com/Icons/mech-check.svg" alt="checkmark" width="18" height="18">
+                        </li>
+                        <li class="cs-li">
+                            Custom design, no templates
+                            <img class="cs-icon" aria-hidden="true" loading="lazy" decoding="async" src="https://csimg.nyc3.cdn.digitaloceanspaces.com/Icons/mech-check.svg" alt="checkmark" width="18" height="18">
+                        </li>
+                        <li class="cs-li">
+                            Fast load times from day one
+                            <img class="cs-icon" aria-hidden="true" loading="lazy" decoding="async" src="https://csimg.nyc3.cdn.digitaloceanspaces.com/Icons/mech-check.svg" alt="checkmark" width="18" height="18">
+                        </li>
+                        <li class="cs-li">
+                            Direct support from the owner
+                            <img class="cs-icon" aria-hidden="true" loading="lazy" decoding="async" src="https://csimg.nyc3.cdn.digitaloceanspaces.com/Icons/mech-check.svg" alt="checkmark" width="18" height="18">
+                        </li>
+                        <li class="cs-li">
+                            Honest, sustainable SEO
+                            <img class="cs-icon" aria-hidden="true" loading="lazy" decoding="async" src="https://csimg.nyc3.cdn.digitaloceanspaces.com/Icons/mech-check.svg" alt="checkmark" width="18" height="18">
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+            <a href="" class="cs-button-solid">Get a free quote</a>
+        </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!--                Recent Work                   -->
+    <!-- ============================================ -->
+
+    <section id="work">
+        <div class="cs-container">
+            <div class="cs-content">
+                <span class="cs-topper">Our work</span>
+                <h2 class="cs-title">Recent work</h2>
+            </div>
+            <ul class="cs-card-group">
+                <li class="cs-item">
+                    <a href="" class="cs-link">
+                        <picture class="cs-picture">
+                            <!--Mobile Image-->
+                            <source media="(max-width: 600px)" srcset="https://csimg.nyc3.cdn.digitaloceanspaces.com/Images/People/wedding1.jpg">
+                            <!--Tablet and above Image-->
+                            <source media="(min-width: 601px)" srcset="https://csimg.nyc3.cdn.digitaloceanspaces.com/Images/People/wedding1.jpg">
+                            <img loading="lazy" decoding="async" src="https://csimg.nyc3.cdn.digitaloceanspaces.com/Images/People/wedding1.jpg" alt="Seaside Dental website" width="413" height="340">
+                        </picture>
+                        <div class="cs-flex">
+                            <h3 class="cs-h3">Seaside Dental</h3>
+                            <span class="cs-number">01</span>
+                        </div>
+                        <p class="cs-item-text">
+                            Booking-first practice site.
+                        </p>
+                    </a>
+                </li>
+                <li class="cs-item">
+                    <a href="" class="cs-link">
+                        <picture class="cs-picture">
+                            <!--Mobile Image-->
+                            <source media="(max-width: 600px)" srcset="https://csimg.nyc3.cdn.digitaloceanspaces.com/Images/People/wedding2.jpg">
+                            <!--Tablet and above Image-->
+                            <source media="(min-width: 601px)" srcset="https://csimg.nyc3.cdn.digitaloceanspaces.com/Images/People/wedding2.jpg">
+                            <img loading="lazy" decoding="async" src="https://csimg.nyc3.cdn.digitaloceanspaces.com/Images/People/wedding2.jpg" alt="Sound View Coffee website" width="413" height="340">
+                        </picture>
+                        <div class="cs-flex">
+                            <h3 class="cs-h3">Sound View Coffee</h3>
+                            <span class="cs-number">02</span>
+                        </div>
+                        <p class="cs-item-text">
+                            Online ordering for a roaster.
+                        </p>
+                    </a>
+                </li>
+                <li class="cs-item">
+                    <a href="" class="cs-link">
+                        <picture class="cs-picture">
+                            <!--Mobile Image-->
+                            <source media="(max-width: 600px)" srcset="https://csimg.nyc3.cdn.digitaloceanspaces.com/Images/People/photography1.jpg">
+                            <!--Tablet and above Image-->
+                            <source media="(min-width: 601px)" srcset="https://csimg.nyc3.cdn.digitaloceanspaces.com/Images/People/photography1.jpg">
+                            <img loading="lazy" decoding="async" src="https://csimg.nyc3.cdn.digitaloceanspaces.com/Images/People/photography1.jpg" alt="Richmond Beach Hardware website" width="413" height="340">
+                        </picture>
+                        <div class="cs-flex">
+                            <h3 class="cs-h3">Richmond Beach Hardware</h3>
+                            <span class="cs-number">03</span>
+                        </div>
+                        <p class="cs-item-text">
+                            Hours, services &amp; directions.
+                        </p>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </section>
+
+
+    <!-- ============================================ -->
+    <!--                  Reviews                     -->
+    <!-- ============================================ -->
+
+    <section id="reviews">
+        <div class="cs-container">
+            <div class="cs-content">
+                <span class="cs-topper">Testimonials</span>
+                <h2 class="cs-title">What clients say</h2>
+                <p class="cs-text">Sample quotes, shown for illustration.</p>
+            </div>
+            <ul class="cs-card-group">
+                <li class="cs-item">
+                    <p class="cs-item-text">
+                        Our site loads instantly now.
+                    </p>
+                    <picture class="cs-wrapper">
+                        <img class="cs-quote" aria-hidden="true" loading="lazy" decoding="async" src="https://csimg.nyc3.cdn.digitaloceanspaces.com/Images/Icons/quote-gold.svg" alt="quote" width="20" height="16">
+                    </picture>
+                    <div class="cs-info">
+                        <span class="cs-name">
+                            Sample review
+                            <span class="cs-desc">Edmonds</span>
+                        </span>
+                    </div>
+                </li>
+                <li class="cs-item">
+                    <p class="cs-item-text">
+                        Felt like working with an engineer, not a salesperson.
+                    </p>
+                    <picture class="cs-wrapper">
+                        <img class="cs-quote" aria-hidden="true" loading="lazy" decoding="async" src="https://csimg.nyc3.cdn.digitaloceanspaces.com/Images/Icons/quote-gold.svg" alt="quote" width="20" height="16">
+                    </picture>
+                    <div class="cs-info">
+                        <span class="cs-name">
+                            Sample review
+                            <span class="cs-desc">Shoreline</span>
+                        </span>
+                    </div>
+                </li>
+                <li class="cs-item">
+                    <p class="cs-item-text">
+                        $100/month, no surprises.
+                    </p>
+                    <picture class="cs-wrapper">
+                        <img class="cs-quote" aria-hidden="true" loading="lazy" decoding="async" src="https://csimg.nyc3.cdn.digitaloceanspaces.com/Images/Icons/quote-gold.svg" alt="quote" width="20" height="16">
+                    </picture>
+                    <div class="cs-info">
+                        <span class="cs-name">
+                            Sample review
+                            <span class="cs-desc">Lynnwood</span>
+                        </span>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </section>
+
+
+    <!-- ============================================ -->
+    <!--                Service Area                  -->
+    <!-- ============================================ -->
+
+    <section id="service-area">
+        <div class="cs-container">
+            <picture class="cs-picture">
+                <!--Mobile Image-->
+                <source media="(max-width: 600px)" srcset="https://csimages2.nyc3.digitaloceanspaces.com/Images/ecommerce/models.jpg">
+                <!--Tablet and above Image-->
+                <source media="(min-width: 601px)" srcset="https://csimages2.nyc3.digitaloceanspaces.com/Images/ecommerce/models.jpg">
+                <img loading="lazy" decoding="async" src="https://csimages2.nyc3.digitaloceanspaces.com/Images/ecommerce/models.jpg" alt="Map of the North Seattle service area" width="586" height="690">
+            </picture>
+            <div class="cs-content">
+                <span class="cs-topper">Service area</span>
+                <h2 class="cs-title">Serving the greater Shoreline area</h2>
+                <p class="cs-text">Working directly with small businesses across North Seattle.</p>
+                <ul class="cs-card-group">
+                    <li class="cs-item">
+                        <div class="wrapper">
+                            <span class="cs-item-number">01</span>
+                            <h3 class="cs-h3">
+                                North Seattle
+                            </h3>
+                        </div>
+                    </li>
+                    <li class="cs-item">
+                        <div class="wrapper">
+                            <span class="cs-item-number">02</span>
+                            <h3 class="cs-h3">
+                                Shoreline
+                            </h3>
+                        </div>
+                    </li>
+                    <li class="cs-item">
+                        <div class="wrapper">
+                            <span class="cs-item-number">03</span>
+                            <h3 class="cs-h3">
+                                Richmond Beach
+                            </h3>
+                        </div>
+                    </li>
+                    <li class="cs-item">
+                        <div class="wrapper">
+                            <span class="cs-item-number">04</span>
+                            <h3 class="cs-h3">
+                                Edmonds
+                            </h3>
+                        </div>
+                    </li>
+                    <li class="cs-item">
+                        <div class="wrapper">
+                            <span class="cs-item-number">05</span>
+                            <h3 class="cs-h3">
+                                Lynnwood
+                            </h3>
+                        </div>
+                    </li>
+                </ul>
+                <a href="" class="cs-button-solid">Get a free quote</a>
             </div>
         </div>
     </section>
