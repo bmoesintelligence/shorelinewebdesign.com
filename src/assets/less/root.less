@@ -43,6 +43,10 @@
 		/* 60px - 100px top and bottom */
 		--sectionPadding: clamp(3.75rem, 7.82vw, 6.25rem) 1rem;
 
+		/* both isometric diorama scenes (hero + service area) share this width,
+		   so they always render at the same size */
+		--sceneWidth: 40rem;
+
 		--headerFont: "Sora", "Helvetica Neue", Arial, sans-serif;
 		--bodyFont: "Inter", "Helvetica Neue", Arial, sans-serif;
 		--monoFont: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
@@ -52,7 +56,11 @@
 	body {
 		margin: 0;
 		padding: 0;
-		overflow-x: hidden;
+		/* `clip` not `hidden`: overflow-x:hidden forces overflow-y to compute to
+		   auto, which makes html/body a scroll container and breaks both
+		   position:sticky and scroll-driven animations (the ferry). `clip`
+		   still prevents sideways scroll without creating a scroller. */
+		overflow-x: clip;
 		font-family: var(--bodyFont);
 		font-size: 100%;
 		transition: background-color 0.3s;
@@ -576,6 +584,7 @@
             /* prevents padding from affecting height and width */
             box-sizing: border-box;
             padding: 0;
+            text-decoration: none;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -1087,6 +1096,7 @@
             /* margin-right auto pushes everything away from it to the right */
             margin: 0 auto 0 0;
             padding: 0;
+            text-decoration: none;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -1475,361 +1485,227 @@
 }
 
 /*-- -------------------------- -->
-<---           Logos            -->
+<---          Footer            -->
 <--- -------------------------- -*/
 
 /* Mobile - 360px */
 @media only screen and (min-width: 0rem) {
-    #logos {
+    #footer {
+        background-color: var(--inkNavy);
         padding: var(--sectionPadding);
-        position: relative;
-        z-index: 1;
-        
+        /* 32px - 48px */
+        padding-bottom: clamp(2rem, 4vw, 3rem);
+
         .cs-container {
             width: 100%;
             max-width: (1280/16rem);
             margin: auto;
             display: flex;
-            align-items: center;
-            justify-content: space-between;
             flex-direction: column;
-            gap: (16/16rem);
         }
 
-        .cs-row {
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: (16/16rem);
-        }
-
-        .cs-logo {
-            /* adjust the clamps as needed for your logos to be arrnaged the way you want them */
-            height: auto;
-            margin: 0;
-            display: block;
-
-            &.logo1 {
-                width: clamp(104px, 13vw, 178px);
-            }
-
-            &.logo2 {
-                width: clamp(35px, 7vw, 62px);
-            }
-
-            &.logo3 {
-                width: clamp(86px, 15vw, 173px);
-            }
-
-            &.logo4 {
-                width: clamp(112px, 15vw, 187px);
-            }
-
-            &.logo5 {
-                width: clamp(58px, 10vw, 121px);
-            }
-
-            &.logo6 {
-                width: clamp(99px, 10vw, 133px);
-            }
-        }
-    }
-}
-
-/* In-between - 650px */
-@media only screen and (min-width: 650px) {
-    #logos {
-        .cs-container {
-            flex-direction: row;
-        }
-        .cs-row {
-            /* makes the cs-row non-existent and elts the children interact with the children from outside the cs-row */
-            display: contents;
-        }
-    }
-}
-
-/* Dark Mode */
-@media only screen and (min-width: 48rem) {
-    body.dark-mode {
-        #logos {
-            background-color: rgba(0, 0, 0, .2);
-
-            .cs-logo {
-                filter: grayscale(1) brightness(10000%);
-            }
-
-            .cs-background {
-                img {
-                    opacity: .05;
-                }
-            }
-        }
-    }
-}
-                                
-/*-- -------------------------- -->
-<---          Footer            -->
-<--- -------------------------- -*/
-
-/* Mobile */
-@media only screen and (min-width: 0rem) {
-    #footer {
-        padding: var(--sectionPadding);
-        padding-top: 0;
-        /* 32px - 60px */
-        padding-bottom: clamp(2rem, 7vw, 3.75rem);
-
-        .cs-container {
-            width: 100%;
-            max-width: (1800/16rem);
-            margin: auto;
-            /* 24px - 100px top & bottom */
-            /* 16px - 100px left & right */
-            padding: clamp(1.5rem, 8vw, 6.25rem) clamp(1rem, 6.5vw, 6.25rem);
-            /* 24px - 40px */
-            padding-bottom: clamp(1.5rem, 5vw, 2.5rem);
-            display: flex;
-            flex-direction: column;
-            background-color: #1A1A1A;
-        }
-
+        /* ── final CTA ── */
         .cs-cta {
-            width: 100%;
-            /* 80px - 128px */
-            margin-bottom: clamp(5rem, 10vw, 8rem);
+            text-align: center;
             display: flex;
             flex-direction: column;
-            align-items: flex-start;
-            row-gap: (32/16rem);
-            column-gap: (64/16rem);
+            align-items: center;
+            /* 48px - 80px */
+            padding-bottom: clamp(3rem, 6vw, 5rem);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.12);
         }
 
         .cs-title {
-            /* 31px - 39px */
-            font-size: clamp(1.9375rem, 3vw, 2.4375rem);
-            max-width: (1200/16rem);
-            margin: 0;
+            font-family: var(--headerFont);
+            /* 28px - 44px */
+            font-size: clamp(1.75rem, 4vw, 2.75rem);
+            font-weight: 800;
+            line-height: 1.15em;
+            letter-spacing: -0.02em;
+            max-width: 20ch;
+            margin: 0 0 (16/16rem);
             color: var(--bodyTextColorWhite);
-        }
-
-        .cs-button-solid {
-            font-size: (16/16rem);
-            /* 46px - 56px */
-            line-height: clamp(2.875rem, 5.5vw, 3.5rem);
-            text-decoration: none;
-	    	font-weight: 700;
-	        text-align: center;
-            margin: 0;
-            color: #fff;
-            min-width: (150/16rem);
-            padding: 0 (24/16rem);
-            background-color: var(--primary);
-            display: inline-block;
-            position: relative;
-            z-index: 1;
-            /* prevents padding from adding to the width */
-            box-sizing: border-box;
-
-            &:before {
-                content: '';
-                position: absolute;
-                height: 100%;
-                width: 0%;
-                background: #000;
-                opacity: 1;
-                top: 0;
-                left: 0;
-                z-index: -1;
-                border-radius: (4/16rem);
-                transition: width .3s;
-            }
-
-            &:hover {
-                &:before {
-                    width: 100%;
-                }
-            }
-        }
-
-        .cs-button-solid {
-            flex: none;
-        }
-
-        .cs-wrapper {
-            display: flex;
-            flex-direction: column;
-            gap: (48/16rem);
-        }
-
-        .cs-content {
-            max-width: (516/16rem);
-        }
-
-        .cs-logo {
-            width: (174/16rem);
-            height: auto;
-            margin-bottom: (16/16rem);
-            display: block;
         }
 
         .cs-text {
-            /* 32px - 60px */
-            margin-bottom: clamp(2rem, 7vw, 3.75rem);
-            color: var(--bodyTextColorWhite);
+            font-size: (17/16rem);
+            line-height: 1.6em;
+            max-width: 52ch;
+            margin: 0 0 (32/16rem);
+            color: var(--rainGray);
         }
 
-        .cs-nav {
+        .cs-button-solid {
+            font-family: var(--bodyFont);
+            font-size: (16/16rem);
+            font-weight: 600;
+            line-height: 1em;
+            text-align: center;
+            text-transform: none;
+            text-decoration: none;
+            width: auto;
+            padding: (18/16rem) (32/16rem);
+            border-radius: (48/16rem);
+            background-color: var(--coral);
+            color: #fff;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            transition: background-color 0.25s, transform 0.25s;
+
+            /* kill the global sweep pseudo */
+            &:before {
+                display: none;
+            }
+
+            &:hover {
+                background-color: var(--bodyTextColorWhite);
+                color: var(--inkNavy);
+                transform: translateY(-2px);
+            }
+        }
+
+        /* ── the three columns ── */
+        .cs-wrapper {
+            /* 48px - 72px */
+            padding: clamp(3rem, 5vw, 4.5rem) 0;
+            display: grid;
+            grid-template-columns: 1fr;
+            /* 36px - 48px */
+            gap: clamp(2.25rem, 4vw, 3rem);
+        }
+
+        .cs-logo {
+            font-family: var(--headerFont);
+            font-size: (19/16rem);
+            font-weight: 700;
+            line-height: 1.2em;
+            letter-spacing: -0.01em;
+            text-decoration: none;
+            color: var(--bodyTextColorWhite);
+            display: inline-block;
+            margin-bottom: (14/16rem);
+            transition: color 0.25s;
+
+            &:hover {
+                color: var(--coral);
+            }
+        }
+
+        .cs-blurb {
+            font-size: (15/16rem);
+            line-height: 1.6em;
+            max-width: 38ch;
+            margin: 0;
+            color: var(--rainGray);
+        }
+
+        /* small mono column headings */
+        .cs-header {
+            font-family: var(--monoFont);
+            font-size: (11/16rem);
+            font-weight: 500;
+            line-height: 1em;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--coral);
+            display: block;
+            margin-bottom: (16/16rem);
+        }
+
+        .cs-nav-ul {
             margin: 0;
             padding: 0;
             display: flex;
-            flex-wrap: wrap;
-            column-gap: (24/16rem);
-            row-gap: (8/16rem);
+            flex-direction: column;
+            gap: (12/16rem);
         }
 
         .cs-nav-li {
             list-style: none;
-            margin: 0;
-            padding: 0;
         }
 
-        .cs-nav-link {
-            font-size: (16/16rem);
-            line-height: 1.5em;
+        .cs-nav-link,
+        .cs-contact {
+            font-family: var(--bodyFont);
+            font-size: (15/16rem);
+            line-height: 1.4em;
             text-decoration: none;
-            color: var(--bodyTextColorWhite);
-            transition: color .3s;
+            color: var(--rainGray);
+            transition: color 0.25s;
 
             &:hover {
-                color: var(--primary);
+                color: var(--bodyTextColorWhite);
             }
         }
 
         .cs-ul {
-            width: 100%;
-            max-width: (756/16rem);
             margin: 0;
             padding: 0;
-            display: grid;
-            grid-template-columns: repeat(12, 1fr);
-            /* 24px - 32px */
-            row-gap: clamp(1.5rem, 5vw, 2rem);   
-            /* 24px - 64px */  
-            column-gap: clamp(1.5rem, 5vw, 2rem);   
+            display: flex;
+            flex-direction: column;
+            gap: (24/16rem);
         }
 
         .cs-li {
             list-style: none;
-            display: flex;
-            flex-direction: column;
-            gap: (4/16rem);
-            grid-column: span 12;
-        }
 
-        .cs-header {
-            font-size: (16/16rem);
-            line-height: 1.5em;
-            color: #A3A3A3;
-            display: block;
-        }
-
-        .cs-contact {
-            font-size: (20/16rem);
-            line-height: 1.2em;
-            text-decoration: none;
-            font-weight: 700;
-            color: var(--bodyTextColorWhite);
-        }
-
-        .cs-logo {
-            width: (174/16rem);
-            height: auto;
-            display: block;
-            position: relative;
-            z-index: 1;
-        }
-
-        .cs-logo-img {
-            width: 100%;
-            height: auto;
-            display: block;
-        }
-
-        .cs-flex {
-            width: 100%;
-            max-width: (283/16rem);
-            display: flex;
-            flex-wrap: wrap;
-            row-gap: (16/16rem);
-            column-gap: (20/16rem);
-        }
-
-        .cs-wrapper {
-            width: 100%;
-            display: flex;
-        }
-
-        .cs-copyright, .cs-link {
-            font-size: (16/16rem);
-            line-height: 1.5em;
-            text-decoration: none;
-            white-space: nowrap;
-            color: #A3A3A3;
-            display: inline-block;
-            transition: color .3s;
-        }
-
-        .cs-link {
-            &:hover {
-                color: var(--primary);
+            /* each detail block gets its own heading, so reset the spacing */
+            .cs-header {
+                margin-bottom: (8/16rem);
             }
         }
 
+        .cs-detail {
+            font-family: var(--bodyFont);
+            font-size: (15/16rem);
+            line-height: 1.5em;
+            color: var(--rainGray);
+            display: block;
+        }
+
+        /* ── bottom bar ── */
         .cs-bottom {
-            width: 100%;
-            /* 48px - 60px */
-            margin-top: clamp(3rem, 7vw, 3.75rem);
-            /* 24px - 40px */
-            padding-top: clamp(1.5rem, 5vw, 2.5rem);
-            border-top: 1px solid #434240;
+            padding-top: (28/16rem);
+            border-top: 1px solid rgba(255, 255, 255, 0.12);
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: (8/16rem);
+            text-align: center;
+            gap: (12/16rem);
         }
 
         .cs-copyright {
-            font-size: (16/16rem);
-            text-decoration: none;
-            line-height: 1.5em;
-            color: var(--bodyTextColorWhite);
-        }
-
-        .cs-copyright-link {
-            font-size: (16/16rem);
-            text-decoration: none;
-            line-height: 1.5em;
-            color: var(--bodyTextColorWhite);
-            transition: color .3s;
-
-            &:hover {
-                color: var(--primary);
-            }
+            font-family: var(--monoFont);
+            font-size: (12/16rem);
+            line-height: 1.4em;
+            letter-spacing: 0.04em;
+            color: var(--rainGray);
+            opacity: 0.8;
         }
 
         .cs-terms {
             display: flex;
             align-items: center;
-            order: -1;
+            gap: (20/16rem);
         }
 
-        .cs-divider {
-            font-size: (16/16rem);
-            margin: 0 (16/16rem);
-            color: #a3a3a3;
-            display: inline-block;
+        .cs-copyright-link {
+            font-family: var(--bodyFont);
+            font-size: (13/16rem);
+            line-height: 1.4em;
+            text-decoration: none;
+            color: var(--rainGray);
+            opacity: 0.8;
+            transition: color 0.25s, opacity 0.25s;
+
+            &:hover {
+                color: var(--bodyTextColorWhite);
+                opacity: 1;
+            }
         }
     }
 }
@@ -1837,71 +1713,168 @@
 /* Tablet - 768px */
 @media only screen and (min-width: 48rem) {
     #footer {
-        .cs-ul {
-            width: 80%;
-            max-width: (704/16rem);
-        }
-
-        .cs-li {
-            grid-column: span 6;
+        .cs-wrapper {
+            /* brand gets the wide column, links + contact sit beside it */
+            grid-template-columns: 1.6fr 1fr 1.4fr;
+            gap: clamp(2rem, 4vw, 4rem);
         }
 
         .cs-bottom {
             flex-direction: row;
             justify-content: space-between;
-        }
-
-        .cs-terms {
-            order: initial;
-        }
-    }
-}
-
-/* Small Desktop - 1024px */
-@media only screen and (min-width: 64rem) {
-    #footer {
-        .cs-cta {
-            flex-direction: row;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .cs-wrapper {
-            flex-direction: row;
-            justify-content: space-between;
-        }
-
-        .cs-ul {
-            width: 50%;
-        }
-        
-        .cs-li {
-            grid-column: span 12;
-        }
-    }
-}
-
-/* Large Desktop - 1300px */
-@media only screen and (min-width: 81.25rem) {
-    #footer {
-        .cs-li {
-            grid-column: span 6;
+            text-align: left;
         }
     }
 }
 
 /* Dark Mode */
-@media only screen and (min-width: 48rem) {
+@media only screen and (min-width: 0rem) {
     body.dark-mode {
         #footer {
-            .cs-container {
-                background-color: rgba(0, 0, 0, .6);
-            }
-
-            .cs-bottom {
-                border-color: rgba(255, 255, 255, .2);
-            }
+            background-color: rgba(0, 0, 0, 0.35);
         }
     }
 }
-                                
+
+/*-- -------------------------- -->
+<---           Ferry            -->
+<--- -------------------------- -*/
+
+/* Two narrative bookends: the ferry departs the Edmonds diorama in the hero,
+   then reappears and berths at the arrival landing in the service area.
+   The ferry lives INSIDE .cs-image-group, so its percentage transforms are
+   relative to the scene artwork and stay correct at any section layout. */
+@media only screen and (min-width: 0rem) {
+    .cs-has-ferry {
+        position: relative;
+        /* `clip` not `hidden` — hidden makes this a scroll container and
+           breaks scroll-driven timelines inside it */
+        overflow: clip;
+        view-timeline-name: --ferry-lane;
+        view-timeline-axis: block;
+    }
+
+    .cs-image-group {
+        position: relative;
+    }
+
+    .cs-scene {
+        width: 100%;
+        height: auto;
+        display: block;
+    }
+
+    .cs-ferry {
+        /* spans the scene, so translate % maps onto the artwork */
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 1;
+        pointer-events: none;
+        /* desktop only */
+        display: none;
+    }
+
+    .cs-ferry-hull {
+        /* sized against the scene, not the viewport, so it stays in scale */
+        width: 28%;
+        height: auto;
+        display: block;
+    }
+
+    /* Resting positions — what shows without scroll-timeline support and under
+       reduced motion, so each must look deliberate: berthed at the slip. */
+    /* --berth is the single source of truth for where the boat sits at the
+       slip. The keyframes below reference it, so editing it here moves BOTH
+       the resting position and the animation's berthed endpoint. */
+    #hero .cs-ferry {
+        --berth: translate(1%, 55%);
+        transform: var(--berth);
+    }
+
+    #service-area .cs-ferry {
+        --berth: translate(22%, 52%);
+        transform: var(--berth);
+    }
+}
+
+/* Desktop - 1024px */
+@media only screen and (min-width: 64rem) {
+    .cs-ferry {
+        display: block;
+    }
+}
+
+@supports (animation-timeline: view()) {
+    @media only screen and (min-width: 64rem) {
+        /* NB: never the `animation` shorthand — it resets animation-duration
+           (to 0s) and animation-timeline (to auto), killing this silently. */
+        .cs-ferry {
+            animation-duration: auto;
+            animation-fill-mode: both;
+        }
+
+        /* ── departure ──
+           Pulls out of the slip and sails down-left across the bay, fading out
+           as it reaches the tile edge so it never appears to float on sand.
+           Tied to the document scroller: at the top of the page a view() range
+           is already partway through at scroll zero. */
+        #hero .cs-ferry {
+            animation-name: ferry-depart;
+            animation-timeline: scroll(root block);
+            animation-range: 0 70vh;
+            animation-timing-function: ease-in;
+        }
+
+        /* ── arrival ──
+           Sails in from off the lower-left water and decelerates into the
+           berth as the section enters view. ease-out does the landing. */
+        #service-area .cs-ferry {
+            animation-name: ferry-arrive;
+            animation-timeline: --ferry-lane;
+            animation-range: entry 0% entry 100%;
+            animation-timing-function: ease-out;
+        }
+    }
+
+    @keyframes ferry-depart {
+        0% {
+            transform: var(--berth);
+            opacity: 1;
+        }
+        60% {
+            opacity: 1;
+        }
+        /* fully faded by the time it clears the water. The vertical drop is
+           set so the course sits on the scene's isometric axis (~31.7deg,
+           measured off the tile edge) rather than cutting steeply down. */
+        100% {
+            transform: translate(-16%, 67%);
+            opacity: 0;
+        }
+    }
+
+    @keyframes ferry-arrive {
+        /* sails in from the open water on the same isometric axis */
+        0% {
+            transform: translate(-18%, 80%);
+            opacity: 0;
+        }
+        35% {
+            opacity: 1;
+        }
+        100% {
+            transform: var(--berth);
+            opacity: 1;
+        }
+    }
+}
+
+/* Reduced motion — park them berthed, don't sail them */
+@media (prefers-reduced-motion: reduce) {
+    .cs-ferry {
+        animation: none !important;
+    }
+}

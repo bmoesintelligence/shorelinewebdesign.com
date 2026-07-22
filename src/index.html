@@ -32,38 +32,25 @@ tags: "sitemap" # content/content.json will make sure that all pages in content/
     <!--                    Hero                      -->
     <!-- ============================================ -->
 
-    <section id="hero">
+    <section id="hero" class="cs-has-ferry">
         <div class="cs-container">
             <div class="cs-content">
                 <span class="cs-topper"><span class="cs-pin" aria-hidden="true"></span>Richmond Beach, WA</span>
-                <h1 class="cs-title">Hand-coded websites, engineer-built, from $100/month.</h1>
+                <h1 class="cs-title">The website your&#32;<br class="cs-title-break">small business&#32;<br class="cs-title-break"><span class="cs-title-accent">actually deserves.</span></h1>
                 <p class="cs-text">
-                    No page builders. No WordPress. Bryan applies the same performance discipline he uses as a professional software engineer to small business sites across North Seattle.
+                    Fast, custom, and built to be found. Hand-coded by a professional software engineer serving small businesses across North Seattle. $100/month, everything included.
                 </p>
                 <div class="cs-button-group">
-                    <a href="" class="cs-button-solid">Get a free consultation</a>
+                    <a href="" class="cs-button-solid">Get started</a>
                     <a href="#work" class="cs-button-transparent">See the work<span class="cs-arrow" aria-hidden="true">&rarr;</span></a>
                 </div>
             </div>
-            <!-- Floating image cards. Placeholder drop-zones until real photos land. -->
+            <!-- Edmonds waterfront diorama. The ferry departs from the slip on scroll. -->
             <div class="cs-image-group">
                 <span class="cs-badge" aria-hidden="true"><span class="cs-badge-text">Est. Richmond Beach</span></span>
-                <figure class="cs-card cs-card1">
-                    <div class="cs-placeholder">
-                        <svg class="cs-ph-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
-                        <span class="cs-ph-label">Richmond Beach pier</span>
-                        <span class="cs-ph-browse">or browse files</span>
-                    </div>
-                    <figcaption class="cs-filename">richmond_beach.jpg</figcaption>
-                </figure>
-                <figure class="cs-card cs-card2">
-                    <div class="cs-placeholder">
-                        <svg class="cs-ph-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
-                        <span class="cs-ph-label">Bryan at work</span>
-                        <span class="cs-ph-browse">or browse files</span>
-                    </div>
-                    <figcaption class="cs-filename">workspace.jpg</figcaption>
-                </figure>
+                <img class="cs-scene" src="/assets/images/hero-scene.png" alt="Isometric illustration of the Edmonds waterfront and ferry terminal" width="1215" height="1073" decoding="async" fetchpriority="high">
+                {% include "components/ferry.html" %}
+
             </div>
         </div>
     </section>
@@ -76,48 +63,20 @@ tags: "sitemap" # content/content.json will make sure that all pages in content/
         <div class="cs-container">
             <ul class="cs-card-group">
                 <li class="cs-item">
-                    <a href="" class="cs-link">
-                        <picture class="cs-picture">
-                            <img class="cs-icon" src="https://csimg.nyc3.cdn.digitaloceanspaces.com/Icons/brain.svg" loading="lazy" decoding="async" alt="icon" width="40" height="40" aria-hidden="true">
-                        </picture>
-                        <h3 class="cs-h3">95+</h3>
-                        <p class="cs-item-text">
-                            Average PageSpeed score.
-                        </p>
-                    </a>
+                    <span class="cs-number">95+</span>
+                    <span class="cs-label">avg PageSpeed score</span>
                 </li>
                 <li class="cs-item">
-                    <a href="" class="cs-link">
-                        <picture class="cs-picture">
-                            <img class="cs-icon" src="https://csimg.nyc3.cdn.digitaloceanspaces.com/Icons/users.svg" loading="lazy" decoding="async" alt="icon" width="40" height="40" aria-hidden="true">
-                        </picture>
-                        <h3 class="cs-h3">&lt;1s</h3>
-                        <p class="cs-item-text">
-                            Typical load time.
-                        </p>
-                    </a>
+                    <span class="cs-number">&lt;1s</span>
+                    <span class="cs-label">typical load time</span>
                 </li>
                 <li class="cs-item">
-                    <a href="" class="cs-link">
-                        <picture class="cs-picture">
-                            <img class="cs-icon" src="https://csimg.nyc3.cdn.digitaloceanspaces.com/Icons/Layer.svg" loading="lazy" decoding="async" alt="icon" width="40" height="40" aria-hidden="true">
-                        </picture>
-                        <h3 class="cs-h3">10+</h3>
-                        <p class="cs-item-text">
-                            Years engineering experience.
-                        </p>
-                    </a>
+                    <span class="cs-number">10+</span>
+                    <span class="cs-label">years engineering experience</span>
                 </li>
                 <li class="cs-item">
-                    <a href="" class="cs-link">
-                        <picture class="cs-picture">
-                            <img class="cs-icon" src="https://csimg.nyc3.cdn.digitaloceanspaces.com/Icons/Layer.svg" loading="lazy" decoding="async" alt="icon" width="40" height="40" aria-hidden="true">
-                        </picture>
-                        <h3 class="cs-h3">100%</h3>
-                        <p class="cs-item-text">
-                            Hand-written code.
-                        </p>
-                    </a>
+                    <span class="cs-number">100%</span>
+                    <span class="cs-label">hand-written code</span>
                 </li>
             </ul>
         </div>
@@ -140,54 +99,43 @@ tags: "sitemap" # content/content.json will make sure that all pages in content/
             </div>
             <ul class="cs-card-group">
                 <li class="cs-item">
-                    <picture class="cs-icon-wrapper">
-                        <img class="cs-icon" loading="lazy" decoding="async" src="https://csimg.nyc3.cdn.digitaloceanspaces.com/Icons/trees-white.svg" alt="" width="40" height="40" aria-hidden="true">
-                    </picture>
+                    <span class="cs-number">01</span>
                     <h3 class="cs-h3">Mobile-first</h3>
                     <p class="cs-item-text">
                         Fully responsive on every device.
                     </p>
                 </li>
                 <li class="cs-item">
-                    <picture class="cs-icon-wrapper">
-                        <img class="cs-icon" loading="lazy" decoding="async" src="https://csimg.nyc3.cdn.digitaloceanspaces.com/Icons/trees-white.svg" alt="" width="40" height="40" aria-hidden="true">
-                    </picture>
+                    <span class="cs-number">02</span>
                     <h3 class="cs-h3">Optimized for speed</h3>
                     <p class="cs-item-text">
                         Sub-second loads, measured and tuned.
                     </p>
                 </li>
                 <li class="cs-item">
-                    <picture class="cs-icon-wrapper">
-                        <img class="cs-icon" loading="lazy" decoding="async" src="https://csimg.nyc3.cdn.digitaloceanspaces.com/Icons/trees-white.svg" alt="" width="40" height="40" aria-hidden="true">
-                    </picture>
+                    <span class="cs-number">03</span>
                     <h3 class="cs-h3">SEO fundamentals</h3>
                     <p class="cs-item-text">
                         Clean, semantic markup that ranks.
                     </p>
                 </li>
-                <li class="cs-item">
-                    <picture class="cs-icon-wrapper">
-                        <img class="cs-icon" loading="lazy" decoding="async" src="https://csimg.nyc3.cdn.digitaloceanspaces.com/Icons/trees-white.svg" alt="" width="40" height="40" aria-hidden="true">
-                    </picture>
+                <!-- the standout card, inverted per the comp -->
+                <li class="cs-item cs-item-featured">
+                    <span class="cs-number">04</span>
                     <h3 class="cs-h3">Built by a real engineer</h3>
                     <p class="cs-item-text">
                         Production-grade discipline, applied here.
                     </p>
                 </li>
                 <li class="cs-item">
-                    <picture class="cs-icon-wrapper">
-                        <img class="cs-icon" loading="lazy" decoding="async" src="https://csimg.nyc3.cdn.digitaloceanspaces.com/Icons/trees-white.svg" alt="" width="40" height="40" aria-hidden="true">
-                    </picture>
+                    <span class="cs-number">05</span>
                     <h3 class="cs-h3">Google Ads management</h3>
                     <p class="cs-item-text">
                         Campaigns set up and managed.
                     </p>
                 </li>
                 <li class="cs-item">
-                    <picture class="cs-icon-wrapper">
-                        <img class="cs-icon" loading="lazy" decoding="async" src="https://csimg.nyc3.cdn.digitaloceanspaces.com/Icons/trees-white.svg" alt="" width="40" height="40" aria-hidden="true">
-                    </picture>
+                    <span class="cs-number">06</span>
                     <h3 class="cs-h3">Fully hand-coded</h3>
                     <p class="cs-item-text">
                         No builders, no templates, ever.
@@ -195,12 +143,6 @@ tags: "sitemap" # content/content.json will make sure that all pages in content/
                 </li>
             </ul>
         </div>
-        <!--Waves Background-->
-        <picture class="cs-waves">
-            <source media="(max-width: 600px)" srcset="https://csimg.nyc3.cdn.digitaloceanspaces.com/Icons/waves-m.svg">
-            <source media="(min-width: 601px)" srcset="https://csimg.nyc3.cdn.digitaloceanspaces.com/Icons/waves.svg">
-            <img loading="lazy" decoding="async" src="https://csimg.nyc3.cdn.digitaloceanspaces.com/Icons/waves.svg" alt="" width="1920" height="331" aria-hidden="true">
-        </picture>
     </section>
 
     <!-- ============================================ -->
@@ -209,30 +151,24 @@ tags: "sitemap" # content/content.json will make sure that all pages in content/
 
     <section id="about">
         <div class="cs-container">
+            <!-- Floating image cards. Placeholder drop-zones until real photos land. -->
             <div class="cs-image-group">
-                <!--Main Image-->
-                <div class="cs-picture-wrapper1">
-                    <picture class="cs-picture cs-picture1">
-                        <!--Mobile Image-->
-                        <source media="(max-width: 600px)" srcset="https://csimages2.nyc3.digitaloceanspaces.com/Images/Landscapes/construction-before1.jpg">
-                        <!--Tablet and above Image-->
-                        <source media="(min-width: 601px)" srcset="https://csimages2.nyc3.digitaloceanspaces.com/Images/Landscapes/construction-before1.jpg">
-                        <img loading="lazy" decoding="async" src="https://csimages2.nyc3.digitaloceanspaces.com/Images/Landscapes/construction-before1.jpg" alt="Photo of Bryan" width="272" height="337">
-                    </picture>
-                    <span class="cs-tag">Bryan</span>
-                </div>
-                <!--Small Image-->
-                <div class="cs-picture-wrapper2">
-                    <picture class="cs-picture cs-picture2">
-                        <!--Mobile Image-->
-                        <source media="(max-width: 600px)" srcset="https://csimages2.nyc3.digitaloceanspaces.com/Images/Landscapes/construction-after1.jpg">
-                        <!--Tablet and above Image-->
-                        <source media="(min-width: 601px)" srcset="https://csimages2.nyc3.digitaloceanspaces.com/Images/Landscapes/construction-after1.jpg">
-                        <img loading="lazy" decoding="async" src="https://csimages2.nyc3.digitaloceanspaces.com/Images/Landscapes/construction-after1.jpg" alt="Workspace overlooking the Sound" width="243" height="367">
-                    </picture>
-                    <span class="cs-tag">The Sound</span>
-                </div>
-                <img class="cs-arrow" loading="lazy" decoding="async" src="https://csimg.nyc3.cdn.digitaloceanspaces.com/Images/Icons/before-after-arrow.svg" alt="" width="148" height="54">
+                <figure class="cs-card cs-card1">
+                    <div class="cs-placeholder">
+                        <svg class="cs-ph-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+                        <span class="cs-ph-label">Photo of Bryan</span>
+                        <span class="cs-ph-browse">or browse files</span>
+                    </div>
+                    <figcaption class="cs-filename">bryan.jpg</figcaption>
+                </figure>
+                <figure class="cs-card cs-card2">
+                    <div class="cs-placeholder">
+                        <svg class="cs-ph-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+                        <span class="cs-ph-label">Workspace overlooking the Sound</span>
+                        <span class="cs-ph-browse">or browse files</span>
+                    </div>
+                    <figcaption class="cs-filename">workspace.jpg</figcaption>
+                </figure>
             </div>
             <div class="cs-content">
                 <span class="cs-topper">Our story</span>
@@ -245,13 +181,14 @@ tags: "sitemap" # content/content.json will make sure that all pages in content/
                 </p>
                 <ul class="cs-ul">
                     <li class="cs-li">
-                        <strong>10+ yrs</strong>: engineering experience.
+                        <span class="cs-stat-number">10+ yrs</span>
+                        <span class="cs-stat-label">engineering experience</span>
                     </li>
                     <li class="cs-li">
-                        <strong>1 engineer</strong>: every line of code.
+                        <span class="cs-stat-number">1</span>
+                        <span class="cs-stat-label">engineer, every line of code</span>
                     </li>
                 </ul>
-                <a href="" class="cs-button-solid">Get a free consultation</a>
             </div>
         </div>
     </section>
@@ -270,26 +207,17 @@ tags: "sitemap" # content/content.json will make sure that all pages in content/
                 </p>
             </div>
             <ul class="cs-card-group">
-                <li class="cs-item">
+                <li class="cs-item cs-item1">
                     <span class="cs-number">95+</span>
-                    <h3 class="cs-h3">PageSpeed</h3>
-                    <p class="cs-item-text">
-                        Average performance score across every site we ship.
-                    </p>
+                    <span class="cs-label">pagespeed</span>
                 </li>
-                <li class="cs-item">
+                <li class="cs-item cs-item2">
                     <span class="cs-number">&lt;1s</span>
-                    <h3 class="cs-h3">Load time</h3>
-                    <p class="cs-item-text">
-                        Sub-second first paint on real-world connections.
-                    </p>
+                    <span class="cs-label">load time</span>
                 </li>
-                <li class="cs-item">
+                <li class="cs-item cs-item3">
                     <span class="cs-number">100%</span>
-                    <h3 class="cs-h3">Hand-coded</h3>
-                    <p class="cs-item-text">
-                        No builders, no bloat. Just clean, deliberate code.
-                    </p>
+                    <span class="cs-label">hand-coded</span>
                 </li>
             </ul>
         </div>
@@ -305,39 +233,38 @@ tags: "sitemap" # content/content.json will make sure that all pages in content/
                 <span class="cs-topper">Pricing</span>
                 <h2 class="cs-title">Simple, honest pricing</h2>
                 <p class="cs-text">
-                    One package. No upsells, no hidden hours.
+                    Two ways to work together. No upsells, no hidden hours.
                 </p>
             </div>
             <ul class="cs-card-group">
-                <li class="cs-item">
-                    <span class="cs-package">The Everything Plan</span>
+                <li class="cs-item cs-item-featured">
+                    <span class="cs-badge">Most popular</span>
+                    <span class="cs-plan">Monthly</span>
                     <span class="cs-price">$100<span class="cs-period">/mo</span></span>
-                    <p class="cs-item-text">Everything included. Cancel anytime.</p>
+                    <span class="cs-note">everything included, cancel anytime</span>
                     <ul class="cs-ul">
-                        <li class="cs-li">
-                            Hand-coded &amp; secure
-                            <img class="cs-icon" aria-hidden="true" loading="lazy" decoding="async" src="https://csimg.nyc3.cdn.digitaloceanspaces.com/Icons/mech-check.svg" alt="checkmark" width="18" height="18">
-                        </li>
-                        <li class="cs-li">
-                            Custom design, no templates
-                            <img class="cs-icon" aria-hidden="true" loading="lazy" decoding="async" src="https://csimg.nyc3.cdn.digitaloceanspaces.com/Icons/mech-check.svg" alt="checkmark" width="18" height="18">
-                        </li>
-                        <li class="cs-li">
-                            Fast load times from day one
-                            <img class="cs-icon" aria-hidden="true" loading="lazy" decoding="async" src="https://csimg.nyc3.cdn.digitaloceanspaces.com/Icons/mech-check.svg" alt="checkmark" width="18" height="18">
-                        </li>
-                        <li class="cs-li">
-                            Direct support from the owner
-                            <img class="cs-icon" aria-hidden="true" loading="lazy" decoding="async" src="https://csimg.nyc3.cdn.digitaloceanspaces.com/Icons/mech-check.svg" alt="checkmark" width="18" height="18">
-                        </li>
-                        <li class="cs-li">
-                            Honest, sustainable SEO
-                            <img class="cs-icon" aria-hidden="true" loading="lazy" decoding="async" src="https://csimg.nyc3.cdn.digitaloceanspaces.com/Icons/mech-check.svg" alt="checkmark" width="18" height="18">
-                        </li>
+                        <li class="cs-li">Hand-coded &amp; secure</li>
+                        <li class="cs-li">Custom design, no templates</li>
+                        <li class="cs-li">Fast load times from day one</li>
+                        <li class="cs-li">Unlimited support &amp; updates</li>
+                        <li class="cs-li">Honest, sustainable SEO</li>
                     </ul>
+                    <a href="" class="cs-button-solid">Get a free quote</a>
+                </li>
+                <li class="cs-item">
+                    <span class="cs-plan">One-time build</span>
+                    <span class="cs-price">$3,000</span>
+                    <span class="cs-note">pay once, the site is yours</span>
+                    <ul class="cs-ul">
+                        <li class="cs-li">Hand-coded &amp; secure</li>
+                        <li class="cs-li">Custom design, no templates</li>
+                        <li class="cs-li">Fast load times from day one</li>
+                        <li class="cs-li">Honest, sustainable SEO</li>
+                        <li class="cs-li cs-li-muted">Support &amp; updates billed at $95/hr</li>
+                    </ul>
+                    <a href="" class="cs-button-transparent">Get a free quote</a>
                 </li>
             </ul>
-            <a href="" class="cs-button-solid">Get a free quote</a>
         </div>
     </section>
 
@@ -351,60 +278,58 @@ tags: "sitemap" # content/content.json will make sure that all pages in content/
                 <span class="cs-topper">Our work</span>
                 <h2 class="cs-title">Recent work</h2>
             </div>
+            <!-- Placeholder drop-zones until real project screenshots land. -->
             <ul class="cs-card-group">
                 <li class="cs-item">
-                    <a href="" class="cs-link">
-                        <picture class="cs-picture">
-                            <!--Mobile Image-->
-                            <source media="(max-width: 600px)" srcset="https://csimg.nyc3.cdn.digitaloceanspaces.com/Images/People/wedding1.jpg">
-                            <!--Tablet and above Image-->
-                            <source media="(min-width: 601px)" srcset="https://csimg.nyc3.cdn.digitaloceanspaces.com/Images/People/wedding1.jpg">
-                            <img loading="lazy" decoding="async" src="https://csimg.nyc3.cdn.digitaloceanspaces.com/Images/People/wedding1.jpg" alt="Seaside Dental website" width="413" height="340">
-                        </picture>
-                        <div class="cs-flex">
-                            <h3 class="cs-h3">Seaside Dental</h3>
-                            <span class="cs-number">01</span>
+                    <figure class="cs-card">
+                        <div class="cs-placeholder">
+                            <svg class="cs-ph-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+                            <span class="cs-ph-label">Seaside Dental homepage</span>
+                            <span class="cs-ph-browse">or browse files</span>
                         </div>
-                        <p class="cs-item-text">
-                            Booking-first practice site.
-                        </p>
-                    </a>
+                        <figcaption class="cs-filename">seaside_dental.jpg</figcaption>
+                    </figure>
+                    <div class="cs-flex">
+                        <h3 class="cs-h3">Seaside Dental</h3>
+                        <span class="cs-number">01</span>
+                    </div>
+                    <p class="cs-item-text">
+                        Booking-first practice site.
+                    </p>
                 </li>
                 <li class="cs-item">
-                    <a href="" class="cs-link">
-                        <picture class="cs-picture">
-                            <!--Mobile Image-->
-                            <source media="(max-width: 600px)" srcset="https://csimg.nyc3.cdn.digitaloceanspaces.com/Images/People/wedding2.jpg">
-                            <!--Tablet and above Image-->
-                            <source media="(min-width: 601px)" srcset="https://csimg.nyc3.cdn.digitaloceanspaces.com/Images/People/wedding2.jpg">
-                            <img loading="lazy" decoding="async" src="https://csimg.nyc3.cdn.digitaloceanspaces.com/Images/People/wedding2.jpg" alt="Sound View Coffee website" width="413" height="340">
-                        </picture>
-                        <div class="cs-flex">
-                            <h3 class="cs-h3">Sound View Coffee</h3>
-                            <span class="cs-number">02</span>
+                    <figure class="cs-card">
+                        <div class="cs-placeholder">
+                            <svg class="cs-ph-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+                            <span class="cs-ph-label">Sound View Coffee homepage</span>
+                            <span class="cs-ph-browse">or browse files</span>
                         </div>
-                        <p class="cs-item-text">
-                            Online ordering for a roaster.
-                        </p>
-                    </a>
+                        <figcaption class="cs-filename">sound_view_coffee.jpg</figcaption>
+                    </figure>
+                    <div class="cs-flex">
+                        <h3 class="cs-h3">Sound View Coffee</h3>
+                        <span class="cs-number">02</span>
+                    </div>
+                    <p class="cs-item-text">
+                        Online ordering for a roaster.
+                    </p>
                 </li>
                 <li class="cs-item">
-                    <a href="" class="cs-link">
-                        <picture class="cs-picture">
-                            <!--Mobile Image-->
-                            <source media="(max-width: 600px)" srcset="https://csimg.nyc3.cdn.digitaloceanspaces.com/Images/People/photography1.jpg">
-                            <!--Tablet and above Image-->
-                            <source media="(min-width: 601px)" srcset="https://csimg.nyc3.cdn.digitaloceanspaces.com/Images/People/photography1.jpg">
-                            <img loading="lazy" decoding="async" src="https://csimg.nyc3.cdn.digitaloceanspaces.com/Images/People/photography1.jpg" alt="Richmond Beach Hardware website" width="413" height="340">
-                        </picture>
-                        <div class="cs-flex">
-                            <h3 class="cs-h3">Richmond Beach Hardware</h3>
-                            <span class="cs-number">03</span>
+                    <figure class="cs-card">
+                        <div class="cs-placeholder">
+                            <svg class="cs-ph-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+                            <span class="cs-ph-label">RB Hardware homepage</span>
+                            <span class="cs-ph-browse">or browse files</span>
                         </div>
-                        <p class="cs-item-text">
-                            Hours, services &amp; directions.
-                        </p>
-                    </a>
+                        <figcaption class="cs-filename">rb_hardware.jpg</figcaption>
+                    </figure>
+                    <div class="cs-flex">
+                        <h3 class="cs-h3">Richmond Beach Hardware</h3>
+                        <span class="cs-number">03</span>
+                    </div>
+                    <p class="cs-item-text">
+                        Hours, services &amp; directions.
+                    </p>
                 </li>
             </ul>
         </div>
@@ -417,53 +342,20 @@ tags: "sitemap" # content/content.json will make sure that all pages in content/
 
     <section id="reviews">
         <div class="cs-container">
-            <div class="cs-content">
-                <span class="cs-topper">Testimonials</span>
-                <h2 class="cs-title">What clients say</h2>
-                <p class="cs-text">Sample quotes, shown for illustration.</p>
-            </div>
+            <!-- Deliberately understated: these are illustrative, not real testimonials. -->
+            <h2 class="cs-title">// sample quotes, shown for illustration</h2>
             <ul class="cs-card-group">
                 <li class="cs-item">
-                    <p class="cs-item-text">
-                        Our site loads instantly now.
-                    </p>
-                    <picture class="cs-wrapper">
-                        <img class="cs-quote" aria-hidden="true" loading="lazy" decoding="async" src="https://csimg.nyc3.cdn.digitaloceanspaces.com/Images/Icons/quote-gold.svg" alt="quote" width="20" height="16">
-                    </picture>
-                    <div class="cs-info">
-                        <span class="cs-name">
-                            Sample review
-                            <span class="cs-desc">Edmonds</span>
-                        </span>
-                    </div>
+                    <blockquote class="cs-item-text">&ldquo;Our site loads instantly now.&rdquo;</blockquote>
+                    <cite class="cs-name">Sample, Edmonds</cite>
                 </li>
                 <li class="cs-item">
-                    <p class="cs-item-text">
-                        Felt like working with an engineer, not a salesperson.
-                    </p>
-                    <picture class="cs-wrapper">
-                        <img class="cs-quote" aria-hidden="true" loading="lazy" decoding="async" src="https://csimg.nyc3.cdn.digitaloceanspaces.com/Images/Icons/quote-gold.svg" alt="quote" width="20" height="16">
-                    </picture>
-                    <div class="cs-info">
-                        <span class="cs-name">
-                            Sample review
-                            <span class="cs-desc">Shoreline</span>
-                        </span>
-                    </div>
+                    <blockquote class="cs-item-text">&ldquo;Felt like working with an engineer, not a salesperson.&rdquo;</blockquote>
+                    <cite class="cs-name">Sample, Shoreline</cite>
                 </li>
                 <li class="cs-item">
-                    <p class="cs-item-text">
-                        $100/month, no surprises.
-                    </p>
-                    <picture class="cs-wrapper">
-                        <img class="cs-quote" aria-hidden="true" loading="lazy" decoding="async" src="https://csimg.nyc3.cdn.digitaloceanspaces.com/Images/Icons/quote-gold.svg" alt="quote" width="20" height="16">
-                    </picture>
-                    <div class="cs-info">
-                        <span class="cs-name">
-                            Sample review
-                            <span class="cs-desc">Lynnwood</span>
-                        </span>
-                    </div>
+                    <blockquote class="cs-item-text">&ldquo;$100/month, no surprises.&rdquo;</blockquote>
+                    <cite class="cs-name">Sample, Lynnwood</cite>
                 </li>
             </ul>
         </div>
@@ -474,62 +366,24 @@ tags: "sitemap" # content/content.json will make sure that all pages in content/
     <!--                Service Area                  -->
     <!-- ============================================ -->
 
-    <section id="service-area">
+    <section id="service-area" class="cs-has-ferry">
         <div class="cs-container">
-            <picture class="cs-picture">
-                <!--Mobile Image-->
-                <source media="(max-width: 600px)" srcset="https://csimages2.nyc3.digitaloceanspaces.com/Images/ecommerce/models.jpg">
-                <!--Tablet and above Image-->
-                <source media="(min-width: 601px)" srcset="https://csimages2.nyc3.digitaloceanspaces.com/Images/ecommerce/models.jpg">
-                <img loading="lazy" decoding="async" src="https://csimages2.nyc3.digitaloceanspaces.com/Images/ecommerce/models.jpg" alt="Map of the North Seattle service area" width="586" height="690">
-            </picture>
             <div class="cs-content">
                 <span class="cs-topper">Service area</span>
                 <h2 class="cs-title">Serving the greater Shoreline area</h2>
-                <p class="cs-text">Working directly with small businesses across North Seattle.</p>
+                <p class="cs-text">Working directly with small businesses across:</p>
                 <ul class="cs-card-group">
-                    <li class="cs-item">
-                        <div class="wrapper">
-                            <span class="cs-item-number">01</span>
-                            <h3 class="cs-h3">
-                                North Seattle
-                            </h3>
-                        </div>
-                    </li>
-                    <li class="cs-item">
-                        <div class="wrapper">
-                            <span class="cs-item-number">02</span>
-                            <h3 class="cs-h3">
-                                Shoreline
-                            </h3>
-                        </div>
-                    </li>
-                    <li class="cs-item">
-                        <div class="wrapper">
-                            <span class="cs-item-number">03</span>
-                            <h3 class="cs-h3">
-                                Richmond Beach
-                            </h3>
-                        </div>
-                    </li>
-                    <li class="cs-item">
-                        <div class="wrapper">
-                            <span class="cs-item-number">04</span>
-                            <h3 class="cs-h3">
-                                Edmonds
-                            </h3>
-                        </div>
-                    </li>
-                    <li class="cs-item">
-                        <div class="wrapper">
-                            <span class="cs-item-number">05</span>
-                            <h3 class="cs-h3">
-                                Lynnwood
-                            </h3>
-                        </div>
-                    </li>
+                    <li class="cs-item">North Seattle</li>
+                    <li class="cs-item">Shoreline</li>
+                    <li class="cs-item cs-item-home">Richmond Beach</li>
+                    <li class="cs-item">Edmonds</li>
+                    <li class="cs-item">Lynnwood</li>
                 </ul>
-                <a href="" class="cs-button-solid">Get a free quote</a>
+            </div>
+            <!-- Arrival landing diorama. The ferry sails in and berths on scroll. -->
+            <div class="cs-image-group">
+                <img class="cs-scene" src="/assets/images/service-area-scene.png" alt="Isometric illustration of the ferry landing across the Sound" width="1200" height="1064" loading="lazy" decoding="async">
+                {% include "components/ferry.html" %}
             </div>
         </div>
     </section>

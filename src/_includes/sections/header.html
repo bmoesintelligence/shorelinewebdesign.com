@@ -7,7 +7,7 @@
          The list is repeated so the track loops seamlessly; duplicates are aria-hidden. -->
     <div class="cs-top-bar">
         <div class="cs-marquee">
-            {%- set locations = ["Shoreline", "Richmond Beach", "Edmonds", "Lynnwood", "Seattle", "Kirkland", "Bellevue"] -%}
+            {%- set locations = ["Shoreline", "Richmond Beach", "Edmonds", "Lynnwood", "Seattle", "Kirkland", "Bellevue", "Bainbridge Island", "Kingston"] -%}
             {%- for i in range(0, 4) -%}
             <ul class="cs-marquee-group"{% if i > 0 %} aria-hidden="true"{% endif %}>
                 {%- for city in locations -%}
