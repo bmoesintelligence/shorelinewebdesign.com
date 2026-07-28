@@ -92,10 +92,15 @@
 		}
 	}
 
+	// The button and the bordered CTA link (.cs-li-cta) supply their own padding,
+	// so the pill should hug them with no extra breathing room; plain text links
+	// get LINK_PAD so the pill reads wider than the text.
+	const padFor = (el) => (el === button || (el.parentElement && el.parentElement.classList.contains("cs-li-cta"))) ? 0 : LINK_PAD;
+
 	function moveTo(el, animate = true) {
 		const dist = current ? Math.abs(centerX(el) - centerX(current)) : 0;
 		current = el;
-		const padX = el === button ? 0 : LINK_PAD;
+		const padX = padFor(el);
 		place(el, padX, animate);
 		targets.forEach((t) => t.classList.toggle("cs-pill-active", t === el));
 		if (animate && dist > 2) wobble(dist);
@@ -158,7 +163,7 @@
 	window.addEventListener("resize", () => {
 		if (!live) return;
 		cancelAnimationFrame(raf);
-		raf = requestAnimationFrame(() => place(current, current === button ? 0 : LINK_PAD, false));
+		raf = requestAnimationFrame(() => place(current, padFor(current), false));
 	});
 
 	// Web font metrics change the resting width — re-settle once they load.

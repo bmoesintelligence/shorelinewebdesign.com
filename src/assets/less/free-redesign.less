@@ -1,0 +1,165 @@
+/*-- -------------------------- -->
+<---     Free Redesign page     -->
+<--- -------------------------- -*/
+
+/* shared section shell — the hero now uses the sitewide #page-hero component */
+@media only screen and (min-width: 0rem) {
+    #redesign-steps,
+    #redesign-why {
+        padding: var(--sectionPadding);
+        background-color: var(--warmSand);
+
+        .cs-container {
+            width: 100%;
+            max-width: (1080/16rem);
+            margin: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .cs-topper {
+            font-family: var(--monoFont);
+            font-size: (13/16rem);
+            font-weight: 500;
+            line-height: 1.2em;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--coral);
+            margin-bottom: (12/16rem);
+        }
+
+        .cs-title {
+            font-family: var(--headerFont);
+            /* 32px - 50px */
+            font-size: clamp(2rem, 5vw, 3.125rem);
+            font-weight: 800;
+            line-height: 1.12em;
+            letter-spacing: -0.02em;
+            max-width: 20ch;
+            margin: 0 0 (18/16rem);
+            color: var(--inkNavy);
+        }
+
+        .cs-text {
+            font-size: (18/16rem);
+            line-height: 1.6em;
+            max-width: 56ch;
+            margin: 0;
+            color: var(--pugetBlue);
+        }
+
+        .cs-button-group {
+            margin-top: (28/16rem);
+        }
+
+        /* primary button — navy pill, matching the rest of the site */
+        .cs-button-solid {
+            font-family: var(--bodyFont);
+            font-size: (16/16rem);
+            font-weight: 600;
+            line-height: 1em;
+            text-transform: none;
+            text-decoration: none;
+            padding: (18/16rem) (32/16rem);
+            border-radius: (48/16rem);
+            background-color: var(--inkNavy);
+            color: var(--warmSand);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+            z-index: 1;
+            transition: background-color 0.25s, color 0.25s, transform 0.25s;
+
+            &:before {
+                display: none;
+            }
+
+            &:hover {
+                background-color: var(--coral);
+                color: #fff;
+                transform: translateY(-2px);
+            }
+        }
+    }
+
+    /* ── How it works ── */
+    #redesign-steps {
+        .cs-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: clamp(2.5rem, 5vw, 4rem);
+        }
+
+        .cs-card-group {
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: clamp(1rem, 2vw, 1.25rem);
+        }
+
+        .cs-item {
+            list-style: none;
+            text-align: left;
+            padding: clamp(1.5rem, 3vw, 2rem);
+            background-color: #fdfbf4;
+            border: 1px solid rgba(27, 42, 56, 0.08);
+            border-radius: (12/16rem);
+            box-shadow: 0 (6/16rem) (18/16rem) rgba(27, 42, 56, 0.06);
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .cs-number {
+            font-family: var(--monoFont);
+            font-size: (12/16rem);
+            font-weight: 500;
+            letter-spacing: 0.1em;
+            color: var(--rainGray);
+            margin-bottom: clamp(1rem, 2vw, 1.5rem);
+        }
+
+        .cs-h3 {
+            font-family: var(--headerFont);
+            font-size: clamp(1.0625rem, 1.6vw, 1.1875rem);
+            font-weight: 700;
+            line-height: 1.3em;
+            margin: 0 0 (8/16rem);
+            color: var(--inkNavy);
+        }
+
+        .cs-item-text {
+            font-size: (15/16rem);
+            line-height: 1.55em;
+            margin: 0;
+            color: var(--pugetBlue);
+        }
+
+        .cs-fineprint {
+            font-size: (14/16rem);
+            line-height: 1.6em;
+            max-width: 60ch;
+            margin: clamp(2rem, 4vw, 2.75rem) auto 0;
+            color: var(--pugetBlue);
+
+            em {
+                font-style: italic;
+                color: var(--inkNavy);
+            }
+        }
+    }
+}
+
+/* Tablet - 768px */
+@media only screen and (min-width: 48rem) {
+    #redesign-steps .cs-card-group {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}

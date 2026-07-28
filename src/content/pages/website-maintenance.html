@@ -1,31 +1,33 @@
 ---
-description: "Meta description for the page"
+description: "Hosting, updates, backups, security, and same-day edits, all handled every month, so you never have to think about your website again."
 permalink: "/services/website-maintenance/"
+pageHero:
+  topper: "Website maintenance"
+  title: "Your website, handled for good"
+  accent: "."
+  text:
+    - "Hosting, updates, backups, security, and edits, all taken care of every month. You never log in, never chase a plugin update, never wonder whether your site is down."
+    - "Need a change? Send it over and it goes live, usually the same day. No dashboard, no ticket queue, no hourly bill."
+  buttons:
+    - label: "Get started"
+      href: "/contact/"
+    - label: "See pricing"
+      href: "/pricing/"
+      style: "secondary"
 eleventyComputed:
   title: "{{ page.fileSlug | titleCase }} | {{ client.name }} | {{ client.address.city }}, {{ client.address.state }}"
 ---
 
-
 {% extends "layouts/base.html" %}
 
 {% block head %}
-    
     <link rel="stylesheet" href="/assets/css/{{ page.fileSlug }}.css">
-
-    <!-- Any page-specific tags that belong in the <head> -->
-
-
 {% endblock %}
 
 {% block body %}
 
-    <!-- Page HTML goes here, without a <main> wrapper. The <main> tag is already presented in layouts/base.html -->
+    {% include "sections/page-hero.html" %}
 
-    <!-- If you want the page to have a "CTA", remove the {# and #} below -->
-    {# {% include 'sections/cta.html' %} #}
+    <!-- Website maintenance detail sections to come. -->
 
 {% endblock %}
-
-
-
-

@@ -1,33 +1,35 @@
 ---
-description: "Meta description for the page"
+description: "Local SEO for small businesses across the North Sound. A fast, well-structured site plus the on-page and Google Business Profile work that gets you found."
 permalink: "/services/seo/"
+pageHero:
+  topper: "SEO"
+  title: "Get found by people already searching"
+  accent: "."
+  text:
+    - "Local search for small businesses in the North Sound. When someone nearby looks for what you do, the goal is simple: you're the one they find."
+    - "It starts with a fast, clean, well-structured site, then the unglamorous work that actually moves the needle: Google Business Profile, on-page basics, and content that answers what your customers really type."
+  buttons:
+    - label: "Get started"
+      href: "/contact/"
+    - label: "See pricing"
+      href: "/pricing/"
+      style: "secondary"
 eleventyComputed:
   # Literal, not titleCase — the filter only uppercases the first letter of each
   # hyphen-separated chunk, so "seo" would render as "Seo".
   title: "SEO | {{ client.name }} | {{ client.address.city }}, {{ client.address.state }}"
 ---
 
-
 {% extends "layouts/base.html" %}
 
 {% block head %}
-    
     <link rel="stylesheet" href="/assets/css/{{ page.fileSlug }}.css">
-
-    <!-- Any page-specific tags that belong in the <head> -->
-
-
 {% endblock %}
 
 {% block body %}
 
-    <!-- Page HTML goes here, without a <main> wrapper. The <main> tag is already presented in layouts/base.html -->
+    {% include "sections/page-hero.html" %}
 
-    <!-- If you want the page to have a "CTA", remove the {# and #} below -->
-    {# {% include 'sections/cta.html' %} #}
+    <!-- SEO detail sections to come. -->
 
 {% endblock %}
-
-
-
-

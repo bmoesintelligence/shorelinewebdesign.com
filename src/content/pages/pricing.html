@@ -1,31 +1,33 @@
 ---
-description: "Meta description for the page"
+description: "Straightforward pricing for hand-coded small business websites: $100/month all-in, or a one-time custom build. No upsells, no hidden hours."
+pageHero:
+  topper: "Pricing"
+  title: "Simple, honest pricing"
+  accent: "."
+  text:
+    - "Two ways to work together, and complete transparency on both. No upsells, no hidden hours, no surprises when the invoice lands."
+    - "Most businesses go monthly: one flat rate that covers the build, hosting, updates, and support, with nothing due upfront and no contract. If you'd rather own the site outright, a one-time build is there too."
+  buttons:
+    - label: "Get started"
+      href: "/contact/"
+    - label: "See the work"
+      href: "/work/"
+      style: "secondary"
 eleventyComputed:
   title: "{{ page.fileSlug | titleCase }} | {{ client.name }} | {{ client.address.city }}, {{ client.address.state }}"
   permalink: "/{{ page.fileSlug | slugify }}/"
 ---
 
-
 {% extends "layouts/base.html" %}
 
 {% block head %}
-    
     <link rel="stylesheet" href="/assets/css/{{ page.fileSlug }}.css">
-
-    <!-- Any page-specific tags that belong in the <head> -->
-
-
 {% endblock %}
 
 {% block body %}
 
-    <!-- Page HTML goes here, without a <main> wrapper. The <main> tag is already presented in layouts/base.html -->
+    {% include "sections/page-hero.html" %}
 
-    <!-- If you want the page to have a "CTA", remove the {# and #} below -->
-    {# {% include 'sections/cta.html' %} #}
+    <!-- Pricing detail sections to come. -->
 
 {% endblock %}
-
-
-
-

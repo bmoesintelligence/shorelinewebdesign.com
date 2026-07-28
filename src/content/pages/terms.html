@@ -1,31 +1,26 @@
 ---
-description: "Meta description for the page"
+description: "The terms and conditions that apply when you work with Shoreline Web Design."
+pageHero:
+  topper: "Legal"
+  title: "Terms and conditions"
+  accent: "."
+  text:
+    - "The terms that apply when you work with Shoreline Web Design."
 eleventyComputed:
   title: "{{ page.fileSlug | titleCase }} | {{ client.name }} | {{ client.address.city }}, {{ client.address.state }}"
   permalink: "/{{ page.fileSlug | slugify }}/"
 ---
 
-
 {% extends "layouts/base.html" %}
 
 {% block head %}
-    
     <link rel="stylesheet" href="/assets/css/{{ page.fileSlug }}.css">
-
-    <!-- Any page-specific tags that belong in the <head> -->
-
-
 {% endblock %}
 
 {% block body %}
 
-    <!-- Page HTML goes here, without a <main> wrapper. The <main> tag is already presented in layouts/base.html -->
+    {% include "sections/page-hero.html" %}
 
-    <!-- If you want the page to have a "CTA", remove the {# and #} below -->
-    {# {% include 'sections/cta.html' %} #}
+    <!-- Terms content to come. -->
 
 {% endblock %}
-
-
-
-

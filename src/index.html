@@ -202,7 +202,6 @@ tags: "sitemap" # content/content.json will make sure that all pages in content/
         </div>
     </section>
 
-
     <!-- ============================================ -->
     <!--                   Speed                      -->
     <!-- ============================================ -->
@@ -293,6 +292,31 @@ tags: "sitemap" # content/content.json will make sure that all pages in content/
             </ul>
         </div>
     </section>
+
+    <!-- ============================================ -->
+    <!--                Free Redesign                 -->
+    <!-- ============================================ -->
+
+    <!-- Free-redesign teaser: the on-ramp to /free-redesign/. WebHero-style dark
+         card: left-aligned copy, a real redesign example on the right. -->
+    <section id="free-redesign">
+        <div class="cs-container">
+            <div class="cs-content">
+                <span class="cs-topper">The no-risk start</span>
+                <h2 class="cs-title">We'll redesign your homepage. <span class="cs-accent">Free.</span></h2>
+                <p class="cs-text">
+                    Send me your site and I'll design a fresh homepage for your business, custom, built from scratch. Keep the design either way. Love it? I'll build and host the whole thing for $100 a month.
+                </p>
+                <a href="/free-redesign/" class="cs-button-solid">Claim a free redesign<span class="cs-arrow" aria-hidden="true">&rarr;</span></a>
+            </div>
+            <picture class="cs-picture">
+                <source srcset="{% getUrl "/assets/images/bryan-van-dusen.jpg" | resize({ width: 900, height: 675 }) | avif %}" type="image/avif">
+                <source srcset="{% getUrl "/assets/images/bryan-van-dusen.jpg" | resize({ width: 900, height: 675 }) | webp %}" type="image/webp">
+                <img class="cs-graphic" src="{% getUrl "/assets/images/bryan-van-dusen.jpg" | resize({ width: 900, height: 675 }) | jpeg %}" alt="A homepage designed by Shoreline Web Design" width="900" height="675" loading="lazy" decoding="async">
+            </picture>
+        </div>
+    </section>
+                                    
 
     <!-- ============================================ -->
     <!--                Recent Work                   -->

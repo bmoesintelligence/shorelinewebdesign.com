@@ -1,0 +1,86 @@
+---
+title: "Free Homepage Redesign | Shoreline Web Design"
+description: "Send me your website and I'll design a fresh homepage for your business, free. Love it? I'll build the whole thing for $100/month. Don't? Keep the design, no strings."
+permalink: "/free-redesign/"
+pageHero:
+  topper: "Free homepage redesign"
+  title: "See your homepage, redesigned"
+  accent: "."
+  text:
+    - "Send me your current website. I'll design a fresh homepage for your business, custom and built from scratch, at no cost."
+    - "Love it? I'll build and host the whole site for $100 a month. Don't? Keep the design, no strings attached."
+  buttons:
+    - label: "Send me your site"
+      href: "/contact/"
+---
+
+{% extends "layouts/base.html" %}
+
+{% block head %}
+    <link rel="stylesheet" href="/assets/css/free-redesign.css">
+{% endblock %}
+
+{% block body %}
+
+    {% include "sections/page-hero.html" %}
+
+    <!-- ============================================ -->
+    <!--                 How it works                 -->
+    <!-- ============================================ -->
+
+    <section id="redesign-steps">
+        <div class="cs-container">
+            <div class="cs-content">
+                <span class="cs-topper">How it works</span>
+                <h2 class="cs-title">Three steps, zero risk</h2>
+            </div>
+            <ul class="cs-card-group">
+                <li class="cs-item">
+                    <span class="cs-number">01</span>
+                    <h3 class="cs-h3">Send your site</h3>
+                    <p class="cs-item-text">
+                        Drop me your current URL, or just your business name if you don't have a site yet. Takes thirty seconds.
+                    </p>
+                </li>
+                <li class="cs-item">
+                    <span class="cs-number">02</span>
+                    <h3 class="cs-h3">I redesign your homepage</h3>
+                    <p class="cs-item-text">
+                        A custom homepage design built around your business, not a template. You'll see exactly what your site could look like.
+                    </p>
+                </li>
+                <li class="cs-item">
+                    <span class="cs-number">03</span>
+                    <h3 class="cs-h3">See it, keep it</h3>
+                    <p class="cs-item-text">
+                        I'll send you the design to look over. Want the real, built version? It's $100/month, everything included. If not, the design is yours.
+                    </p>
+                </li>
+            </ul>
+            <!-- honest expectation-setting: this is a design, not a live site -->
+            <p class="cs-fineprint">
+                Just so we're clear: this is a homepage <em>design</em>, a polished look at what your site could be, not a live, working website. Building and launching the real thing is the $100/month part.
+            </p>
+        </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!--                  The catch                   -->
+    <!-- ============================================ -->
+
+    <section id="redesign-why">
+        <div class="cs-container">
+            <div class="cs-content">
+                <span class="cs-topper">The catch</span>
+                <h2 class="cs-title">There isn't one.</h2>
+                <p class="cs-text">
+                    Most designers make you pay before you ever see anything. I'd rather just show you. If the design is good enough, you'll want the real thing. If it isn't, you've lost nothing but a few minutes. That's the whole idea.
+                </p>
+                <div class="cs-button-group">
+                    <a href="/contact/" class="cs-button-solid">Send me your site</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+{% endblock %}

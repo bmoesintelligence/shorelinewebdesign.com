@@ -1,0 +1,43 @@
+{#
+  Reusable interior-page hero. Driven by the page's `pageHero` front-matter:
+    pageHero:
+      topper: "Pricing"            # pill-badge label (optional)
+      title: "Simple, honest pricing"
+      accent: "."                  # appended to the title in coral, no space (optional)
+      text:                        # a LIST of paragraphs (optional)
+        - "First intro paragraph."
+        - "Second paragraph with more detail."
+      buttons:                     # (optional — usually omitted on interior pages)
+        - label: "Get started"
+          href: "/contact/"
+        - label: "See the work"
+          href: "/work/"
+          style: "secondary"       # secondary = text link with arrow (like the homepage hero).
+                                   # omit / "solid" = the primary navy pill.
+  Renders the page's <h1>. Styles live in root.less (#page-hero) and mirror the
+  homepage hero buttons, so every page stays consistent.
+#}
+{% if pageHero %}
+<section id="page-hero">
+    <div class="cs-container">
+        {% if pageHero.topper %}<span class="cs-topper">{{ pageHero.topper }}</span>{% endif %}
+        <h1 class="cs-title">{{ pageHero.title }}{% if pageHero.accent %}<span class="cs-accent">{{ pageHero.accent }}</span>{% endif %}</h1>
+        {% if pageHero.text %}
+        {% for para in pageHero.text %}
+        <p class="cs-text">{{ para }}</p>
+        {% endfor %}
+        {% endif %}
+        {% if pageHero.buttons %}
+        <div class="cs-button-group">
+            {% for btn in pageHero.buttons %}
+            {% if btn.style and btn.style != 'solid' %}
+            <a href="{{ btn.href }}" class="cs-button-transparent">{{ btn.label }}<span class="cs-arrow" aria-hidden="true">&rarr;</span></a>
+            {% else %}
+            <a href="{{ btn.href }}" class="cs-button-solid">{{ btn.label }}</a>
+            {% endif %}
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endif %}

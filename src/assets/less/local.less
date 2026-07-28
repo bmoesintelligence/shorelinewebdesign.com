@@ -1046,6 +1046,167 @@
     }
 }
 
+
+/*-- -------------------------- -->
+<---       Free Redesign        -->
+<--- -------------------------- -*/
+
+/* Mobile - 360px */
+@media only screen and (min-width: 0rem) {
+    #free-redesign {
+        /* tan section (matches Pricing/Work around it); the dark card floats on it */
+        background-color: var(--warmSand);
+        padding: var(--sectionPadding);
+    }
+
+    #free-redesign .cs-container {
+        width: 100%;
+        /* matches the navbar / hero content width */
+        max-width: (1280/16rem);
+        margin: auto;
+        /* 32px - 64px */
+        padding: clamp(2rem, 6vw, 4rem);
+        background-color: var(--inkNavy);
+        border-radius: (20/16rem);
+        box-shadow: 0 (24/16rem) (60/16rem) rgba(27, 42, 56, 0.28);
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        /* 32px - 48px between copy and the example image on mobile */
+        gap: clamp(2rem, 5vw, 3rem);
+        position: relative;
+    }
+
+    #free-redesign .cs-content {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        text-align: left;
+    }
+
+    /* pill-badge topper */
+    #free-redesign .cs-topper {
+        font-family: var(--monoFont);
+        font-size: (12/16rem);
+        font-weight: 500;
+        line-height: 1em;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        color: var(--coral);
+        background-color: rgba(214, 85, 61, 0.14);
+        padding: (8/16rem) (14/16rem);
+        border-radius: (40/16rem);
+        margin-bottom: (20/16rem);
+    }
+
+    #free-redesign .cs-title {
+        font-family: var(--headerFont);
+        /* 32px - 50px */
+        font-size: clamp(2rem, 5vw, 3.125rem);
+        font-weight: 800;
+        line-height: 1.1em;
+        letter-spacing: -0.02em;
+        max-width: 15ch;
+        margin: 0 0 (18/16rem);
+        color: var(--bodyTextColorWhite);
+
+        /* the accented last word */
+        .cs-accent {
+            color: var(--coral);
+        }
+    }
+
+    #free-redesign .cs-text {
+        font-family: var(--bodyFont);
+        font-size: (17/16rem);
+        line-height: 1.6em;
+        max-width: 46ch;
+        margin: 0 0 (32/16rem);
+        color: var(--rainGray);
+    }
+
+    #free-redesign .cs-button-solid {
+        font-family: var(--bodyFont);
+        font-size: (16/16rem);
+        font-weight: 600;
+        line-height: 1em;
+        text-align: center;
+        text-decoration: none;
+        /* kit default is uppercase; match the rest of the site's buttons */
+        text-transform: none;
+        color: #fff;
+        padding: (18/16rem) (32/16rem);
+        background-color: var(--coral);
+        border-radius: (48/16rem);
+        display: inline-flex;
+        align-items: center;
+        gap: (10/16rem);
+        box-sizing: border-box;
+        transition: background-color 0.25s, transform 0.25s;
+
+        .cs-arrow {
+            transition: transform 0.25s;
+        }
+
+        &:hover {
+            background-color: var(--coralDark);
+            transform: translateY(-2px);
+
+            .cs-arrow {
+                transform: translateX(3px);
+            }
+        }
+    }
+
+    /* the redesign example */
+    #free-redesign .cs-picture {
+        width: 100%;
+        display: block;
+    }
+
+    #free-redesign .cs-graphic {
+        width: 100%;
+        height: auto;
+        display: block;
+        border-radius: (10/16rem);
+        box-shadow: 0 (18/16rem) (40/16rem) rgba(0, 0, 0, 0.45);
+    }
+}
+
+/* Desktop - 1024px — copy left, example right */
+@media only screen and (min-width: 64rem) {
+    #free-redesign .cs-container {
+        flex-direction: row;
+        align-items: center;
+        gap: clamp(2.5rem, 5vw, 4.5rem);
+    }
+
+    #free-redesign .cs-content {
+        flex: 1 1 48%;
+    }
+
+    #free-redesign .cs-picture {
+        flex: 1 1 52%;
+    }
+}
+
+/* Dark Mode */
+@media only screen and (min-width: 0rem) {
+    body.dark-mode #free-redesign {
+        background-color: var(--dark);
+
+        /* the page is already dark, so lift the card off it with a lighter fill
+           and a faint coral edge instead of the light-mode navy-on-tan contrast */
+        .cs-container {
+            background-color: var(--medium);
+            border: 1px solid rgba(214, 85, 61, 0.35);
+        }
+    }
+}
+                                
+
+
 /*-- -------------------------- -->
 <---        Recent Work         -->
 <--- -------------------------- -*/

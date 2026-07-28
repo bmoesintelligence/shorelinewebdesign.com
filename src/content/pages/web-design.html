@@ -1,31 +1,33 @@
 ---
-description: "Meta description for the page"
+description: "Custom, hand-coded websites for small businesses across the North Sound. Fast, mobile-first, built to be found on Google, from $100/month."
 permalink: "/services/web-design/"
+pageHero:
+  topper: "Web design"
+  title: "Hand-built, not builder-made"
+  accent: "."
+  text:
+    - "A custom website for your small business, coded from scratch. Fast, mobile-first, easy to find on Google, and yours to run without ever opening a dashboard."
+    - "No templates, no page builders, no bloat. Just a site that loads instantly and works everywhere, built and looked after by one engineer."
+  buttons:
+    - label: "Get started"
+      href: "/contact/"
+    - label: "See pricing"
+      href: "/pricing/"
+      style: "secondary"
 eleventyComputed:
   title: "{{ page.fileSlug | titleCase }} | {{ client.name }} | {{ client.address.city }}, {{ client.address.state }}"
 ---
 
-
 {% extends "layouts/base.html" %}
 
 {% block head %}
-    
     <link rel="stylesheet" href="/assets/css/{{ page.fileSlug }}.css">
-
-    <!-- Any page-specific tags that belong in the <head> -->
-
-
 {% endblock %}
 
 {% block body %}
 
-    <!-- Page HTML goes here, without a <main> wrapper. The <main> tag is already presented in layouts/base.html -->
+    {% include "sections/page-hero.html" %}
 
-    <!-- If you want the page to have a "CTA", remove the {# and #} below -->
-    {# {% include 'sections/cta.html' %} #}
+    <!-- Web design detail sections to come. -->
 
 {% endblock %}
-
-
-
-

@@ -1087,8 +1087,16 @@
 @media only screen and (min-width: 1024px) {
     body.scroll {
         #cs-navigation {
-            /* 53px, the ssme height as the cs-top-container */
+            /* slide the whole nav up so the town banner fully clears the top
+               (53px = the banner height, so no navy sliver peeks above the pill) */
             transform: translateY(-3.3125rem);
+
+            /* ...then nudge the pill back down so it keeps breathing room above it
+               once the banner is gone, instead of jamming up to the viewport top.
+               Net top gap ≈ 26px (rest) + this. */
+            .cs-container {
+                transform: translateY((18/16rem));
+            }
         }
     }
 
@@ -1105,7 +1113,9 @@
 
         .cs-container {
             width: 100%;
-            max-width: (1080/16rem);
+            /* matches the hero/section content width so the pill lines up with the
+               page below it and the nav items get more breathing room */
+            max-width: (1280/16rem);
             /* floating rounded pill: sits below the town bar, centered with side gutters */
             margin: (26/16rem) auto 0;
             box-sizing: border-box;
@@ -1118,6 +1128,8 @@
             align-items: center;
             gap: (24/16rem);
             position: relative;
+            /* so the scrolled-state nudge below animates */
+            transition: transform 0.3s;
         }
 
         .cs-toggle {
@@ -1179,6 +1191,26 @@
             &.cs-active {
                 font-weight: 700;
                 color: var(--headerColor);
+            }
+        }
+
+        /* Free Redesign — a bordered-pill secondary CTA so it pops next to the
+           plain links. Sized to the Get Started button's height (line-height 40 +
+           2×2 border = 44px) so the traveling coral pill fills it exactly on hover
+           (nav-pill.js uses padX 0 for this item). Default: coral outline + coral
+           text; hover/active: pill fills coral and the global rule flips text white. */
+        .cs-li-cta .cs-li-link {
+            box-sizing: border-box;
+            line-height: (40/16rem);
+            padding: 0 (20/16rem);
+            border: 2px solid var(--coral);
+            border-radius: (40/16rem);
+            /* same weight/color as the other nav links; only the coral border
+               sets it apart. The pill flips the text white on hover. */
+            color: var(--headerColor);
+
+            &:hover {
+                color: #fff;
             }
         }
 
@@ -2031,5 +2063,180 @@
     .cs-ferry-boat:before,
     .cs-scene-glow {
         animation: none !important;
+    }
+}
+
+/*-- -------------------------- -->
+<---   Interior page hero       -->
+<--- -------------------------- -*/
+
+/* Reusable hero for interior pages — see components/page-hero.html.
+   Sitewide (root.css loads on every page) so it stays consistent and lives in
+   one place. Left-aligned, on the tan, with a pill topper + coral accent. */
+@media only screen and (min-width: 0rem) {
+    #page-hero {
+        background-color: var(--warmSand);
+        /* generous top room to clear the fixed nav + town banner */
+        padding: clamp(7.5rem, 15vw, 11rem) 1rem clamp(3rem, 7vw, 5rem);
+
+        .cs-container {
+            width: 100%;
+            max-width: (1280/16rem);
+            margin: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            text-align: left;
+        }
+
+        /* pill-badge topper */
+        .cs-topper {
+            font-family: var(--monoFont);
+            font-size: (12/16rem);
+            font-weight: 500;
+            line-height: 1em;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--coral);
+            background-color: rgba(214, 85, 61, 0.14);
+            padding: (8/16rem) (14/16rem);
+            border-radius: (40/16rem);
+            margin-bottom: (20/16rem);
+        }
+
+        .cs-title {
+            font-family: var(--headerFont);
+            /* 34px - 64px — matches the homepage hero title */
+            font-size: clamp(2.125rem, 5vw, 4rem);
+            font-weight: 800;
+            line-height: 1.12em;
+            letter-spacing: -0.02em;
+            /* keeps it to a couple of tidy lines instead of one very wide one */
+            max-width: 15ch;
+            margin: 0;
+            color: var(--inkNavy);
+
+            /* the accented tail (e.g. a coral period) */
+            .cs-accent {
+                color: var(--coral);
+            }
+        }
+
+        .cs-text {
+            font-size: (18/16rem);
+            line-height: 1.6em;
+            max-width: 46ch;
+            margin: (22/16rem) 0 0;
+            color: var(--pugetBlue);
+
+            /* tighter gap between stacked paragraphs than title-to-first */
+            & + .cs-text {
+                margin-top: (16/16rem);
+            }
+        }
+
+        /* buttons mirror the homepage hero (critical.less #hero), replicated here
+           because critical.css only loads on the home page */
+        .cs-button-group {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: (12/16rem) (24/16rem);
+            margin-top: (32/16rem);
+        }
+
+        /* Primary — navy pill */
+        .cs-button-solid {
+            font-family: var(--bodyFont);
+            font-size: (16/16rem);
+            font-weight: 600;
+            line-height: 1em;
+            text-transform: none;
+            text-decoration: none;
+            padding: (18/16rem) (32/16rem);
+            border-radius: (48/16rem);
+            background-color: var(--inkNavy);
+            color: var(--warmSand);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-sizing: border-box;
+            overflow: hidden;
+            position: relative;
+            z-index: 1;
+            transition: background-color 0.25s, color 0.25s, transform 0.25s;
+
+            /* kill the kit's global sweep pseudo */
+            &:before {
+                display: none;
+            }
+
+            &:hover {
+                background-color: var(--coral);
+                color: #fff;
+                transform: translateY(-2px);
+            }
+        }
+
+        /* Secondary — text link with arrow */
+        .cs-button-transparent {
+            font-family: var(--bodyFont);
+            font-size: (16/16rem);
+            font-weight: 600;
+            line-height: 1em;
+            text-decoration: none;
+            color: var(--inkNavy);
+            padding: (18/16rem) (8/16rem);
+            display: inline-flex;
+            align-items: center;
+            gap: (8/16rem);
+            transition: color 0.25s;
+
+            .cs-arrow {
+                display: inline-block;
+                transition: transform 0.25s;
+            }
+
+            &:hover {
+                color: var(--coral);
+
+                .cs-arrow {
+                    transform: translateX(4px);
+                }
+            }
+        }
+    }
+}
+
+/* Dark mode */
+@media only screen and (min-width: 0rem) {
+    body.dark-mode #page-hero {
+        background-color: var(--dark);
+
+        .cs-title {
+            color: var(--bodyTextColorWhite);
+        }
+
+        .cs-text {
+            color: var(--rainGray);
+        }
+
+        /* navy pill would vanish on the dark section — flip primary to coral */
+        .cs-button-solid {
+            background-color: var(--coral);
+            color: #fff;
+
+            &:hover {
+                background-color: var(--coralDark);
+            }
+        }
+
+        .cs-button-transparent {
+            color: var(--bodyTextColorWhite);
+
+            &:hover {
+                color: var(--coral);
+            }
+        }
     }
 }
