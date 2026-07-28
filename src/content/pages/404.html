@@ -1,0 +1,32 @@
+---
+title: "Page Not Found"
+description: "That page doesn't exist. Head back to the home page or get in touch."
+permalink: "/404.html"
+# Netlify serves this automatically for unmatched routes. Kept out of collections
+# so src/content/content.json's `tags: sitemap` doesn't list it in sitemap.xml.
+eleventyExcludeFromCollections: true
+---
+
+{% extends "layouts/base.html" %}
+
+{% block head %}
+
+    <link rel="stylesheet" href="/assets/css/404.css">
+    <meta name="robots" content="noindex">
+
+{% endblock %}
+
+{% block body %}
+
+    <section id="error-404">
+        <div class="cs-container">
+            <span class="cs-topper">404</span>
+            <h1 class="cs-title">This page drifted off</h1>
+            <p class="cs-text">
+                The page you're after doesn't exist, or it moved. Let's get you back on course.
+            </p>
+            <a href="/" class="cs-button-solid">Back to home</a>
+        </div>
+    </section>
+
+{% endblock %}

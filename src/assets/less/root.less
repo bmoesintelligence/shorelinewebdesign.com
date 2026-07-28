@@ -919,47 +919,76 @@
                 appearance: none;
             }
 
+            /* The panel floats free of the bar, and that gap would be a hover dead
+               zone that closes the menu on the way down. This bridges it: an
+               invisible strip below the toggle that still counts as :hover. */
+            &:after {
+                content: "";
+                /* at least as wide as the panel below it, so a diagonal path from
+                   the toggle to the panel's far edge never leaves :hover */
+                width: (208/16rem);
+                height: (14/16rem);
+                display: block;
+                position: absolute;
+                top: 100%;
+                left: 50%;
+                transform: translateX(-50%);
+            }
+
             &:hover,
             &.cs-active {
                 cursor: pointer;
                 .cs-drop-ul {
                     opacity: 1;
                     visibility: visible;
-                    transform: scaleY(1);
+                    transform: translateX(-50%) scaleY(1);
                 }
 
                 .cs-drop-li {
                     opacity: 1;
                     transform: translateY(0);
                 }
+
+                .cs-drop-icon {
+                    transform: rotate(180deg);
+                }
             }
         }
 
         .cs-drop-icon {
-            width: (12/16rem);
+            width: (11/16rem);
             height: auto;
-            margin-left: (4/16rem);
+            margin-left: (6/16rem);
             display: inline-block;
+            transition: transform 0.3s;
         }
 
+        /* Styled as a smaller sibling of the floating nav bar: same white, same
+           shadow, slightly tighter corner radius so it reads as a child of it.
+           The kit's square corners + 5px coral underline were replaced — that
+           hard-edged look fights the rounded bar. */
         .cs-drop-ul {
-            min-width: (200/16rem);
+            min-width: (208/16rem);
             margin: 0;
-            padding: 0;
+            padding: (8/16rem);
+            box-sizing: border-box;
             background-color: #fff;
             overflow: hidden;
-            box-shadow: rgba(149, 157, 165, 0.2) 0px 10px 16px;
+            border-radius: (14/16rem);
+            box-shadow: 0 (10/16rem) (30/16rem) rgba(27, 42, 56, 0.14);
             opacity: 0;
-            border-bottom: 5px solid var(--primary);
             visibility: hidden;
             /* if you have 8 or more links in your dropdown nav, uncomment the columns property to make the list into 2 even columns. Change it to 3 or 4 if you need extra columns. Then remove the transition delays on the cs-drop-li so they don't have weird scattered animations */
             // columns: 2;
             position: absolute;
-            top: calc(100% - 2px);
+            /* centred under the toggle, and detached from the bar by the same
+               gap the bridging :after covers */
+            top: calc(100% + 0.875rem);
+            left: 50%;
             z-index: 100;
-            transform: scaleY(0);
+            transform: translateX(-50%) scaleY(0);
             transition: transform 0.3s, visibility 0.3s, opacity 0.3s;
-            transform-origin: top;
+            transform-origin: top center;
         }
 
         .cs-drop-li {
@@ -1016,21 +1045,26 @@
 
         .cs-li-link {
             &.cs-drop-link {
-                font-size: (16/16rem);
+                /* match the nav links above, not the body copy the kit defaults to */
+                font-family: var(--headerFont);
+                font-size: (15/16rem);
+                font-weight: 500;
                 line-height: 1.5em;
                 text-decoration: none;
                 white-space: nowrap;
                 width: 100%;
                 /* prevents padding from affecting height and width */
                 box-sizing: border-box;
-                padding: (12/16rem);
-                color: var(--bodyTextColor);
+                padding: (10/16rem) (14/16rem);
+                color: var(--headerColor);
+                border-radius: (10/16rem);
                 display: block;
                 transition: color 0.3s, background-color 0.3s;
 
+                /* a small echo of the traveling pill rather than the kit's grey wash */
                 &:hover {
-                    background-color: #f7f7f7;
-                    color: var(--primary);
+                    background-color: var(--primary);
+                    color: #fff;
                 }
 
                 &:focus-visible {
@@ -1252,7 +1286,10 @@
                 transition: color 0.3s ease;
             }
 
-            .cs-li-link:hover {
+            /* Top-level links only. As a descendant selector this also matched
+               .cs-drop-link (dropdown items carry .cs-li-link too) and outranked
+               the panel's own hover, painting menu text white on white. */
+            .cs-ul > .cs-li > .cs-li-link:hover {
                 /* override the plain coral hover — text now sits on the pill */
                 color: #fff;
             }
@@ -1533,6 +1570,8 @@
             max-width: 52ch;
             margin: 0 0 (32/16rem);
             color: var(--rainGray);
+            /* even out the wrap so a short last word never orphans on its own line */
+            text-wrap: balance;
         }
 
         .cs-button-solid {
@@ -1750,18 +1789,69 @@
         /* `clip` not `hidden` — hidden makes this a scroll container and
            breaks scroll-driven timelines inside it */
         overflow: clip;
-        view-timeline-name: --ferry-lane;
-        view-timeline-axis: block;
     }
 
     .cs-image-group {
         position: relative;
     }
 
+    /* The arrival is driven by the FOOTER scrolling into view — the ferry
+       finishes its crossing as you reach the end of the page. timeline-scope
+       hoists the name to <body> so the ferry (inside <main>) can reference a
+       timeline defined on <footer>, a later sibling of <main>. */
+    body {
+        timeline-scope: --ferry-lane;
+    }
+
+    #footer {
+        view-timeline-name: --ferry-lane;
+        view-timeline-axis: block;
+    }
+
     .cs-scene {
         width: 100%;
         height: auto;
         display: block;
+    }
+
+    /* Night bloom over the whole diorama (dark mode only). A blurred, boosted
+       copy of the night scene, screen-composited so the lit windows and lamps
+       spill soft light while the near-black water and roofs add nothing. Laid
+       over the sharp night scene; the global .cs-dark rule flips display, so it
+       only exists in dark mode. Sits above the scene but below the ferry
+       (z-index 1) — the boat should stay crisp in front of the town's glow. */
+    .cs-scene-glow {
+        width: 100%;
+        height: auto;
+        position: absolute;
+        top: 0;
+        left: 0;
+        pointer-events: none;
+        /* Filter order matters — this is a highlight-isolating chain, left to right:
+           1. brightness(0.7) contrast(3) crushes everything below the bright lamps
+              to black (blue water, tile edges, roofs all go to 0), so screen has
+              nothing but the warm lights left to bloom. Without this, screen lifts
+              the blue surfaces too and halos the whole tile.
+           2. blur() blooms the surviving yellow highlights.
+           3. saturate() warms them; the trailing brightness() boosts the bloom
+              back up after the crush dimmed it. */
+        filter: brightness(0.82) contrast(2.2) blur(104px) saturate(0.1) brightness(1.7);
+        mix-blend-mode: screen;
+        opacity: 0.9;
+        /* slow, low-amplitude breathe so the harbour reads as alive, not lit by
+           a strobe. Calmer than the ferry's pulse since it covers the whole town. */
+        animation: scene-glow-pulse 7s ease-in-out infinite;
+        will-change: opacity;
+    }
+
+    @keyframes scene-glow-pulse {
+        from,
+        to {
+            opacity: 0.75;
+        }
+        50% {
+            opacity: 1;
+        }
     }
 
     .cs-ferry {
@@ -1773,15 +1863,72 @@
         left: 0;
         z-index: 1;
         pointer-events: none;
+        /* the hull and its glow copy share this width so they stay aligned */
+        --hull-w: 28%;
         /* desktop only */
         display: none;
     }
 
+    /* boat box, sized to the hull (against the scene, not the viewport, so it
+       stays in scale). The bloom + water reflection anchor to this, not the
+       scene, so they track the boat wherever it berths. */
+    .cs-ferry-boat {
+        position: relative;
+        width: var(--hull-w);
+        display: block;
+    }
+
     .cs-ferry-hull {
-        /* sized against the scene, not the viewport, so it stays in scale */
-        width: 28%;
+        width: 100%;
         height: auto;
         display: block;
+    }
+
+    /* Night bloom (dark mode only): a blurred, boosted copy of the lit ferry,
+       screen-composited so only the bright amber windows spill light while the
+       near-black hull adds nothing. Overlaps the sharp night hull exactly. */
+    .cs-ferry-glow {
+        width: 100%;
+        height: auto;
+        position: absolute;
+        top: 0;
+        left: 0;
+        pointer-events: none;
+        filter: blur(15px) brightness(1.35) saturate(1.5);
+        mix-blend-mode: screen;
+        opacity: 0.9;
+        /* gentle breathe, like harbour lights (killed under reduced motion) */
+        animation: ferry-glow-pulse 4.5s ease-in-out infinite;
+        will-change: opacity;
+    }
+
+    /* Warm light spilling onto the water beneath the boat (dark mode only).
+       Sits behind the hull (z-index: -1) and screens onto the scene, so it
+       reads as the lit windows reflecting on the water. */
+    body.dark-mode .cs-ferry-boat:before {
+        content: "";
+        position: absolute;
+        left: 50%;
+        top: 74%;
+        width: 150%;
+        height: 55%;
+        transform: translate(-50%, -50%);
+        background: radial-gradient(ellipse at center, rgba(242, 192, 120, 0.5) 0%, rgba(242, 192, 120, 0.16) 42%, transparent 70%);
+        filter: blur(6px);
+        mix-blend-mode: screen;
+        z-index: -1;
+        pointer-events: none;
+        animation: ferry-glow-pulse 4.5s ease-in-out infinite;
+    }
+
+    @keyframes ferry-glow-pulse {
+        from,
+        to {
+            opacity: 0.72;
+        }
+        50% {
+            opacity: 1;
+        }
     }
 
     /* Resting positions — what shows without scroll-timeline support and under
@@ -1790,12 +1937,12 @@
        slip. The keyframes below reference it, so editing it here moves BOTH
        the resting position and the animation's berthed endpoint. */
     #hero .cs-ferry {
-        --berth: translate(1%, 55%);
+        --berth: translate(6%, 50%);
         transform: var(--berth);
     }
 
     #service-area .cs-ferry {
-        --berth: translate(22%, 52%);
+        --berth: translate(15%, 48%);
         transform: var(--berth);
     }
 }
@@ -1825,7 +1972,9 @@
             animation-name: ferry-depart;
             animation-timeline: scroll(root block);
             animation-range: 0 70vh;
-            animation-timing-function: ease-in;
+            /* ease-out: the boat glides out the moment you scroll, then eases as
+               it fades (ease-in made it feel like it started too late) */
+            animation-timing-function: ease-out;
         }
 
         /* ── arrival ──
@@ -1834,7 +1983,10 @@
         #service-area .cs-ferry {
             animation-name: ferry-arrive;
             animation-timeline: --ferry-lane;
-            animation-range: entry 0% entry 100%;
+            /* entry % is now the FOOTER's progress into view: the boat sails in
+               as the footer begins to appear and docks while the service-area
+               image is still on screen (footer ~55% entered). */
+            animation-range: entry 0% entry 55%;
             animation-timing-function: ease-out;
         }
     }
@@ -1874,7 +2026,10 @@
 
 /* Reduced motion — park them berthed, don't sail them */
 @media (prefers-reduced-motion: reduce) {
-    .cs-ferry {
+    .cs-ferry,
+    .cs-ferry-glow,
+    .cs-ferry-boat:before,
+    .cs-scene-glow {
         animation: none !important;
     }
 }

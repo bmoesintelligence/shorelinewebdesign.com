@@ -300,17 +300,15 @@
             color: var(--pugetBlue);
         }
 
-        /* ── Floating placeholder cards (photos still pending) ── */
+        /* ── Single framed portrait ── */
         .cs-image-group {
             width: 100%;
-            max-width: (300/16rem);
-            height: (400/16rem);
+            max-width: (340/16rem);
             margin: 0 auto;
-            position: relative;
         }
 
         .cs-card {
-            width: (210/16rem);
+            width: 100%;
             box-sizing: border-box;
             padding: (12/16rem);
             background-color: #fdfbf4;
@@ -320,57 +318,24 @@
             display: flex;
             flex-direction: column;
             gap: (10/16rem);
-            position: absolute;
+            /* a slight tilt keeps the pinned-photo character of the old stack */
+            transform: rotate(-2deg);
         }
 
-        .cs-card1 {
-            top: 0;
-            left: 0;
-            transform: rotate(-4deg);
-            z-index: 1;
-        }
+        .cs-photo {
+            display: block;
 
-        .cs-card2 {
-            top: (150/16rem);
-            left: (70/16rem);
-            transform: rotate(5deg);
-            z-index: 2;
-        }
-
-        .cs-placeholder {
-            aspect-ratio: 4 / 3;
-            background-color: var(--warmSand);
-            border-radius: (6/16rem);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: (6/16rem);
-            text-align: center;
-            padding: (12/16rem);
-            color: var(--pugetBlue);
-        }
-
-        .cs-ph-icon {
-            width: (26/16rem);
-            height: auto;
-            color: var(--pugetBlue);
-            opacity: 0.55;
-        }
-
-        .cs-ph-label {
-            font-family: var(--headerFont);
-            font-size: (13/16rem);
-            font-weight: 600;
-            line-height: 1.2em;
-            color: var(--inkNavy);
-        }
-
-        .cs-ph-browse {
-            font-family: var(--bodyFont);
-            font-size: (12/16rem);
-            line-height: 1.2em;
-            color: var(--pugetBlue);
+            img {
+                width: 100%;
+                /* height:auto is load-bearing — the img's width/height HTML attrs
+                   become presentation hints, and without this the height attr
+                   survives and overrides aspect-ratio, stretching the card. */
+                height: auto;
+                aspect-ratio: 4 / 5;
+                object-fit: cover;
+                border-radius: (6/16rem);
+                display: block;
+            }
         }
 
         .cs-filename {
@@ -390,33 +355,22 @@
             flex-direction: row;
             align-items: center;
             justify-content: space-between;
+            /* cap so space-between doesn't dump excess width between the columns;
+               sized to the two columns (440 + ~80 gap + 600) so the gap stays a
+               normal column gutter, not a cavern */
+            max-width: (1120/16rem);
         }
 
         .cs-image-group {
-            /* may shrink so both columns fit at 1024px */
-            flex: 0 1 (440/16rem);
+            /* the photo now carries the whole column, so give it real width */
+            flex: 0 0 (440/16rem);
             max-width: (440/16rem);
-            height: (470/16rem);
             margin: 0;
-        }
-
-        .cs-card {
-            width: (250/16rem);
-        }
-
-        .cs-card1 {
-            top: (20/16rem);
-            left: 0;
-        }
-
-        .cs-card2 {
-            top: (180/16rem);
-            left: (170/16rem);
         }
 
         .cs-content {
             flex: 1 1 auto;
-            max-width: (560/16rem);
+            max-width: (600/16rem);
         }
     }
 }
@@ -445,15 +399,6 @@
                 background-color: var(--medium);
                 border-color: rgba(255, 255, 255, 0.08);
             }
-
-            .cs-placeholder {
-                background-color: var(--accent);
-                color: var(--rainGray);
-            }
-
-            .cs-ph-label {
-                color: var(--bodyTextColorWhite);
-            }
         }
     }
 }
@@ -468,6 +413,17 @@
         /* the one dark band in the middle of the page */
         background-color: var(--inkNavy);
         padding: var(--sectionPadding);
+        /* anchors the orca pod. NOTE: deliberately no `overflow: hidden` — it
+           would silently kill the pod's view() scroll-timeline. The pod hides
+           itself at the section edges by fading (opacity) instead of clipping. */
+        position: relative;
+
+        /* atmospheric orca pod — progressive enhancement: only shown on desktop
+           where scroll-timeline is supported (enabled in the @supports block).
+           Below that it would collide with the centred content, so it stays off. */
+        .cs-pod {
+            display: none;
+        }
 
         .cs-container {
             width: 100%;
@@ -478,6 +434,9 @@
             align-items: center;
             /* 40px - 64px */
             gap: clamp(2.5rem, 5vw, 4rem);
+            /* above the orca */
+            position: relative;
+            z-index: 1;
         }
 
         .cs-content {
@@ -589,6 +548,139 @@
     }
 }
 
+/* Desktop + scroll-timeline only — the breaching pod is progressive enhancement */
+@supports (animation-timeline: view()) {
+    @media only screen and (min-width: 64rem) {
+        /* One shared clock: the section's own pass through the viewport, named so
+           every orca scrubs off the same progress (like the ferry's --ferry-lane).
+           If each used its own view() they'd desync, since they sit at different
+           heights. */
+        #speed {
+            view-timeline-name: --speed-lane;
+            view-timeline-axis: block;
+        }
+
+        #speed .cs-pod {
+            display: block;
+            position: absolute;
+            inset: 0;
+            /* behind .cs-container (z-index: 1) so the copy stays legible and the
+               pod reads as passing under the words. No animation on the pod itself
+               — each orca carries its own breach so rotation pivots on the animal,
+               not on the whole section. */
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* Each orca breaches independently: launches up out of the water, crests,
+           then rotates nose-down and dives back under while drifting. Shared props
+           here; base position, size, keyframe and timing offset are per-orca below.
+           Individual animation-* props ONLY — the `animation` shorthand would reset
+           animation-timeline and silently kill the scroll binding. */
+        #speed .cs-orca {
+            position: absolute;
+            height: auto;
+            animation-timeline: --speed-lane;
+            animation-duration: auto;
+            animation-fill-mode: both;
+            /* ease each keyframe interval so the crest slows and the dive quickens */
+            animation-timing-function: ease-in-out;
+            will-change: transform, opacity;
+        }
+
+        /* One tight pod in a triangle: lead (largest) at the front apex, the two
+           smaller ones trailing upper-left and lower-left. All share the SAME
+           keyframe and range, so the whole triangle glides down the diagonal in
+           lockstep formation. */
+        #speed .cs-orca1 {
+            /* lead, largest — 88px to 120px, front apex */
+            left: 13%;
+            top: 32%;
+            width: clamp(5.5rem, 8vw, 7.5rem);
+            animation-name: orca-swim;
+            animation-range: cover 16% cover 62%;
+        }
+
+        #speed .cs-orca2 {
+            /* medium — 64px to 88px, trailing upper-left */
+            left: 5%;
+            top: 22%;
+            width: clamp(4rem, 6vw, 5.5rem);
+            animation-name: orca-swim;
+            animation-range: cover 16% cover 62%;
+        }
+
+        #speed .cs-orca3 {
+            /* small — 48px to 64px, trailing lower-left */
+            left: 7%;
+            top: 41%;
+            width: clamp(3rem, 4.5vw, 4rem);
+            animation-name: orca-swim;
+            animation-range: cover 16% cover 62%;
+        }
+
+        /* Beat 2 — same triangle, same glide, on the other side of the words in the
+           bottom-right, firing later (on continued scroll). Same formation shape as
+           beat 1, just shifted to the lower-right open water. */
+        #speed .cs-orca4 {
+            /* lead, largest, front apex */
+            left: 78%;
+            top: 60%;
+            width: clamp(5.5rem, 8vw, 7.5rem);
+            animation-name: orca-swim;
+            animation-range: cover 54% cover 98%;
+        }
+
+        #speed .cs-orca5 {
+            /* medium, trailing upper-left */
+            left: 70%;
+            top: 50%;
+            width: clamp(4rem, 6vw, 5.5rem);
+            animation-name: orca-swim;
+            animation-range: cover 54% cover 98%;
+        }
+
+        #speed .cs-orca6 {
+            /* small, trailing lower-left */
+            left: 72%;
+            top: 69%;
+            width: clamp(3rem, 4.5vw, 4rem);
+            animation-name: orca-swim;
+            animation-range: cover 54% cover 98%;
+        }
+    }
+}
+
+/* A smooth diagonal glide down the isometric slope (~0.618: the 8.6vw drop over the
+   14vw run). Just two transform stops so the motion is clean and even — the ease-in-out
+   on .cs-orca handles the acceleration; opacity-only mid-stops fade the pod in from the
+   water and back under. Rotation is a very subtle ±2° sway, no scale (both were the
+   source of the earlier glitchiness). */
+@keyframes orca-swim {
+    0% {
+        transform: translate(0, 0) rotate(-2deg);
+        opacity: 0;
+    }
+    16% {
+        opacity: 1;
+    }
+    84% {
+        opacity: 1;
+    }
+    100% {
+        transform: translate(9vw, 5.5vw) rotate(2deg);
+        opacity: 0;
+    }
+}
+
+/* Reduced motion — hide the pod entirely (a frozen mid-swim pod reads as broken).
+   Pure decoration, so nothing is lost. */
+@media (prefers-reduced-motion: reduce) {
+    #speed .cs-pod {
+        display: none !important;
+    }
+}
+
 /* Dark Mode — already a dark band, just soften the outline */
 @media only screen and (min-width: 0rem) {
     body.dark-mode {
@@ -690,8 +782,43 @@
             position: relative;
         }
 
+        /* the recommended plan — a bold, solid card, echoing the inverted feature
+           card in Services. Solid navy fill + shadow so it stands proud of the
+           dashed "Custom" ticket; the coral accents (badge, dots, button) pop
+           against the navy. */
         .cs-item-featured {
-            border-color: var(--coral);
+            background-color: var(--inkNavy);
+            border-style: solid;
+            border-color: var(--inkNavy);
+            box-shadow: 0 (20/16rem) (48/16rem) rgba(27, 42, 56, 0.28);
+
+            .cs-plan,
+            .cs-period {
+                color: var(--rainGray);
+            }
+
+            .cs-price {
+                color: #fff;
+            }
+
+            .cs-note {
+                color: rgba(255, 255, 255, 0.72);
+            }
+
+            .cs-ul {
+                border-top-color: rgba(255, 255, 255, 0.16);
+            }
+
+            .cs-li {
+                color: var(--bodyTextColorWhite);
+            }
+
+            /* the coral button's default hover flips to navy — invisible on this
+               navy card, so give it a light hover instead */
+            .cs-button-solid:hover {
+                background-color: #fff;
+                color: var(--inkNavy);
+            }
         }
 
         /* sits astride the top border of the recommended card */
@@ -893,7 +1020,12 @@
             }
 
             .cs-item-featured {
+                /* the section is already dark, so the light-mode navy fill would
+                   vanish here — keep the lighter card fill and make it pop with a
+                   coral edge + glow instead */
+                background-color: var(--medium);
                 border-color: var(--coral);
+                box-shadow: 0 (10/16rem) (34/16rem) rgba(214, 85, 61, 0.22);
             }
 
             .cs-ul {
@@ -1009,6 +1141,24 @@
             text-align: center;
             padding: (12/16rem);
             color: var(--pugetBlue);
+        }
+
+        /* real project thumbnail, occupying the same 4:3 slot as .cs-placeholder */
+        .cs-thumb-link {
+            display: block;
+            border-radius: (6/16rem);
+            overflow: hidden;
+        }
+
+        .cs-thumb img {
+            width: 100%;
+            /* height:auto so the img's height attr (a presentation hint) doesn't
+               override aspect-ratio and stretch the thumb */
+            height: auto;
+            aspect-ratio: 4 / 3;
+            object-fit: cover;
+            object-position: top; /* show the hero, anchored to the top */
+            display: block;
         }
 
         .cs-ph-icon {

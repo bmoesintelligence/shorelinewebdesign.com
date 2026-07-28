@@ -6,9 +6,9 @@
     <div class="cs-container">
         <!-- Final call to action -->
         <div class="cs-cta">
-            <h2 class="cs-title">Ready for a site that's actually fast?</h2>
-            <p class="cs-text">Bryan replies to every consultation request himself, usually within a day.</p>
-            <a href="mailto:hello@shorelinewebdesign.com" class="cs-button-solid">Get a free quote</a>
+            <h2 class="cs-title">Let's build the site your business deserves.</h2>
+            <p class="cs-text">You'll hear back from Bryan himself, usually within a day.</p>
+            <a href="/contact/" class="cs-button-solid">Get started today</a>
         </div>
 
         <div class="cs-wrapper">
@@ -23,11 +23,16 @@
             <!-- Site links -->
             <nav class="cs-nav" aria-label="Footer">
                 <span class="cs-header">Site</span>
+                <!-- Real routes, not homepage anchors — the footer is global, so
+                     anchors like #pricing would be dead on every non-home page.
+                     /#service-area keeps the leading slash so it returns home first. -->
                 <ul class="cs-nav-ul">
-                    <li class="cs-nav-li"><a href="#about" class="cs-nav-link">Story</a></li>
-                    <li class="cs-nav-li"><a href="#work" class="cs-nav-link">Work</a></li>
-                    <li class="cs-nav-li"><a href="#pricing" class="cs-nav-link">Pricing</a></li>
-                    <li class="cs-nav-li"><a href="#service-area" class="cs-nav-link">Service area</a></li>
+                    <li class="cs-nav-li"><a href="/about/" class="cs-nav-link">About</a></li>
+                    <li class="cs-nav-li"><a href="/work/" class="cs-nav-link">Work</a></li>
+                    <li class="cs-nav-li"><a href="/pricing/" class="cs-nav-link">Pricing</a></li>
+                    <li class="cs-nav-li"><a href="/#service-area" class="cs-nav-link">Service area</a></li>
+                    <li class="cs-nav-li"><a href="/blog/" class="cs-nav-link">Blog</a></li>
+                    <li class="cs-nav-li"><a href="/contact/" class="cs-nav-link">Contact</a></li>
                 </ul>
             </nav>
 
@@ -49,10 +54,10 @@
         </div>
 
         <div class="cs-bottom">
-            <span class="cs-copyright">© 2026 Shoreline Web Design &middot; Richmond Beach, WA</span>
+            <span class="cs-copyright">© {{ currentYear }} Shoreline Web Design &middot; Richmond Beach, WA</span>
             <div class="cs-terms">
-                <a href="" class="cs-copyright-link">Terms &amp; Conditions</a>
-                <a href="" class="cs-copyright-link">Privacy Policy</a>
+                <a href="/terms/" class="cs-copyright-link">Terms &amp; Conditions</a>
+                <a href="/privacy-policy/" class="cs-copyright-link">Privacy Policy</a>
             </div>
         </div>
     </div>

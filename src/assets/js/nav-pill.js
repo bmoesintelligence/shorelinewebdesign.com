@@ -21,7 +21,12 @@
 	const button = nav.querySelector(".cs-nav-button");
 	if (!container || !button) return;
 
-	const links = Array.from(nav.querySelectorAll(".cs-ul .cs-li-link"));
+	// Direct children only. Dropdown links carry .cs-li-link too, and a descendant
+	// selector would make them pill targets — the pill would dive into the open
+	// panel, where it renders behind the white menu (pill is z-index -1) and just
+	// looks like it vanished. The .cs-dropdown-toggle sits at this depth, so it
+	// still gets picked up and behaves like any other nav item.
+	const links = Array.from(nav.querySelectorAll(".cs-ul > .cs-li > .cs-li-link"));
 	const targets = [...links, button];
 
 	// Extra horizontal breathing room the pill adds around a link's text.

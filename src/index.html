@@ -41,14 +41,23 @@ tags: "sitemap" # content/content.json will make sure that all pages in content/
                     Fast, custom, and built to be found. Hand-coded by a professional software engineer serving small businesses across North Seattle. $100/month, everything included.
                 </p>
                 <div class="cs-button-group">
-                    <a href="" class="cs-button-solid">Get started</a>
+                    <a href="/contact/" class="cs-button-solid">Get started</a>
                     <a href="#work" class="cs-button-transparent">See the work<span class="cs-arrow" aria-hidden="true">&rarr;</span></a>
                 </div>
             </div>
             <!-- Edmonds waterfront diorama. The ferry departs from the slip on scroll. -->
             <div class="cs-image-group">
                 <span class="cs-badge" aria-hidden="true"><span class="cs-badge-text">Est. Richmond Beach</span></span>
-                <img class="cs-scene" src="/assets/images/hero-scene.png" alt="Isometric illustration of the Edmonds waterfront and ferry terminal" width="1215" height="1073" decoding="async" fetchpriority="high">
+                <!-- day + night, toggled by the kit's .cs-light/.cs-dark (see root.less).
+                     Only one ever displays; the night hull is lazy so it isn't fetched
+                     until dark mode. Mirrors the ferry's swap in components/ferry.html. -->
+                <img class="cs-scene cs-light" src="/assets/images/hero-scene.png" alt="Isometric illustration of the Edmonds waterfront and ferry terminal" width="1215" height="1073" decoding="async" fetchpriority="high">
+                <img class="cs-scene cs-dark" src="/assets/images/hero-scene-night.png" alt="Isometric illustration of the Edmonds waterfront and ferry terminal at night" width="1200" height="883" loading="lazy" decoding="async">
+                <!-- Night bloom (dark mode only): a blurred, boosted copy of the night
+                     scene, screen-composited so the lit windows and lamps spill glow
+                     while the dark surfaces add nothing. Overlaps the night scene
+                     exactly. Same trick as the ferry's .cs-ferry-glow. -->
+                <img class="cs-scene-glow cs-dark" src="/assets/images/hero-scene-night.png" alt="" aria-hidden="true" width="1200" height="883" loading="lazy" decoding="async">
                 {% include "components/ferry.html" %}
 
             </div>
@@ -61,22 +70,25 @@ tags: "sitemap" # content/content.json will make sure that all pages in content/
 
     <section id="stats">
         <div class="cs-container">
+            <!-- Terms, not credentials. The hero already claims fast/custom/hand-coded,
+                 so repeating those here says nothing new. These answer what the hero
+                 leaves open: what it costs, what the catch is, who you deal with. -->
             <ul class="cs-card-group">
                 <li class="cs-item">
-                    <span class="cs-number">95+</span>
-                    <span class="cs-label">avg PageSpeed score</span>
+                    <span class="cs-number">$0</span>
+                    <span class="cs-label">to start, no contract</span>
                 </li>
                 <li class="cs-item">
-                    <span class="cs-number">&lt;1s</span>
-                    <span class="cs-label">typical load time</span>
+                    <span class="cs-number">$100</span>
+                    <span class="cs-label">a month, everything included</span>
                 </li>
                 <li class="cs-item">
                     <span class="cs-number">10+</span>
                     <span class="cs-label">years engineering experience</span>
                 </li>
                 <li class="cs-item">
-                    <span class="cs-number">100%</span>
-                    <span class="cs-label">hand-written code</span>
+                    <span class="cs-number">1</span>
+                    <span class="cs-label">engineer, start to finish</span>
                 </li>
             </ul>
         </div>
@@ -92,53 +104,54 @@ tags: "sitemap" # content/content.json will make sure that all pages in content/
             <!-- Left Content Section-->
             <div class="cs-content">
                 <span class="cs-topper">The essentials</span>
-                <h2 class="cs-title">What you actually get</h2>
+                <h2 class="cs-title">Your website stops being your problem</h2>
                 <p class="cs-text">
-                    Every site ships with the fundamentals done right, not bolted on later.
+                    Built by hand, hosted, maintained, and updated whenever you ask. Your site loads fast and shows up on Google, and you never log into a dashboard or wait days to change a phone number.
                 </p>
             </div>
             <ul class="cs-card-group">
                 <li class="cs-item">
                     <span class="cs-number">01</span>
-                    <h3 class="cs-h3">Mobile-first</h3>
+                    <h3 class="cs-h3">Built for phones first</h3>
                     <p class="cs-item-text">
-                        Fully responsive on every device.
+                        Most of your customers will find you on one.
                     </p>
                 </li>
                 <li class="cs-item">
                     <span class="cs-number">02</span>
-                    <h3 class="cs-h3">Optimized for speed</h3>
+                    <h3 class="cs-h3">Loads in under a second</h3>
                     <p class="cs-item-text">
-                        Sub-second loads, measured and tuned.
+                        Slow sites lose people before the page appears.
                     </p>
                 </li>
                 <li class="cs-item">
                     <span class="cs-number">03</span>
-                    <h3 class="cs-h3">SEO fundamentals</h3>
+                    <h3 class="cs-h3">Found on Google</h3>
                     <p class="cs-item-text">
-                        Clean, semantic markup that ranks.
+                        Structured so search engines can actually read it.
                     </p>
                 </li>
-                <!-- the standout card, inverted per the comp -->
+                <!-- the standout card, inverted per the comp. This is the one that
+                     pays off the section title, so it gets the emphasis. -->
                 <li class="cs-item cs-item-featured">
                     <span class="cs-number">04</span>
-                    <h3 class="cs-h3">Built by a real engineer</h3>
+                    <h3 class="cs-h3">Edits handled for you</h3>
                     <p class="cs-item-text">
-                        Production-grade discipline, applied here.
+                        Send the change, it goes live. No dashboard, no ticket.
                     </p>
                 </li>
                 <li class="cs-item">
                     <span class="cs-number">05</span>
-                    <h3 class="cs-h3">Google Ads management</h3>
+                    <h3 class="cs-h3">Hosting and backups</h3>
                     <p class="cs-item-text">
-                        Campaigns set up and managed.
+                        Included and monitored. Nothing to set up or renew.
                     </p>
                 </li>
                 <li class="cs-item">
                     <span class="cs-number">06</span>
-                    <h3 class="cs-h3">Fully hand-coded</h3>
+                    <h3 class="cs-h3">Hand-coded, not templated</h3>
                     <p class="cs-item-text">
-                        No builders, no templates, ever.
+                        No page builder, no theme a hundred others are using.
                     </p>
                 </li>
             </ul>
@@ -151,42 +164,38 @@ tags: "sitemap" # content/content.json will make sure that all pages in content/
 
     <section id="about">
         <div class="cs-container">
-            <!-- Floating image cards. Placeholder drop-zones until real photos land. -->
+            <!-- Single framed portrait. Optimized via getUrl (avif/webp/jpeg),
+                 cropped to a portrait 4:5. Fills its column, so rendered ~440px;
+                 800px source is retina-safe. -->
             <div class="cs-image-group">
-                <figure class="cs-card cs-card1">
-                    <div class="cs-placeholder">
-                        <svg class="cs-ph-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
-                        <span class="cs-ph-label">Photo of Bryan</span>
-                        <span class="cs-ph-browse">or browse files</span>
-                    </div>
-                    <figcaption class="cs-filename">bryan.jpg</figcaption>
-                </figure>
-                <figure class="cs-card cs-card2">
-                    <div class="cs-placeholder">
-                        <svg class="cs-ph-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
-                        <span class="cs-ph-label">Workspace overlooking the Sound</span>
-                        <span class="cs-ph-browse">or browse files</span>
-                    </div>
-                    <figcaption class="cs-filename">workspace.jpg</figcaption>
+                <figure class="cs-card">
+                    <picture class="cs-photo">
+                        <source srcset="{% getUrl "/assets/images/headshot.jpg" | resize({ width: 800, height: 1000 }) | avif %}" type="image/avif">
+                        <source srcset="{% getUrl "/assets/images/headshot.jpg" | resize({ width: 800, height: 1000 }) | webp %}" type="image/webp">
+                        <img src="{% getUrl "/assets/images/headshot.jpg" | resize({ width: 800, height: 1000 }) | jpeg %}" alt="Bryan, founder of Shoreline Web Design" width="800" height="1000" loading="lazy" decoding="async">
+                    </picture>
+                    <figcaption class="cs-filename">headshot.jpg</figcaption>
                 </figure>
             </div>
             <div class="cs-content">
                 <span class="cs-topper">Our story</span>
                 <h2 class="cs-title">A software engineer, not a template shop.</h2>
                 <p class="cs-text">
-                    Bryan spent over a decade building production software before he ever built a small business website. Every site is measured, tested, and held to the same bar as the systems he ships professionally.
+                    Bryan spent over a decade building production software before he ever built a small business website. He holds every site to the same bar he built to professionally: measured, tested, hand-coded, no shortcuts.
                 </p>
                 <p class="cs-text">
-                    He started Shoreline Web Design from Richmond Beach because too many local businesses were stuck with slow, bloated sites. Every project here is hand-coded, one client at a time.
+                    He started Shoreline Web Design from Richmond Beach because too many local businesses were stuck with slow, bloated sites they couldn't even edit themselves. He takes clients one at a time, so yours gets built properly and stays that way.
                 </p>
+                <!-- The two halves of the section title: the engineer, and the
+                     not-a-template-shop. Deliberately not the hero's stats. -->
                 <ul class="cs-ul">
                     <li class="cs-li">
                         <span class="cs-stat-number">10+ yrs</span>
-                        <span class="cs-stat-label">engineering experience</span>
+                        <span class="cs-stat-label">building software</span>
                     </li>
                     <li class="cs-li">
-                        <span class="cs-stat-number">1</span>
-                        <span class="cs-stat-label">engineer, every line of code</span>
+                        <span class="cs-stat-number">100%</span>
+                        <span class="cs-stat-label">hand-coded, no templates</span>
                     </li>
                 </ul>
             </div>
@@ -199,11 +208,28 @@ tags: "sitemap" # content/content.json will make sure that all pages in content/
     <!-- ============================================ -->
 
     <section id="speed">
+        <!-- A pod of Southern Resident orcas crossing the band's "deep water".
+             Desktop-only, scroll-driven decoration (see local.less): the pod
+             surfaces top-left, swims down the isometric diagonal, submerges by the
+             copy, then resurfaces bottom-right on continued scroll. The three sit
+             at fixed formation offsets/sizes inside .cs-pod; .cs-pod carries the
+             journey, each orca rides its own bob. Purely atmospheric. -->
+        <div class="cs-pod" aria-hidden="true">
+            <!-- Beat 1: pod surfaces upper-left as the section enters. -->
+            <img class="cs-orca cs-orca1" src="/assets/images/orca.png" alt="" width="540" height="357" loading="lazy" decoding="async">
+            <img class="cs-orca cs-orca2" src="/assets/images/orca.png" alt="" width="540" height="357" loading="lazy" decoding="async">
+            <img class="cs-orca cs-orca3" src="/assets/images/orca.png" alt="" width="540" height="357" loading="lazy" decoding="async">
+            <!-- Beat 2: a second pod, same triangle + same glide, bottom-right, on
+                 continued scroll. -->
+            <img class="cs-orca cs-orca4" src="/assets/images/orca.png" alt="" width="540" height="357" loading="lazy" decoding="async">
+            <img class="cs-orca cs-orca5" src="/assets/images/orca.png" alt="" width="540" height="357" loading="lazy" decoding="async">
+            <img class="cs-orca cs-orca6" src="/assets/images/orca.png" alt="" width="540" height="357" loading="lazy" decoding="async">
+        </div>
         <div class="cs-container">
             <div class="cs-content">
                 <span class="cs-topper">Performance</span>
                 <h2 class="cs-title">Speed isn't a nice-to-have. It's the product.</h2>
-                <p class="cs-text">Every site is measured against the same standards used on high-traffic production systems.
+                <p class="cs-text">Every site is built to the same performance bar as production software, then measured with Google's own tools. The numbers below aren't marketing. You can check them yourself.
                 </p>
             </div>
             <ul class="cs-card-group">
@@ -249,11 +275,11 @@ tags: "sitemap" # content/content.json will make sure that all pages in content/
                         <li class="cs-li">Unlimited support &amp; updates</li>
                         <li class="cs-li">Honest, sustainable SEO</li>
                     </ul>
-                    <a href="" class="cs-button-solid">Get a free quote</a>
+                    <a href="/contact/" class="cs-button-solid">Get started</a>
                 </li>
                 <li class="cs-item">
                     <span class="cs-plan">One-time build</span>
-                    <span class="cs-price">$3,000</span>
+                    <span class="cs-price">Custom</span>
                     <span class="cs-note">pay once, the site is yours</span>
                     <ul class="cs-ul">
                         <li class="cs-li">Hand-coded &amp; secure</li>
@@ -262,7 +288,7 @@ tags: "sitemap" # content/content.json will make sure that all pages in content/
                         <li class="cs-li">Honest, sustainable SEO</li>
                         <li class="cs-li cs-li-muted">Support &amp; updates billed at $95/hr</li>
                     </ul>
-                    <a href="" class="cs-button-transparent">Get a free quote</a>
+                    <a href="/contact/" class="cs-button-transparent">Get started</a>
                 </li>
             </ul>
         </div>
@@ -278,40 +304,45 @@ tags: "sitemap" # content/content.json will make sure that all pages in content/
                 <span class="cs-topper">Our work</span>
                 <h2 class="cs-title">Recent work</h2>
             </div>
-            <!-- Placeholder drop-zones until real project screenshots land. -->
+            <!-- Card 01 is real (live client site). Cards 02-03 are placeholder
+                 drop-zones for the concept/demo builds still to come. -->
             <ul class="cs-card-group">
                 <li class="cs-item">
                     <figure class="cs-card">
-                        <div class="cs-placeholder">
-                            <svg class="cs-ph-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
-                            <span class="cs-ph-label">Seaside Dental homepage</span>
-                            <span class="cs-ph-browse">or browse files</span>
-                        </div>
-                        <figcaption class="cs-filename">seaside_dental.jpg</figcaption>
+                        <a href="https://www.bryanvandusen.com/" target="_blank" rel="noopener" class="cs-thumb-link" aria-label="Visit the Bryan Van Dusen website (opens in a new tab)">
+                            <picture class="cs-thumb">
+                                <source srcset="{% getUrl "/assets/images/bryan-van-dusen.jpg" | resize({ width: 760, height: 570 }) | avif %}" type="image/avif">
+                                <source srcset="{% getUrl "/assets/images/bryan-van-dusen.jpg" | resize({ width: 760, height: 570 }) | webp %}" type="image/webp">
+                                <img src="{% getUrl "/assets/images/bryan-van-dusen.jpg" | resize({ width: 760, height: 570 }) | jpeg %}" alt="Bryan Van Dusen children's author website homepage" width="760" height="570" loading="lazy" decoding="async">
+                            </picture>
+                        </a>
+                        <figcaption class="cs-filename">bryanvandusen.com</figcaption>
                     </figure>
                     <div class="cs-flex">
-                        <h3 class="cs-h3">Seaside Dental</h3>
+                        <h3 class="cs-h3">Bryan Van Dusen</h3>
                         <span class="cs-number">01</span>
                     </div>
                     <p class="cs-item-text">
-                        Booking-first practice site.
+                        Brand &amp; book showcase for a children's author.
                     </p>
                 </li>
                 <li class="cs-item">
                     <figure class="cs-card">
-                        <div class="cs-placeholder">
-                            <svg class="cs-ph-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
-                            <span class="cs-ph-label">Sound View Coffee homepage</span>
-                            <span class="cs-ph-browse">or browse files</span>
-                        </div>
-                        <figcaption class="cs-filename">sound_view_coffee.jpg</figcaption>
+                        <a href="https://bk2026.com/" target="_blank" rel="noopener" class="cs-thumb-link" aria-label="Visit the Bryan & Katie wedding website (opens in a new tab)">
+                            <picture class="cs-thumb">
+                                <source srcset="{% getUrl "/assets/images/bk2026.jpg" | resize({ width: 760, height: 570 }) | avif %}" type="image/avif">
+                                <source srcset="{% getUrl "/assets/images/bk2026.jpg" | resize({ width: 760, height: 570 }) | webp %}" type="image/webp">
+                                <img src="{% getUrl "/assets/images/bk2026.jpg" | resize({ width: 760, height: 570 }) | jpeg %}" alt="Bryan and Katie wedding website homepage" width="760" height="570" loading="lazy" decoding="async">
+                            </picture>
+                        </a>
+                        <figcaption class="cs-filename">bk2026.com</figcaption>
                     </figure>
                     <div class="cs-flex">
-                        <h3 class="cs-h3">Sound View Coffee</h3>
+                        <h3 class="cs-h3">Bryan &amp; Katie</h3>
                         <span class="cs-number">02</span>
                     </div>
                     <p class="cs-item-text">
-                        Online ordering for a roaster.
+                        Wedding site with itinerary, RSVP &amp; registry.
                     </p>
                 </li>
                 <li class="cs-item">
@@ -370,19 +401,22 @@ tags: "sitemap" # content/content.json will make sure that all pages in content/
         <div class="cs-container">
             <div class="cs-content">
                 <span class="cs-topper">Service area</span>
-                <h2 class="cs-title">Serving the greater Shoreline area</h2>
+                <h2 class="cs-title">Serving the greater Seattle area</h2>
                 <p class="cs-text">Working directly with small businesses across:</p>
+                <!-- Towns come from src/_data/serviceArea.js — the same source the
+                     header marquee uses, so the two lists stay in sync. -->
                 <ul class="cs-card-group">
-                    <li class="cs-item">North Seattle</li>
-                    <li class="cs-item">Shoreline</li>
-                    <li class="cs-item cs-item-home">Richmond Beach</li>
-                    <li class="cs-item">Edmonds</li>
-                    <li class="cs-item">Lynnwood</li>
+                    {%- for town in serviceArea.towns -%}
+                    <li class="cs-item{% if town == serviceArea.home %} cs-item-home{% endif %}">{{ town }}</li>
+                    {%- endfor -%}
                 </ul>
             </div>
             <!-- Arrival landing diorama. The ferry sails in and berths on scroll. -->
             <div class="cs-image-group">
-                <img class="cs-scene" src="/assets/images/service-area-scene.png" alt="Isometric illustration of the ferry landing across the Sound" width="1200" height="1064" loading="lazy" decoding="async">
+                <img class="cs-scene cs-light" src="/assets/images/service-area-scene.png" alt="Isometric illustration of the ferry landing across the Sound" width="1200" height="1064" loading="lazy" decoding="async">
+                <img class="cs-scene cs-dark" src="/assets/images/service-area-scene-night.png" alt="Isometric illustration of the ferry landing across the Sound at night" width="1200" height="830" loading="lazy" decoding="async">
+                <!-- Night bloom (dark mode only) — see hero note. -->
+                <img class="cs-scene-glow cs-dark" src="/assets/images/service-area-scene-night.png" alt="" aria-hidden="true" width="1200" height="830" loading="lazy" decoding="async">
                 {% include "components/ferry.html" %}
             </div>
         </div>

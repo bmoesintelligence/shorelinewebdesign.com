@@ -3,5 +3,16 @@
      section, so percentage transforms map onto section width/height; the
      per-section keyframes in root.less do the steering. -->
 <div class="cs-ferry" aria-hidden="true">
-    <img class="cs-ferry-hull" src="/assets/images/ferry.png" alt="" width="1182" height="951" decoding="async">
+    <!-- .cs-ferry-boat is sized to the hull, so the night bloom + the water
+         reflection (a ::before in root.less) anchor to the boat, not the scene. -->
+    <div class="cs-ferry-boat">
+        <!-- day + night, toggled by the kit's .cs-light/.cs-dark. Only one ever
+             displays; the hidden night image is lazy so it isn't fetched until
+             dark mode. -->
+        <img class="cs-ferry-hull cs-light" src="/assets/images/ferry.png" alt="" width="1084" height="824" decoding="async">
+        <img class="cs-ferry-hull cs-dark" src="/assets/images/ferry-night.png" alt="" width="1159" height="934" loading="lazy" decoding="async">
+        <!-- night bloom: a blurred copy screen-composited over the hull so the
+             lit windows glow. Overlaps the night hull exactly. -->
+        <img class="cs-ferry-glow cs-dark" src="/assets/images/ferry-night.png" alt="" width="1159" height="934" loading="lazy" decoding="async">
+    </div>
 </div>

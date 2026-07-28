@@ -69,9 +69,9 @@
             font-family: var(--headerFont);
             /* 34px - 58px — floor fits "actually deserves." on a 360px phone;
                ceiling fits it inside the 580px column above */
-            font-size: clamp(2.125rem, 5vw, 3.625rem);
+            font-size: clamp(2.125rem, 5vw, 4rem);
             font-weight: 800;
-            line-height: 1.05em;
+            line-height: 1.15em;
             letter-spacing: -0.02em;
             width: 100%;
             max-width: none;
@@ -264,9 +264,30 @@
                 }
             }
 
+            /* the "est. richmond beach" badge becomes a flat cartoon full moon,
+               matching the flat-shaded diorama art. Solid fill + soft glow. */
             .cs-badge {
-                background-color: var(--warmSand);
-                color: var(--inkNavy);
+                background-color: #f3ecd7;
+                box-shadow: 0 0 (18/16rem) (2/16rem) rgba(245, 236, 210, 0.65), 0 0 (44/16rem) (10/16rem) rgba(242, 224, 175, 0.4), 0 0 (88/16rem) (30/16rem) rgba(238, 216, 160, 0.18);
+                /* subtly imperfect outline — hand-drawn rather than mechanical */
+                border-radius: 49% 51% 52% 48% / 51% 49% 51% 49%;
+                overflow: hidden;
+                padding: 0;
+            }
+
+            /* a moon has no label */
+            .cs-badge-text {
+                opacity: 0;
+            }
+
+            /* scattered flat craters — hard edges (no gradient), two shades and
+               a range of sizes, placed irregularly rather than in a ring */
+            .cs-badge:after {
+                content: "";
+                position: absolute;
+                inset: 0;
+                border-radius: inherit;
+                background: radial-gradient(circle at 39% 34%, #cdbf98 0 11%, transparent 11%), radial-gradient(circle at 64% 53%, #d5c8a2 0 7.5%, transparent 7.5%), radial-gradient(circle at 29% 61%, #cdbf98 0 6%, transparent 6%), radial-gradient(circle at 73% 31%, #d5c8a2 0 4.5%, transparent 4.5%), radial-gradient(circle at 54% 73%, #cdbf98 0 5.5%, transparent 5.5%), radial-gradient(circle at 47% 47%, #d5c8a2 0 3%, transparent 3%), radial-gradient(circle at 69% 70%, #cdbf98 0 3.5%, transparent 3.5%), radial-gradient(circle at 24% 44%, #d5c8a2 0 3%, transparent 3%), radial-gradient(circle at 58% 22%, #d5c8a2 0 2.5%, transparent 2.5%);
             }
         }
     }
@@ -282,7 +303,7 @@
     #stats {
         /* carries the hero's sand through so the strip reads as one surface */
         background-color: var(--warmSand);
-        padding: 0 (16/16rem) clamp(3.75rem, 7.82vw, 6.25rem);
+        padding: 0 (16/16rem) clamp(1.75rem, 7.82vw, 1.75rem);
         position: relative;
         z-index: 10;
 
@@ -337,6 +358,12 @@
             color: var(--coral);
             /* never let the label squash the figure */
             flex: none;
+            /* Reserve one numeral's worth of height and sit the figure on its
+               floor, so every label in the row starts at the same y even if a
+               figure ever wraps or runs shorter. Matches the font-size above. */
+            min-height: clamp(2.5rem, 5.5vw, 3.75rem);
+            display: flex;
+            align-items: flex-end;
         }
 
         .cs-label {

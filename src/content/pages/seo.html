@@ -1,0 +1,33 @@
+---
+description: "Meta description for the page"
+permalink: "/services/seo/"
+eleventyComputed:
+  # Literal, not titleCase — the filter only uppercases the first letter of each
+  # hyphen-separated chunk, so "seo" would render as "Seo".
+  title: "SEO | {{ client.name }} | {{ client.address.city }}, {{ client.address.state }}"
+---
+
+
+{% extends "layouts/base.html" %}
+
+{% block head %}
+    
+    <link rel="stylesheet" href="/assets/css/{{ page.fileSlug }}.css">
+
+    <!-- Any page-specific tags that belong in the <head> -->
+
+
+{% endblock %}
+
+{% block body %}
+
+    <!-- Page HTML goes here, without a <main> wrapper. The <main> tag is already presented in layouts/base.html -->
+
+    <!-- If you want the page to have a "CTA", remove the {# and #} below -->
+    {# {% include 'sections/cta.html' %} #}
+
+{% endblock %}
+
+
+
+
