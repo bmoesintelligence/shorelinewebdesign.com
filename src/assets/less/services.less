@@ -1,0 +1,2146 @@
+/*-- -------------------------- -->
+<---     Standards / Metrics    -->
+<--- -------------------------- -*/
+
+/* The dark "proof" band that follows the page hero. Same idiom as the home
+   page's #speed section: one navy band interrupting the tan, with coral used
+   only as an accent (the gauge arcs and the title's period).
+
+   The gauge arc is driven by an inline `--arc` (0-100) on each card. Both
+   circles carry pathLength="100", which renormalises the path so
+   stroke-dasharray takes plain percentages instead of a 2πr magic number. */
+
+/* Mobile - 360px */
+@media only screen and (min-width: 0rem) {
+    #services-1282 {
+        background-color: var(--inkNavy);
+        padding: var(--sectionPadding);
+        position: relative;
+
+        .cs-container {
+            width: 100%;
+            max-width: (1280/16rem);
+            margin: auto;
+            display: flex;
+            flex-direction: column;
+            /* 28px - 36px — the baseline rhythm between header, copy and note.
+               The card group opens up further with its own margin below. */
+            gap: clamp(1.75rem, 3vw, 2.25rem);
+        }
+
+        .cs-content {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: (12/16rem);
+        }
+
+        /* the mono micro-label — above the title on mobile, pushed out to the
+           far right of it from tablet up */
+        .cs-topper {
+            font-family: var(--monoFont);
+            font-size: (12/16rem);
+            font-weight: 500;
+            line-height: 1.4em;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--rainGray);
+            margin: 0;
+            order: -1;
+        }
+
+        .cs-title {
+            font-family: var(--headerFont);
+            /* 32px - 52px */
+            font-size: clamp(2rem, 4.4vw, 3.25rem);
+            font-weight: 800;
+            line-height: 1.12em;
+            letter-spacing: -0.02em;
+            max-width: 18ch;
+            margin: 0;
+            color: var(--bodyTextColorWhite);
+
+            .cs-accent {
+                color: var(--coral);
+            }
+        }
+
+        .cs-text {
+            font-size: (18/16rem);
+            line-height: 1.6em;
+            max-width: 54ch;
+            margin: 0;
+            color: var(--rainGray);
+        }
+
+        .cs-card-group {
+            width: 100%;
+            /* adds to the container gap, so the cards get more air above them
+               than the header block does */
+            margin: clamp(1rem, 2vw, 1.5rem) 0 0 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: (20/16rem);
+        }
+
+        .cs-item {
+            list-style: none;
+            box-sizing: border-box;
+            /* 20px - 28px */
+            padding: clamp(1.25rem, 2.6vw, 1.75rem);
+            background-color: var(--medium);
+            border-radius: (16/16rem);
+            /* inset hairline rather than a border, so the card edge reads
+               without the border box changing the grid track sizing */
+            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+            display: flex;
+            align-items: center;
+            gap: clamp(1rem, 2.4vw, 1.5rem);
+        }
+
+        /* Sizing note: the value sits ABOVE the ring's vertical centre (the unit
+           label is stacked under it), and the ring's chord is narrower there than
+           its full diameter. So the usable width is well under the inner diameter.
+           88px is the floor that keeps the longest value ("<200ms") clear.
+           Keep unit labels to ~7 characters or they break out sideways. */
+        .cs-gauge {
+            /* 88px - 100px */
+            width: clamp(5.5rem, 9vw, 6.25rem);
+            height: clamp(5.5rem, 9vw, 6.25rem);
+            /* prevents flexbox from squishing it */
+            flex: none;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .cs-ring {
+            width: 100%;
+            height: 100%;
+            /* start the arc at 12 o'clock instead of 3 */
+            transform: rotate(-90deg);
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .cs-ring-track,
+        .cs-ring-arc {
+            fill: none;
+            /* viewBox units, so it scales with the gauge. Thinner than it looks
+               at first glance is deliberate: it buys interior room for the value. */
+            stroke-width: 5;
+        }
+
+        .cs-ring-track {
+            stroke: rgba(255, 255, 255, 0.12);
+        }
+
+        .cs-ring-arc {
+            stroke: var(--coral);
+            stroke-linecap: round;
+            stroke-dasharray: var(--arc, 100) 100;
+        }
+
+        /* value + unit ride above the absolutely-positioned ring */
+        .cs-number {
+            font-family: var(--headerFont);
+            /* 14px - 16px — sized so "<200ms" clears the ring's inner diameter */
+            font-size: clamp(0.875rem, 1.4vw, 1rem);
+            font-weight: 700;
+            white-space: nowrap;
+            line-height: 1em;
+            color: var(--bodyTextColorWhite);
+            display: block;
+            position: relative;
+        }
+
+        .cs-unit {
+            font-family: var(--monoFont);
+            font-size: (10/16rem);
+            font-weight: 500;
+            line-height: 1em;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--rainGray);
+            margin-top: (5/16rem);
+            display: block;
+            position: relative;
+        }
+
+        .cs-h3 {
+            font-family: var(--headerFont);
+            font-size: (18/16rem);
+            font-weight: 700;
+            line-height: 1.3em;
+            margin: 0 0 (8/16rem) 0;
+            color: var(--bodyTextColorWhite);
+        }
+
+        .cs-item-text {
+            font-size: (14/16rem);
+            line-height: 1.5em;
+            margin: 0;
+            color: var(--rainGray);
+        }
+
+        .cs-note {
+            font-size: (14/16rem);
+            line-height: 1.5em;
+            max-width: (760/16rem);
+            margin: 0;
+            color: var(--rainGray);
+            opacity: 0.75;
+        }
+    }
+}
+
+/* Tablet - 768px */
+@media only screen and (min-width: 48rem) {
+    #services-1282 {
+        .cs-content {
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: flex-end;
+            gap: (48/16rem);
+        }
+
+        .cs-topper {
+            /* back to source order — it sits to the right of the title now */
+            order: 0;
+            text-align: right;
+            /* prevents flexbox from squishing it */
+            flex: none;
+            padding-bottom: (8/16rem);
+        }
+
+        .cs-card-group {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        .cs-item {
+            /* three narrow columns — stack the gauge above the copy */
+            flex-direction: column;
+            align-items: flex-start;
+            gap: (20/16rem);
+        }
+    }
+}
+
+/* Desktop - 1024px */
+@media only screen and (min-width: 64rem) {
+    #services-1282 {
+        .cs-item {
+            /* wide enough again for the gauge to sit beside the copy */
+            flex-direction: row;
+            align-items: center;
+        }
+    }
+}
+
+/* Dark Mode */
+@media only screen and (min-width: 0rem) {
+    body.dark-mode {
+        #services-1282 {
+            /* the band is already dark, so on a dark page it darkens further
+               rather than lightening — same move as the home page's #speed */
+            background-color: rgba(0, 0, 0, 0.25);
+
+            .cs-item {
+                background-color: rgba(255, 255, 255, 0.04);
+                box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+            }
+        }
+    }
+}
+
+
+
+/*-- -------------------------- -->
+<---   Why / Differentiators    -->
+<--- -------------------------- -*/
+
+/* The light counterweight to the navy metrics band above it: back onto the tan,
+   no cards at all, just four columns divided by hairlines. Coral is rationed to
+   three places — the topper pill, the title's period, and a short rule over each
+   column — so it reads as accent rather than decoration.
+
+   Divider approach: the columns carry NO horizontal padding, so the first and
+   last always sit flush with the container edge (and so column one lines up with
+   the title above it). Separation comes from the grid's column-gap, and the
+   vertical rules are drawn by a pseudo-element parked in the middle of that gap.
+   All the per-breakpoint logic then reduces to showing/hiding that pseudo on the
+   first column of each row, instead of juggling padding overrides that fight on
+   specificity. */
+
+/* Mobile - 360px */
+@media only screen and (min-width: 0rem) {
+    #services-1301 {
+        background-color: var(--warmSand);
+        padding: var(--sectionPadding);
+
+        /* single source of truth for the divider colour and the gap the divider
+           has to centre itself in. NOTE: literal values, no (n/16) math — LESS
+           emits custom-property values verbatim without evaluating them. */
+        --rule: rgba(27, 42, 56, 0.15);
+        --colGap: clamp(2rem, 4vw, 3rem);
+
+        .cs-container {
+            width: 100%;
+            max-width: (1280/16rem);
+            margin: auto;
+            display: flex;
+            flex-direction: column;
+            /* 40px - 60px */
+            gap: clamp(2.5rem, 4.5vw, 3.75rem);
+        }
+
+        .cs-content {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: (20/16rem);
+        }
+
+        .cs-flex-group {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        /* pill badge — deliberately the same treatment as #page-hero's topper,
+           so the two read as siblings */
+        .cs-topper {
+            font-family: var(--monoFont);
+            font-size: (12/16rem);
+            font-weight: 500;
+            line-height: 1em;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--coral);
+            background-color: rgba(214, 85, 61, 0.14);
+            padding: (8/16rem) (14/16rem);
+            border-radius: (40/16rem);
+            margin: 0 0 (20/16rem) 0;
+        }
+
+        .cs-title {
+            font-family: var(--headerFont);
+            /* 32px - 52px */
+            font-size: clamp(2rem, 4.4vw, 3.25rem);
+            font-weight: 800;
+            line-height: 1.12em;
+            letter-spacing: -0.02em;
+            max-width: 20ch;
+            margin: 0;
+            color: var(--inkNavy);
+
+            .cs-accent {
+                color: var(--coral);
+            }
+        }
+
+        .cs-text {
+            font-size: (18/16rem);
+            line-height: 1.6em;
+            max-width: 62ch;
+            margin: 0;
+            color: var(--pugetBlue);
+        }
+
+        .cs-card-group {
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: 1fr;
+            /* row gap stays 0 so the horizontal rules meet end to end */
+            gap: 0 var(--colGap);
+            border-top: 1px solid var(--rule);
+        }
+
+        .cs-item {
+            list-style: none;
+            box-sizing: border-box;
+            /* 24px - 32px, vertical only — see the divider note above */
+            padding: clamp(1.5rem, 3vw, 2rem) 0;
+            border-bottom: 1px solid var(--rule);
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            position: relative;
+
+            /* the short coral rule over each column (replaces the stitch's CDN
+               icon, so it needs no markup of its own) */
+            &:before {
+                content: "";
+                width: (28/16rem);
+                height: (3/16rem);
+                background-color: var(--coral);
+                border-radius: (2/16rem);
+                display: block;
+                margin-bottom: (20/16rem);
+            }
+
+            /* the vertical divider, centred in the column gap to its left.
+               Single column here, so nothing to divide. */
+            &:after {
+                content: "";
+                width: 1px;
+                background-color: var(--rule);
+                display: none;
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                left: calc(var(--colGap) / -2);
+            }
+        }
+
+        .cs-h3 {
+            font-family: var(--headerFont);
+            font-size: (18/16rem);
+            font-weight: 700;
+            line-height: 1.3em;
+            margin: 0 0 (10/16rem) 0;
+            color: var(--inkNavy);
+        }
+
+        .cs-item-text {
+            font-size: (15/16rem);
+            line-height: 1.6em;
+            margin: 0;
+            color: var(--pugetBlue);
+        }
+    }
+}
+
+/* Tablet - 768px */
+@media only screen and (min-width: 48rem) {
+    #services-1301 {
+        .cs-card-group {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .cs-item {
+            &:after {
+                display: block;
+            }
+
+            /* left-hand column of each row starts the row — no rule beside it */
+            &:nth-child(2n + 1):after {
+                display: none;
+            }
+        }
+    }
+}
+
+/* Desktop - 1024px */
+@media only screen and (min-width: 64rem) {
+    #services-1301 {
+        .cs-card-group {
+            grid-template-columns: repeat(4, 1fr);
+        }
+
+        .cs-item {
+            /* one row now, so the odd columns get their dividers back and only
+               the very first loses one */
+            &:nth-child(2n + 1):after {
+                display: block;
+            }
+
+            &:first-child:after {
+                display: none;
+            }
+        }
+    }
+}
+
+/* Dark Mode */
+@media only screen and (min-width: 0rem) {
+    body.dark-mode {
+        #services-1301 {
+            background-color: var(--dark);
+            --rule: rgba(255, 255, 255, 0.12);
+
+            .cs-title,
+            .cs-h3 {
+                color: var(--bodyTextColorWhite);
+            }
+
+            .cs-text,
+            .cs-item-text {
+                color: var(--rainGray);
+            }
+        }
+    }
+}
+
+
+/*-- -------------------------- -->
+<---      Steps / Timeline      -->
+<--- -------------------------- -*/
+
+/* A rounded panel inset from the tan, holding a four-stage timeline: a hairline
+   with a coral dot per stage, a mono phase label, a raised card, and a mono
+   outcome line under it.
+
+   The connecting line is built per item rather than as one element: each stage's
+   rule runs the width of its own column AND across the gap to its right
+   (right: calc(-1 * var(--colGap))), so the segments meet and read as one
+   continuous line. The last one stops at its own edge. That way the line can't
+   desync from the dots when the column count changes at a breakpoint. */
+
+/* Mobile - 360px */
+@media only screen and (min-width: 0rem) {
+    #steps-276 {
+        background-color: var(--warmSand);
+        padding: var(--sectionPadding);
+
+        /* literal values only — LESS emits custom-property values verbatim */
+        --rule: rgba(27, 42, 56, 0.15);
+        --colGap: clamp(1.5rem, 3vw, 2.5rem);
+
+        .cs-container {
+            width: 100%;
+            max-width: (1280/16rem);
+            margin: auto;
+            /* the inset panel: a touch deeper than the tan it sits on, which is
+               what lets the cards inside read as raised */
+            background-color: rgba(27, 42, 56, 0.05);
+            border-radius: clamp(1.25rem, 2.5vw, 2rem);
+            box-sizing: border-box;
+            /* 28px - 64px */
+            padding: clamp(1.75rem, 4.5vw, 4rem);
+            display: flex;
+            flex-direction: column;
+            /* 32px - 48px */
+            gap: clamp(2rem, 3.5vw, 3rem);
+        }
+
+        .cs-content {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: (16/16rem);
+        }
+
+        /* mono micro-label — above the title on mobile, out to its right from
+           tablet up. Same treatment as #services-1282's topper. */
+        .cs-topper {
+            font-family: var(--monoFont);
+            font-size: (12/16rem);
+            font-weight: 500;
+            line-height: 1.4em;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--pugetBlue);
+            margin: 0;
+            order: -1;
+        }
+
+        .cs-title {
+            font-family: var(--headerFont);
+            /* 30px - 46px */
+            font-size: clamp(1.875rem, 4vw, 2.875rem);
+            font-weight: 800;
+            line-height: 1.14em;
+            letter-spacing: -0.02em;
+            max-width: 20ch;
+            margin: 0;
+            color: var(--inkNavy);
+
+            .cs-accent {
+                color: var(--coral);
+            }
+        }
+
+        .cs-text {
+            font-size: (17/16rem);
+            line-height: 1.6em;
+            max-width: 58ch;
+            margin: 0;
+            color: var(--pugetBlue);
+        }
+
+        .cs-card-group {
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: clamp(2rem, 3vw, 2.5rem) var(--colGap);
+        }
+
+        .cs-item {
+            list-style: none;
+            box-sizing: border-box;
+            /* clears the dot + hairline drawn by the pseudos below */
+            padding-top: (26/16rem);
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            position: relative;
+
+            /* the stage dot */
+            &:before {
+                content: "";
+                width: (10/16rem);
+                height: (10/16rem);
+                background-color: var(--coral);
+                border-radius: 50%;
+                display: block;
+                position: absolute;
+                top: 0;
+                left: 0;
+                z-index: 1;
+            }
+
+            /* the connecting hairline, vertically centred on the dot */
+            &:after {
+                content: "";
+                height: 1px;
+                background-color: var(--rule);
+                display: block;
+                position: absolute;
+                /* (dot height - line height) / 2 */
+                top: (4.5/16rem);
+                left: 0;
+                right: 0;
+            }
+        }
+
+        /* the phase label ("Days 1-3") */
+        .cs-number {
+            font-family: var(--monoFont);
+            font-size: (12/16rem);
+            font-weight: 600;
+            line-height: 1em;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--coral);
+            margin-bottom: (16/16rem);
+            display: block;
+        }
+
+        .cs-card {
+            background-color: #fdfbf4;
+            border-radius: (14/16rem);
+            /* 20px - 26px */
+            padding: clamp(1.25rem, 2.2vw, 1.625rem);
+            box-shadow: 0 (2/16rem) (10/16rem) rgba(27, 42, 56, 0.06);
+            /* fills the row so sibling cards line up even with uneven copy */
+            flex: 1;
+        }
+
+        .cs-h3 {
+            font-family: var(--headerFont);
+            font-size: (17/16rem);
+            font-weight: 700;
+            line-height: 1.3em;
+            margin: 0 0 (10/16rem) 0;
+            color: var(--inkNavy);
+        }
+
+        .cs-item-text {
+            font-size: (14/16rem);
+            line-height: 1.6em;
+            margin: 0;
+            color: var(--pugetBlue);
+        }
+
+        /* the "→ signed scope" line under each card */
+        .cs-outcome {
+            font-family: var(--monoFont);
+            font-size: (12/16rem);
+            line-height: 1.4em;
+            color: var(--pugetBlue);
+            opacity: 0.75;
+            margin-top: (14/16rem);
+            display: flex;
+            align-items: baseline;
+            gap: (8/16rem);
+
+            &:before {
+                content: "\2192";
+                color: var(--coral);
+                opacity: 1;
+            }
+        }
+    }
+}
+
+/* Tablet - 768px */
+@media only screen and (min-width: 48rem) {
+    #steps-276 {
+        .cs-content {
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: flex-start;
+            /* row-gap is the title-to-intro distance, column-gap is title-to-label.
+               They want very different values, hence the two-value shorthand. */
+            gap: (24/16rem) (48/16rem);
+            /* the intro paragraph drops below both, so it needs its own row */
+            flex-wrap: wrap;
+        }
+
+        .cs-topper {
+            /* back to source order — right of the title now */
+            order: 0;
+            text-align: right;
+            /* prevents flexbox from squishing it */
+            flex: none;
+            padding-top: (10/16rem);
+        }
+
+        .cs-text {
+            /* full width under the title/label row */
+            flex: 1 0 100%;
+        }
+
+        .cs-card-group {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .cs-item {
+            /* bridge the gap so neighbouring segments meet as one line */
+            &:after {
+                right: calc(var(--colGap) * -1);
+            }
+
+            /* right-hand column ends its row, so it stops at its own edge */
+            &:nth-child(2n):after {
+                right: 0;
+            }
+        }
+    }
+}
+
+/* Desktop - 1024px */
+@media only screen and (min-width: 64rem) {
+    #steps-276 {
+        .cs-card-group {
+            grid-template-columns: repeat(4, 1fr);
+        }
+
+        .cs-item {
+            /* one row now — every segment bridges except the last */
+            &:nth-child(2n):after {
+                right: calc(var(--colGap) * -1);
+            }
+
+            &:last-child:after {
+                right: 0;
+            }
+        }
+    }
+}
+
+/* Dark Mode */
+@media only screen and (min-width: 0rem) {
+    body.dark-mode {
+        #steps-276 {
+            background-color: var(--dark);
+            --rule: rgba(255, 255, 255, 0.12);
+
+            .cs-container {
+                background-color: rgba(255, 255, 255, 0.04);
+            }
+
+            .cs-card {
+                background-color: var(--medium);
+                box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+            }
+
+            .cs-title,
+            .cs-h3 {
+                color: var(--bodyTextColorWhite);
+            }
+
+            .cs-text,
+            .cs-item-text,
+            .cs-topper,
+            .cs-outcome {
+                color: var(--rainGray);
+            }
+        }
+    }
+}
+
+
+/*-- -------------------------- -->
+<---    Programme / Workstreams -->
+<--- -------------------------- -*/
+
+/* Four bordered cards in a row, each a numbered workstream with a lead line and
+   a bulleted deliverable list. Sits on the same tan as the other light sections,
+   with the cards lifted off it in white.
+
+   Deliberately the calmest section on the page: no coral inside the cards at
+   all. The accent is spent on the topper pill and the title's period, which
+   keeps it from competing with the coral dashes in #services-1301 and the dots
+   in #steps-276 further up. */
+
+/* Mobile - 360px */
+@media only screen and (min-width: 0rem) {
+    #services-1975 {
+        background-color: var(--warmSand);
+        padding: var(--sectionPadding);
+
+        /* literal values only — LESS emits custom-property values verbatim */
+        --cardEdge: rgba(27, 42, 56, 0.12);
+
+        .cs-container {
+            width: 100%;
+            max-width: (1280/16rem);
+            margin: auto;
+            display: flex;
+            flex-direction: column;
+            /* 40px - 60px */
+            gap: clamp(2.5rem, 4.5vw, 3.75rem);
+        }
+
+        .cs-content {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        /* pill badge — same treatment as #page-hero and #services-1301 */
+        .cs-topper {
+            font-family: var(--monoFont);
+            font-size: (12/16rem);
+            font-weight: 500;
+            line-height: 1em;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--coral);
+            background-color: rgba(214, 85, 61, 0.14);
+            padding: (8/16rem) (14/16rem);
+            border-radius: (40/16rem);
+            margin: 0 0 (20/16rem) 0;
+        }
+
+        .cs-title {
+            font-family: var(--headerFont);
+            /* 32px - 52px */
+            font-size: clamp(2rem, 4.4vw, 3.25rem);
+            font-weight: 800;
+            line-height: 1.12em;
+            letter-spacing: -0.02em;
+            max-width: 18ch;
+            margin: 0 0 (20/16rem) 0;
+            color: var(--inkNavy);
+
+            .cs-accent {
+                color: var(--coral);
+            }
+        }
+
+        .cs-text {
+            font-size: (17/16rem);
+            line-height: 1.6em;
+            max-width: 60ch;
+            margin: 0;
+            color: var(--pugetBlue);
+        }
+
+        .cs-card-group {
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: (16/16rem);
+        }
+
+        .cs-item {
+            list-style: none;
+            box-sizing: border-box;
+            /* 20px - 26px */
+            padding: clamp(1.25rem, 2.2vw, 1.625rem);
+            background-color: #fff;
+            border-radius: (18/16rem);
+            border: 1px solid var(--cardEdge);
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        /* the workstream number — muted on purpose, it's a marker not a feature */
+        .cs-number {
+            font-family: var(--monoFont);
+            font-size: (12/16rem);
+            font-weight: 500;
+            line-height: 1em;
+            letter-spacing: 0.1em;
+            color: var(--pugetBlue);
+            opacity: 0.55;
+            margin-bottom: (18/16rem);
+            display: block;
+        }
+
+        .cs-h3 {
+            font-family: var(--headerFont);
+            font-size: (17/16rem);
+            font-weight: 700;
+            line-height: 1.3em;
+            margin: 0 0 (8/16rem) 0;
+            color: var(--inkNavy);
+        }
+
+        .cs-item-text {
+            font-size: (14/16rem);
+            line-height: 1.6em;
+            margin: 0;
+            color: var(--pugetBlue);
+        }
+
+        /* deliverables — a real <ul>, so the marker is a pseudo rather than a
+           list-style glyph we can't colour or space */
+        .cs-checklist {
+            /* Content stays top-aligned and the slack in shorter cards falls to
+               the bottom. Do NOT use `margin-top: auto` here to bottom-align the
+               list — equal-height grid rows then open a ragged gap in the middle
+               of every short card instead of a tidy one at its foot. */
+            margin: (18/16rem) 0 0 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            gap: (8/16rem);
+
+            li {
+                font-size: (14/16rem);
+                line-height: 1.45em;
+                list-style: none;
+                color: var(--pugetBlue);
+                display: flex;
+                align-items: baseline;
+                gap: (10/16rem);
+
+                &:before {
+                    content: "\00B7";
+                    font-weight: 700;
+                    opacity: 0.5;
+                    /* keeps the middot from collapsing to zero width */
+                    flex: none;
+                }
+            }
+        }
+    }
+}
+
+/* Tablet - 768px */
+@media only screen and (min-width: 48rem) {
+    #services-1975 {
+        .cs-card-group {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+}
+
+/* Wide desktop - 1280px */
+/* Deliberately NOT the usual 64rem. This section is measured in characters per
+   line, not breakpoints: at 1024px four columns leaves only 25 characters, which
+   is what made the copy look smushed. It stays a 2x2 grid until the container is
+   wide enough to pay for four, which is 1280px (~33 characters).
+
+   For the same reason this is four cards and not five. Five capped each card at
+   243px and 26 characters no matter how wide the monitor got, because the
+   container maxes out at 1280. Trimming card padding only buys ~3 characters, so
+   don't add a fifth card without widening the container too. */
+@media only screen and (min-width: 80rem) {
+    #services-1975 {
+        .cs-card-group {
+            grid-template-columns: repeat(4, 1fr);
+        }
+    }
+}
+
+/* Dark Mode */
+@media only screen and (min-width: 0rem) {
+    body.dark-mode {
+        #services-1975 {
+            background-color: var(--dark);
+            --cardEdge: rgba(255, 255, 255, 0.1);
+
+            .cs-item {
+                background-color: var(--medium);
+            }
+
+            .cs-title,
+            .cs-h3 {
+                color: var(--bodyTextColorWhite);
+            }
+
+            .cs-text,
+            .cs-item-text,
+            .cs-number,
+            .cs-checklist li {
+                color: var(--rainGray);
+            }
+
+            .cs-number {
+                opacity: 0.7;
+            }
+        }
+    }
+}
+
+/*-- -------------------------- -->
+<---   Side By Side / Showcase  -->
+<--- -------------------------- -*/
+
+/* Copy on one side, a built showcase panel on the other. The panel replaces the
+   stitch's stock photo: rather than a stock image of somebody at a laptop, it
+   shows the actual artefacts of the work, drawn in CSS.
+
+   The panel is a 2x2 of tiles, each tile = mono label + a visual + a mono note.
+   Six small primitives cover every tile across the three service pages, so a new
+   tile is usually a content change rather than new CSS:
+     .cs-type      three "Aa" at descending sizes
+     .cs-swatches  a row of colour chips (also the uptime strip)
+     .cs-bars      ascending bars
+     .cs-mini      miniature primary / secondary buttons
+     .cs-lines     mono text rows, optionally indented via .cs-in1 / .cs-in2
+     .cs-tags      small pill tags
+   Everything is decorative, so the tile visuals are aria-hidden; the label and
+   note carry the meaning for a screen reader. */
+
+/* Mobile - 360px */
+@media only screen and (min-width: 0rem) {
+    #sbs-r-870 {
+        background-color: var(--warmSand);
+        padding: var(--sectionPadding);
+
+        /* literal values only — LESS emits custom-property values verbatim */
+        --tileEdge: rgba(27, 42, 56, 0.1);
+        --panelBg: rgba(27, 42, 56, 0.05);
+
+        .cs-container {
+            width: 100%;
+            max-width: (1280/16rem);
+            margin: auto;
+            display: flex;
+            flex-direction: column;
+            /* 40px - 64px */
+            gap: clamp(2.5rem, 5vw, 4rem);
+        }
+
+        .cs-content {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        /* pill badge — same treatment as #page-hero and the other pill toppers */
+        .cs-topper {
+            font-family: var(--monoFont);
+            font-size: (12/16rem);
+            font-weight: 500;
+            line-height: 1em;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--coral);
+            background-color: rgba(214, 85, 61, 0.14);
+            padding: (8/16rem) (14/16rem);
+            border-radius: (40/16rem);
+            margin: 0 0 (20/16rem) 0;
+        }
+
+        .cs-title {
+            font-family: var(--headerFont);
+            /* 30px - 46px */
+            font-size: clamp(1.875rem, 4vw, 2.875rem);
+            font-weight: 800;
+            line-height: 1.14em;
+            letter-spacing: -0.02em;
+            max-width: 18ch;
+            margin: 0 0 (20/16rem) 0;
+            color: var(--inkNavy);
+
+            .cs-accent {
+                color: var(--coral);
+            }
+        }
+
+        .cs-text {
+            font-size: (17/16rem);
+            line-height: 1.65em;
+            max-width: 58ch;
+            margin: 0;
+            color: var(--pugetBlue);
+
+            & + .cs-text {
+                margin-top: (16/16rem);
+            }
+        }
+
+        /* ── the showcase panel ─────────────────────────────────── */
+        .cs-panel {
+            width: 100%;
+            box-sizing: border-box;
+            background-color: var(--panelBg);
+            border-radius: clamp(1.25rem, 2.5vw, 1.75rem);
+            /* 16px - 32px */
+            padding: clamp(1rem, 2.5vw, 2rem);
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: clamp(0.75rem, 1.6vw, 1rem);
+        }
+
+        .cs-tile {
+            background-color: #fff;
+            border: 1px solid var(--tileEdge);
+            border-radius: (14/16rem);
+            /* 14px - 20px */
+            padding: clamp(0.875rem, 1.8vw, 1.25rem);
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            /* the visual sits between label and note, and takes the slack */
+            gap: (12/16rem);
+        }
+
+        .cs-tile-label,
+        .cs-tile-note {
+            font-family: var(--monoFont);
+            font-size: (10/16rem);
+            font-weight: 500;
+            line-height: 1.3em;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--pugetBlue);
+            display: block;
+        }
+
+        .cs-tile-label {
+            opacity: 0.65;
+        }
+
+        .cs-tile-note {
+            /* pins the note to the tile foot so notes line up across the row */
+            margin-top: auto;
+            text-transform: none;
+            letter-spacing: 0.04em;
+            opacity: 0.5;
+        }
+
+        /* ── tile primitives ────────────────────────────────────── */
+
+        /* three "Aa" at descending sizes */
+        .cs-type {
+            display: flex;
+            align-items: baseline;
+            gap: (10/16rem);
+
+            span {
+                font-family: var(--headerFont);
+                font-weight: 700;
+                line-height: 1em;
+                color: var(--inkNavy);
+
+                &:nth-child(1) {
+                    font-size: (34/16rem);
+                }
+                &:nth-child(2) {
+                    font-size: (22/16rem);
+                }
+                &:nth-child(3) {
+                    font-size: (14/16rem);
+                    color: var(--pugetBlue);
+                }
+            }
+        }
+
+        /* a row of colour chips — also does duty as the uptime strip */
+        .cs-swatches {
+            display: flex;
+            align-items: center;
+            gap: (8/16rem);
+
+            span {
+                width: (30/16rem);
+                height: (30/16rem);
+                border-radius: (8/16rem);
+                display: block;
+                /* keeps pale chips visible against the white tile */
+                box-shadow: inset 0 0 0 1px rgba(27, 42, 56, 0.08);
+            }
+        }
+
+        /* uptime strip — the swatch primitive with many thin bars instead of a
+           few chips, so it reads as a run of checks rather than a palette */
+        .cs-swatches.cs-strip {
+            gap: (4/16rem);
+
+            span {
+                width: (5/16rem);
+                height: (28/16rem);
+                border-radius: (2/16rem);
+                box-shadow: none;
+            }
+        }
+
+        /* ascending bars */
+        .cs-bars {
+            height: (34/16rem);
+            display: flex;
+            align-items: flex-end;
+            gap: (6/16rem);
+
+            span {
+                width: (8/16rem);
+                background-color: var(--inkNavy);
+                border-radius: (2/16rem);
+                display: block;
+
+                &:nth-child(1) {
+                    height: 20%;
+                    opacity: 0.25;
+                }
+                &:nth-child(2) {
+                    height: 38%;
+                    opacity: 0.4;
+                }
+                &:nth-child(3) {
+                    height: 58%;
+                    opacity: 0.6;
+                }
+                &:nth-child(4) {
+                    height: 78%;
+                    opacity: 0.8;
+                }
+                &:nth-child(5) {
+                    height: 100%;
+                }
+            }
+        }
+
+        /* miniature buttons */
+        .cs-mini {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: (8/16rem);
+
+            span {
+                font-family: var(--bodyFont);
+                font-size: (11/16rem);
+                font-weight: 600;
+                line-height: 1em;
+                padding: (8/16rem) (14/16rem);
+                border-radius: (40/16rem);
+                display: inline-block;
+            }
+
+            .cs-mini-primary {
+                background-color: var(--coral);
+                color: #fff;
+            }
+
+            .cs-mini-secondary {
+                background-color: transparent;
+                border: 1px solid var(--inkNavy);
+                color: var(--inkNavy);
+            }
+        }
+
+        /* mono text rows — schema, outlines, sitemaps, histories */
+        .cs-lines {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            gap: (6/16rem);
+
+            li {
+                font-family: var(--monoFont);
+                font-size: (11/16rem);
+                line-height: 1.4em;
+                list-style: none;
+                color: var(--inkNavy);
+                /* long values (URLs, schema keys) must not blow out the tile */
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+
+            .cs-in1 {
+                padding-left: (12/16rem);
+                opacity: 0.75;
+            }
+
+            .cs-in2 {
+                padding-left: (24/16rem);
+                opacity: 0.55;
+            }
+        }
+
+        /* small pill tags */
+        .cs-tags {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: (6/16rem);
+
+            li {
+                font-family: var(--monoFont);
+                font-size: (10/16rem);
+                line-height: 1em;
+                list-style: none;
+                color: var(--pugetBlue);
+                background-color: rgba(27, 42, 56, 0.06);
+                padding: (6/16rem) (9/16rem);
+                border-radius: (20/16rem);
+            }
+        }
+
+        /* a miniature search result */
+        .cs-serp {
+            display: flex;
+            flex-direction: column;
+            gap: (4/16rem);
+
+            .cs-serp-title {
+                font-family: var(--bodyFont);
+                font-size: (13/16rem);
+                font-weight: 600;
+                line-height: 1.3em;
+                color: var(--inkNavy);
+            }
+
+            .cs-serp-url {
+                font-family: var(--monoFont);
+                font-size: (10/16rem);
+                line-height: 1.3em;
+                color: var(--coral);
+            }
+
+            .cs-serp-desc {
+                font-size: (11/16rem);
+                line-height: 1.45em;
+                color: var(--pugetBlue);
+                opacity: 0.8;
+            }
+        }
+    }
+}
+
+/* Desktop - 1024px */
+@media only screen and (min-width: 64rem) {
+    #sbs-r-870 {
+        .cs-container {
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            gap: clamp(3rem, 5vw, 5rem);
+        }
+
+        .cs-content {
+            /* "reverse" in the stitch name: copy leads, panel follows */
+            width: 42%;
+            /* prevents flexbox from squishing it */
+            flex: none;
+        }
+
+        .cs-panel {
+            flex: 1;
+        }
+    }
+}
+
+/* Dark Mode */
+@media only screen and (min-width: 0rem) {
+    body.dark-mode {
+        #sbs-r-870 {
+            background-color: var(--dark);
+            --tileEdge: rgba(255, 255, 255, 0.1);
+            --panelBg: rgba(255, 255, 255, 0.04);
+
+            .cs-title {
+                color: var(--bodyTextColorWhite);
+            }
+
+            .cs-text,
+            .cs-tile-label,
+            .cs-tile-note {
+                color: var(--rainGray);
+            }
+
+            .cs-tile {
+                background-color: var(--medium);
+            }
+
+            .cs-type span,
+            .cs-lines li,
+            .cs-serp .cs-serp-title {
+                color: var(--bodyTextColorWhite);
+            }
+
+            .cs-type span:nth-child(3),
+            .cs-serp .cs-serp-desc,
+            .cs-tags li {
+                color: var(--rainGray);
+            }
+
+            .cs-bars span {
+                background-color: var(--rainGray);
+            }
+
+            .cs-swatches span {
+                box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.14);
+            }
+
+            .cs-mini .cs-mini-secondary {
+                border-color: var(--rainGray);
+                color: var(--bodyTextColorWhite);
+            }
+
+            .cs-tags li {
+                background-color: rgba(255, 255, 255, 0.07);
+            }
+        }
+    }
+}
+
+/*-- -------------------------- -->
+<---             FAQ            -->
+<--- -------------------------- -*/
+
+/* Title on the left, accordion on the right. The rows are hairline-separated
+   with a CSS-drawn plus that becomes a minus when open — no icon font, no CDN
+   graphic (the stitch's grey swirl was both).
+
+   Open/closed is a .active class on .cs-faq-item, toggled by assets/js/faq.js.
+   The answer is collapsed with max-height rather than display:none so it can
+   transition; the closed value must stay 0 and the open value only needs to be
+   comfortably larger than the tallest answer. */
+
+/* Mobile - 360px */
+@media only screen and (min-width: 0rem) {
+    #faq-1236 {
+        background-color: var(--warmSand);
+        padding: var(--sectionPadding);
+
+        /* literal values only — LESS emits custom-property values verbatim */
+        --rule: rgba(27, 42, 56, 0.15);
+
+        .cs-container {
+            width: 100%;
+            max-width: (1280/16rem);
+            margin: auto;
+            display: flex;
+            flex-direction: column;
+            /* 32px - 56px */
+            gap: clamp(2rem, 4vw, 3.5rem);
+        }
+
+        .cs-content {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .cs-topper {
+            font-family: var(--monoFont);
+            font-size: (12/16rem);
+            font-weight: 500;
+            line-height: 1em;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--coral);
+            background-color: rgba(214, 85, 61, 0.14);
+            padding: (8/16rem) (14/16rem);
+            border-radius: (40/16rem);
+            margin: 0 0 (20/16rem) 0;
+        }
+
+        .cs-title {
+            font-family: var(--headerFont);
+            /* 30px - 46px */
+            font-size: clamp(1.875rem, 4vw, 2.875rem);
+            font-weight: 800;
+            line-height: 1.14em;
+            letter-spacing: -0.02em;
+            max-width: 14ch;
+            margin: 0;
+            color: var(--inkNavy);
+
+            .cs-accent {
+                color: var(--coral);
+            }
+        }
+
+        .cs-faq-group {
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            border-top: 1px solid var(--rule);
+        }
+
+        .cs-faq-item {
+            list-style: none;
+            width: 100%;
+            border-bottom: 1px solid var(--rule);
+
+            &.active {
+                .cs-button {
+                    color: var(--coral);
+
+                    /* the plus loses its vertical stroke and reads as a minus */
+                    &:after {
+                        transform: translateY(-50%) rotate(90deg);
+                        opacity: 0;
+                    }
+                }
+
+                .cs-item-p {
+                    /* generous ceiling: the transition needs a real number, and
+                       anything taller than the longest answer works */
+                    max-height: (40/16rem) * 10;
+                    /* fades in slightly behind the height so it doesn't smear */
+                    opacity: 1;
+                    padding-bottom: (24/16rem);
+                }
+            }
+        }
+
+        .cs-button {
+            font-family: var(--headerFont);
+            /* 16px - 19px */
+            font-size: clamp(1rem, 1.5vw, 1.1875rem);
+            font-weight: 700;
+            line-height: 1.4em;
+            text-align: left;
+            width: 100%;
+            /* prevents padding from affecting width */
+            box-sizing: border-box;
+            padding: (22/16rem) (44/16rem) (22/16rem) 0;
+            background: transparent;
+            border: none;
+            color: var(--inkNavy);
+            display: block;
+            position: relative;
+            transition: color 0.25s;
+
+            &:hover {
+                cursor: pointer;
+                color: var(--coral);
+            }
+
+            /* the plus: a horizontal bar (:before) crossed by a vertical one
+               (:after). Opening rotates and fades the vertical bar out. */
+            &:before,
+            &:after {
+                content: "";
+                background-color: currentColor;
+                display: block;
+                position: absolute;
+                top: 50%;
+                right: (4/16rem);
+            }
+
+            &:before {
+                width: (14/16rem);
+                height: (2/16rem);
+                transform: translateY(-50%);
+            }
+
+            &:after {
+                width: (2/16rem);
+                height: (14/16rem);
+                margin-right: (6/16rem);
+                transform: translateY(-50%);
+                transition: transform 0.3s, opacity 0.3s;
+            }
+        }
+
+        .cs-item-p {
+            font-size: (16/16rem);
+            line-height: 1.65em;
+            max-width: 68ch;
+            margin: 0;
+            padding: 0 (44/16rem) 0 0;
+            color: var(--pugetBlue);
+            /* collapsed state — must be 0, the open value lives in .active */
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: max-height 0.35s, opacity 0.3s, padding-bottom 0.35s;
+        }
+    }
+}
+
+/* Desktop - 1024px */
+@media only screen and (min-width: 64rem) {
+    #faq-1236 {
+        .cs-container {
+            flex-direction: row;
+            align-items: flex-start;
+            gap: clamp(3rem, 6vw, 6rem);
+        }
+
+        .cs-content {
+            width: 30%;
+            /* prevents flexbox from squishing it */
+            flex: none;
+            /* the heading holds its place while the accordion grows below it */
+            position: sticky;
+            top: (140/16rem);
+        }
+
+        .cs-faq-group {
+            flex: 1;
+            /* the group already has a top rule; align it with the title's cap */
+            margin-top: (6/16rem);
+        }
+    }
+}
+
+/* Dark Mode */
+@media only screen and (min-width: 0rem) {
+    body.dark-mode {
+        #faq-1236 {
+            background-color: var(--dark);
+            --rule: rgba(255, 255, 255, 0.12);
+
+            .cs-title {
+                color: var(--bodyTextColorWhite);
+            }
+
+            .cs-button {
+                color: var(--bodyTextColorWhite);
+
+                &:hover {
+                    color: var(--coral);
+                }
+            }
+
+            .cs-faq-item.active .cs-button {
+                color: var(--coral);
+            }
+
+            .cs-item-p {
+                color: var(--rainGray);
+            }
+        }
+    }
+}
+
+/*-- -------------------------- -->
+<---      Compare (contrast)    -->
+<--- -------------------------- -*/
+
+/* "The usual way" beside "this way". A navy band, deliberately placed to break
+   the long run of tan sections above it. Two cards: the left one muted with
+   cross markers, the right one lifted with a coral edge and tick markers.
+   Same structure on all three service pages, only the content differs. */
+
+/* Mobile - 360px */
+@media only screen and (min-width: 0rem) {
+    #compare {
+        background-color: var(--inkNavy);
+        padding: var(--sectionPadding);
+
+        .cs-container {
+            width: 100%;
+            max-width: (1280/16rem);
+            margin: auto;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(2rem, 3.5vw, 3rem);
+        }
+
+        .cs-content {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .cs-topper {
+            font-family: var(--monoFont);
+            font-size: (12/16rem);
+            font-weight: 500;
+            line-height: 1em;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--coral);
+            background-color: rgba(214, 85, 61, 0.18);
+            padding: (8/16rem) (14/16rem);
+            border-radius: (40/16rem);
+            margin: 0 0 (20/16rem) 0;
+        }
+
+        .cs-title {
+            font-family: var(--headerFont);
+            font-size: clamp(1.875rem, 4vw, 2.875rem);
+            font-weight: 800;
+            line-height: 1.14em;
+            letter-spacing: -0.02em;
+            max-width: 18ch;
+            margin: 0;
+            color: var(--bodyTextColorWhite);
+
+            .cs-accent {
+                color: var(--coral);
+            }
+        }
+
+        .cs-compare {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: (20/16rem);
+        }
+
+        .cs-col {
+            box-sizing: border-box;
+            padding: clamp(1.5rem, 3vw, 2rem);
+            border-radius: (18/16rem);
+        }
+
+        /* the status quo — present but visibly the lesser option */
+        .cs-col-them {
+            background-color: rgba(255, 255, 255, 0.04);
+            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+        }
+
+        /* the offer — lifted and coral-edged so the eye lands here */
+        .cs-col-us {
+            background-color: var(--medium);
+            box-shadow: inset 0 0 0 1px var(--coral);
+        }
+
+        .cs-col-title {
+            font-family: var(--headerFont);
+            font-size: (19/16rem);
+            font-weight: 700;
+            line-height: 1.3em;
+            margin: 0 0 (18/16rem) 0;
+            color: var(--bodyTextColorWhite);
+        }
+
+        .cs-col-list {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            gap: (12/16rem);
+
+            li {
+                font-size: (15/16rem);
+                line-height: 1.5em;
+                list-style: none;
+                color: var(--rainGray);
+                display: flex;
+                align-items: baseline;
+                gap: (10/16rem);
+
+                &:before {
+                    font-family: var(--monoFont);
+                    font-size: (13/16rem);
+                    /* prevents flexbox from squashing the marker */
+                    flex: none;
+                }
+            }
+        }
+
+        .cs-col-them .cs-col-list li:before {
+            content: "\2715";
+            color: var(--rainGray);
+            opacity: 0.5;
+        }
+
+        .cs-col-us .cs-col-list li {
+            color: var(--bodyTextColorWhite);
+
+            &:before {
+                content: "\2713";
+                color: var(--coral);
+            }
+        }
+    }
+}
+
+/* Tablet - 768px */
+@media only screen and (min-width: 48rem) {
+    #compare {
+        .cs-compare {
+            grid-template-columns: repeat(2, 1fr);
+            gap: (24/16rem);
+        }
+    }
+}
+
+/*-- -------------------------- -->
+<---           Proof            -->
+<--- -------------------------- -*/
+
+/* A quote plus two project cards. The screenshots are CSS placeholders, not
+   <img> tags — there are no real project shots yet and a broken image or a
+   stock photo would both be worse than an honest empty frame. Swap
+   .cs-work-shot for a <picture> using getUrl once real screenshots exist. */
+
+/* Mobile - 360px */
+@media only screen and (min-width: 0rem) {
+    #proof {
+        background-color: var(--warmSand);
+        padding: var(--sectionPadding);
+
+        --rule: rgba(27, 42, 56, 0.15);
+
+        .cs-container {
+            width: 100%;
+            max-width: (1280/16rem);
+            margin: auto;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(2rem, 3.5vw, 3rem);
+        }
+
+        .cs-content {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .cs-topper {
+            font-family: var(--monoFont);
+            font-size: (12/16rem);
+            font-weight: 500;
+            line-height: 1em;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--coral);
+            background-color: rgba(214, 85, 61, 0.14);
+            padding: (8/16rem) (14/16rem);
+            border-radius: (40/16rem);
+            margin: 0 0 (20/16rem) 0;
+        }
+
+        .cs-title {
+            font-family: var(--headerFont);
+            font-size: clamp(1.875rem, 4vw, 2.875rem);
+            font-weight: 800;
+            line-height: 1.14em;
+            letter-spacing: -0.02em;
+            max-width: 18ch;
+            margin: 0;
+            color: var(--inkNavy);
+
+            .cs-accent {
+                color: var(--coral);
+            }
+        }
+
+        .cs-quote {
+            margin: 0;
+            padding: 0 0 0 clamp(1rem, 2.5vw, 1.75rem);
+            border-left: (3/16rem) solid var(--coral);
+        }
+
+        .cs-quote-text {
+            font-family: var(--headerFont);
+            /* 20px - 30px */
+            font-size: clamp(1.25rem, 2.6vw, 1.875rem);
+            font-weight: 600;
+            line-height: 1.4em;
+            letter-spacing: -0.01em;
+            max-width: 34ch;
+            margin: 0;
+            color: var(--inkNavy);
+        }
+
+        .cs-quote-cite {
+            font-family: var(--monoFont);
+            font-size: (13/16rem);
+            font-style: normal;
+            line-height: 1.4em;
+            color: var(--pugetBlue);
+            margin-top: (16/16rem);
+            display: block;
+        }
+
+        .cs-work-group {
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: (24/16rem);
+        }
+
+        .cs-work-item {
+            list-style: none;
+        }
+
+        /* placeholder frame — see the note above this block */
+        .cs-work-shot {
+            width: 100%;
+            aspect-ratio: 16 / 10;
+            background-color: rgba(27, 42, 56, 0.06);
+            border: 1px dashed var(--rule);
+            border-radius: (14/16rem);
+            margin-bottom: (16/16rem);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            span {
+                font-family: var(--monoFont);
+                font-size: (11/16rem);
+                letter-spacing: 0.1em;
+                text-transform: uppercase;
+                color: var(--pugetBlue);
+                opacity: 0.5;
+            }
+        }
+
+        .cs-work-title {
+            font-family: var(--headerFont);
+            font-size: (18/16rem);
+            font-weight: 700;
+            line-height: 1.3em;
+            margin: 0 0 (6/16rem) 0;
+            color: var(--inkNavy);
+        }
+
+        .cs-work-text {
+            font-size: (15/16rem);
+            line-height: 1.6em;
+            margin: 0;
+            color: var(--pugetBlue);
+        }
+
+        .cs-link {
+            font-family: var(--bodyFont);
+            font-size: (16/16rem);
+            font-weight: 600;
+            line-height: 1em;
+            text-decoration: none;
+            color: var(--inkNavy);
+            display: inline-flex;
+            align-items: center;
+            gap: (8/16rem);
+            transition: color 0.25s;
+
+            .cs-arrow {
+                transition: transform 0.25s;
+            }
+
+            &:hover {
+                color: var(--coral);
+
+                .cs-arrow {
+                    transform: translateX(4px);
+                }
+            }
+        }
+    }
+}
+
+/* Tablet - 768px */
+@media only screen and (min-width: 48rem) {
+    #proof {
+        .cs-work-group {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+}
+
+/*-- -------------------------- -->
+<---     Related services       -->
+<--- -------------------------- -*/
+
+/* Two cards pointing at the other service pages. Fixes the dead-end: before
+   this, nothing below the hero linked anywhere. */
+
+/* Mobile - 360px */
+@media only screen and (min-width: 0rem) {
+    #related {
+        background-color: var(--warmSand);
+        padding: var(--sectionPadding);
+
+        --rule: rgba(27, 42, 56, 0.15);
+
+        .cs-container {
+            width: 100%;
+            max-width: (1280/16rem);
+            margin: auto;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(1.75rem, 3vw, 2.5rem);
+        }
+
+        /* .cs-content must stay a flex column with align-items:flex-start —
+           the global .cs-topper is display:block, so in a plain block wrapper
+           the pill stretches the full container width. */
+        .cs-content {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .cs-topper {
+            font-family: var(--monoFont);
+            font-size: (12/16rem);
+            font-weight: 500;
+            line-height: 1em;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--coral);
+            background-color: rgba(214, 85, 61, 0.14);
+            padding: (8/16rem) (14/16rem);
+            border-radius: (40/16rem);
+            margin: 0 0 (18/16rem) 0;
+        }
+
+        .cs-title {
+            font-family: var(--headerFont);
+            font-size: clamp(1.625rem, 3vw, 2.25rem);
+            font-weight: 800;
+            line-height: 1.15em;
+            letter-spacing: -0.02em;
+            max-width: 20ch;
+            margin: 0;
+            color: var(--inkNavy);
+
+            .cs-accent {
+                color: var(--coral);
+            }
+        }
+
+        .cs-related-group {
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: (16/16rem);
+        }
+
+        .cs-related-item {
+            list-style: none;
+        }
+
+        .cs-related-link {
+            height: 100%;
+            box-sizing: border-box;
+            padding: clamp(1.5rem, 2.8vw, 2rem);
+            background-color: #fff;
+            border: 1px solid var(--rule);
+            border-radius: (18/16rem);
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            transition: border-color 0.25s, transform 0.25s;
+
+            &:hover {
+                border-color: var(--coral);
+                transform: translateY(-3px);
+
+                .cs-related-arrow {
+                    transform: translateX(4px);
+                    color: var(--coral);
+                }
+            }
+        }
+
+        .cs-related-title {
+            font-family: var(--headerFont);
+            font-size: (20/16rem);
+            font-weight: 700;
+            line-height: 1.3em;
+            margin: 0 0 (8/16rem) 0;
+            color: var(--inkNavy);
+        }
+
+        .cs-related-text {
+            font-size: (15/16rem);
+            line-height: 1.6em;
+            margin: 0 0 (18/16rem) 0;
+            color: var(--pugetBlue);
+        }
+
+        .cs-related-arrow {
+            font-family: var(--bodyFont);
+            font-size: (18/16rem);
+            line-height: 1em;
+            color: var(--inkNavy);
+            /* pins the arrow to the card foot so pairs line up */
+            margin-top: auto;
+            display: block;
+            transition: transform 0.25s, color 0.25s;
+        }
+    }
+}
+
+/* Tablet - 768px */
+@media only screen and (min-width: 48rem) {
+    #related {
+        .cs-related-group {
+            grid-template-columns: repeat(2, 1fr);
+            gap: (20/16rem);
+        }
+    }
+}
+
+/* Dark Mode — the tan sections above flip; the navy bands only deepen */
+@media only screen and (min-width: 0rem) {
+    body.dark-mode {
+        #compare {
+            background-color: rgba(0, 0, 0, 0.25);
+        }
+
+        #proof,
+        #related {
+            background-color: var(--dark);
+
+            .cs-title,
+            .cs-quote-text,
+            .cs-work-title,
+            .cs-related-title,
+            .cs-link {
+                color: var(--bodyTextColorWhite);
+            }
+
+            .cs-quote-cite,
+            .cs-work-text,
+            .cs-related-text {
+                color: var(--rainGray);
+            }
+        }
+
+        #proof {
+            --rule: rgba(255, 255, 255, 0.14);
+
+            .cs-work-shot {
+                background-color: rgba(255, 255, 255, 0.04);
+
+                span {
+                    color: var(--rainGray);
+                }
+            }
+        }
+
+        #related {
+            --rule: rgba(255, 255, 255, 0.12);
+
+            .cs-related-link {
+                background-color: var(--medium);
+            }
+
+            .cs-related-arrow {
+                color: var(--bodyTextColorWhite);
+            }
+        }
+    }
+}

@@ -21,13 +21,545 @@ eleventyComputed:
 {% extends "layouts/base.html" %}
 
 {% block head %}
-    <link rel="stylesheet" href="/assets/css/{{ page.fileSlug }}.css">
+    <!-- All three service pages share one stylesheet. They are the same
+         layout with different content, so this is services.less rather
+         than three byte-identical per-page files. Hardcoded rather than
+         {{ page.fileSlug }}, because the slug no longer names the file.
+         A page that later needs its own rules can link a second sheet. -->
+    <link rel="stylesheet" href="/assets/css/services.css">
 {% endblock %}
 
 {% block body %}
 
     {% include "sections/page-hero.html" %}
 
-    <!-- Website maintenance detail sections to come. -->
+    <!-- ============================================ -->
+    <!--            Performance targets             -->
+    <!-- ============================================ -->
+
+    <!-- NEEDS BRYAN'S CONFIRMATION:
+    - "<24h turnaround" hardens the hero's softer "usually the same day"
+    into a stated commitment. Keep only if you're happy to be held to it.
+    - "24/7 monitored" requires uptime monitoring to actually exist
+    (UptimeRobot / Better Stack / Netlify alerts). Set it up or cut the card.
+    - "0 plugins" is the one that's structurally true: an Eleventy static
+    build genuinely has no plugin layer to patch. -->
+
+    <section id="services-1282">
+        <div class="cs-container">
+            <div class="cs-content">
+                <h2 class="cs-title">Looked after, not left alone<span class="cs-accent">.</span></h2>
+                <span class="cs-topper">Care standards &middot; every site, every month</span>
+            </div>
+            <p class="cs-text">
+                A website isn't finished the day it launches. Every plan covers the unglamorous work that keeps it fast, safe and current, so you never have to think about it.
+            </p>
+            <ul class="cs-card-group">
+                <li class="cs-item">
+                    <div class="cs-gauge">
+                        <svg class="cs-ring" viewBox="0 0 100 100" aria-hidden="true">
+                            <circle class="cs-ring-track" cx="50" cy="50" r="44" pathLength="100"></circle>
+                            <circle class="cs-ring-arc" cx="50" cy="50" r="44" pathLength="100" style="--arc: 92"></circle>
+                        </svg>
+                        <span class="cs-number">&lt;24h</span>
+                        <span class="cs-unit">Edits</span>
+                    </div>
+                    <div class="cs-item-content">
+                        <h3 class="cs-h3">Edits handled for you</h3>
+                        <p class="cs-item-text">
+                            Send the change in plain English. Most go live the same day, and never later than the next business day.
+                        </p>
+                    </div>
+                </li>
+                <li class="cs-item">
+                    <div class="cs-gauge">
+                        <svg class="cs-ring" viewBox="0 0 100 100" aria-hidden="true">
+                            <circle class="cs-ring-track" cx="50" cy="50" r="44" pathLength="100"></circle>
+                            <circle class="cs-ring-arc" cx="50" cy="50" r="44" pathLength="100" style="--arc: 100"></circle>
+                        </svg>
+                        <span class="cs-number">0</span>
+                        <span class="cs-unit">Plugins</span>
+                    </div>
+                    <div class="cs-item-content">
+                        <h3 class="cs-h3">Nothing to patch</h3>
+                        <p class="cs-item-text">
+                            Static pages, no WordPress. There's no admin login to brute-force and no plugin security queue to chase.
+                        </p>
+                    </div>
+                </li>
+                <li class="cs-item">
+                    <div class="cs-gauge">
+                        <svg class="cs-ring" viewBox="0 0 100 100" aria-hidden="true">
+                            <circle class="cs-ring-track" cx="50" cy="50" r="44" pathLength="100"></circle>
+                            <circle class="cs-ring-arc" cx="50" cy="50" r="44" pathLength="100" style="--arc: 99"></circle>
+                        </svg>
+                        <span class="cs-number">24/7</span>
+                        <span class="cs-unit">Checks</span>
+                    </div>
+                    <div class="cs-item-content">
+                        <h3 class="cs-h3">Uptime watched</h3>
+                        <p class="cs-item-text">
+                            Automated checks run around the clock, so if something breaks I hear about it before your customers do.
+                        </p>
+                    </div>
+                </li>
+            </ul>
+            <p class="cs-note">
+                Hosting, SSL, backups and content edits are all included in the monthly plan. No per-change invoices.
+            </p>
+        </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!--             Why it's different             -->
+    <!-- ============================================ -->
+
+    <section id="services-1301">
+        <div class="cs-container">
+            <div class="cs-content">
+                <div class="cs-flex-group">
+                    <span class="cs-topper">Why it isn't a support ticket</span>
+                    <h2 class="cs-title">Maintenance is a habit, not a helpdesk<span class="cs-accent">.</span></h2>
+                </div>
+                <p class="cs-text">
+                    Most care plans are a phone number you call once something is already broken. The work that actually keeps a site healthy happens quietly, every month, before you would ever notice.
+                </p>
+            </div>
+            <ul class="cs-card-group">
+                <li class="cs-item">
+                    <h3 class="cs-h3">Nothing to log into</h3>
+                    <p class="cs-item-text">
+                        No dashboard, no password to reset, no admin panel going stale between visits.
+                    </p>
+                </li>
+                <li class="cs-item">
+                    <h3 class="cs-h3">One person who knows your site</h3>
+                    <p class="cs-item-text">
+                        You are not re-explaining your business to whoever picks up the ticket. I built it, so I know what changed and why.
+                    </p>
+                </li>
+                <li class="cs-item">
+                    <h3 class="cs-h3">Small changes, same day</h3>
+                    <p class="cs-item-text">
+                        A new price, seasonal hours, a photo swap. Send it in a sentence and it is done.
+                    </p>
+                </li>
+                <li class="cs-item">
+                    <h3 class="cs-h3">The dull work, handled</h3>
+                    <p class="cs-item-text">
+                        Certificates, dependencies, broken links and backups. None of it is interesting, and all of it is why nothing breaks.
+                    </p>
+                </li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!--              Steps / timeline              -->
+    <!-- ============================================ -->
+
+    <!-- NEEDS BRYAN'S CONFIRMATION: the same-day turnaround and the quarterly
+    review are commitments. Same-day matches the <24h figure in the metrics
+    section above, so keep the two in step. -->
+
+    <section id="steps-276">
+        <div class="cs-container">
+            <div class="cs-content">
+                <h2 class="cs-title">What a month looks like<span class="cs-accent">.</span></h2>
+                <span class="cs-topper">No tickets, no scheduled downtime</span>
+                <p class="cs-text">
+                    There is no queue to wait in and no maintenance window to plan around. This is what actually happens across a month, most of which you will never see.
+                </p>
+            </div>
+            <ul class="cs-card-group">
+                <li class="cs-item">
+                    <span class="cs-number">Any day</span>
+                    <div class="cs-card">
+                        <h3 class="cs-h3">You send a change</h3>
+                        <p class="cs-item-text">
+                            An email or a text, in plain English. No form to fill in, no ticket number, no describing which dashboard tab the button lives in.
+                        </p>
+                    </div>
+                    <span class="cs-outcome">change acknowledged</span>
+                </li>
+                <li class="cs-item">
+                    <span class="cs-number">Same day</span>
+                    <div class="cs-card">
+                        <h3 class="cs-h3">It goes live</h3>
+                        <p class="cs-item-text">
+                            Small edits are made and deployed that day. Anything larger gets a time estimate back before the work starts, so nothing is a surprise.
+                        </p>
+                    </div>
+                    <span class="cs-outcome">deployed to production</span>
+                </li>
+                <li class="cs-item">
+                    <span class="cs-number">Every month</span>
+                    <div class="cs-card">
+                        <h3 class="cs-h3">The quiet checks</h3>
+                        <p class="cs-item-text">
+                            Dependencies, certificates, broken links, backups, and a fresh performance run against the targets further up this page.
+                        </p>
+                    </div>
+                    <span class="cs-outcome">monthly check complete</span>
+                </li>
+                <li class="cs-item">
+                    <span class="cs-number">Every quarter</span>
+                    <div class="cs-card">
+                        <h3 class="cs-h3">A short review</h3>
+                        <p class="cs-item-text">
+                            What people are actually clicking, what has slowed down, and whether anything on the site has quietly gone out of date.
+                        </p>
+                    </div>
+                    <span class="cs-outcome">plain-English summary</span>
+                </li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!--          Programme / workstreams           -->
+    <!-- ============================================ -->
+
+    <!-- NEEDS BRYAN'S CONFIRMATION: "Text and image edits, included" (02) and
+    the monitoring plus quarterly review (04) are service commitments that
+    repeat what the sections above promise. Card 02 stops short of saying
+    "unlimited" on purpose - say the word if you want that stronger, but it
+    is much harder to walk back. -->
+
+    <section id="services-1975">
+        <div class="cs-container">
+            <div class="cs-content">
+                <span class="cs-topper">The programme</span>
+                <h2 class="cs-title">What's in every plan<span class="cs-accent">.</span></h2>
+                <p class="cs-text">
+                    Four workstreams, all included in the monthly price. No tiers, no add-ons, no per-change invoices. Every site gets the same treatment regardless of how big it is.
+                </p>
+            </div>
+            <ul class="cs-card-group">
+                <li class="cs-item">
+                    <span class="cs-number">01</span>
+                    <div class="cs-flex">
+                        <h3 class="cs-h3">Hosting and delivery</h3>
+                        <p class="cs-item-text">
+                            Fast, global, and somebody else's problem.
+                        </p>
+                    </div>
+                    <ul class="cs-checklist">
+                        <li>Global CDN hosting</li>
+                        <li>SSL certificate managed</li>
+                        <li>Automatic deploys</li>
+                        <li>No server to maintain</li>
+                    </ul>
+                </li>
+                <li class="cs-item">
+                    <span class="cs-number">02</span>
+                    <div class="cs-flex">
+                        <h3 class="cs-h3">Content edits</h3>
+                        <p class="cs-item-text">
+                            Send it in a sentence and it gets done.
+                        </p>
+                    </div>
+                    <ul class="cs-checklist">
+                        <li>Text and image edits, included</li>
+                        <li>New pages as you need them</li>
+                        <li>Same day on small changes</li>
+                        <li>No dashboard to learn</li>
+                    </ul>
+                </li>
+                <li class="cs-item">
+                    <span class="cs-number">03</span>
+                    <div class="cs-flex">
+                        <h3 class="cs-h3">Security and backups</h3>
+                        <p class="cs-item-text">
+                            Almost no attack surface, and still backed up.
+                        </p>
+                    </div>
+                    <ul class="cs-checklist">
+                        <li>No plugins or admin login</li>
+                        <li>Full version history</li>
+                        <li>Restore to any previous state</li>
+                        <li>Dependencies kept current</li>
+                    </ul>
+                </li>
+                <li class="cs-item">
+                    <span class="cs-number">04</span>
+                    <div class="cs-flex">
+                        <h3 class="cs-h3">Watching and reviewing</h3>
+                        <p class="cs-item-text">
+                            Somebody notices before you do, and tells you what it means.
+                        </p>
+                    </div>
+                    <ul class="cs-checklist">
+                        <li>Uptime checks around the clock</li>
+                        <li>Broken link scans</li>
+                        <li>Performance re-tested</li>
+                        <li>Alerts come to me first</li>
+                        <li>Quarterly review of what works</li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!--          Side by side / showcase           -->
+    <!-- ============================================ -->
+
+    <!-- NEEDS BRYAN'S CONFIRMATION: the uptime tile implies continuous
+    monitoring and the history tile implies restorable deploys. Both match
+    claims made further up the page, so confirm or soften them together. -->
+
+    <section id="sbs-r-870">
+        <div class="cs-container">
+            <div class="cs-content">
+                <span class="cs-topper">The work you never see</span>
+                <h2 class="cs-title">Quietly looked after<span class="cs-accent">.</span></h2>
+                <p class="cs-text">
+                    Most of what keeps a website healthy is invisible. Certificates renew, dependencies move on, links to other people's pages quietly break, and none of it announces itself until something is already wrong.
+                </p>
+                <p class="cs-text">
+                    That is the part I take off your hands. You get an email when something needed doing, not a dashboard to go and check.
+                </p>
+            </div>
+            <!-- The panel replaces the stitch's stock photo. Everything in it is
+                 drawn in CSS, so there is no image to optimise and nothing to go
+                 stale. Tile visuals are aria-hidden; the label and note carry the
+                 meaning. Primitives are documented in the LESS. -->
+            <div class="cs-panel">
+                <div class="cs-tile">
+                    <span class="cs-tile-label">Uptime</span>
+                    <div class="cs-swatches cs-strip" aria-hidden="true">
+                        <span style="background-color: #3d6e82"></span>
+                        <span style="background-color: #3d6e82"></span>
+                        <span style="background-color: #3d6e82"></span>
+                        <span style="background-color: #3d6e82"></span>
+                        <span style="background-color: #3d6e82"></span>
+                        <span style="background-color: #3d6e82"></span>
+                        <span style="background-color: #3d6e82"></span>
+                        <span style="background-color: #3d6e82"></span>
+                        <span style="background-color: #3d6e82"></span>
+                        <span style="background-color: #3d6e82"></span>
+                        <span style="background-color: #3d6e82"></span>
+                        <span style="background-color: #3d6e82"></span>
+                        <span style="background-color: #3d6e82"></span>
+                        <span style="background-color: #3d6e82"></span>
+                        <span style="background-color: #3d6e82"></span>
+                        <span style="background-color: #3d6e82"></span>
+                    </div>
+                    <span class="cs-tile-note">checked around the clock</span>
+                </div>
+                <div class="cs-tile">
+                    <span class="cs-tile-label">Version history</span>
+                    <ul class="cs-lines" aria-hidden="true">
+                        <li>a4f21c  copy update</li>
+                        <li>9b0e77  new photos</li>
+                        <li>1d55ae  price change</li>
+                    </ul>
+                    <span class="cs-tile-note">restore any point</span>
+                </div>
+                <div class="cs-tile">
+                    <span class="cs-tile-label">Certificate</span>
+                    <div class="cs-mini" aria-hidden="true">
+                        <span class="cs-mini-secondary">SSL &middot; valid</span>
+                    </div>
+                    <span class="cs-tile-note">renews automatically</span>
+                </div>
+                <div class="cs-tile">
+                    <span class="cs-tile-label">Every month</span>
+                    <ul class="cs-lines" aria-hidden="true">
+                        <li>dependencies</li>
+                        <li>broken links</li>
+                        <li>backups</li>
+                        <li>performance</li>
+                    </ul>
+                    <span class="cs-tile-note">before you notice</span>
+                </div>
+            </div>
+        </div>
+    </section>
+                                
+
+    <!-- ============================================ -->
+<!--                     FAQ                      -->
+    <!-- ============================================ -->
+    <!--                    FAQ                       -->
+    <!-- ============================================ -->
+    <!--                  Compare                     -->
+    <!-- ============================================ -->
+
+    <section id="compare">
+        <div class="cs-container">
+            <div class="cs-content">
+                <span class="cs-topper">Why not a care plan</span>
+                <h2 class="cs-title">Two ways to be looked after<span class="cs-accent">.</span></h2>
+            </div>
+            <div class="cs-compare">
+                <div class="cs-col cs-col-them">
+                    <h3 class="cs-col-title">A typical care plan</h3>
+                    <ul class="cs-col-list">
+                        <li>A ticket queue and a reference number</li>
+                        <li>Edits billed by the hour</li>
+                        <li>Plugin updates that break the layout</li>
+                        <li>You find the outage before they do</li>
+                        <li>A minimum term and a cancellation fee</li>
+                    </ul>
+                </div>
+                <div class="cs-col cs-col-us">
+                    <h3 class="cs-col-title">This plan</h3>
+                    <ul class="cs-col-list">
+                        <li>An email or a text, answered by me</li>
+                        <li>Edits included in the monthly price</li>
+                        <li>Nothing installed that can break</li>
+                        <li>Alerts reach me before your customers</li>
+                        <li>Month to month, no cancellation fee</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!--                   Proof                      -->
+    <!-- ============================================ -->
+
+    <!-- PLACEHOLDER CONTENT. There are no real testimonials or project
+         screenshots yet, so the quote is labelled as illustrative and the
+         screenshots are empty CSS frames rather than stock photos or broken
+         images. Replace both with real client work before launch, and swap
+         .cs-work-shot for a <picture> using the getUrl shortcode. -->
+    <section id="proof">
+        <div class="cs-container">
+            <div class="cs-content">
+                <span class="cs-topper">Sample, not yet real</span>
+                <h2 class="cs-title">Sites that stay looked after<span class="cs-accent">.</span></h2>
+            </div>
+            <blockquote class="cs-quote">
+                <p class="cs-quote-text">&ldquo;Describe what it is like not having to think about the website any more.&rdquo;</p>
+                <cite class="cs-quote-cite">Illustrative example &middot; not a real client quote</cite>
+            </blockquote>
+            <ul class="cs-work-group">
+                <li class="cs-work-item">
+                    <div class="cs-work-shot" aria-hidden="true"><span>project screenshot</span></div>
+                    <h3 class="cs-work-title">Project name</h3>
+                    <p class="cs-work-text">One line on what the site had to do, and what changed after it launched.</p>
+                </li>
+                <li class="cs-work-item">
+                    <div class="cs-work-shot" aria-hidden="true"><span>project screenshot</span></div>
+                    <h3 class="cs-work-title">Project name</h3>
+                    <p class="cs-work-text">One line on what the site had to do, and what changed after it launched.</p>
+                </li>
+            </ul>
+            <a href="/work/" class="cs-link">See the work<span class="cs-arrow" aria-hidden="true">&rarr;</span></a>
+        </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!--                Price band                    -->
+    <!-- ============================================ -->
+
+    <!-- NEEDS BRYAN'S CONFIRMATION: "what counts as an edit" is the answer most
+         likely to be tested by a real client. It stops short of promising
+         unlimited work, matching the wording in the programme section. -->
+    <section id="faq-1236">
+        <div class="cs-container">
+            <div class="cs-content">
+                <span class="cs-topper">Before you ask</span>
+                <h2 class="cs-title">Asked before every plan<span class="cs-accent">.</span></h2>
+            </div>
+            <ul class="cs-faq-group">
+                <li class="cs-faq-item active">
+                    <button class="cs-button">
+                        <span class="cs-button-text">What counts as an edit?</span>
+                    </button>
+                    <p class="cs-item-p">
+                        Text, prices, photos, hours, a new staff member, a seasonal banner, a whole new page. Anything that is content rather than a rebuild. If a request is genuinely a new project you will hear that before any work starts, not on an invoice afterwards.
+                    </p>
+                </li>
+                <li class="cs-faq-item">
+                    <button class="cs-button">
+                        <span class="cs-button-text">How fast do changes go live?</span>
+                    </button>
+                    <p class="cs-item-p">
+                        Small changes are usually done the same day and never later than the next business day. Anything bigger gets a time estimate back before I start, so nothing is a surprise.
+                    </p>
+                </li>
+                <li class="cs-faq-item">
+                    <button class="cs-button">
+                        <span class="cs-button-text">What if my site goes down?</span>
+                    </button>
+                    <p class="cs-item-p">
+                        Automated checks run around the clock and the alert comes to me, not to you. Because the site is static and served from a CDN, there is no server or database to fall over in the first place.
+                    </p>
+                </li>
+                <li class="cs-faq-item">
+                    <button class="cs-button">
+                        <span class="cs-button-text">Is there a contract?</span>
+                    </button>
+                    <p class="cs-item-p">
+                        No. It is month to month and you can stop whenever you like.
+                    </p>
+                </li>
+                <!-- ==========================================================
+                     BRYAN: WRITE THIS ONE, THEN UNCOMMENT IT.
+
+                     This is the question every no-contract monthly client asks,
+                     and the site currently answers it nowhere. I have left the
+                     answer blank on purpose rather than guess: what a client
+                     keeps when they stop paying is a contractual term, not
+                     something to infer from the stack.
+
+                     Decide and fill in: do they keep the site? Do you hand over
+                     the code? Can they host it elsewhere, and do you help them
+                     move? Does it simply come down?
+
+                <li class="cs-faq-item">
+                    <button class="cs-button">
+                        <span class="cs-button-text">What happens if I cancel?</span>
+                    </button>
+                    <p class="cs-item-p">
+                        ...
+                    </p>
+                </li>
+                     ========================================================== -->
+            </ul>
+        </div>
+    </section>
+    <!-- ============================================ -->
+    <!--             Related services                 -->
+    <!-- ============================================ -->
+
+    <section id="related">
+        <div class="cs-container">
+            <div class="cs-content">
+                <span class="cs-topper">Related</span>
+                <h2 class="cs-title">What else I do<span class="cs-accent">.</span></h2>
+            </div>
+            <ul class="cs-related-group">
+                <li class="cs-related-item">
+                    <a href="/services/web-design/" class="cs-related-link">
+                        <h3 class="cs-related-title">Web design</h3>
+                        <p class="cs-related-text">A custom, hand-coded site built around what your customers actually need to do.</p>
+                        <span class="cs-related-arrow" aria-hidden="true">&rarr;</span>
+                    </a>
+                </li>
+                <li class="cs-related-item">
+                    <a href="/services/seo/" class="cs-related-link">
+                        <h3 class="cs-related-title">SEO</h3>
+                        <p class="cs-related-text">Get found by the people already searching for what you do, in the towns you serve.</p>
+                        <span class="cs-related-arrow" aria-hidden="true">&rarr;</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!--                Closing CTA                   -->
+    <!-- ============================================ -->
+    <!--            Free redesign offer               -->
+
+                                
+                                    
+                                
 
 {% endblock %}

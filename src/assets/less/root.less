@@ -1441,6 +1441,116 @@
 }
 
 /*-- -------------------------- -->
+<---   Navigation — Dark Mode   -->
+<--- -------------------------- -*/
+
+/* The kit ships the nav with hardcoded #fff surfaces (mobile bar, mobile menu
+   panel, desktop floating pill, dropdown panel) and navy link text, none of
+   which flip with the theme — in dark mode that rendered as a bright white slab
+   on the navy page, with the logo invisible (it's an <h3>, so the global
+   `body.dark-mode h1..h6 { color: #fff }` rule painted it white-on-white).
+
+   The four tokens below are the single source of truth for the dark nav; every
+   rule in this section reads from them so the surfaces can't drift apart.
+   Hairlines are `inset` box-shadows, never `border` — a real border would move
+   the pill's absolute-positioning origin by 1px (nav-pill.js measures against
+   .cs-container's padding box). */
+
+/* All breakpoints */
+@media only screen and (min-width: 0rem) {
+    body.dark-mode {
+        /* one step lighter than the page navy — standard dark-mode elevation,
+           so the bar still reads as a distinct object floating above the page */
+        --navSurface: var(--medium);
+        --navSurfaceText: var(--bodyTextColorWhite);
+        --navHairline: rgba(255, 255, 255, 0.08);
+        /* LESS passes custom-property values through VERBATIM — it does not
+           evaluate them — so this must be literal rem, not (10/16rem) math */
+        --navShadow: 0 0.625rem 1.875rem rgba(0, 0, 0, 0.45);
+        /* the town band goes DARKER than the page, so its bottom edge survives
+           against the navy hero below it instead of merging into one field */
+        --navBandSurface: #121c26;
+
+        #cs-navigation {
+            .cs-top-bar {
+                background-color: var(--navBandSurface);
+            }
+
+            /* the wordmark is an <h3> — pin it to the warm cream the rest of the
+               bar uses, or the global dark heading rule takes it to #fff */
+            .cs-logo h3 {
+                color: var(--navSurfaceText);
+            }
+        }
+    }
+}
+
+/* Mobile - 1023px */
+@media only screen and (max-width: 1023.5px) {
+    body.dark-mode {
+        #cs-navigation {
+            background-color: var(--navSurface);
+            box-shadow: 0 (8/16rem) (24/16rem) rgba(0, 0, 0, 0.45);
+
+            .cs-ul-wrapper {
+                background-color: var(--navSurface);
+                box-shadow: inset 0 (8/16rem) (24/16rem) rgba(0, 0, 0, 0.35);
+            }
+
+            /* Top-level items only. .cs-drop-link carries .cs-li-link too, and
+               the mobile dropdown panel is coral — its white text already reads
+               on either theme, so it must not be recoloured here. */
+            .cs-ul > .cs-li > .cs-li-link {
+                color: var(--navSurfaceText);
+            }
+        }
+    }
+}
+
+/* Desktop - 1024px */
+@media only screen and (min-width: 1024px) {
+    body.dark-mode {
+        #cs-navigation {
+            /* the floating pill */
+            .cs-container {
+                background-color: var(--navSurface);
+                /* on a dark page a soft drop shadow alone doesn't separate the
+                   panel — the lit top edge is what does the work */
+                box-shadow: var(--navShadow), inset 0 0 0 1px var(--navHairline);
+            }
+
+            /* top-level links only — see the mobile note above */
+            .cs-ul > .cs-li > .cs-li-link {
+                color: var(--navSurfaceText);
+            }
+
+            /* Free Redesign: coral outline stays, only the label needs lifting */
+            .cs-li-cta .cs-li-link {
+                color: var(--navSurfaceText);
+            }
+
+            /* dropdown panel — a smaller sibling of the bar, same treatment */
+            .cs-drop-ul {
+                background-color: var(--navSurface);
+                box-shadow: var(--navShadow), inset 0 0 0 1px var(--navHairline);
+            }
+
+            .cs-li-link.cs-drop-link {
+                color: var(--navSurfaceText);
+            }
+
+            /* Once nav-pill.js runs it strips the CTA's coral fill and sets the
+               label to --inkNavy (it rides on the travelling pill instead) —
+               which is invisible on the slate bar. The pill still paints it #fff
+               via .cs-pill-active when it parks underneath. */
+            .cs-container.cs-pill-ready .cs-nav-button {
+                color: var(--navSurfaceText);
+            }
+        }
+    }
+}
+
+/*-- -------------------------- -->
 <---          Banner            -->
 <--- -------------------------- -*/
 

@@ -23,13 +23,517 @@ eleventyComputed:
 {% extends "layouts/base.html" %}
 
 {% block head %}
-    <link rel="stylesheet" href="/assets/css/{{ page.fileSlug }}.css">
+    <!-- All three service pages share one stylesheet. They are the same
+         layout with different content, so this is services.less rather
+         than three byte-identical per-page files. Hardcoded rather than
+         {{ page.fileSlug }}, because the slug no longer names the file.
+         A page that later needs its own rules can link a second sheet. -->
+    <link rel="stylesheet" href="/assets/css/services.css">
 {% endblock %}
 
 {% block body %}
 
     {% include "sections/page-hero.html" %}
 
-    <!-- SEO detail sections to come. -->
+    <!-- ============================================ -->
+    <!--            Performance targets             -->
+    <!-- ============================================ -->
+
+    <!-- NEEDS BRYAN'S CONFIRMATION:
+    - the closing note promises Google Business Profile setup + Search
+    Console verification on every launch. Both are things you'd do, but
+    it's a service commitment, so confirm before this goes live.
+    - "9 towns" is the real count from src/_data/serviceArea.js. If that
+    list changes, this number has to change with it (it can't read the
+    data file from a static section). -->
+
+    <section id="services-1282">
+        <div class="cs-container">
+            <div class="cs-content">
+                <h2 class="cs-title">Built to be found<span class="cs-accent">.</span></h2>
+                <span class="cs-topper">Technical SEO &middot; shipped with every build</span>
+            </div>
+            <p class="cs-text">
+                Rankings start with a site Google can crawl, read and trust. That groundwork ships with the build itself, never as an upsell once you're already live.
+            </p>
+            <ul class="cs-card-group">
+                <li class="cs-item">
+                    <div class="cs-gauge">
+                        <svg class="cs-ring" viewBox="0 0 100 100" aria-hidden="true">
+                            <circle class="cs-ring-track" cx="50" cy="50" r="44" pathLength="100"></circle>
+                            <circle class="cs-ring-arc" cx="50" cy="50" r="44" pathLength="100" style="--arc: 100"></circle>
+                        </svg>
+                        <span class="cs-number">100</span>
+                        <span class="cs-unit">SEO</span>
+                    </div>
+                    <div class="cs-item-content">
+                        <h3 class="cs-h3">Lighthouse SEO audit</h3>
+                        <p class="cs-item-text">
+                            Unique titles and descriptions, crawlable links, a clean heading structure and a valid sitemap on every template.
+                        </p>
+                    </div>
+                </li>
+                <li class="cs-item">
+                    <div class="cs-gauge">
+                        <svg class="cs-ring" viewBox="0 0 100 100" aria-hidden="true">
+                            <circle class="cs-ring-track" cx="50" cy="50" r="44" pathLength="100"></circle>
+                            <circle class="cs-ring-arc" cx="50" cy="50" r="44" pathLength="100" style="--arc: 75"></circle>
+                        </svg>
+                        <span class="cs-number">9</span>
+                        <span class="cs-unit">Towns</span>
+                    </div>
+                    <div class="cs-item-content">
+                        <h3 class="cs-h3">North Sound coverage</h3>
+                        <p class="cs-item-text">
+                            From Richmond Beach out to Kingston and Bainbridge. Your service area is marked up so Google knows exactly where you work.
+                        </p>
+                    </div>
+                </li>
+                <li class="cs-item">
+                    <div class="cs-gauge">
+                        <svg class="cs-ring" viewBox="0 0 100 100" aria-hidden="true">
+                            <circle class="cs-ring-track" cx="50" cy="50" r="44" pathLength="100"></circle>
+                            <circle class="cs-ring-arc" cx="50" cy="50" r="44" pathLength="100" style="--arc: 90"></circle>
+                        </svg>
+                        <span class="cs-number">AA</span>
+                        <span class="cs-unit">WCAG</span>
+                    </div>
+                    <div class="cs-item-content">
+                        <h3 class="cs-h3">Accessible markup</h3>
+                        <p class="cs-item-text">
+                            Built to WCAG 2.2 AA. Screen readers and search crawlers want the same clean HTML, so building properly for one serves the other.
+                        </p>
+                    </div>
+                </li>
+            </ul>
+            <p class="cs-note">
+                Google Business Profile setup and Search Console verification are part of every launch.
+            </p>
+        </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!--             Why it's different             -->
+    <!-- ============================================ -->
+
+    <section id="services-1301">
+        <div class="cs-container">
+            <div class="cs-content">
+                <div class="cs-flex-group">
+                    <span class="cs-topper">Why local is a different game</span>
+                    <h2 class="cs-title">Local search is a fight you can win<span class="cs-accent">.</span></h2>
+                </div>
+                <p class="cs-text">
+                    Competing for “web design” nationally is a content marketing war against companies with budgets. Competing for “web designer near Edmonds” is a different contest, and a much shorter one.
+                </p>
+            </div>
+            <ul class="cs-card-group">
+                <li class="cs-item">
+                    <h3 class="cs-h3">Proximity beats budget</h3>
+                    <p class="cs-item-text">
+                        Google weighs how close you are to the person searching. That is an advantage no out-of-town agency can outspend.
+                    </p>
+                </li>
+                <li class="cs-item">
+                    <h3 class="cs-h3">The map pack is the real estate</h3>
+                    <p class="cs-item-text">
+                        Three local results sit above the ordinary links. Getting into them is Google Business Profile work, not blogging.
+                    </p>
+                </li>
+                <li class="cs-item">
+                    <h3 class="cs-h3">The intent is already there</h3>
+                    <p class="cs-item-text">
+                        Someone searching “near me” has stopped researching. The page only has to make calling you the obvious next step.
+                    </p>
+                </li>
+                <li class="cs-item">
+                    <h3 class="cs-h3">One page per question</h3>
+                    <p class="cs-item-text">
+                        Separate pages for separate searches. A single scrolling page gives Google just one answer for every query.
+                    </p>
+                </li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!--              Steps / timeline              -->
+    <!-- ============================================ -->
+
+    <!-- NEEDS BRYAN'S CONFIRMATION: the Google Business Profile build and the
+    monthly reporting below are service commitments. They match the closing
+    note in the metrics section, so change both together if you change one. -->
+
+    <section id="steps-276">
+        <div class="cs-container">
+            <div class="cs-content">
+                <h2 class="cs-title">What happens, and when<span class="cs-accent">.</span></h2>
+                <span class="cs-topper">The first 90 days, in order</span>
+                <p class="cs-text">
+                    Local SEO is not a switch you flip. This is the order the work happens in, and what you should expect to have in hand at each point.
+                </p>
+            </div>
+            <ul class="cs-card-group">
+                <li class="cs-item">
+                    <span class="cs-number">Week 1</span>
+                    <div class="cs-card">
+                        <h3 class="cs-h3">Audit and baseline</h3>
+                        <p class="cs-item-text">
+                            Where you rank today, what the other local shops are doing, and what Google already believes about your business. Written down so there is something to measure against.
+                        </p>
+                    </div>
+                    <span class="cs-outcome">baseline report</span>
+                </li>
+                <li class="cs-item">
+                    <span class="cs-number">Weeks 1-2</span>
+                    <div class="cs-card">
+                        <h3 class="cs-h3">On-page and technical</h3>
+                        <p class="cs-item-text">
+                            Titles, descriptions, headings, internal links and structured data, page by page. The groundwork everything else depends on.
+                        </p>
+                    </div>
+                    <span class="cs-outcome">clean technical base</span>
+                </li>
+                <li class="cs-item">
+                    <span class="cs-number">Weeks 2-4</span>
+                    <div class="cs-card">
+                        <h3 class="cs-h3">Google Business Profile</h3>
+                        <p class="cs-item-text">
+                            Categories, service areas, hours, photos and the description, filled in properly. This is the work that actually moves the map pack.
+                        </p>
+                    </div>
+                    <span class="cs-outcome">profile fully built</span>
+                </li>
+                <li class="cs-item">
+                    <span class="cs-number">Ongoing</span>
+                    <div class="cs-card">
+                        <h3 class="cs-h3">Measure and adjust</h3>
+                        <p class="cs-item-text">
+                            Search Console reviewed monthly. Which searches you are winning, which you are close on, and what is worth writing next.
+                        </p>
+                    </div>
+                    <span class="cs-outcome">monthly numbers</span>
+                </li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!--          Programme / workstreams           -->
+    <!-- ============================================ -->
+
+    <!-- NEEDS BRYAN'S CONFIRMATION: card 03 (Google Business Profile work) and
+    card 04 (monthly reporting) repeat commitments already made in the
+    metrics and timeline sections above. Change all of them together. -->
+
+    <section id="services-1975">
+        <div class="cs-container">
+            <div class="cs-content">
+                <span class="cs-topper">The programme</span>
+                <h2 class="cs-title">What's in every engagement<span class="cs-accent">.</span></h2>
+                <p class="cs-text">
+                    Four workstreams, all included. There are no bronze, silver and gold tiers here. Whether you are competing in one town or nine, the same four run and only the depth changes.
+                </p>
+            </div>
+            <ul class="cs-card-group">
+                <li class="cs-item">
+                    <span class="cs-number">01</span>
+                    <div class="cs-flex">
+                        <h3 class="cs-h3">Audit and baseline</h3>
+                        <p class="cs-item-text">
+                            Know where you actually stand before spending anything.
+                        </p>
+                    </div>
+                    <ul class="cs-checklist">
+                        <li>Current rankings by search</li>
+                        <li>Full technical crawl</li>
+                        <li>Competitor landscape</li>
+                        <li>Written baseline to measure against</li>
+                    </ul>
+                </li>
+                <li class="cs-item">
+                    <span class="cs-number">02</span>
+                    <div class="cs-flex">
+                        <h3 class="cs-h3">On-page and technical</h3>
+                        <p class="cs-item-text">
+                            Everything Google reads first, and nothing left blocking the crawler.
+                        </p>
+                    </div>
+                    <ul class="cs-checklist">
+                        <li>Titles and meta descriptions</li>
+                        <li>Heading structure</li>
+                        <li>Internal linking</li>
+                        <li>Structured data</li>
+                        <li>Sitemap, robots.txt, Core Web Vitals</li>
+                    </ul>
+                </li>
+                <li class="cs-item">
+                    <span class="cs-number">03</span>
+                    <div class="cs-flex">
+                        <h3 class="cs-h3">Local presence</h3>
+                        <p class="cs-item-text">
+                            Where local search is actually won or lost.
+                        </p>
+                    </div>
+                    <ul class="cs-checklist">
+                        <li>Google Business Profile</li>
+                        <li>Service areas and categories</li>
+                        <li>Name, address and phone consistency</li>
+                        <li>Review prompts</li>
+                    </ul>
+                </li>
+                <li class="cs-item">
+                    <span class="cs-number">04</span>
+                    <div class="cs-flex">
+                        <h3 class="cs-h3">Measure and adjust</h3>
+                        <p class="cs-item-text">
+                            Rankings mean little without the numbers behind them.
+                        </p>
+                    </div>
+                    <ul class="cs-checklist">
+                        <li>Search Console monitoring</li>
+                        <li>Monthly ranking check</li>
+                        <li>What is worth writing next</li>
+                        <li>Plain-English reporting</li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!--          Side by side / showcase           -->
+    <!-- ============================================ -->
+
+    <!-- The SERP tile below is an illustration of structure, not a real ranking
+    or a screenshot of a live result. Keep it generic. -->
+
+    <section id="sbs-r-870">
+        <div class="cs-container">
+            <div class="cs-content">
+                <span class="cs-topper">Structured for search</span>
+                <h2 class="cs-title">What Google actually sees<span class="cs-accent">.</span></h2>
+                <p class="cs-text">
+                    A search engine does not see your homepage the way you do. It reads the title, the headings, the links between pages and the structured data underneath, then decides what your business is and where it works.
+                </p>
+                <p class="cs-text">
+                    All of that gets written deliberately rather than left to whatever a page builder emitted. It is the difference between hoping to be found and being legible.
+                </p>
+            </div>
+            <!-- The panel replaces the stitch's stock photo. Everything in it is
+                 drawn in CSS, so there is no image to optimise and nothing to go
+                 stale. Tile visuals are aria-hidden; the label and note carry the
+                 meaning. Primitives are documented in the LESS. -->
+            <div class="cs-panel">
+                <div class="cs-tile">
+                    <span class="cs-tile-label">Search result</span>
+                    <div class="cs-serp" aria-hidden="true">
+                        <span class="cs-serp-title">Web Designer in Edmonds, WA</span>
+                        <span class="cs-serp-url">yoursite.com &rsaquo; services</span>
+                        <span class="cs-serp-desc">Hand-coded small business websites across the North Sound.</span>
+                    </div>
+                    <span class="cs-tile-note">title, url, description</span>
+                </div>
+                <div class="cs-tile">
+                    <span class="cs-tile-label">Structured data</span>
+                    <ul class="cs-lines" aria-hidden="true">
+                        <li>LocalBusiness</li>
+                        <li class="cs-in1">areaServed</li>
+                        <li class="cs-in1">openingHours</li>
+                        <li class="cs-in1">priceRange</li>
+                    </ul>
+                    <span class="cs-tile-note">so Google knows where</span>
+                </div>
+                <div class="cs-tile">
+                    <span class="cs-tile-label">Heading outline</span>
+                    <ul class="cs-lines" aria-hidden="true">
+                        <li>h1  Web design</li>
+                        <li class="cs-in1">h2  What you get</li>
+                        <li class="cs-in2">h3  Timeline</li>
+                        <li class="cs-in1">h2  Pricing</li>
+                    </ul>
+                    <span class="cs-tile-note">one h1 per page</span>
+                </div>
+                <div class="cs-tile">
+                    <span class="cs-tile-label">Search intent</span>
+                    <ul class="cs-tags" aria-hidden="true">
+                        <li>web designer edmonds</li>
+                        <li>small business website</li>
+                        <li>web design near me</li>
+                    </ul>
+                    <span class="cs-tile-note">one page per question</span>
+                </div>
+            </div>
+        </div>
+    </section>
+                                
+    <!-- ============================================ -->
+<!--                     FAQ                      -->
+    <!-- ============================================ -->
+    <!--                    FAQ                       -->
+    <!-- ============================================ -->
+    <!--                  Compare                     -->
+    <!-- ============================================ -->
+
+    <section id="compare">
+        <div class="cs-container">
+            <div class="cs-content">
+                <span class="cs-topper">Why local is different</span>
+                <h2 class="cs-title">Two ways to do SEO<span class="cs-accent">.</span></h2>
+            </div>
+            <div class="cs-compare">
+                <div class="cs-col cs-col-them">
+                    <h3 class="cs-col-title">A national agency</h3>
+                    <ul class="cs-col-list">
+                        <li>Reports full of numbers that do not sell anything</li>
+                        <li>A junior account manager you rarely speak to</li>
+                        <li>Blog posts nobody was searching for</li>
+                        <li>Contracts measured in years</li>
+                        <li>Has never heard of Richmond Beach</li>
+                    </ul>
+                </div>
+                <div class="cs-col cs-col-us">
+                    <h3 class="cs-col-title">Someone in your service area</h3>
+                    <ul class="cs-col-list">
+                        <li>Rankings for searches that bring calls</li>
+                        <li>One person who knows your business</li>
+                        <li>Pages built around real questions</li>
+                        <li>Month to month, cancel any time</li>
+                        <li>Knows which towns are worth competing in</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!--                   Proof                      -->
+    <!-- ============================================ -->
+
+    <!-- PLACEHOLDER CONTENT. There are no real testimonials or project
+         screenshots yet, so the quote is labelled as illustrative and the
+         screenshots are empty CSS frames rather than stock photos or broken
+         images. Replace both with real client work before launch, and swap
+         .cs-work-shot for a <picture> using the getUrl shortcode. -->
+    <section id="proof">
+        <div class="cs-container">
+            <div class="cs-content">
+                <span class="cs-topper">Sample, not yet real</span>
+                <h2 class="cs-title">Found by the people nearby<span class="cs-accent">.</span></h2>
+            </div>
+            <blockquote class="cs-quote">
+                <p class="cs-quote-text">&ldquo;Describe what changed in enquiries or calls, in the client's own words.&rdquo;</p>
+                <cite class="cs-quote-cite">Illustrative example &middot; not a real client quote</cite>
+            </blockquote>
+            <ul class="cs-work-group">
+                <li class="cs-work-item">
+                    <div class="cs-work-shot" aria-hidden="true"><span>project screenshot</span></div>
+                    <h3 class="cs-work-title">Project name</h3>
+                    <p class="cs-work-text">One line on what the site had to do, and what changed after it launched.</p>
+                </li>
+                <li class="cs-work-item">
+                    <div class="cs-work-shot" aria-hidden="true"><span>project screenshot</span></div>
+                    <h3 class="cs-work-title">Project name</h3>
+                    <p class="cs-work-text">One line on what the site had to do, and what changed after it launched.</p>
+                </li>
+            </ul>
+            <a href="/work/" class="cs-link">See the work<span class="cs-arrow" aria-hidden="true">&rarr;</span></a>
+        </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!--                Price band                    -->
+    <!-- ============================================ -->
+
+    <!-- The "no guarantees" answer is deliberately blunt. It is the honest
+         position and it separates you from the agencies promising page one, so
+         resist softening it. -->
+    <section id="faq-1236">
+        <div class="cs-container">
+            <div class="cs-content">
+                <span class="cs-topper">Before you ask</span>
+                <h2 class="cs-title">Asked before every engagement<span class="cs-accent">.</span></h2>
+            </div>
+            <ul class="cs-faq-group">
+                <li class="cs-faq-item active">
+                    <button class="cs-button">
+                        <span class="cs-button-text">How long until I see results?</span>
+                    </button>
+                    <p class="cs-item-p">
+                        Local search moves in months, not weeks. Technical fixes and a properly built Google Business Profile can show up within a few weeks; competing for the searches that matter most usually takes longer. Anyone promising faster is guessing.
+                    </p>
+                </li>
+                <li class="cs-faq-item">
+                    <button class="cs-button">
+                        <span class="cs-button-text">Do you guarantee first-page rankings?</span>
+                    </button>
+                    <p class="cs-item-p">
+                        No, and nobody honestly can. Google does not sell placement and does not publish its ranking weights. What can be promised is the work: a technically clean site, a properly built local presence, and reporting you can actually read.
+                    </p>
+                </li>
+                <li class="cs-faq-item">
+                    <button class="cs-button">
+                        <span class="cs-button-text">I already have a website. Do I still need this?</span>
+                    </button>
+                    <p class="cs-item-p">
+                        Often yes. A site can look fine and still be invisible, usually because the titles, headings and structured data were never written deliberately. The audit tells you which it is before you spend anything.
+                    </p>
+                </li>
+                <li class="cs-faq-item">
+                    <button class="cs-button">
+                        <span class="cs-button-text">What is the map pack?</span>
+                    </button>
+                    <p class="cs-item-p">
+                        The block of three local businesses with a map that sits above the ordinary blue links. For a lot of local searches it is where most of the clicks go, and getting into it is Google Business Profile work rather than blogging.
+                    </p>
+                </li>
+                <li class="cs-faq-item">
+                    <button class="cs-button">
+                        <span class="cs-button-text">Do you write the content?</span>
+                    </button>
+                    <p class="cs-item-p">
+                        The structure, titles and descriptions, yes. Longer content is a conversation: you know your business and your customers better than I do, so the usual arrangement is you supply the substance and I make it work for search.
+                    </p>
+                </li>
+            </ul>
+        </div>
+    </section>
+    <!-- ============================================ -->
+    <!--             Related services                 -->
+    <!-- ============================================ -->
+
+    <section id="related">
+        <div class="cs-container">
+            <div class="cs-content">
+                <span class="cs-topper">Related</span>
+                <h2 class="cs-title">What else I do<span class="cs-accent">.</span></h2>
+            </div>
+            <ul class="cs-related-group">
+                <li class="cs-related-item">
+                    <a href="/services/web-design/" class="cs-related-link">
+                        <h3 class="cs-related-title">Web design</h3>
+                        <p class="cs-related-text">A custom, hand-coded site built around what your customers actually need to do.</p>
+                        <span class="cs-related-arrow" aria-hidden="true">&rarr;</span>
+                    </a>
+                </li>
+                <li class="cs-related-item">
+                    <a href="/services/website-maintenance/" class="cs-related-link">
+                        <h3 class="cs-related-title">Website maintenance</h3>
+                        <p class="cs-related-text">Hosting, edits, backups and monitoring, handled every month so you never think about it.</p>
+                        <span class="cs-related-arrow" aria-hidden="true">&rarr;</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!--                Closing CTA                   -->
+    <!-- ============================================ -->
+    <!--            Free redesign offer               -->
+
+                                                   
+                                    
+                                    
 
 {% endblock %}

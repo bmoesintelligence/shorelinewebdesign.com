@@ -21,13 +21,534 @@ eleventyComputed:
 {% extends "layouts/base.html" %}
 
 {% block head %}
-    <link rel="stylesheet" href="/assets/css/{{ page.fileSlug }}.css">
+    <!-- All three service pages share one stylesheet. They are the same
+         layout with different content, so this is services.less rather
+         than three byte-identical per-page files. Hardcoded rather than
+         {{ page.fileSlug }}, because the slug no longer names the file.
+         A page that later needs its own rules can link a second sheet. -->
+    <link rel="stylesheet" href="/assets/css/services.css">
 {% endblock %}
 
 {% block body %}
 
     {% include "sections/page-hero.html" %}
 
-    <!-- Web design detail sections to come. -->
+    <!-- ============================================ -->
+    <!--            Performance targets             -->
+    <!-- ============================================ -->
+
+    <!-- The three values below are Google's own published "good" thresholds for
+    Core Web Vitals, not claimed results. They're a standard to build to,
+    which is why the copy frames them as a floor rather than a score. -->
+
+    <section id="services-1282">
+        <div class="cs-container">
+            <div class="cs-content">
+                <h2 class="cs-title">Engineered to measurable targets<span class="cs-accent">.</span></h2>
+                <span class="cs-topper">Core Web Vitals &middot; held on every page</span>
+            </div>
+            <p class="cs-text">
+                Google's Core Web Vitals are the floor, not the goal. Every page gets measured on a real phone over a real network before it launches, then tested again after.
+            </p>
+            <ul class="cs-card-group">
+                <li class="cs-item">
+                    <div class="cs-gauge">
+                        <svg class="cs-ring" viewBox="0 0 100 100" aria-hidden="true">
+                            <circle class="cs-ring-track" cx="50" cy="50" r="44" pathLength="100"></circle>
+                            <circle class="cs-ring-arc" cx="50" cy="50" r="44" pathLength="100" style="--arc: 88"></circle>
+                        </svg>
+                        <span class="cs-number">&lt;2.5s</span>
+                        <span class="cs-unit">LCP</span>
+                    </div>
+                    <div class="cs-item-content">
+                        <h3 class="cs-h3">Largest Contentful Paint</h3>
+                        <p class="cs-item-text">
+                            Your main content is on screen fast, not after a spinner and three font swaps.
+                        </p>
+                    </div>
+                </li>
+                <li class="cs-item">
+                    <div class="cs-gauge">
+                        <svg class="cs-ring" viewBox="0 0 100 100" aria-hidden="true">
+                            <circle class="cs-ring-track" cx="50" cy="50" r="44" pathLength="100"></circle>
+                            <circle class="cs-ring-arc" cx="50" cy="50" r="44" pathLength="100" style="--arc: 82"></circle>
+                        </svg>
+                        <span class="cs-number">&lt;200ms</span>
+                        <span class="cs-unit">INP</span>
+                    </div>
+                    <div class="cs-item-content">
+                        <h3 class="cs-h3">Interaction to Next Paint</h3>
+                        <p class="cs-item-text">
+                            Taps and clicks answer immediately. No dead-feeling menus, no laggy forms.
+                        </p>
+                    </div>
+                </li>
+                <li class="cs-item">
+                    <div class="cs-gauge">
+                        <svg class="cs-ring" viewBox="0 0 100 100" aria-hidden="true">
+                            <circle class="cs-ring-track" cx="50" cy="50" r="44" pathLength="100"></circle>
+                            <circle class="cs-ring-arc" cx="50" cy="50" r="44" pathLength="100" style="--arc: 94"></circle>
+                        </svg>
+                        <span class="cs-number">&lt;0.1</span>
+                        <span class="cs-unit">CLS</span>
+                    </div>
+                    <div class="cs-item-content">
+                        <h3 class="cs-h3">Cumulative Layout Shift</h3>
+                        <p class="cs-item-text">
+                            Nothing jumps while the page loads. Space is reserved for every image and embed.
+                        </p>
+                    </div>
+                </li>
+            </ul>
+            <p class="cs-note">
+                Plus semantic HTML, WCAG 2.2 AA contrast and full keyboard support on every template.
+            </p>
+        </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!--             Why it's different             -->
+    <!-- ============================================ -->
+
+    <section id="services-1301">
+        <div class="cs-container">
+            <div class="cs-content">
+                <div class="cs-flex-group">
+                    <span class="cs-topper">Why it's a different build</span>
+                    <h2 class="cs-title">Hand-built means no ceiling<span class="cs-accent">.</span></h2>
+                </div>
+                <p class="cs-text">
+                    Page builders start fast and then hit a wall. The layout you actually want needs a plugin, the plugin costs you speed, and the speed costs you in search. Writing it by hand removes the ceiling.
+                </p>
+            </div>
+            <ul class="cs-card-group">
+                <li class="cs-item">
+                    <h3 class="cs-h3">No plugin tax</h3>
+                    <p class="cs-item-text">
+                        Every feature is written for your site. Nothing loads a 300KB library just to render a button.
+                    </p>
+                </li>
+                <li class="cs-item">
+                    <h3 class="cs-h3">One person, start to finish</h3>
+                    <p class="cs-item-text">
+                        Whoever designs it writes the code and answers your email. Nothing gets lost in a handoff.
+                    </p>
+                </li>
+                <li class="cs-item">
+                    <h3 class="cs-h3">Shaped around your customer</h3>
+                    <p class="cs-item-text">
+                        The layout follows what your customers actually need to do, not what a theme demo happened to look like.
+                    </p>
+                </li>
+                <li class="cs-item">
+                    <h3 class="cs-h3">Room to grow</h3>
+                    <p class="cs-item-text">
+                        A new service page, a booking form, a second location. The structure is ready for it without a rebuild.
+                    </p>
+                </li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!--              Steps / timeline              -->
+    <!-- ============================================ -->
+
+    <!-- NEEDS BRYAN'S CONFIRMATION: the "two to four weeks" delivery window and
+    the stage timings below are commitments, not observations. Adjust them
+    to whatever you can actually hold to on a busy month. -->
+
+    <section id="steps-276">
+        <div class="cs-container">
+            <div class="cs-content">
+                <h2 class="cs-title">What happens, and when<span class="cs-accent">.</span></h2>
+                <span class="cs-topper">Scope and price fixed before design starts</span>
+                <p class="cs-text">
+                    Most small business sites go live in two to four weeks. You review real pages in your own browser, not flat mockups, and you know what each stage produces before it begins.
+                </p>
+            </div>
+            <ul class="cs-card-group">
+                <li class="cs-item">
+                    <span class="cs-number">Days 1-3</span>
+                    <div class="cs-card">
+                        <h3 class="cs-h3">Scope and sitemap</h3>
+                        <p class="cs-item-text">
+                            A short call about what your customers need to do, then a page-by-page plan and a fixed price. You approve both before any design work starts.
+                        </p>
+                    </div>
+                    <span class="cs-outcome">signed scope</span>
+                </li>
+                <li class="cs-item">
+                    <span class="cs-number">Week 1</span>
+                    <div class="cs-card">
+                        <h3 class="cs-h3">Design in the browser</h3>
+                        <p class="cs-item-text">
+                            Your homepage and one interior page, built as real pages you can click on your own phone. Changes are cheap at this stage, so this is where we make them.
+                        </p>
+                    </div>
+                    <span class="cs-outcome">approved key pages</span>
+                </li>
+                <li class="cs-item">
+                    <span class="cs-number">Weeks 2-3</span>
+                    <div class="cs-card">
+                        <h3 class="cs-h3">Build and content</h3>
+                        <p class="cs-item-text">
+                            The remaining pages, your copy and photos, forms wired up and tested, everything measured against the performance targets above.
+                        </p>
+                    </div>
+                    <span class="cs-outcome">site on a staging URL</span>
+                </li>
+                <li class="cs-item">
+                    <span class="cs-number">Launch day</span>
+                    <div class="cs-card">
+                        <h3 class="cs-h3">Go live and verify</h3>
+                        <p class="cs-item-text">
+                            DNS, SSL, redirects from every old URL, then Search Console and a final crawl. Nothing is left pointing at the old host.
+                        </p>
+                    </div>
+                    <span class="cs-outcome">live and measured</span>
+                </li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!--          Programme / workstreams           -->
+    <!-- ============================================ -->
+
+    <!-- NEEDS BRYAN'S CONFIRMATION: "first-month check-in" in card 04 is a
+    service commitment. Everything else describes work the build genuinely
+    involves. NOTE: four cards, not five - five capped the copy at 26
+    characters per line. See the note in the LESS before adding a fifth. -->
+
+    <section id="services-1975">
+        <div class="cs-container">
+            <div class="cs-content">
+                <span class="cs-topper">The programme</span>
+                <h2 class="cs-title">What's in every build<span class="cs-accent">.</span></h2>
+                <p class="cs-text">
+                    Four workstreams, itemised in your scope before you commit. The same four run whether it is a five-page site or twenty. The depth scales, the discipline does not.
+                </p>
+            </div>
+            <ul class="cs-card-group">
+                <li class="cs-item">
+                    <span class="cs-number">01</span>
+                    <div class="cs-flex">
+                        <h3 class="cs-h3">Plan and structure</h3>
+                        <p class="cs-item-text">
+                            The thinking that makes everything after it faster.
+                        </p>
+                    </div>
+                    <ul class="cs-checklist">
+                        <li>Kickoff call</li>
+                        <li>Page-by-page content plan</li>
+                        <li>Sitemap and URL structure</li>
+                        <li>Competitor and search check</li>
+                    </ul>
+                </li>
+                <li class="cs-item">
+                    <span class="cs-number">02</span>
+                    <div class="cs-flex">
+                        <h3 class="cs-h3">Design from a system</h3>
+                        <p class="cs-item-text">
+                            Type, colour, spacing and components defined once, then applied everywhere.
+                        </p>
+                    </div>
+                    <ul class="cs-checklist">
+                        <li>Colour and type scale</li>
+                        <li>Key pages at desktop and mobile</li>
+                        <li>Reviewed as working pages</li>
+                        <li>Motion that serves the content</li>
+                    </ul>
+                </li>
+                <li class="cs-item">
+                    <span class="cs-number">03</span>
+                    <div class="cs-flex">
+                        <h3 class="cs-h3">Build and SEO foundations</h3>
+                        <p class="cs-item-text">
+                            Hand-coded, with search built in from the wireframe rather than bolted on after.
+                        </p>
+                    </div>
+                    <ul class="cs-checklist">
+                        <li>Semantic HTML, WCAG 2.2 AA</li>
+                        <li>Core Web Vitals targets</li>
+                        <li>Images optimised at every size</li>
+                        <li>Titles, meta and structured data</li>
+                        <li>Internal linking plan</li>
+                    </ul>
+                </li>
+                <li class="cs-item">
+                    <span class="cs-number">04</span>
+                    <div class="cs-flex">
+                        <h3 class="cs-h3">Launch and measure</h3>
+                        <p class="cs-item-text">
+                            Live, verified, and still watched afterwards.
+                        </p>
+                    </div>
+                    <ul class="cs-checklist">
+                        <li>DNS, SSL and redirects</li>
+                        <li>Sitemap and Search Console</li>
+                        <li>Post-launch crawl check</li>
+                        <li>Analytics on key actions</li>
+                        <li>First-month check-in</li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!--          Side by side / showcase           -->
+    <!-- ============================================ -->
+
+    <section id="sbs-r-870">
+        <div class="cs-container">
+            <div class="cs-content">
+                <span class="cs-topper">Design from a system</span>
+                <h2 class="cs-title">One system behind every page<span class="cs-accent">.</span></h2>
+                <p class="cs-text">
+                    Type, colour, spacing and components get defined before any page is designed. That is why the twentieth page looks like the first, and why adding a page later does not quietly break the layout.
+                </p>
+                <p class="cs-text">
+                    The system outlives the launch. New pages, a seasonal promotion, a service you add next year: they inherit what is already there instead of reinventing it.
+                </p>
+            </div>
+            <!-- The panel replaces the stitch's stock photo. Everything in it is
+                 drawn in CSS, so there is no image to optimise and nothing to go
+                 stale. Tile visuals are aria-hidden; the label and note carry the
+                 meaning. Primitives are documented in the LESS. -->
+            <div class="cs-panel">
+                <div class="cs-tile">
+                    <span class="cs-tile-label">Type scale</span>
+                    <div class="cs-type" aria-hidden="true">
+                        <span>Aa</span>
+                        <span>Aa</span>
+                        <span>Aa</span>
+                    </div>
+                    <span class="cs-tile-note">display / heading / body</span>
+                </div>
+                <div class="cs-tile">
+                    <span class="cs-tile-label">Colour tokens</span>
+                    <div class="cs-swatches" aria-hidden="true">
+                        <span style="background-color: #1b2a38"></span>
+                        <span style="background-color: #d6553d"></span>
+                        <span style="background-color: #e3dcc9"></span>
+                        <span style="background-color: #b8c4c9"></span>
+                    </div>
+                    <span class="cs-tile-note">contrast-checked pairs</span>
+                </div>
+                <div class="cs-tile">
+                    <span class="cs-tile-label">Spacing scale</span>
+                    <div class="cs-bars" aria-hidden="true">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                    <span class="cs-tile-note">4 / 8 / 16 / 24 / 32</span>
+                </div>
+                <div class="cs-tile">
+                    <span class="cs-tile-label">Components</span>
+                    <div class="cs-mini" aria-hidden="true">
+                        <span class="cs-mini-primary">Get started</span>
+                        <span class="cs-mini-secondary">Secondary</span>
+                    </div>
+                    <span class="cs-tile-note">one definition, reused</span>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- ============================================ -->
+<!--                     FAQ                      -->
+    <!-- ============================================ -->
+    <!--                    FAQ                       -->
+    <!-- ============================================ -->
+    <!--                  Compare                     -->
+    <!-- ============================================ -->
+
+    <section id="compare">
+        <div class="cs-container">
+            <div class="cs-content">
+                <span class="cs-topper">Why not a builder</span>
+                <h2 class="cs-title">Two ways to get a website<span class="cs-accent">.</span></h2>
+            </div>
+            <div class="cs-compare">
+                <div class="cs-col cs-col-them">
+                    <h3 class="cs-col-title">A page builder</h3>
+                    <ul class="cs-col-list">
+                        <li>A monthly fee, then plugin fees on top</li>
+                        <li>Gets slower with every page you add</li>
+                        <li>You keep it updated</li>
+                        <li>A template other businesses are also using</li>
+                        <li>Built for the platform, not for you</li>
+                    </ul>
+                </div>
+                <div class="cs-col cs-col-us">
+                    <h3 class="cs-col-title">Hand-coded by an engineer</h3>
+                    <ul class="cs-col-list">
+                        <li>One monthly price, everything in it</li>
+                        <li>Stays fast however far it grows</li>
+                        <li>I keep it updated</li>
+                        <li>Designed for your business only</li>
+                        <li>Built for what your customers need to do</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!--                   Proof                      -->
+    <!-- ============================================ -->
+
+    <!-- PLACEHOLDER CONTENT. There are no real testimonials or project
+         screenshots yet, so the quote is labelled as illustrative and the
+         screenshots are empty CSS frames rather than stock photos or broken
+         images. Replace both with real client work before launch, and swap
+         .cs-work-shot for a <picture> using the getUrl shortcode. -->
+    <section id="proof">
+        <div class="cs-container">
+            <div class="cs-content">
+                <span class="cs-topper">Sample, not yet real</span>
+                <h2 class="cs-title">Built for businesses like yours<span class="cs-accent">.</span></h2>
+            </div>
+            <blockquote class="cs-quote">
+                <p class="cs-quote-text">&ldquo;Describe the problem the site solved, in the client's own words.&rdquo;</p>
+                <cite class="cs-quote-cite">Illustrative example &middot; not a real client quote</cite>
+            </blockquote>
+            <ul class="cs-work-group">
+                <li class="cs-work-item">
+                    <div class="cs-work-shot" aria-hidden="true"><span>project screenshot</span></div>
+                    <h3 class="cs-work-title">Project name</h3>
+                    <p class="cs-work-text">One line on what the site had to do, and what changed after it launched.</p>
+                </li>
+                <li class="cs-work-item">
+                    <div class="cs-work-shot" aria-hidden="true"><span>project screenshot</span></div>
+                    <h3 class="cs-work-title">Project name</h3>
+                    <p class="cs-work-text">One line on what the site had to do, and what changed after it launched.</p>
+                </li>
+            </ul>
+            <a href="/work/" class="cs-link">See the work<span class="cs-arrow" aria-hidden="true">&rarr;</span></a>
+        </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!--                Price band                    -->
+    <!-- ============================================ -->
+
+    <!-- NEEDS BRYAN'S CONFIRMATION: the price, the timeline and the migration
+         answer all repeat commitments made further up this page. Keep them in
+         step if you change any of them. -->
+    <section id="faq-1236">
+        <div class="cs-container">
+            <div class="cs-content">
+                <span class="cs-topper">Before you ask</span>
+                <h2 class="cs-title">Asked before every project<span class="cs-accent">.</span></h2>
+            </div>
+            <ul class="cs-faq-group">
+                <li class="cs-faq-item active">
+                    <button class="cs-button">
+                        <span class="cs-button-text">What does a website cost?</span>
+                    </button>
+                    <p class="cs-item-p">
+                        $100 a month, all in. That covers the build, hosting, the domain setup, SSL and ongoing edits. There is no separate build fee to find up front, which is the part that usually stops a small business from starting.
+                    </p>
+                </li>
+                <li class="cs-faq-item">
+                    <button class="cs-button">
+                        <span class="cs-button-text">How long does it take?</span>
+                    </button>
+                    <p class="cs-item-p">
+                        Most small business sites go live in two to four weeks from the day the scope is signed. The timeline above breaks down what happens in each stage and what you get at the end of it.
+                    </p>
+                </li>
+                <li class="cs-faq-item">
+                    <button class="cs-button">
+                        <span class="cs-button-text">What do you build on?</span>
+                    </button>
+                    <p class="cs-item-p">
+                        Hand-written HTML, CSS and JavaScript, built as static pages and served from a global CDN. No WordPress, no page builder, no plugin stack. That is why the pages load quickly and why there is nothing sitting there waiting to be patched.
+                    </p>
+                </li>
+                <li class="cs-faq-item">
+                    <button class="cs-button">
+                        <span class="cs-button-text">Will I be able to edit it myself?</span>
+                    </button>
+                    <p class="cs-item-p">
+                        You will not need to. Send the change in plain English and it goes live, usually the same day. There is no dashboard to learn and no password to lose, which for most small business owners is the feature, not the limitation.
+                    </p>
+                </li>
+                <li class="cs-faq-item">
+                    <button class="cs-button">
+                        <span class="cs-button-text">Can you move my existing site over?</span>
+                    </button>
+                    <p class="cs-item-p">
+                        Yes. Every old URL gets redirected to its new home so the rankings and the links you already have keep working, and the old site stays up until the new one is verified.
+                    </p>
+                </li>
+                <!-- ==========================================================
+                     BRYAN: WRITE THIS ONE, THEN UNCOMMENT IT.
+
+                     This is the question every no-contract monthly client asks,
+                     and the site currently answers it nowhere. I have left the
+                     answer blank on purpose rather than guess: what a client
+                     keeps when they stop paying is a contractual term, not
+                     something to infer from the stack.
+
+                     Decide and fill in: do they keep the site? Do you hand over
+                     the code? Can they host it elsewhere, and do you help them
+                     move? Does it simply come down?
+
+                <li class="cs-faq-item">
+                    <button class="cs-button">
+                        <span class="cs-button-text">What happens if I cancel?</span>
+                    </button>
+                    <p class="cs-item-p">
+                        ...
+                    </p>
+                </li>
+                     ========================================================== -->
+            </ul>
+        </div>
+    </section>
+    <!-- ============================================ -->
+    <!--             Related services                 -->
+    <!-- ============================================ -->
+
+    <section id="related">
+        <div class="cs-container">
+            <div class="cs-content">
+                <span class="cs-topper">Related</span>
+                <h2 class="cs-title">What else I do<span class="cs-accent">.</span></h2>
+            </div>
+            <ul class="cs-related-group">
+                <li class="cs-related-item">
+                    <a href="/services/seo/" class="cs-related-link">
+                        <h3 class="cs-related-title">SEO</h3>
+                        <p class="cs-related-text">Get found by the people already searching for what you do, in the towns you serve.</p>
+                        <span class="cs-related-arrow" aria-hidden="true">&rarr;</span>
+                    </a>
+                </li>
+                <li class="cs-related-item">
+                    <a href="/services/website-maintenance/" class="cs-related-link">
+                        <h3 class="cs-related-title">Website maintenance</h3>
+                        <p class="cs-related-text">Hosting, edits, backups and monitoring, handled every month so you never think about it.</p>
+                        <span class="cs-related-arrow" aria-hidden="true">&rarr;</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!--                Closing CTA                   -->
+    <!-- ============================================ -->
+    <!--            Free redesign offer               -->
+
+                                
+                                    
+                                  
 
 {% endblock %}
