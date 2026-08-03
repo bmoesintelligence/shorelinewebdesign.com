@@ -28,6 +28,233 @@ eleventyComputed:
 
     {% include "sections/page-hero.html" %}
 
-    <!-- Pricing detail sections to come. -->
+    <!-- ============================================ -->
+    <!--                   Tiers                      -->
+    <!-- ============================================ -->
+
+    <!-- No section header: the hero already says "two ways to work together",
+         and saying it twice in a row is the repetition the tone rules flag.
+
+         The ticket idiom (dashed one-time card, solid navy featured card) is
+         carried over from the home #pricing teaser deliberately - this is the
+         same two plans, expanded, so it should look like the same two plans.
+
+         NEEDS BRYAN'S CONFIRMATION: the $95/hr support rate on the one-time
+         tier. It is an invented placeholder that is already live on the home
+         page; the two are kept in step here rather than quietly diverging. -->
+
+    <section id="tiers">
+        <div class="cs-container">
+            <ul class="cs-card-group">
+                <li class="cs-item cs-item-featured">
+                    <span class="cs-badge">Most popular</span>
+                    <span class="cs-plan">Monthly</span>
+                    <span class="cs-price">$100<span class="cs-period">/mo</span></span>
+                    <span class="cs-note">everything included, cancel anytime</span>
+                    <p class="cs-best">Best if you want the whole thing handled and would rather not find a build fee up front.</p>
+                    <ul class="cs-ul">
+                        <li class="cs-li">Custom design, no templates</li>
+                        <li class="cs-li">Hand-coded, no page builder</li>
+                        <li class="cs-li">Hosting, SSL and domain setup</li>
+                        <li class="cs-li">Edits included, sent in plain English</li>
+                        <li class="cs-li">Backups, updates and monitoring</li>
+                        <li class="cs-li">Nothing due upfront, no contract</li>
+                    </ul>
+                    <a href="/contact/" class="cs-button-solid">Get started</a>
+                </li>
+                <li class="cs-item">
+                    <span class="cs-plan">One-time build</span>
+                    <span class="cs-price">Custom</span>
+                    <span class="cs-note">pay once, the site is yours</span>
+                    <p class="cs-best">Best if you'd rather own the site outright and take care of hosting yourself.</p>
+                    <ul class="cs-ul">
+                        <li class="cs-li">Custom design, no templates</li>
+                        <li class="cs-li">Hand-coded, no page builder</li>
+                        <li class="cs-li">The same build, start to finish</li>
+                        <li class="cs-li">Code handed over at launch</li>
+                        <li class="cs-li">Yours to host anywhere</li>
+                        <li class="cs-li cs-li-muted">Support and edits billed at $95/hr</li>
+                    </ul>
+                    <a href="/contact/" class="cs-button-transparent">Get started<span class="cs-arrow" aria-hidden="true">&rarr;</span></a>
+                </li>
+            </ul>
+            <p class="cs-fineprint">
+                Both tiers are the same build. The difference is how you pay for it, and who keeps the hosting afterwards.
+            </p>
+        </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!--              What's included                 -->
+    <!-- ============================================ -->
+
+    <!-- The section that has to earn the word "all-in". A price claim is a
+         claim; an itemised list is the evidence. The "not included" column is
+         the point of the section, not a disclaimer bolted onto it - naming the
+         boundary is what makes the rest of the list credible.
+
+         NEEDS BRYAN'S CONFIRMATION: the four "not included" items. They are
+         reasonable boundaries for a $100/mo all-in offer, but they are business
+         terms rather than observations, so check each one holds. -->
+
+    <section id="included">
+        <div class="cs-container">
+            <!-- Title left, intro right at desktop. The .cs-flex-group wrapper is
+                 what lets them split, and it also keeps .cs-topper out of a plain
+                 block parent, where it would stretch full width. -->
+            <div class="cs-content">
+                <div class="cs-flex-group">
+                    <span class="cs-topper">What the price covers</span>
+                    <h2 class="cs-title">All in, itemised<span class="cs-accent">.</span></h2>
+                </div>
+                <p class="cs-text">
+                    "Everything included" is an easy thing to say, so here is the actual list. The monthly plan covers all of it for the same $100, whether it is month one or month thirty.
+                </p>
+            </div>
+            <!-- Two STACKED full-width groups, not side-by-side columns. Eleven
+                 inclusions against four exclusions never balances as a pair of
+                 columns: the short side leaves a half-height void with a divider
+                 running down it. Stacked, each list gets the whole width and
+                 flows into a grid. -->
+            <div class="cs-group cs-group-in">
+                <h3 class="cs-group-title">Included</h3>
+                <ul class="cs-group-list">
+                    <li>Custom design, built for your business</li>
+                    <li>Hand-written HTML, CSS and JavaScript</li>
+                    <li>Hosting on a global CDN</li>
+                    <li>SSL certificate, renewed automatically</li>
+                    <li>Domain setup and DNS</li>
+                    <li>Edits, sent over in plain English</li>
+                    <li>Backups and ongoing updates</li>
+                    <li>Core Web Vitals performance targets</li>
+                    <li>WCAG 2.2 AA accessibility</li>
+                    <li>SEO foundations and Search Console</li>
+                    <li>Analytics on the actions that matter</li>
+                </ul>
+            </div>
+            <div class="cs-group cs-group-out">
+                <h3 class="cs-group-title">Not included</h3>
+                <ul class="cs-group-list">
+                    <li>Writing your copy from a blank page</li>
+                    <li>Professional photography</li>
+                    <li>Paid advertising spend</li>
+                    <li>Third-party subscriptions (booking, online store)</li>
+                </ul>
+                <p class="cs-group-note">
+                    None of these are upsells waiting to happen. If you need one, I'll tell you what it costs and who does it well, including the times when that isn't me.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!--                 Ownership                    -->
+    <!-- ============================================ -->
+
+    <!-- The question every no-contract monthly client asks, and that the site
+         answered nowhere before this. Bryan's decision (2026-08-01): hosting
+         stops and the built site goes offline; the domain and the content stay
+         with the client. Kept plain rather than softened - a vague answer here
+         is worse than a strict one.
+
+         NEEDS BRYAN'S CONFIRMATION: that client domains are registered in the
+         CLIENT's name rather than yours. The copy below says they are, and that
+         is a process commitment, not something I can observe. -->
+
+    <section id="ownership">
+        <div class="cs-container">
+            <div class="cs-panel">
+                <div class="cs-content">
+                    <span class="cs-topper">If you cancel</span>
+                    <h2 class="cs-title">You're never locked in<span class="cs-accent">.</span></h2>
+                    <p class="cs-text">
+                        No contract, no notice period, no cancellation fee. Tell me you're done and the billing stops. Here is exactly what happens to everything you have.
+                    </p>
+                </div>
+                <ul class="cs-list">
+                    <li class="cs-list-item">
+                        <h3 class="cs-h3">Your domain stays yours</h3>
+                        <p class="cs-item-text">
+                            It's registered in your name, not mine. You can point it somewhere else the same day.
+                        </p>
+                    </li>
+                    <li class="cs-list-item">
+                        <h3 class="cs-h3">Your content stays yours</h3>
+                        <p class="cs-item-text">
+                            Your copy, your images and your logo belong to you. Ask and I'll send the lot over.
+                        </p>
+                    </li>
+                    <li class="cs-list-item">
+                        <h3 class="cs-h3">The built site goes offline</h3>
+                        <p class="cs-item-text">
+                            The monthly fee is what pays for the build and the hosting, so when it stops, the site stops being hosted. Nothing is held over you. It just isn't running any more.
+                        </p>
+                    </li>
+                </ul>
+                <p class="cs-fineprint">
+                    If keeping the site whatever happens matters to you, that is exactly what the one-time build is for.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!--                    FAQ                       -->
+    <!-- ============================================ -->
+
+    <!-- NEEDS BRYAN'S CONFIRMATION: "a new page later is included", in the
+         fourth item. An extra page is a bigger job than an edit, and where you
+         draw that line is a commercial decision, not something to infer. -->
+
+    <section id="faq-1236">
+        <div class="cs-container">
+            <div class="cs-content">
+                <span class="cs-topper">Before you ask</span>
+                <h2 class="cs-title">The money questions<span class="cs-accent">.</span></h2>
+            </div>
+            <ul class="cs-faq-group">
+                <li class="cs-faq-item active">
+                    <button class="cs-button">
+                        <span class="cs-button-text">Is there a contract?</span>
+                    </button>
+                    <p class="cs-item-p">
+                        No. It is month to month and you can stop whenever you want. There is no minimum term and no notice period to serve out.
+                    </p>
+                </li>
+                <li class="cs-faq-item">
+                    <button class="cs-button">
+                        <span class="cs-button-text">Is there a setup fee?</span>
+                    </button>
+                    <p class="cs-item-p">
+                        Not on the monthly plan. The build is covered by the monthly price, which is the entire point of it. There is nothing to pay before the work starts.
+                    </p>
+                </li>
+                <li class="cs-faq-item">
+                    <button class="cs-button">
+                        <span class="cs-button-text">Who owns the domain?</span>
+                    </button>
+                    <p class="cs-item-p">
+                        You do. It is registered in your name and stays that way, whether I set it up for you or you brought it with you.
+                    </p>
+                </li>
+                <li class="cs-faq-item">
+                    <button class="cs-button">
+                        <span class="cs-button-text">What if I need a new page later?</span>
+                    </button>
+                    <p class="cs-item-p">
+                        Send it over. A new service, a second location, a seasonal page: that is what the monthly plan is for, and the site is built so that adding one does not mean rebuilding anything around it.
+                    </p>
+                </li>
+                <li class="cs-faq-item">
+                    <button class="cs-button">
+                        <span class="cs-button-text">What happens if I cancel?</span>
+                    </button>
+                    <p class="cs-item-p">
+                        Billing stops, your domain and your content stay with you, and the built site goes offline, because the hosting was part of what you were paying for. The section above spells it out in full.
+                    </p>
+                </li>
+            </ul>
+        </div>
+    </section>
 
 {% endblock %}

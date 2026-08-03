@@ -1,0 +1,445 @@
+/*-- -------------------------- -->
+<---     Hero + contact form    -->
+<--- -------------------------- -*/
+
+/* The same section as the hero on /free-redesign/: copy on the left, form on a
+   raised panel on the right. Keeps the CodeStitch id `contact-1700` per the
+   house convention of keeping the stitch number an element started as.
+
+   These rules are a near-copy of the #contact-1700 block in free-redesign.less.
+   Two copies is deliberate, so this page didn't have to reach into a page that
+   was already signed off. If a THIRD page needs this section, pull it into a
+   shared sheet and link it beside the per-page one, the way the three service
+   pages share services.css - don't let it get to three copies.
+
+   What is genuinely different here: the two .cs-lists blocks, the .cs-alt
+   fallback line, and the <select>. Everything else should stay in step with
+   free-redesign.less.
+
+   Top padding is identical to #page-hero in root.less, so this hero sits at
+   the same height as every other page's. */
+
+/* Mobile - 360px */
+@media only screen and (min-width: 0rem) {
+    #contact-1700 {
+        background-color: var(--warmSand);
+        padding: clamp(7.5rem, 15vw, 11rem) 1rem clamp(3rem, 7vw, 5rem);
+
+        .cs-container {
+            width: 100%;
+            max-width: (1280/16rem);
+            margin: auto;
+            display: flex;
+            flex-direction: column;
+            /* 40px - 72px */
+            gap: clamp(2.5rem, 5vw, 4.5rem);
+        }
+
+        .cs-content {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .cs-topper {
+            font-family: var(--monoFont);
+            font-size: (12/16rem);
+            font-weight: 500;
+            line-height: 1em;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--coral);
+            background-color: rgba(214, 85, 61, 0.14);
+            padding: (8/16rem) (14/16rem);
+            border-radius: (40/16rem);
+            margin: 0 0 (20/16rem);
+        }
+
+        .cs-title {
+            font-family: var(--headerFont);
+            /* 34px - 60px — the same ceiling as the free-redesign hero, which
+               is lower than #page-hero's because the form shares the row */
+            font-size: clamp(2.125rem, 4.4vw, 3.75rem);
+            font-weight: 800;
+            line-height: 1.12em;
+            letter-spacing: -0.02em;
+            margin: 0;
+            color: var(--inkNavy);
+
+            .cs-accent {
+                color: var(--coral);
+            }
+        }
+
+        .cs-text {
+            font-size: (18/16rem);
+            line-height: 1.6em;
+            max-width: 54ch;
+            margin: (22/16rem) 0 0;
+            color: var(--pugetBlue);
+        }
+
+        /* ── what happens / what doesn't ── */
+
+        /* WebHero's exact format: three rows on hairline rules, each a coral
+           tick beside a bold label that runs straight into prose. This replaced
+           two headed bullet lists, which ran roughly twice as tall and pushed
+           the form out of view. Keep it to three rows, no sub-bullets. */
+        .cs-lists {
+            width: 100%;
+            margin: (32/16rem) 0 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .cs-list-item {
+            font-size: (15/16rem);
+            line-height: 1.6em;
+            color: var(--pugetBlue);
+            /* 14px - 18px */
+            padding: clamp(0.875rem, 1.6vw, 1.125rem) 0 clamp(0.875rem, 1.6vw, 1.125rem) (30/16rem);
+            border-top: 1px solid rgba(27, 42, 56, 0.15);
+            position: relative;
+
+            /* coral tick, drawn rather than a glyph so it can't font-swap */
+            &:before {
+                content: "";
+                width: (6/16rem);
+                height: (12/16rem);
+                border: solid var(--coral);
+                border-width: 0 2px 2px 0;
+                transform: rotate(45deg);
+                position: absolute;
+                /* sits on the first line's cap, not the row's top edge */
+                top: clamp(1.125rem, 1.9vw, 1.375rem);
+                left: (6/16rem);
+            }
+
+            strong {
+                font-weight: 700;
+                color: var(--inkNavy);
+            }
+        }
+
+        /* closes the stack, so the last row reads as bounded */
+        .cs-list-item:last-child {
+            border-bottom: 1px solid rgba(27, 42, 56, 0.15);
+        }
+
+        .cs-alt {
+            font-size: (15/16rem);
+            line-height: 1.6em;
+            max-width: 54ch;
+            margin: (32/16rem) 0 0;
+            color: var(--pugetBlue);
+
+            a {
+                color: var(--inkNavy);
+                font-weight: 600;
+                text-decoration: underline;
+                text-underline-offset: (3/16rem);
+                transition: color 0.25s;
+
+                &:hover {
+                    color: var(--coral);
+                }
+            }
+        }
+
+        /* ── the form panel ── */
+
+        .cs-form {
+            width: 100%;
+            box-sizing: border-box;
+            background-color: #fdfbf4;
+            border-radius: clamp(1.25rem, 2.5vw, 1.75rem);
+            /* 24px - 48px */
+            padding: clamp(1.5rem, 3.5vw, 3rem);
+            /* hairline as inset shadow, never border */
+            box-shadow: inset 0 0 0 1px rgba(27, 42, 56, 0.1), 0 (18/16rem) (40/16rem) rgba(27, 42, 56, 0.12);
+            display: flex;
+            flex-direction: column;
+            gap: (18/16rem);
+        }
+
+        /* the Netlify honeypot - must exist in the DOM but never be seen, so
+           this is a clip-path rather than display:none */
+        .cs-honeypot {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            margin: -1px;
+            padding: 0;
+            overflow: hidden;
+            clip-path: inset(50%);
+            white-space: nowrap;
+        }
+
+        .cs-form-title {
+            font-family: var(--headerFont);
+            /* 22px - 26px */
+            font-size: clamp(1.375rem, 2.4vw, 1.625rem);
+            font-weight: 800;
+            line-height: 1.2em;
+            letter-spacing: -0.02em;
+            margin: 0;
+            color: var(--inkNavy);
+        }
+
+        .cs-form-text {
+            font-size: (15/16rem);
+            line-height: 1.5em;
+            margin: (-8/16rem) 0 (6/16rem);
+            color: var(--pugetBlue);
+        }
+
+        .cs-label {
+            font-family: var(--monoFont);
+            font-size: (11/16rem);
+            font-weight: 500;
+            line-height: 1.4em;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            width: 100%;
+            color: var(--pugetBlue);
+            display: flex;
+            flex-direction: column;
+            gap: (8/16rem);
+        }
+
+        .cs-input {
+            font-family: var(--bodyFont);
+            font-size: (16/16rem);
+            font-weight: 400;
+            line-height: 1.4em;
+            text-transform: none;
+            letter-spacing: 0;
+            width: 100%;
+            box-sizing: border-box;
+            padding: (14/16rem) (16/16rem);
+            color: var(--inkNavy);
+            background-color: var(--warmSand);
+            border: none;
+            border-radius: (8/16rem);
+            box-shadow: inset 0 0 0 1px rgba(27, 42, 56, 0.12);
+            transition: box-shadow 0.2s;
+
+            &::placeholder {
+                color: var(--pugetBlue);
+                opacity: 0.65;
+            }
+
+            &:focus-visible {
+                outline: none;
+                box-shadow: inset 0 0 0 2px var(--coral);
+            }
+        }
+
+        /* the native control is styled away, so the chevron is a background SVG
+           (data URI - a CSS-referenced file couldn't use the getUrl shortcode) */
+        .cs-select {
+            appearance: none;
+            padding-right: (44/16rem);
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8' fill='none' stroke='%233d6e82' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M1 1.75 6 6.25 11 1.75'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right (16/16rem) center;
+            background-size: (12/16rem) (8/16rem);
+
+            &:hover {
+                cursor: pointer;
+            }
+        }
+
+        .cs-textarea {
+            min-height: (96/16rem);
+            resize: vertical;
+        }
+
+        .cs-submit {
+            font-family: var(--bodyFont);
+            font-size: (16/16rem);
+            font-weight: 600;
+            line-height: 1em;
+            /* the kit's button is uppercase with a sweep pseudo; this site is
+               sentence case everywhere */
+            text-transform: none;
+            text-decoration: none;
+            width: 100%;
+            box-sizing: border-box;
+            margin-top: (6/16rem);
+            padding: (18/16rem) (32/16rem);
+            color: #fff;
+            background-color: var(--coral);
+            border: none;
+            border-radius: (48/16rem);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.25s, transform 0.25s;
+
+            &:before {
+                display: none;
+            }
+
+            &:hover {
+                cursor: pointer;
+                background-color: var(--coralDark);
+                transform: translateY(-2px);
+            }
+        }
+
+        .cs-fineprint {
+            font-size: (13/16rem);
+            line-height: 1.5em;
+            text-align: center;
+            margin: 0;
+            color: var(--pugetBlue);
+        }
+    }
+}
+
+/* Desktop - 1024px */
+@media only screen and (min-width: 64rem) {
+    #contact-1700 {
+        .cs-container {
+            flex-direction: row;
+            /* stretch, so the form panel matches the copy column's height
+               exactly. The textarea below absorbs the difference, which means
+               this stays true at any width instead of being tuned to one. */
+            align-items: stretch;
+            justify-content: space-between;
+            gap: clamp(3rem, 6vw, 5rem);
+        }
+
+        .cs-content {
+            flex: 1;
+        }
+
+        /* the ch caps are a mobile measure; at desktop the column is already
+           narrower than them, and holding them broke the intro and the fallback
+           line onto extra rows, which is what made this column outrun the form */
+        .cs-text,
+        .cs-alt {
+            max-width: none;
+        }
+
+        /* two columns wide so the four short fields pair up, same as the
+           free-redesign form */
+        .cs-form {
+            width: 50%;
+            /* prevents flexbox from squeezing the inputs */
+            flex: none;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            /* 16px row, 20px column */
+            gap: (16/16rem) (20/16rem);
+            /* NOT sticky. It was, and the form pinned while the copy column
+               scrolled past it, which read as a bug. The two columns are the
+               same height and scroll together. */
+
+            /* Rows, in order: title / intro / [name|email] / [business|topic] /
+               message / submit / fineprint. The message row is the 1fr, so it
+               soaks up whatever height the copy column has over the form.
+               The hidden input and the clip-path honeypot are out of flow and
+               don't create grid items - if you add a visible field, add a row. */
+            grid-template-rows: auto auto auto auto 1fr auto auto;
+        }
+
+        .cs-form-title,
+        .cs-form-text,
+        .cs-label-full,
+        .cs-submit,
+        .cs-fineprint {
+            grid-column: 1 / -1;
+        }
+
+        /* the label is a flex column, so the textarea has to be told to take
+           the space the 1fr row gives it */
+        .cs-label-full {
+            height: 100%;
+        }
+
+        .cs-label-full .cs-textarea {
+            flex: 1;
+        }
+    }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    #contact-1700 .cs-submit,
+    #contact-1700 .cs-submit:hover {
+        transform: none;
+        transition: none;
+    }
+}
+
+/* Dark Mode */
+@media only screen and (min-width: 0rem) {
+    body.dark-mode {
+        #contact-1700 {
+            background-color: var(--dark);
+
+            .cs-title,
+            .cs-form-title {
+                color: var(--bodyTextColorWhite);
+            }
+
+            .cs-text,
+            .cs-label,
+            .cs-form-text,
+            .cs-fineprint,
+            .cs-alt {
+                color: var(--rainGray);
+            }
+
+            .cs-list-item {
+                color: var(--rainGray);
+                border-top-color: rgba(255, 255, 255, 0.14);
+
+                strong {
+                    color: var(--bodyTextColorWhite);
+                }
+            }
+
+            .cs-list-item:last-child {
+                border-bottom-color: rgba(255, 255, 255, 0.14);
+            }
+
+            .cs-alt a {
+                color: var(--bodyTextColorWhite);
+
+                &:hover {
+                    color: var(--coral);
+                }
+            }
+
+            .cs-form {
+                background-color: var(--medium);
+                box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08), 0 (18/16rem) (40/16rem) rgba(0, 0, 0, 0.35);
+            }
+
+            .cs-input {
+                color: var(--bodyTextColorWhite);
+                background-color: rgba(0, 0, 0, 0.25);
+                box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.14);
+
+                &::placeholder {
+                    color: var(--rainGray);
+                    opacity: 0.7;
+                }
+
+                &:focus-visible {
+                    box-shadow: inset 0 0 0 2px var(--coral);
+                }
+            }
+
+            /* the chevron is a data URI, so its stroke can't inherit - swap it
+               for the light-on-dark version */
+            .cs-select {
+                background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8' fill='none' stroke='%23b8c4c9' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M1 1.75 6 6.25 11 1.75'/%3E%3C/svg%3E");
+            }
+        }
+    }
+}

@@ -1,11 +1,18 @@
 ---
-description: "Recent websites designed and built by Shoreline Web Design. Real small businesses, hand-coded from scratch, fast from the first load."
+description: "Recent websites designed and built by Shoreline Web Design. Hand-coded from scratch, static, and fast from the first load."
 pageHero:
   topper: "Work"
   title: "A few recent builds"
   accent: "."
   text:
-    - "Some of the sites I've designed and built. Real businesses, hand-coded from scratch, fast from the first load."
+    - "Sites I've designed and built, hand-coded from scratch and fast from the first load. Every one is live, so you can click through and judge it yourself."
+    - "Different businesses, same build. Static pages, no page builder, and one person who drew it, wrote the code, and still answers the email."
+  buttons:
+    - label: "Get started"
+      href: "/contact/"
+    - label: "See pricing"
+      href: "/pricing/"
+      style: "secondary"
 eleventyComputed:
   title: "{{ page.fileSlug | titleCase }} | {{ client.name }} | {{ client.address.city }}, {{ client.address.state }}"
   permalink: "/{{ page.fileSlug | slugify }}/"
@@ -21,6 +28,193 @@ eleventyComputed:
 
     {% include "sections/page-hero.html" %}
 
-    <!-- Portfolio grid to come. -->
+    <!-- ============================================ -->
+    <!--                  Projects                    -->
+    <!-- ============================================ -->
+
+    <!-- No section header here on purpose. The page hero above already says
+         what this list is, and repeating it is the exact thing the tone rules
+         call out. The rows carry themselves.
+
+         Each row is an INSET LIFTED PANEL, same idiom as #steps-276 on the
+         service pages: a rounded surface a touch deeper than the tan it sits on,
+         which is what lets the browser frames inside read as raised. The panels
+         alternate light / navy / light so the page picks up the site's
+         tan-navy-tan rhythm instead of running as one flat tan field.
+         Hence .cs-panel-* on every <li>; .cs-project-inner is the flex row.
+
+         Items 01 and 02 are real, live sites. Item 03 is a clearly labelled
+         concept build with no live URL and no screenshot - a CSS wireframe
+         rather than a stock mockup, so nothing on this page pretends to be a
+         client project that isn't one.
+
+         NEEDS BRYAN'S CONFIRMATION: the "Build" row on each project states the
+         stack as hand-coded static (Eleventy). Correct it per project if either
+         of these was built differently. The "Scope" rows come from the wording
+         already approved on the homepage work grid. -->
+
+    <section id="projects">
+        <ol class="cs-project-group">
+
+            <!-- 01 — Bryan Van Dusen -->
+            <li class="cs-project cs-panel-light">
+                <div class="cs-project-inner">
+                    <a href="https://www.bryanvandusen.com/" target="_blank" rel="noopener" class="cs-frame-link" aria-label="Visit bryanvandusen.com (opens in a new tab)">
+                        <div class="cs-frame">
+                            <div class="cs-frame-bar" aria-hidden="true">
+                                <span class="cs-dot"></span>
+                                <span class="cs-dot"></span>
+                                <span class="cs-dot"></span>
+                                <span class="cs-frame-url">bryanvandusen.com</span>
+                            </div>
+                            <picture class="cs-shot">
+                                <source srcset="{% getUrl "/assets/images/bryan-van-dusen.jpg" | resize({ width: 1000, height: 750 }) | avif %}" type="image/avif">
+                                <source srcset="{% getUrl "/assets/images/bryan-van-dusen.jpg" | resize({ width: 1000, height: 750 }) | webp %}" type="image/webp">
+                                <img src="{% getUrl "/assets/images/bryan-van-dusen.jpg" | resize({ width: 1000, height: 750 }) | jpeg %}" alt="The Bryan Van Dusen author website homepage" width="1000" height="750" loading="lazy" decoding="async">
+                            </picture>
+                        </div>
+                    </a>
+                    <div class="cs-project-content">
+                        <div class="cs-meta">
+                            <span class="cs-number">01</span>
+                            <span class="cs-chip">Live site</span>
+                        </div>
+                        <h2 class="cs-project-title">Bryan Van Dusen</h2>
+                        <p class="cs-project-text">
+                            Brand and book showcase for a children's author. The books lead, the author's story sits behind them, and everything a reader or an event organiser needs is one tap away on a phone.
+                        </p>
+                        <dl class="cs-specs">
+                            <div class="cs-spec">
+                                <dt>Type</dt>
+                                <dd>Author site</dd>
+                            </div>
+                            <div class="cs-spec">
+                                <dt>Scope</dt>
+                                <dd>Brand and book showcase</dd>
+                            </div>
+                            <div class="cs-spec">
+                                <dt>Build</dt>
+                                <dd>Hand-coded, static, no page builder</dd>
+                            </div>
+                        </dl>
+                        <a href="https://www.bryanvandusen.com/" target="_blank" rel="noopener" class="cs-link">Visit the site<span class="cs-arrow" aria-hidden="true">&rarr;</span></a>
+                    </div>
+                </div>
+            </li>
+
+            <!-- 02 — Bryan & Katie (navy panel) -->
+            <li class="cs-project cs-panel-dark">
+                <div class="cs-project-inner">
+                    <a href="https://bk2026.com/" target="_blank" rel="noopener" class="cs-frame-link" aria-label="Visit bk2026.com (opens in a new tab)">
+                        <div class="cs-frame">
+                            <div class="cs-frame-bar" aria-hidden="true">
+                                <span class="cs-dot"></span>
+                                <span class="cs-dot"></span>
+                                <span class="cs-dot"></span>
+                                <span class="cs-frame-url">bk2026.com</span>
+                            </div>
+                            <picture class="cs-shot">
+                                <source srcset="{% getUrl "/assets/images/bk2026.jpg" | resize({ width: 1000, height: 750 }) | avif %}" type="image/avif">
+                                <source srcset="{% getUrl "/assets/images/bk2026.jpg" | resize({ width: 1000, height: 750 }) | webp %}" type="image/webp">
+                                <img src="{% getUrl "/assets/images/bk2026.jpg" | resize({ width: 1000, height: 750 }) | jpeg %}" alt="The Bryan and Katie wedding website homepage" width="1000" height="750" loading="lazy" decoding="async">
+                            </picture>
+                        </div>
+                    </a>
+                    <div class="cs-project-content">
+                        <div class="cs-meta">
+                            <span class="cs-number">02</span>
+                            <span class="cs-chip">Live site</span>
+                        </div>
+                        <h2 class="cs-project-title">Bryan &amp; Katie</h2>
+                        <p class="cs-project-text">
+                            A wedding site carrying the itinerary, RSVPs and the registry. Guests check it on a phone, in a car, on a weak signal, which is exactly the case a static site is built for.
+                        </p>
+                        <dl class="cs-specs">
+                            <div class="cs-spec">
+                                <dt>Type</dt>
+                                <dd>Event site</dd>
+                            </div>
+                            <div class="cs-spec">
+                                <dt>Scope</dt>
+                                <dd>Itinerary, RSVP and registry</dd>
+                            </div>
+                            <div class="cs-spec">
+                                <dt>Build</dt>
+                                <dd>Hand-coded, static, no page builder</dd>
+                            </div>
+                        </dl>
+                        <a href="https://bk2026.com/" target="_blank" rel="noopener" class="cs-link">Visit the site<span class="cs-arrow" aria-hidden="true">&rarr;</span></a>
+                    </div>
+                </div>
+            </li>
+
+            <!-- 03 — Richmond Beach Hardware (concept, not a client) -->
+            <li class="cs-project cs-panel-light cs-project-concept">
+                <div class="cs-project-inner">
+                    <div class="cs-frame">
+                        <div class="cs-frame-bar" aria-hidden="true">
+                            <span class="cs-dot"></span>
+                            <span class="cs-dot"></span>
+                            <span class="cs-dot"></span>
+                            <span class="cs-frame-url">in progress</span>
+                        </div>
+                        <!-- Deliberately a CSS wireframe rather than a mockup or stock
+                             photo. There is no site to screenshot yet, and a rendered
+                             fake would read as a project that shipped. -->
+                        <div class="cs-wireframe" aria-hidden="true">
+                            <span class="cs-wf-nav"></span>
+                            <span class="cs-wf-hero">
+                                <span class="cs-wf-btn"></span>
+                            </span>
+                            <span class="cs-wf-line"></span>
+                            <span class="cs-wf-line cs-wf-line-short"></span>
+                            <div class="cs-wf-row">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="cs-project-content">
+                        <div class="cs-meta">
+                            <span class="cs-number">03</span>
+                            <span class="cs-chip">Concept build</span>
+                        </div>
+                        <h2 class="cs-project-title">Richmond Beach Hardware</h2>
+                        <p class="cs-project-text">
+                            A concept for the local hardware store: hours, services and directions, the three things people actually search for before they drive over. Not a client project, and not live yet. It is here because it is the shape most of this work takes.
+                        </p>
+                        <dl class="cs-specs">
+                            <div class="cs-spec">
+                                <dt>Type</dt>
+                                <dd>Local retail</dd>
+                            </div>
+                            <div class="cs-spec">
+                                <dt>Scope</dt>
+                                <dd>Hours, services and directions</dd>
+                            </div>
+                            <div class="cs-spec">
+                                <dt>Status</dt>
+                                <dd>In progress</dd>
+                            </div>
+                        </dl>
+                        <span class="cs-status">Not live yet</span>
+                    </div>
+                </div>
+            </li>
+
+        </ol>
+
+        <!-- Closing note. Sits quietly on the page tan below the panels rather
+             than getting a panel of its own. One honest line, one inline link -
+             not a CTA band, the footer's .cs-cta is the only closing ask. -->
+        <div class="cs-outro">
+            <div class="cs-outro-inner">
+                <p class="cs-note">
+                    A short list, on purpose. This shop is new, and two sites I actually built beat a page of invented mockups. If you want to see what yours would look like, <a href="/free-redesign/">I'll redesign your homepage for free</a>.
+                </p>
+            </div>
+        </div>
+    </section>
 
 {% endblock %}

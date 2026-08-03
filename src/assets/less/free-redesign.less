@@ -1,117 +1,459 @@
 /*-- -------------------------- -->
-<---     Free Redesign page     -->
+<---      Hero + capture form   -->
 <--- -------------------------- -*/
 
-/* shared section shell — the hero now uses the sitewide #page-hero component */
+/* This page's hero IS the form. Copy on the left, capture form on a raised
+   panel on the right, following the WebHero free-redesign page.
+
+   It keeps the CodeStitch id `contact-1700` per the house convention of
+   keeping the stitch number an element started as, but nothing of the stitch's
+   styling survives: the demo background image, the white inputs and the
+   --secondary button are all gone.
+
+   Top padding matches #page-hero in root.less, because this section replaces
+   it and still has to clear the fixed nav + town banner. */
+
+/* Mobile - 360px */
 @media only screen and (min-width: 0rem) {
-    #redesign-steps,
-    #redesign-why {
-        padding: var(--sectionPadding);
+    #contact-1700 {
         background-color: var(--warmSand);
+        /* identical to #page-hero in root.less, so this hero sits at the same
+           height as every other page's */
+        padding: clamp(7.5rem, 15vw, 11rem) 1rem clamp(3rem, 7vw, 5rem);
 
         .cs-container {
             width: 100%;
-            max-width: (1080/16rem);
+            max-width: (1280/16rem);
             margin: auto;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            text-align: center;
+            /* 40px - 72px */
+            gap: clamp(2.5rem, 5vw, 4.5rem);
+        }
+
+        .cs-content {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
         }
 
         .cs-topper {
             font-family: var(--monoFont);
-            font-size: (13/16rem);
+            font-size: (12/16rem);
             font-weight: 500;
-            line-height: 1.2em;
+            line-height: 1em;
             text-transform: uppercase;
             letter-spacing: 0.12em;
             color: var(--coral);
-            margin-bottom: (12/16rem);
+            background-color: rgba(214, 85, 61, 0.14);
+            padding: (8/16rem) (14/16rem);
+            border-radius: (40/16rem);
+            margin: 0 0 (20/16rem);
         }
 
         .cs-title {
             font-family: var(--headerFont);
-            /* 32px - 50px */
-            font-size: clamp(2rem, 5vw, 3.125rem);
+            /* 34px - 64px — matches the homepage and #page-hero titles */
+            font-size: clamp(2.125rem, 5vw, 4rem);
             font-weight: 800;
             line-height: 1.12em;
             letter-spacing: -0.02em;
-            max-width: 20ch;
-            margin: 0 0 (18/16rem);
+            max-width: 15ch;
+            margin: 0;
             color: var(--inkNavy);
+
+            .cs-accent {
+                color: var(--coral);
+            }
         }
 
         .cs-text {
             font-size: (18/16rem);
             line-height: 1.6em;
-            max-width: 56ch;
-            margin: 0;
+            max-width: 46ch;
+            margin: (22/16rem) 0 0;
+            color: var(--pugetBlue);
+
+            & + .cs-text {
+                margin-top: (16/16rem);
+            }
+        }
+
+        /* ── the "who's actually doing this" line ── */
+
+        .cs-author {
+            margin-top: (32/16rem);
+            display: flex;
+            align-items: center;
+            gap: (14/16rem);
+        }
+
+        .cs-profile {
+            width: (52/16rem);
+            height: (52/16rem);
+            flex: none;
+
+            img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                border-radius: 50%;
+                display: block;
+            }
+        }
+
+        .cs-flex-group {
+            display: flex;
+            flex-direction: column;
+            gap: (3/16rem);
+        }
+
+        .cs-name {
+            font-family: var(--headerFont);
+            font-size: (16/16rem);
+            font-weight: 700;
+            line-height: 1.2em;
+            color: var(--inkNavy);
+        }
+
+        .cs-job {
+            font-size: (14/16rem);
+            line-height: 1.4em;
             color: var(--pugetBlue);
         }
 
-        .cs-button-group {
-            margin-top: (28/16rem);
+        /* ── the form panel ── */
+
+        .cs-form {
+            width: 100%;
+            box-sizing: border-box;
+            background-color: #fdfbf4;
+            border-radius: clamp(1.25rem, 2.5vw, 1.75rem);
+            /* 24px - 48px */
+            padding: clamp(1.5rem, 3.5vw, 3rem);
+            /* hairline as inset shadow, never border */
+            box-shadow: inset 0 0 0 1px rgba(27, 42, 56, 0.1), 0 (18/16rem) (40/16rem) rgba(27, 42, 56, 0.12);
+            display: flex;
+            flex-direction: column;
+            gap: (18/16rem);
         }
 
-        /* primary button — navy pill, matching the rest of the site */
-        .cs-button-solid {
+        /* the Netlify honeypot - must exist in the DOM but never be seen, so
+           this is a clip-path rather than display:none */
+        .cs-honeypot {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            margin: -1px;
+            padding: 0;
+            overflow: hidden;
+            clip-path: inset(50%);
+            white-space: nowrap;
+        }
+
+        .cs-form-title {
+            font-family: var(--headerFont);
+            /* 22px - 26px */
+            font-size: clamp(1.375rem, 2.4vw, 1.625rem);
+            font-weight: 800;
+            line-height: 1.2em;
+            letter-spacing: -0.02em;
+            margin: 0;
+            color: var(--inkNavy);
+        }
+
+        .cs-form-text {
+            font-size: (15/16rem);
+            line-height: 1.5em;
+            margin: (-8/16rem) 0 (6/16rem);
+            color: var(--pugetBlue);
+        }
+
+        .cs-label {
+            font-family: var(--monoFont);
+            font-size: (11/16rem);
+            font-weight: 500;
+            line-height: 1.4em;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            width: 100%;
+            color: var(--pugetBlue);
+            display: flex;
+            flex-direction: column;
+            gap: (8/16rem);
+        }
+
+        .cs-input {
+            font-family: var(--bodyFont);
+            font-size: (16/16rem);
+            font-weight: 400;
+            line-height: 1.4em;
+            text-transform: none;
+            letter-spacing: 0;
+            width: 100%;
+            box-sizing: border-box;
+            padding: (14/16rem) (16/16rem);
+            color: var(--inkNavy);
+            background-color: var(--warmSand);
+            border: none;
+            border-radius: (8/16rem);
+            box-shadow: inset 0 0 0 1px rgba(27, 42, 56, 0.12);
+            transition: box-shadow 0.2s;
+
+            &::placeholder {
+                color: var(--pugetBlue);
+                opacity: 0.65;
+            }
+
+            &:focus-visible {
+                outline: none;
+                box-shadow: inset 0 0 0 2px var(--coral);
+            }
+        }
+
+        .cs-textarea {
+            min-height: (96/16rem);
+            resize: vertical;
+        }
+
+        .cs-hint {
+            font-family: var(--bodyFont);
+            font-size: (13/16rem);
+            font-weight: 400;
+            line-height: 1.4em;
+            text-transform: none;
+            letter-spacing: 0;
+            color: var(--pugetBlue);
+        }
+
+        .cs-submit {
             font-family: var(--bodyFont);
             font-size: (16/16rem);
             font-weight: 600;
             line-height: 1em;
+            /* the kit's button is uppercase with a sweep pseudo; this site is
+               sentence case everywhere */
             text-transform: none;
             text-decoration: none;
+            width: 100%;
+            box-sizing: border-box;
+            margin-top: (6/16rem);
             padding: (18/16rem) (32/16rem);
+            color: #fff;
+            background-color: var(--coral);
+            border: none;
             border-radius: (48/16rem);
-            background-color: var(--inkNavy);
-            color: var(--warmSand);
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            overflow: hidden;
-            position: relative;
-            z-index: 1;
-            transition: background-color 0.25s, color 0.25s, transform 0.25s;
+            transition: background-color 0.25s, transform 0.25s;
 
             &:before {
                 display: none;
             }
 
             &:hover {
-                background-color: var(--coral);
-                color: #fff;
+                cursor: pointer;
+                background-color: var(--coralDark);
                 transform: translateY(-2px);
             }
         }
-    }
 
-    /* ── How it works ── */
-    #redesign-steps {
+        .cs-fineprint {
+            font-size: (13/16rem);
+            line-height: 1.5em;
+            text-align: center;
+            margin: 0;
+            color: var(--pugetBlue);
+        }
+    }
+}
+
+/* Desktop - 1024px */
+@media only screen and (min-width: 64rem) {
+    #contact-1700 {
+        .cs-container {
+            flex-direction: row;
+            /* top-aligned, not centred: the form is much taller than the copy,
+               and centring pushed the headline into the middle of the band */
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: clamp(3rem, 6vw, 5rem);
+        }
+
         .cs-content {
+            flex: 1;
+        }
+
+        /* the 15ch cap broke the headline over three lines; the column is the
+           measure here instead. The ceiling drops from #page-hero's 64px
+           because this hero shares its width with the form - at 64px the
+           headline went back to three lines at 1280. */
+        .cs-title {
+            /* 34px - 60px */
+            font-size: clamp(2.125rem, 4.4vw, 3.75rem);
+            max-width: none;
+        }
+
+        .cs-text {
+            max-width: 54ch;
+        }
+
+        /* The whole hero has to fit one screen, so the form goes two columns
+           wide here: the four short fields pair up, which takes two rows out of
+           its height. Widening alone would not have done it - a wider single
+           column is just as tall. */
+        .cs-form {
+            width: 50%;
+            /* prevents flexbox from squeezing the inputs */
+            flex: none;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            /* 16px row, 20px column */
+            gap: (16/16rem) (20/16rem);
+            align-content: start;
+        }
+
+        .cs-form-title,
+        .cs-form-text,
+        .cs-label-full,
+        .cs-submit,
+        .cs-fineprint {
+            grid-column: 1 / -1;
+        }
+    }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    #contact-1700 .cs-submit,
+    #contact-1700 .cs-submit:hover {
+        transform: none;
+        transition: none;
+    }
+}
+
+/* Dark Mode */
+@media only screen and (min-width: 0rem) {
+    body.dark-mode {
+        #contact-1700 {
+            background-color: var(--dark);
+
+            .cs-title,
+            .cs-name,
+            .cs-form-title {
+                color: var(--bodyTextColorWhite);
+            }
+
+            .cs-text,
+            .cs-job,
+            .cs-label,
+            .cs-hint,
+            .cs-form-text,
+            .cs-fineprint {
+                color: var(--rainGray);
+            }
+
+            .cs-form {
+                background-color: var(--medium);
+                box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08), 0 (18/16rem) (40/16rem) rgba(0, 0, 0, 0.35);
+            }
+
+            .cs-input {
+                color: var(--bodyTextColorWhite);
+                background-color: rgba(0, 0, 0, 0.25);
+                box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.14);
+
+                &::placeholder {
+                    color: var(--rainGray);
+                    opacity: 0.7;
+                }
+
+                &:focus-visible {
+                    box-shadow: inset 0 0 0 2px var(--coral);
+                }
+            }
+        }
+    }
+}
+
+/*-- -------------------------- -->
+<---        How it works        -->
+<--- -------------------------- -*/
+
+/* Navy band, three numbered steps. */
+
+/* Mobile - 360px */
+@media only screen and (min-width: 0rem) {
+    #redesign-steps {
+        background-color: var(--inkNavy);
+        padding: var(--sectionPadding);
+
+        .cs-container {
+            width: 100%;
+            max-width: (1280/16rem);
+            margin: auto;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            margin-bottom: clamp(2.5rem, 5vw, 4rem);
+            /* 32px - 56px */
+            gap: clamp(2rem, 4vw, 3.5rem);
+        }
+
+        .cs-content {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .cs-topper {
+            font-family: var(--monoFont);
+            font-size: (12/16rem);
+            font-weight: 500;
+            line-height: 1em;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--coral);
+            background-color: rgba(214, 85, 61, 0.18);
+            padding: (8/16rem) (14/16rem);
+            border-radius: (40/16rem);
+            margin: 0 0 (20/16rem);
+        }
+
+        .cs-title {
+            font-family: var(--headerFont);
+            /* 30px - 46px */
+            font-size: clamp(1.875rem, 4vw, 2.875rem);
+            font-weight: 800;
+            line-height: 1.14em;
+            letter-spacing: -0.02em;
+            margin: 0;
+            color: var(--bodyTextColorWhite);
+
+            .cs-accent {
+                color: var(--coral);
+            }
         }
 
         .cs-card-group {
             width: 100%;
             margin: 0;
             padding: 0;
+            list-style: none;
             display: grid;
             grid-template-columns: 1fr;
-            gap: clamp(1rem, 2vw, 1.25rem);
+            /* 16px - 24px */
+            gap: clamp(1rem, 2vw, 1.5rem);
         }
 
         .cs-item {
             list-style: none;
-            text-align: left;
-            padding: clamp(1.5rem, 3vw, 2rem);
-            background-color: #fdfbf4;
-            border: 1px solid rgba(27, 42, 56, 0.08);
-            border-radius: (12/16rem);
-            box-shadow: 0 (6/16rem) (18/16rem) rgba(27, 42, 56, 0.06);
+            box-sizing: border-box;
+            background-color: var(--medium);
+            border-radius: clamp(0.875rem, 1.8vw, 1.25rem);
+            /* 24px - 40px */
+            padding: clamp(1.5rem, 3vw, 2.5rem);
             display: flex;
             flex-direction: column;
             align-items: flex-start;
@@ -119,47 +461,537 @@
 
         .cs-number {
             font-family: var(--monoFont);
-            font-size: (12/16rem);
+            /* 22px - 32px */
+            font-size: clamp(1.375rem, 2.6vw, 2rem);
             font-weight: 500;
-            letter-spacing: 0.1em;
-            color: var(--rainGray);
-            margin-bottom: clamp(1rem, 2vw, 1.5rem);
+            line-height: 1em;
+            letter-spacing: 0.02em;
+            color: var(--coral);
+            margin-bottom: (20/16rem);
         }
 
         .cs-h3 {
             font-family: var(--headerFont);
-            font-size: clamp(1.0625rem, 1.6vw, 1.1875rem);
+            /* 18px - 21px */
+            font-size: clamp(1.125rem, 1.8vw, 1.3125rem);
             font-weight: 700;
             line-height: 1.3em;
-            margin: 0 0 (8/16rem);
-            color: var(--inkNavy);
+            margin: 0 0 (10/16rem);
+            color: var(--bodyTextColorWhite);
         }
 
         .cs-item-text {
             font-size: (15/16rem);
-            line-height: 1.55em;
-            margin: 0;
-            color: var(--pugetBlue);
-        }
-
-        .cs-fineprint {
-            font-size: (14/16rem);
             line-height: 1.6em;
-            max-width: 60ch;
-            margin: clamp(2rem, 4vw, 2.75rem) auto 0;
-            color: var(--pugetBlue);
-
-            em {
-                font-style: italic;
-                color: var(--inkNavy);
-            }
+            margin: 0;
+            color: var(--rainGray);
         }
     }
 }
 
 /* Tablet - 768px */
 @media only screen and (min-width: 48rem) {
-    #redesign-steps .cs-card-group {
-        grid-template-columns: repeat(3, 1fr);
+    #redesign-steps {
+        .cs-card-group {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
+}
+
+/* Dark Mode */
+@media only screen and (min-width: 0rem) {
+    body.dark-mode {
+        /* navy bands darken rather than staying flat */
+        #redesign-steps {
+            background-color: rgba(0, 0, 0, 0.25);
+
+            .cs-item {
+                background-color: rgba(255, 255, 255, 0.05);
+            }
+        }
+    }
+}
+
+/*-- -------------------------- -->
+<---     The redesign library   -->
+<--- -------------------------- -*/
+
+/* Before/after pairs. Empty for now: no redesign has gone out yet, so the
+   frames are CSS wireframes rather than mockups, and the copy says so. */
+
+/* Mobile - 360px */
+@media only screen and (min-width: 0rem) {
+    #library {
+        background-color: var(--warmSand);
+        padding: var(--sectionPadding);
+
+        .cs-container {
+            width: 100%;
+            max-width: (1280/16rem);
+            margin: auto;
+            display: flex;
+            flex-direction: column;
+            /* 32px - 56px */
+            gap: clamp(2rem, 4vw, 3.5rem);
+        }
+
+        .cs-content {
+            width: 100%;
+            max-width: (620/16rem);
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .cs-topper {
+            font-family: var(--monoFont);
+            font-size: (12/16rem);
+            font-weight: 500;
+            line-height: 1em;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--coral);
+            background-color: rgba(214, 85, 61, 0.14);
+            padding: (8/16rem) (14/16rem);
+            border-radius: (40/16rem);
+            margin: 0 0 (20/16rem);
+        }
+
+        .cs-title {
+            font-family: var(--headerFont);
+            /* 30px - 46px */
+            font-size: clamp(1.875rem, 4vw, 2.875rem);
+            font-weight: 800;
+            line-height: 1.14em;
+            letter-spacing: -0.02em;
+            margin: 0;
+            color: var(--inkNavy);
+
+            .cs-accent {
+                color: var(--coral);
+            }
+        }
+
+        .cs-text {
+            font-size: (16/16rem);
+            line-height: 1.65em;
+            max-width: 54ch;
+            margin: (18/16rem) 0 0;
+            color: var(--pugetBlue);
+        }
+
+        .cs-pair-group {
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(2.5rem, 5vw, 4rem);
+        }
+
+        .cs-pair {
+            list-style: none;
+        }
+
+        .cs-shot-group {
+            display: grid;
+            grid-template-columns: 1fr;
+            /* 16px - 28px */
+            gap: clamp(1rem, 2vw, 1.75rem);
+        }
+
+        .cs-shot-frame {
+            margin: 0;
+            padding: (12/16rem);
+            background-color: #fdfbf4;
+            border-radius: (12/16rem);
+            box-shadow: inset 0 0 0 1px rgba(27, 42, 56, 0.1), 0 (14/16rem) (32/16rem) rgba(27, 42, 56, 0.12);
+            display: flex;
+            flex-direction: column;
+            gap: (10/16rem);
+            /* clip, not hidden - house rule, hidden creates a scroll container */
+            overflow: clip;
+        }
+
+        .cs-shot img {
+            width: 100%;
+            height: auto;
+            aspect-ratio: 4 / 3;
+            object-fit: cover;
+            object-position: top;
+            border-radius: (6/16rem);
+            display: block;
+        }
+
+        /* the empty state, drawn in CSS - never a stock image or a mockup */
+        .cs-shot-empty {
+            aspect-ratio: 4 / 3;
+            background-color: var(--warmSand);
+            border-radius: (6/16rem);
+            display: flex;
+            flex-direction: column;
+            gap: (10/16rem);
+            padding: clamp(1rem, 2.5vw, 1.75rem);
+        }
+
+        .cs-wf-nav,
+        .cs-wf-line {
+            display: block;
+            border-radius: (4/16rem);
+            background-color: rgba(27, 42, 56, 0.12);
+        }
+
+        .cs-wf-nav {
+            height: (10/16rem);
+            width: 45%;
+        }
+
+        .cs-wf-hero {
+            display: flex;
+            align-items: flex-end;
+            flex: 1;
+            min-height: (60/16rem);
+            padding: (14/16rem);
+            border-radius: (4/16rem);
+            background-color: rgba(27, 42, 56, 0.07);
+        }
+
+        /* the single warm note, only on the AFTER frame - the difference
+           between the two states is the whole point of the pair */
+        .cs-wf-btn {
+            display: block;
+            width: (66/16rem);
+            height: (16/16rem);
+            border-radius: (40/16rem);
+            background-color: rgba(214, 85, 61, 0.55);
+        }
+
+        .cs-wf-line {
+            height: (8/16rem);
+            width: 100%;
+        }
+
+        .cs-wf-line-short {
+            width: 62%;
+        }
+
+        .cs-shot-label {
+            font-family: var(--monoFont);
+            font-size: (11/16rem);
+            line-height: 1.2em;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--pugetBlue);
+            padding-left: (2/16rem);
+        }
+
+        /* the after frame gets the coral label, so the pair reads left to right */
+        .cs-shot-after .cs-shot-label {
+            color: var(--coral);
+        }
+
+        .cs-pair-text {
+            font-size: (15/16rem);
+            line-height: 1.6em;
+            margin: (20/16rem) 0 0;
+            color: var(--pugetBlue);
+        }
+    }
+}
+
+/* Tablet - 768px */
+@media only screen and (min-width: 48rem) {
+    #library {
+        .cs-shot-group {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+}
+
+/* Dark Mode */
+@media only screen and (min-width: 0rem) {
+    body.dark-mode {
+        #library {
+            background-color: var(--dark);
+
+            .cs-title {
+                color: var(--bodyTextColorWhite);
+            }
+
+            .cs-text,
+            .cs-pair-text,
+            .cs-shot-label {
+                color: var(--rainGray);
+            }
+
+            .cs-shot-after .cs-shot-label {
+                color: var(--coral);
+            }
+
+            .cs-shot-frame {
+                background-color: var(--medium);
+                box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08), 0 (14/16rem) (32/16rem) rgba(0, 0, 0, 0.35);
+            }
+
+            .cs-shot-empty {
+                background-color: var(--accent);
+            }
+
+            .cs-wf-nav,
+            .cs-wf-line {
+                background-color: rgba(255, 255, 255, 0.12);
+            }
+
+            .cs-wf-hero {
+                background-color: rgba(255, 255, 255, 0.07);
+            }
+        }
+    }
+}
+
+/*-- -------------------------- -->
+<---             FAQ            -->
+<--- -------------------------- -*/
+
+/* Same accordion as the service and pricing pages, driven by assets/js/faq.js.
+   The markup contract is .cs-faq-item > .cs-button, with .active on the open
+   one. */
+
+/* Mobile - 360px */
+@media only screen and (min-width: 0rem) {
+    #faq-1236 {
+        background-color: var(--warmSand);
+        padding: var(--sectionPadding);
+        /* #library above is the same tan and already carries bottom room */
+        padding-top: 0;
+
+        /* literal values only - LESS emits custom-property values verbatim */
+        --rule: rgba(27, 42, 56, 0.15);
+
+        .cs-container {
+            width: 100%;
+            max-width: (1280/16rem);
+            margin: auto;
+            display: flex;
+            flex-direction: column;
+            /* 32px - 56px */
+            gap: clamp(2rem, 4vw, 3.5rem);
+        }
+
+        .cs-content {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .cs-topper {
+            font-family: var(--monoFont);
+            font-size: (12/16rem);
+            font-weight: 500;
+            line-height: 1em;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--coral);
+            background-color: rgba(214, 85, 61, 0.14);
+            padding: (8/16rem) (14/16rem);
+            border-radius: (40/16rem);
+            margin: 0 0 (20/16rem);
+        }
+
+        .cs-title {
+            font-family: var(--headerFont);
+            /* 30px - 46px */
+            font-size: clamp(1.875rem, 4vw, 2.875rem);
+            font-weight: 800;
+            line-height: 1.14em;
+            letter-spacing: -0.02em;
+            max-width: 14ch;
+            margin: 0;
+            color: var(--inkNavy);
+
+            .cs-accent {
+                color: var(--coral);
+            }
+        }
+
+        .cs-faq-group {
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            border-top: 1px solid var(--rule);
+        }
+
+        .cs-faq-item {
+            list-style: none;
+            width: 100%;
+            border-bottom: 1px solid var(--rule);
+
+            &.active {
+                .cs-button {
+                    color: var(--coral);
+
+                    /* the plus loses its vertical stroke and reads as a minus */
+                    &:after {
+                        transform: translateY(-50%) rotate(90deg);
+                        opacity: 0;
+                    }
+                }
+
+                .cs-item-p {
+                    /* generous ceiling: the transition needs a real number, and
+                       anything taller than the longest answer works */
+                    max-height: (40/16rem) * 12;
+                    opacity: 1;
+                    padding-bottom: (24/16rem);
+                }
+            }
+        }
+
+        .cs-button {
+            font-family: var(--headerFont);
+            /* 16px - 19px */
+            font-size: clamp(1rem, 1.5vw, 1.1875rem);
+            font-weight: 700;
+            line-height: 1.4em;
+            text-align: left;
+            width: 100%;
+            box-sizing: border-box;
+            padding: (22/16rem) (44/16rem) (22/16rem) 0;
+            background: transparent;
+            border: none;
+            color: var(--inkNavy);
+            display: block;
+            position: relative;
+            transition: color 0.25s;
+
+            &:hover {
+                cursor: pointer;
+                color: var(--coral);
+            }
+
+            /* the plus: a horizontal bar (:before) crossed by a vertical one
+               (:after). Opening rotates and fades the vertical bar out. */
+            &:before,
+            &:after {
+                content: "";
+                background-color: currentColor;
+                display: block;
+                position: absolute;
+                top: 50%;
+                right: (4/16rem);
+            }
+
+            &:before {
+                width: (14/16rem);
+                height: (2/16rem);
+                transform: translateY(-50%);
+            }
+
+            &:after {
+                width: (2/16rem);
+                height: (14/16rem);
+                margin-right: (6/16rem);
+                transform: translateY(-50%);
+                transition: transform 0.3s, opacity 0.3s;
+            }
+        }
+
+        .cs-item-p {
+            font-size: (16/16rem);
+            line-height: 1.65em;
+            max-width: 68ch;
+            margin: 0;
+            padding: 0 (44/16rem) 0 0;
+            color: var(--pugetBlue);
+            /* collapsed state - must be 0, the open value lives in .active */
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: max-height 0.35s, opacity 0.3s, padding-bottom 0.35s;
+
+            em {
+                font-style: italic;
+                color: var(--inkNavy);
+            }
+
+            a {
+                color: var(--inkNavy);
+                font-weight: 600;
+                text-decoration: underline;
+                text-underline-offset: (3/16rem);
+                transition: color 0.25s;
+
+                &:hover {
+                    color: var(--coral);
+                }
+            }
+        }
+    }
+}
+
+/* Desktop - 1024px */
+@media only screen and (min-width: 64rem) {
+    #faq-1236 {
+        .cs-container {
+            flex-direction: row;
+            align-items: flex-start;
+            gap: clamp(3rem, 6vw, 6rem);
+        }
+
+        .cs-content {
+            width: 30%;
+            /* prevents flexbox from squishing it */
+            flex: none;
+            /* the heading holds its place while the accordion grows below it */
+            position: sticky;
+            top: (140/16rem);
+        }
+
+        .cs-faq-group {
+            flex: 1;
+            /* the group already has a top rule; align it with the title's cap */
+            margin-top: (6/16rem);
+        }
+    }
+}
+
+/* Dark Mode */
+@media only screen and (min-width: 0rem) {
+    body.dark-mode {
+        #faq-1236 {
+            background-color: var(--dark);
+            --rule: rgba(255, 255, 255, 0.12);
+
+            .cs-title {
+                color: var(--bodyTextColorWhite);
+            }
+
+            .cs-button {
+                color: var(--bodyTextColorWhite);
+
+                &:hover {
+                    color: var(--coral);
+                }
+            }
+
+            .cs-faq-item.active .cs-button {
+                color: var(--coral);
+            }
+
+            .cs-item-p {
+                color: var(--rainGray);
+
+                em,
+                a {
+                    color: var(--bodyTextColorWhite);
+                }
+
+                a:hover {
+                    color: var(--coral);
+                }
+            }
+        }
     }
 }

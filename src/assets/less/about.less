@@ -1,0 +1,373 @@
+/*-- -------------------------- -->
+<---           Story            -->
+<--- -------------------------- -*/
+
+/* Copy on the left, portrait on the right, inside a raised panel - the WebHero
+   about-page arrangement Bryan asked for. The home #about teaser runs the same
+   headshot small and on the left; here it runs large and on the right, because
+   this is the page the photo actually belongs on.
+
+   The copy comes FIRST in the DOM so reading order matches the visual order.
+   Don't flip this back with row-reverse - that would put the photo ahead of the
+   heading for anyone on a screen reader. */
+
+/* Mobile - 360px */
+@media only screen and (min-width: 0rem) {
+    #story {
+        background-color: var(--warmSand);
+        /* small top - the tan page hero above already paid for that space */
+        padding: clamp(1.5rem, 3vw, 2.5rem) 1rem clamp(3.75rem, 7.82vw, 6.25rem);
+
+        .cs-container {
+            width: 100%;
+            max-width: (1280/16rem);
+            margin: auto;
+        }
+
+        /* the raised panel, same lift as #steps-276, #fit and the /work/ rows */
+        .cs-panel {
+            box-sizing: border-box;
+            background-color: rgba(27, 42, 56, 0.05);
+            border-radius: clamp(1.25rem, 2.5vw, 2rem);
+            /* 24px - 64px */
+            padding: clamp(1.5rem, 4.5vw, 4rem);
+            display: flex;
+            flex-direction: column;
+            /* 32px - 56px */
+            gap: clamp(2rem, 4vw, 3.5rem);
+        }
+
+        .cs-photo-frame {
+            margin: 0;
+            padding: (12/16rem);
+            background-color: #fdfbf4;
+            border-radius: (12/16rem);
+            /* hairline as inset shadow, never border - a real border shifts the
+               positioning origin and the grid tracks */
+            box-shadow: inset 0 0 0 1px rgba(27, 42, 56, 0.1), 0 (14/16rem) (32/16rem) rgba(27, 42, 56, 0.14);
+            display: flex;
+            flex-direction: column;
+            gap: (10/16rem);
+        }
+
+        .cs-photo {
+            display: block;
+
+            img {
+                width: 100%;
+                /* height:auto so the img's height attr doesn't fight aspect-ratio */
+                height: auto;
+                aspect-ratio: 4 / 5;
+                object-fit: cover;
+                border-radius: (6/16rem);
+                display: block;
+            }
+        }
+
+        .cs-caption {
+            font-family: var(--monoFont);
+            font-size: (11/16rem);
+            line-height: 1.2em;
+            color: var(--pugetBlue);
+            padding-left: (2/16rem);
+        }
+
+        .cs-content {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .cs-topper {
+            font-family: var(--monoFont);
+            font-size: (12/16rem);
+            font-weight: 500;
+            line-height: 1em;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--coral);
+            background-color: rgba(214, 85, 61, 0.14);
+            padding: (8/16rem) (14/16rem);
+            border-radius: (40/16rem);
+            margin: 0 0 (20/16rem);
+        }
+
+        .cs-title {
+            font-family: var(--headerFont);
+            /* 28px - 42px */
+            font-size: clamp(1.75rem, 3.8vw, 2.625rem);
+            font-weight: 800;
+            line-height: 1.16em;
+            letter-spacing: -0.02em;
+            margin: 0;
+            color: var(--inkNavy);
+
+            .cs-accent {
+                color: var(--coral);
+            }
+        }
+
+        .cs-text {
+            font-size: (16/16rem);
+            line-height: 1.7em;
+            margin: (20/16rem) 0 0;
+            color: var(--pugetBlue);
+        }
+    }
+}
+
+/* Desktop - 1024px */
+@media only screen and (min-width: 64rem) {
+    #story {
+        /* the panel is the flex row; the container just centres it at the same
+           1280 as every other section, so the left edges line up */
+        .cs-panel {
+            flex-direction: row;
+            align-items: flex-start;
+            gap: clamp(2.5rem, 5vw, 3.5rem);
+        }
+
+        .cs-photo-frame {
+            width: 34%;
+            flex: none;
+        }
+
+        .cs-content {
+            flex: 1;
+        }
+
+        /* fills the column. A ch cap here left a wide dead zone to the right of
+           every paragraph - the column itself is the measure. */
+        .cs-text {
+            max-width: none;
+        }
+    }
+}
+
+/* Dark Mode */
+@media only screen and (min-width: 0rem) {
+    body.dark-mode {
+        #story {
+            background-color: var(--dark);
+
+            .cs-panel {
+                background-color: rgba(255, 255, 255, 0.04);
+            }
+
+            .cs-photo-frame {
+                background-color: var(--medium);
+                box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08), 0 (14/16rem) (32/16rem) rgba(0, 0, 0, 0.35);
+            }
+
+            .cs-caption,
+            .cs-text {
+                color: var(--rainGray);
+            }
+
+            .cs-title {
+                color: var(--bodyTextColorWhite);
+            }
+        }
+    }
+}
+
+/*-- -------------------------- -->
+<---             Fit            -->
+<--- -------------------------- -*/
+
+/* Two lifted panels, four items each. Side-by-side only works when both sides
+   carry the same weight - see #included on /pricing/, where eleven items
+   against four left a half-height void. Keep these lists equal length. */
+
+/* Mobile - 360px */
+@media only screen and (min-width: 0rem) {
+    #fit {
+        background-color: var(--warmSand);
+        padding: var(--sectionPadding);
+
+        .cs-container {
+            width: 100%;
+            max-width: (1280/16rem);
+            margin: auto;
+            display: flex;
+            flex-direction: column;
+            /* 32px - 48px */
+            gap: clamp(2rem, 4vw, 3rem);
+        }
+
+        .cs-content {
+            width: 100%;
+            max-width: (620/16rem);
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .cs-topper {
+            font-family: var(--monoFont);
+            font-size: (12/16rem);
+            font-weight: 500;
+            line-height: 1em;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--coral);
+            background-color: rgba(214, 85, 61, 0.14);
+            padding: (8/16rem) (14/16rem);
+            border-radius: (40/16rem);
+            margin: 0 0 (20/16rem);
+        }
+
+        .cs-title {
+            font-family: var(--headerFont);
+            /* 30px - 46px */
+            font-size: clamp(1.875rem, 4vw, 2.875rem);
+            font-weight: 800;
+            line-height: 1.14em;
+            letter-spacing: -0.02em;
+            margin: 0;
+            color: var(--inkNavy);
+
+            .cs-accent {
+                color: var(--coral);
+            }
+        }
+
+        .cs-text {
+            font-size: (16/16rem);
+            line-height: 1.65em;
+            max-width: 54ch;
+            margin: (18/16rem) 0 0;
+            color: var(--pugetBlue);
+        }
+
+        .cs-panels {
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1fr;
+            /* 20px - 32px */
+            gap: clamp(1.25rem, 2.5vw, 2rem);
+        }
+
+        .cs-panel {
+            box-sizing: border-box;
+            /* a touch deeper than the tan it sits on - same lift as #steps-276 */
+            background-color: rgba(27, 42, 56, 0.05);
+            border-radius: clamp(1.25rem, 2.5vw, 2rem);
+            /* 24px - 48px */
+            padding: clamp(1.5rem, 3.5vw, 3rem);
+        }
+
+        .cs-panel-title {
+            font-family: var(--monoFont);
+            font-size: (12/16rem);
+            font-weight: 500;
+            line-height: 1em;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--pugetBlue);
+            margin: 0 0 (24/16rem);
+            padding-bottom: (16/16rem);
+            border-bottom: 1px solid rgba(27, 42, 56, 0.15);
+        }
+
+        .cs-panel-list {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: (14/16rem);
+
+            li {
+                font-size: (15/16rem);
+                line-height: 1.6em;
+                color: var(--inkNavy);
+                padding-left: (26/16rem);
+                position: relative;
+            }
+        }
+
+        /* coral tick for the good-fit column */
+        .cs-panel-yes .cs-panel-list li:before {
+            content: "";
+            width: (5/16rem);
+            height: (10/16rem);
+            border: solid var(--coral);
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+            position: absolute;
+            top: (5/16rem);
+            left: (6/16rem);
+        }
+
+        /* muted rule for the other one - these are boundaries, not failures,
+           so deliberately not a red cross */
+        .cs-panel-no {
+            .cs-panel-list li {
+                color: var(--pugetBlue);
+
+                &:before {
+                    content: "";
+                    width: (10/16rem);
+                    height: (2/16rem);
+                    background-color: var(--rainGray);
+                    position: absolute;
+                    top: (11/16rem);
+                    left: (3/16rem);
+                }
+            }
+        }
+
+        .cs-fineprint {
+            font-size: (14/16rem);
+            line-height: 1.65em;
+            max-width: 62ch;
+            margin: 0;
+            color: var(--pugetBlue);
+        }
+    }
+}
+
+/* Desktop - 1024px */
+@media only screen and (min-width: 64rem) {
+    #fit {
+        .cs-panels {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+}
+
+/* Dark Mode */
+@media only screen and (min-width: 0rem) {
+    body.dark-mode {
+        #fit {
+            background-color: var(--dark);
+
+            .cs-title {
+                color: var(--bodyTextColorWhite);
+            }
+
+            .cs-text,
+            .cs-fineprint {
+                color: var(--rainGray);
+            }
+
+            .cs-panel {
+                background-color: rgba(255, 255, 255, 0.04);
+            }
+
+            .cs-panel-title {
+                color: var(--rainGray);
+                border-bottom-color: rgba(255, 255, 255, 0.14);
+            }
+
+            .cs-panel-list li {
+                color: var(--bodyTextColorWhite);
+            }
+
+            .cs-panel-no .cs-panel-list li {
+                color: var(--rainGray);
+            }
+        }
+    }
+}

@@ -28,6 +28,108 @@ eleventyComputed:
 
     {% include "sections/page-hero.html" %}
 
-    <!-- About detail sections to come. -->
+    <!-- ============================================ -->
+    <!--                   Story                      -->
+    <!-- ============================================ -->
+
+    <!-- Everything stated below is either already approved copy from the home
+         #about teaser (the decade of production software, Richmond Beach, one
+         client at a time) or reasoning from it. NO biographical detail has been
+         invented - see the placeholder block at the end of this section for the
+         specifics only Bryan can supply. The page is publishable as it stands;
+         those blanks are additive, not broken. -->
+
+    <section id="story">
+        <div class="cs-container">
+          <div class="cs-panel">
+            <div class="cs-content">
+                <span class="cs-topper">The short version</span>
+                <h2 class="cs-title">Why an engineer builds small business sites<span class="cs-accent">.</span></h2>
+                <p class="cs-text">
+                    A decade of production software teaches you a particular kind of paranoia. Work gets measured before it ships and measured again after. Nothing goes live because it looked fine on the laptop it was built on.
+                </p>
+                <p class="cs-text">
+                    Almost no small business website is held to that standard. It gets assembled in a builder, it looks right on the one screen it was made on, and nobody ever checks what happens on a five-year-old phone on a weak connection in a car park.
+                </p>
+                <p class="cs-text">
+                    So this is the same work at a smaller scale. Hand-written code, a performance budget, testing on real devices, and one person who is still around six months after launch.
+                </p>
+
+                <!-- ==========================================================
+                     BRYAN: THE SPECIFICS GO HERE.
+
+                     I deliberately did not invent any of this. Everything above
+                     is either your own approved homepage copy or a conclusion
+                     drawn from it, so the page reads honestly as-is.
+
+                     Worth adding, in your own words, one short paragraph each:
+                       - What you actually built for that decade. Industry is
+                         enough; you don't have to name employers.
+                       - What made you start doing this for local businesses.
+                         The homepage says "too many local businesses were stuck
+                         with slow sites they couldn't edit" - was there a
+                         specific one that set it off?
+                       - Anything personal that belongs on an About page and
+                         nowhere else. Why Richmond Beach, what you do when you
+                         aren't at a keyboard.
+
+                     Drop them in as <p class="cs-text"> and delete this block.
+                     ========================================================== -->
+            </div>
+            <figure class="cs-photo-frame">
+                <picture class="cs-photo">
+                    <source srcset="{% getUrl "/assets/images/headshot.jpg" | resize({ width: 900, height: 1125 }) | avif %}" type="image/avif">
+                    <source srcset="{% getUrl "/assets/images/headshot.jpg" | resize({ width: 900, height: 1125 }) | webp %}" type="image/webp">
+                    <img src="{% getUrl "/assets/images/headshot.jpg" | resize({ width: 900, height: 1125 }) | jpeg %}" alt="Bryan, who designs and builds every Shoreline Web Design site" width="900" height="1125" loading="lazy" decoding="async">
+                </picture>
+                <figcaption class="cs-caption">Bryan &middot; Richmond Beach, WA</figcaption>
+            </figure>
+          </div>
+        </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!--                    Fit                       -->
+    <!-- ============================================ -->
+
+    <!-- Both halves on purpose. The second panel is what makes the first
+         believable, and it filters bad-fit enquiries before they land.
+         Deliberately four items each: side-by-side panels only work when both
+         sides carry the same weight. -->
+
+    <section id="fit">
+        <div class="cs-container">
+            <div class="cs-content">
+                <span class="cs-topper">Fit</span>
+                <h2 class="cs-title">Who this is for<span class="cs-accent">.</span></h2>
+                <p class="cs-text">
+                    One person can only build so much, so it is worth being straight about where that works well and where it doesn't.
+                </p>
+            </div>
+            <div class="cs-panels">
+                <div class="cs-panel cs-panel-yes">
+                    <h3 class="cs-panel-title">A good fit if</h3>
+                    <ul class="cs-panel-list">
+                        <li>You run a small business in the North Sound and want to be found locally</li>
+                        <li>You want a site that loads fast and stays that way as it grows</li>
+                        <li>You would rather ask for a change than log into a dashboard</li>
+                        <li>You want one person who knows your site, not a rotating team</li>
+                    </ul>
+                </div>
+                <div class="cs-panel cs-panel-no">
+                    <h3 class="cs-panel-title">Probably not me if</h3>
+                    <ul class="cs-panel-list">
+                        <li>You need an online store carrying hundreds of products</li>
+                        <li>You want to write and republish the site yourself every day</li>
+                        <li>You need several people with their own logins and edit rights</li>
+                        <li>You need it live in a few days rather than a few weeks</li>
+                    </ul>
+                </div>
+            </div>
+            <p class="cs-fineprint">
+                If you're in the second column, tell me anyway. I'd rather point you at someone who does that well than take the job and do it badly.
+            </p>
+        </div>
+    </section>
 
 {% endblock %}

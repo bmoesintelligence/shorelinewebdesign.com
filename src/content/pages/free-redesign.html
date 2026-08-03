@@ -2,16 +2,6 @@
 title: "Free Homepage Redesign | Shoreline Web Design"
 description: "Send me your website and I'll design a fresh homepage for your business, free. Love it? I'll build the whole thing for $100/month. Don't? Keep the design, no strings."
 permalink: "/free-redesign/"
-pageHero:
-  topper: "Free homepage redesign"
-  title: "See your homepage, redesigned"
-  accent: "."
-  text:
-    - "Send me your current website. I'll design a fresh homepage for your business, custom and built from scratch, at no cost."
-    - "Love it? I'll build and host the whole site for $100 a month. Don't? Keep the design, no strings attached."
-  buttons:
-    - label: "Send me your site"
-      href: "/contact/"
 ---
 
 {% extends "layouts/base.html" %}
@@ -22,64 +12,241 @@ pageHero:
 
 {% block body %}
 
-    {% include "sections/page-hero.html" %}
+    <!-- ============================================ -->
+    <!--              Hero + capture form             -->
+    <!-- ============================================ -->
+
+    <!-- This page does NOT use sections/page-hero.html. The capture form is the
+         whole point of the page, so it sits in the hero rather than below it,
+         and the copy that used to live in the `pageHero` front matter is inline
+         here. That front-matter block has been removed - don't re-add it, it
+         would render a second hero above this one.
+
+         Because this is the hero, the heading is an <h1> and the top padding
+         clears the fixed nav + town banner, matching #page-hero in root.less.
+
+         FORM WIRING: Netlify Forms, which is how this site deploys. The hidden
+         `form-name` input and the honeypot are both required for it to be
+         picked up at build time. Submissions land in the Netlify dashboard
+         under the name "free-redesign". There is no custom thank-you page yet,
+         so Netlify's default confirmation shows after submit. -->
+
+    <section id="contact-1700">
+        <div class="cs-container">
+            <div class="cs-content">
+                <span class="cs-topper">Free homepage redesign</span>
+                <h1 class="cs-title">Your homepage, redesigned<span class="cs-accent">.</span></h1>
+                <p class="cs-text">
+                    Send me your current website. I'll design a fresh homepage for your business, custom and built from scratch, at no cost.
+                </p>
+                <p class="cs-text">
+                    Love it? I'll build and host the whole site for $100 a month. Don't? Keep the design, no strings attached.
+                </p>
+                <div class="cs-author">
+                    <picture class="cs-profile">
+                        <source srcset="{% getUrl "/assets/images/headshot.jpg" | resize({ width: 120, height: 120 }) | avif %}" type="image/avif">
+                        <source srcset="{% getUrl "/assets/images/headshot.jpg" | resize({ width: 120, height: 120 }) | webp %}" type="image/webp">
+                        <img src="{% getUrl "/assets/images/headshot.jpg" | resize({ width: 120, height: 120 }) | jpeg %}" alt="Bryan, who does the redesign himself" width="120" height="120" loading="lazy" decoding="async">
+                    </picture>
+                    <div class="cs-flex-group">
+                        <span class="cs-name">Bryan</span>
+                        <span class="cs-job">Does the redesign himself, start to finish</span>
+                    </div>
+                </div>
+            </div>
+
+            <form class="cs-form" name="free-redesign" method="POST" data-netlify="true" netlify-honeypot="bot-field">
+                <input type="hidden" name="form-name" value="free-redesign">
+                <p class="cs-honeypot">
+                    <label>Leave this empty <input name="bot-field"></label>
+                </p>
+
+                <h2 class="cs-form-title">Claim your free redesign</h2>
+                <p class="cs-form-text">Takes about thirty seconds. No call required.</p>
+
+                <label class="cs-label">
+                    Your name
+                    <input class="cs-input" required type="text" id="fr-name" name="name" autocomplete="name" placeholder="Jane Doe">
+                </label>
+                <label class="cs-label">
+                    Email
+                    <input class="cs-input" required type="email" id="fr-email" name="email" autocomplete="email" placeholder="jane@yourbusiness.com">
+                </label>
+                <label class="cs-label">
+                    Business name
+                    <input class="cs-input" required type="text" id="fr-business" name="business" autocomplete="organization" placeholder="Your business">
+                </label>
+                <label class="cs-label">
+                    Your website
+                    <input class="cs-input" type="url" id="fr-url" name="website" autocomplete="url" placeholder="yourbusiness.com">
+                    
+                </label>
+                <!-- cs-label-full spans both columns of the desktop grid; the
+                     four short fields above it pair up two-across so the whole
+                     hero fits one screen -->
+                <label class="cs-label cs-label-full">
+                    What do people usually come to you for?
+                    <textarea class="cs-input cs-textarea" id="fr-about" name="about" rows="3" placeholder="A sentence is plenty."></textarea>
+                </label>
+
+                <button class="cs-button-solid cs-submit" type="submit">Send it over</button>
+                <p class="cs-fineprint">No obligation, and I won't add you to a mailing list.</p>
+            </form>
+        </div>
+    </section>
 
     <!-- ============================================ -->
-    <!--                 How it works                 -->
+    <!--                How it works                  -->
     <!-- ============================================ -->
 
     <section id="redesign-steps">
         <div class="cs-container">
             <div class="cs-content">
                 <span class="cs-topper">How it works</span>
-                <h2 class="cs-title">Three steps, zero risk</h2>
+                <h2 class="cs-title">Three steps, no risk<span class="cs-accent">.</span></h2>
             </div>
-            <ul class="cs-card-group">
+            <ol class="cs-card-group">
                 <li class="cs-item">
                     <span class="cs-number">01</span>
                     <h3 class="cs-h3">Send your site</h3>
                     <p class="cs-item-text">
-                        Drop me your current URL, or just your business name if you don't have a site yet. Takes thirty seconds.
+                        Drop me your current URL, or just your business name if you don't have a site yet. That is the whole ask.
                     </p>
                 </li>
                 <li class="cs-item">
                     <span class="cs-number">02</span>
                     <h3 class="cs-h3">I redesign your homepage</h3>
                     <p class="cs-item-text">
-                        A custom homepage design built around your business, not a template. You'll see exactly what your site could look like.
+                        A custom homepage design built around your business, not a template. You will see exactly what your site could look like.
                     </p>
                 </li>
                 <li class="cs-item">
                     <span class="cs-number">03</span>
                     <h3 class="cs-h3">See it, keep it</h3>
                     <p class="cs-item-text">
-                        I'll send you the design to look over. Want the real, built version? It's $100/month, everything included. If not, the design is yours.
+                        I send the design over to look at. Want the real, built version? $100 a month, everything included. If not, the design is still yours.
                     </p>
                 </li>
-            </ul>
-            <!-- honest expectation-setting: this is a design, not a live site -->
-            <p class="cs-fineprint">
-                Just so we're clear: this is a homepage <em>design</em>, a polished look at what your site could be, not a live, working website. Building and launching the real thing is the $100/month part.
-            </p>
+            </ol>
         </div>
     </section>
 
     <!-- ============================================ -->
-    <!--                  The catch                   -->
+    <!--              The redesign library            -->
     <!-- ============================================ -->
 
-    <section id="redesign-why">
+    <!-- PLACEHOLDER CONTENT, CLEARLY LABELLED. This is WebHero's strongest
+         section and it is pure proof: a grid of real before/after pairs. There
+         are no completed redesigns yet, so the slots below are empty CSS frames
+         rather than mockups or stock images, and the section says so out loud.
+
+         BRYAN: as each redesign goes out, replace a slot's .cs-shot-empty with
+         a <picture> using the getUrl shortcode, exactly like the /work/ rows:
+
+             <picture class="cs-shot">
+               <source srcset="{% raw %}{% getUrl "/assets/images/x.jpg" | resize({ width: 1000, height: 750 }) | avif %}{% endraw %}" type="image/avif">
+               ...
+             </picture>
+
+         Capture both states at the same viewport width so the pair lines up.
+         If this section still has no real content by launch, cut it rather than
+         ship an empty gallery. -->
+
+    <section id="library">
         <div class="cs-container">
             <div class="cs-content">
-                <span class="cs-topper">The catch</span>
-                <h2 class="cs-title">There isn't one.</h2>
+                <span class="cs-topper">The redesign library</span>
+                <h2 class="cs-title">Before and after<span class="cs-accent">.</span></h2>
                 <p class="cs-text">
-                    Most designers make you pay before you ever see anything. I'd rather just show you. If the design is good enough, you'll want the real thing. If it isn't, you've lost nothing but a few minutes. That's the whole idea.
+                    Every redesign gets posted here, side by side with what was there before. The first ones are in progress, so this shelf is still empty.
                 </p>
-                <div class="cs-button-group">
-                    <a href="/contact/" class="cs-button-solid">Send me your site</a>
-                </div>
             </div>
+            <ul class="cs-pair-group">
+                <li class="cs-pair">
+                    <div class="cs-shot-group">
+                        <figure class="cs-shot-frame">
+                            <div class="cs-shot-empty" aria-hidden="true">
+                                <span class="cs-wf-nav"></span>
+                                <span class="cs-wf-hero"></span>
+                                <span class="cs-wf-line"></span>
+                                <span class="cs-wf-line cs-wf-line-short"></span>
+                            </div>
+                            <figcaption class="cs-shot-label">Before</figcaption>
+                        </figure>
+                        <figure class="cs-shot-frame cs-shot-after">
+                            <div class="cs-shot-empty" aria-hidden="true">
+                                <span class="cs-wf-nav"></span>
+                                <span class="cs-wf-hero"><span class="cs-wf-btn"></span></span>
+                                <span class="cs-wf-line"></span>
+                                <span class="cs-wf-line cs-wf-line-short"></span>
+                            </div>
+                            <figcaption class="cs-shot-label">After</figcaption>
+                        </figure>
+                    </div>
+                    <p class="cs-pair-text">Your business could be the first one on this shelf.</p>
+                </li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!--                    FAQ                       -->
+    <!-- ============================================ -->
+
+    <!-- NEEDS BRYAN'S CONFIRMATION: the turnaround in "How long does it take?".
+         I have not stated a number, because how fast you can turn one of these
+         around on a busy week is yours to decide. Fill in the blank in that
+         answer before launch. -->
+
+    <section id="faq-1236">
+        <div class="cs-container">
+            <div class="cs-content">
+                <span class="cs-topper">Before you ask</span>
+                <h2 class="cs-title">The obvious questions<span class="cs-accent">.</span></h2>
+            </div>
+            <ul class="cs-faq-group">
+                <li class="cs-faq-item active">
+                    <button class="cs-button">
+                        <span class="cs-button-text">What's the catch?</span>
+                    </button>
+                    <p class="cs-item-p">
+                        There isn't one, but there is a limit worth being clear about. What you get is a homepage <em>design</em>: a polished look at what your site could be, not a live working website. Building and launching the real thing is the paid part. If you like the design and want to take it elsewhere, that is genuinely fine.
+                    </p>
+                </li>
+                <li class="cs-faq-item">
+                    <button class="cs-button">
+                        <span class="cs-button-text">Why would you do this for free?</span>
+                    </button>
+                    <p class="cs-item-p">
+                        Because this shop is new and a design in your hands is worth more than any promise I could make on this page. Some people will like it enough to have it built. Most won't, and that is a fair trade for me.
+                    </p>
+                </li>
+                <li class="cs-faq-item">
+                    <button class="cs-button">
+                        <span class="cs-button-text">How long does it take?</span>
+                    </button>
+                    <p class="cs-item-p">
+                        <!-- BRYAN: fill in the real turnaround here. -->
+                        I'll tell you when I'll have it back to you as soon as I've looked at your current site, and I'll stick to that date.
+                    </p>
+                </li>
+                <li class="cs-faq-item">
+                    <button class="cs-button">
+                        <span class="cs-button-text">What does it cost to have it built?</span>
+                    </button>
+                    <p class="cs-item-p">
+                        $100 a month, everything in it: the build, hosting, the domain setup, SSL and ongoing edits. No build fee up front and no contract. The <a href="/pricing/">pricing page</a> itemises exactly what that covers and what it doesn't.
+                    </p>
+                </li>
+                <li class="cs-faq-item">
+                    <button class="cs-button">
+                        <span class="cs-button-text">Do you redesign every site that comes in?</span>
+                    </button>
+                    <p class="cs-item-p">
+                        Each one is real work and I do them myself, so I take on what I can actually do properly. If yours isn't a good fit, I'll say so quickly rather than leave you waiting.
+                    </p>
+                </li>
+            </ul>
         </div>
     </section>
 

@@ -1,0 +1,900 @@
+/*-- -------------------------- -->
+<---           Tiers            -->
+<--- -------------------------- -*/
+
+/* The two plans, expanded from the home #pricing teaser. The ticket idiom is
+   carried over on purpose: dashed border on the one-time card, solid navy fill
+   on the featured monthly one. Same two plans, so they look like the same two
+   plans. */
+
+/* Mobile - 360px */
+@media only screen and (min-width: 0rem) {
+    #tiers {
+        background-color: var(--warmSand);
+        /* small top - the tan page hero above already paid for that space */
+        padding: clamp(1.5rem, 3vw, 2.5rem) 1rem clamp(3.75rem, 7.82vw, 6.25rem);
+
+        .cs-container {
+            width: 100%;
+            max-width: (1000/16rem);
+            margin: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            /* 28px - 40px */
+            gap: clamp(1.75rem, 3.5vw, 2.5rem);
+        }
+
+        .cs-card-group {
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: 1fr;
+            /* 20px - 28px */
+            gap: clamp(1.25rem, 2.5vw, 1.75rem);
+        }
+
+        .cs-item {
+            list-style: none;
+            width: 100%;
+            box-sizing: border-box;
+            /* 32px - 44px */
+            padding: clamp(2rem, 4vw, 2.75rem);
+            background-color: #fdfbf4;
+            border: 2px dashed rgba(27, 42, 56, 0.25);
+            border-radius: (16/16rem);
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            position: relative;
+        }
+
+        .cs-badge {
+            font-family: var(--monoFont);
+            font-size: (11/16rem);
+            font-weight: 500;
+            line-height: 1em;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #fff;
+            background-color: var(--coral);
+            padding: (7/16rem) (13/16rem);
+            border-radius: (40/16rem);
+            position: absolute;
+            top: (-13/16rem);
+            left: clamp(2rem, 4vw, 2.75rem);
+        }
+
+        .cs-plan {
+            font-family: var(--monoFont);
+            font-size: (12/16rem);
+            font-weight: 500;
+            line-height: 1em;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--pugetBlue);
+            margin-bottom: (14/16rem);
+        }
+
+        .cs-price {
+            font-family: var(--headerFont);
+            /* 40px - 56px */
+            font-size: clamp(2.5rem, 5.5vw, 3.5rem);
+            font-weight: 800;
+            line-height: 1em;
+            letter-spacing: -0.03em;
+            color: var(--inkNavy);
+        }
+
+        .cs-period {
+            font-family: var(--bodyFont);
+            font-size: (17/16rem);
+            font-weight: 500;
+            letter-spacing: 0;
+            color: var(--pugetBlue);
+        }
+
+        .cs-note {
+            font-size: (14/16rem);
+            line-height: 1.5em;
+            color: var(--pugetBlue);
+            margin-top: (10/16rem);
+        }
+
+        /* the self-selection line, so the page needs no separate "which one is
+           for you" section */
+        .cs-best {
+            font-size: (15/16rem);
+            line-height: 1.6em;
+            color: var(--pugetBlue);
+            margin: (20/16rem) 0 0;
+        }
+
+        .cs-ul {
+            width: 100%;
+            margin: (24/16rem) 0 (32/16rem);
+            padding: (24/16rem) 0 0;
+            list-style: none;
+            border-top: 1px solid rgba(27, 42, 56, 0.15);
+            display: flex;
+            flex-direction: column;
+            gap: (12/16rem);
+        }
+
+        .cs-li {
+            font-size: (15/16rem);
+            line-height: 1.5em;
+            color: var(--inkNavy);
+            padding-left: (26/16rem);
+            position: relative;
+
+            /* coral tick, drawn rather than a glyph so it can't font-swap */
+            &:before {
+                content: "";
+                width: (5/16rem);
+                height: (10/16rem);
+                border: solid var(--coral);
+                border-width: 0 2px 2px 0;
+                transform: rotate(45deg);
+                position: absolute;
+                top: (4/16rem);
+                left: (6/16rem);
+            }
+        }
+
+        /* the one line that is a cost rather than an inclusion */
+        .cs-li-muted {
+            color: var(--pugetBlue);
+
+            &:before {
+                width: (10/16rem);
+                height: 0;
+                border-width: 0 0 2px 0;
+                border-color: var(--rainGray);
+                transform: none;
+                top: (10/16rem);
+                left: (3/16rem);
+            }
+        }
+
+        .cs-button-solid {
+            /* the kit's button is uppercase with a sweep pseudo; this site is
+               sentence case everywhere */
+            text-transform: none;
+            margin-top: auto;
+
+            &:before {
+                display: none;
+            }
+        }
+
+        .cs-button-transparent {
+            font-family: var(--bodyFont);
+            font-size: (16/16rem);
+            font-weight: 600;
+            line-height: 1em;
+            text-decoration: none;
+            color: var(--inkNavy);
+            margin-top: auto;
+            display: inline-flex;
+            align-items: center;
+            gap: (8/16rem);
+            transition: color 0.25s;
+
+            .cs-arrow {
+                transition: transform 0.25s;
+            }
+
+            &:hover {
+                color: var(--coral);
+
+                .cs-arrow {
+                    transform: translateX(4px);
+                }
+            }
+        }
+
+        /* ── the featured plan ── */
+
+        .cs-item-featured {
+            background-color: var(--inkNavy);
+            border-style: solid;
+            border-color: var(--inkNavy);
+            box-shadow: 0 (20/16rem) (48/16rem) rgba(27, 42, 56, 0.28);
+
+            .cs-plan,
+            .cs-period,
+            .cs-best {
+                color: var(--rainGray);
+            }
+
+            .cs-price {
+                color: #fff;
+            }
+
+            .cs-note {
+                color: rgba(255, 255, 255, 0.72);
+            }
+
+            .cs-ul {
+                border-top-color: rgba(255, 255, 255, 0.16);
+            }
+
+            .cs-li {
+                color: var(--bodyTextColorWhite);
+            }
+
+            /* the coral button's default hover flips to navy, which is
+               invisible on a navy card - give it a light hover instead */
+            .cs-button-solid:hover {
+                background-color: #fff;
+                color: var(--inkNavy);
+            }
+        }
+
+        .cs-fineprint {
+            font-size: (14/16rem);
+            line-height: 1.6em;
+            text-align: center;
+            max-width: 54ch;
+            margin: 0;
+            color: var(--pugetBlue);
+        }
+    }
+}
+
+/* Tablet - 768px */
+@media only screen and (min-width: 48rem) {
+    #tiers {
+        .cs-card-group {
+            grid-template-columns: repeat(2, 1fr);
+            align-items: stretch;
+        }
+    }
+}
+
+/* Dark Mode */
+@media only screen and (min-width: 0rem) {
+    body.dark-mode {
+        #tiers {
+            background-color: var(--dark);
+
+            .cs-item {
+                background-color: var(--medium);
+                border-color: rgba(255, 255, 255, 0.22);
+            }
+
+            .cs-price {
+                color: var(--bodyTextColorWhite);
+            }
+
+            .cs-plan,
+            .cs-period,
+            .cs-note,
+            .cs-best,
+            .cs-fineprint {
+                color: var(--rainGray);
+            }
+
+            .cs-ul {
+                border-top-color: rgba(255, 255, 255, 0.16);
+            }
+
+            .cs-li {
+                color: var(--bodyTextColorWhite);
+            }
+
+            .cs-li-muted {
+                color: var(--rainGray);
+            }
+
+            .cs-button-transparent {
+                color: var(--bodyTextColorWhite);
+
+                &:hover {
+                    color: var(--coral);
+                }
+            }
+
+            /* the featured card darkens instead of matching the page */
+            .cs-item-featured {
+                background-color: rgba(0, 0, 0, 0.3);
+                border-color: rgba(0, 0, 0, 0.3);
+            }
+        }
+    }
+}
+
+/*-- -------------------------- -->
+<---     What's included        -->
+<--- -------------------------- -*/
+
+/* Navy band. What the money covers, then where it stops. Naming the boundary is
+   what makes the inclusions credible, so the second group is the point of the
+   section rather than a disclaimer.
+
+   The two groups are STACKED and full width, not side-by-side columns. Eleven
+   inclusions against four exclusions cannot balance as a pair of columns - the
+   short side leaves a half-height void with a divider running down it. Stacked,
+   each list gets the full width and flows into a grid. */
+
+/* Mobile - 360px */
+@media only screen and (min-width: 0rem) {
+    #included {
+        background-color: var(--inkNavy);
+        padding: var(--sectionPadding);
+
+        /* literal values only - LESS emits custom-property values verbatim */
+        --rule: rgba(255, 255, 255, 0.14);
+
+        .cs-container {
+            width: 100%;
+            max-width: (1280/16rem);
+            margin: auto;
+            display: flex;
+            flex-direction: column;
+            /* 32px - 56px */
+            gap: clamp(2rem, 4vw, 3.5rem);
+        }
+
+        .cs-content {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        /* .cs-topper is display:block globally, so its parent has to be a flex
+           column with align-items:flex-start or the pill stretches full width */
+        .cs-flex-group {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .cs-topper {
+            font-family: var(--monoFont);
+            font-size: (12/16rem);
+            font-weight: 500;
+            line-height: 1em;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--coral);
+            background-color: rgba(214, 85, 61, 0.18);
+            padding: (8/16rem) (14/16rem);
+            border-radius: (40/16rem);
+            margin: 0 0 (20/16rem);
+        }
+
+        .cs-title {
+            font-family: var(--headerFont);
+            /* 30px - 46px */
+            font-size: clamp(1.875rem, 4vw, 2.875rem);
+            font-weight: 800;
+            line-height: 1.14em;
+            letter-spacing: -0.02em;
+            margin: 0;
+            color: var(--bodyTextColorWhite);
+
+            .cs-accent {
+                color: var(--coral);
+            }
+        }
+
+        .cs-text {
+            font-size: (16/16rem);
+            line-height: 1.65em;
+            max-width: 56ch;
+            margin: (18/16rem) 0 0;
+            color: var(--rainGray);
+        }
+
+        .cs-group {
+            width: 100%;
+        }
+
+        /* the label rules off the full width, which is what makes each group
+           read as its own band rather than a floating heading */
+        .cs-group-title {
+            font-family: var(--monoFont);
+            font-size: (12/16rem);
+            font-weight: 500;
+            line-height: 1em;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--rainGray);
+            margin: 0 0 (24/16rem);
+            padding-bottom: (16/16rem);
+            border-bottom: 1px solid var(--rule);
+        }
+
+        .cs-group-list {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            display: grid;
+            grid-template-columns: 1fr;
+            /* 12px row, 24px column */
+            gap: (12/16rem) (24/16rem);
+
+            li {
+                font-size: (15/16rem);
+                line-height: 1.55em;
+                color: var(--bodyTextColorWhite);
+                padding-left: (26/16rem);
+                position: relative;
+            }
+        }
+
+        /* coral tick for the inclusions */
+        .cs-group-in .cs-group-list li:before {
+            content: "";
+            width: (5/16rem);
+            height: (10/16rem);
+            border: solid var(--coral);
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+            position: absolute;
+            top: (4/16rem);
+            left: (6/16rem);
+        }
+
+        /* muted rule for the boundary group - deliberately not a red cross,
+           these are scope lines, not failures */
+        .cs-group-out {
+            .cs-group-list li {
+                color: var(--rainGray);
+
+                &:before {
+                    content: "";
+                    width: (10/16rem);
+                    height: (2/16rem);
+                    background-color: var(--rainGray);
+                    opacity: 0.6;
+                    position: absolute;
+                    top: (11/16rem);
+                    left: (3/16rem);
+                }
+            }
+        }
+
+        .cs-group-note {
+            font-size: (14/16rem);
+            line-height: 1.65em;
+            max-width: 62ch;
+            margin: (28/16rem) 0 0;
+            color: var(--rainGray);
+        }
+    }
+}
+
+/* Tablet - 768px */
+@media only screen and (min-width: 48rem) {
+    #included {
+        .cs-group-list {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+}
+
+/* Desktop - 1024px */
+@media only screen and (min-width: 64rem) {
+    #included {
+        .cs-content {
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: flex-end;
+            gap: clamp(3rem, 6vw, 5rem);
+        }
+
+        .cs-flex-group {
+            max-width: (520/16rem);
+        }
+
+        .cs-text {
+            /* sits beside the title rather than under it, so the band uses its
+               full width instead of leaving the right half empty */
+            max-width: (480/16rem);
+            margin: 0;
+            flex: none;
+        }
+
+        /* eleven items across three columns: 4 / 4 / 3 */
+        .cs-group-in .cs-group-list {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        /* four items, one clean row */
+        .cs-group-out .cs-group-list {
+            grid-template-columns: repeat(4, 1fr);
+        }
+    }
+}
+
+/* Dark Mode */
+@media only screen and (min-width: 0rem) {
+    body.dark-mode {
+        /* navy bands darken rather than staying flat */
+        #included {
+            background-color: rgba(0, 0, 0, 0.25);
+        }
+    }
+}
+
+/*-- -------------------------- -->
+<---         Ownership          -->
+<--- -------------------------- -*/
+
+/* The cancellation answer. A single lifted panel, same idiom as #steps-276 and
+   the /work/ project panels, because this is the one statement on the page
+   that should read as a standalone commitment rather than another list. */
+
+/* Mobile - 360px */
+@media only screen and (min-width: 0rem) {
+    #ownership {
+        background-color: var(--warmSand);
+        padding: var(--sectionPadding);
+
+        .cs-container {
+            width: 100%;
+            max-width: (1280/16rem);
+            margin: auto;
+        }
+
+        .cs-panel {
+            box-sizing: border-box;
+            background-color: rgba(27, 42, 56, 0.05);
+            border-radius: clamp(1.25rem, 2.5vw, 2rem);
+            /* 24px - 64px */
+            padding: clamp(1.5rem, 4.5vw, 4rem);
+            display: flex;
+            flex-direction: column;
+            /* 28px - 44px */
+            gap: clamp(1.75rem, 3.5vw, 2.75rem);
+        }
+
+        .cs-content {
+            width: 100%;
+            max-width: (620/16rem);
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .cs-topper {
+            font-family: var(--monoFont);
+            font-size: (12/16rem);
+            font-weight: 500;
+            line-height: 1em;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--coral);
+            background-color: rgba(214, 85, 61, 0.14);
+            padding: (8/16rem) (14/16rem);
+            border-radius: (40/16rem);
+            margin: 0 0 (20/16rem);
+        }
+
+        .cs-title {
+            font-family: var(--headerFont);
+            /* 30px - 46px */
+            font-size: clamp(1.875rem, 4vw, 2.875rem);
+            font-weight: 800;
+            line-height: 1.14em;
+            letter-spacing: -0.02em;
+            margin: 0;
+            color: var(--inkNavy);
+
+            .cs-accent {
+                color: var(--coral);
+            }
+        }
+
+        .cs-text {
+            font-size: (16/16rem);
+            line-height: 1.65em;
+            max-width: 56ch;
+            margin: (18/16rem) 0 0;
+            color: var(--pugetBlue);
+        }
+
+        .cs-list {
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            display: grid;
+            grid-template-columns: 1fr;
+            /* 24px - 32px */
+            gap: clamp(1.5rem, 3vw, 2rem);
+        }
+
+        .cs-list-item {
+            list-style: none;
+            padding-top: (20/16rem);
+            box-shadow: inset 0 1px 0 rgba(27, 42, 56, 0.15);
+        }
+
+        .cs-h3 {
+            font-family: var(--headerFont);
+            /* 17px - 19px */
+            font-size: clamp(1.0625rem, 1.6vw, 1.1875rem);
+            font-weight: 700;
+            line-height: 1.35em;
+            margin: 0 0 (10/16rem);
+            color: var(--inkNavy);
+        }
+
+        .cs-item-text {
+            font-size: (15/16rem);
+            line-height: 1.6em;
+            margin: 0;
+            color: var(--pugetBlue);
+        }
+
+        .cs-fineprint {
+            font-size: (14/16rem);
+            line-height: 1.65em;
+            max-width: 60ch;
+            margin: 0;
+            color: var(--pugetBlue);
+        }
+    }
+}
+
+/* Desktop - 1024px */
+@media only screen and (min-width: 64rem) {
+    #ownership {
+        .cs-list {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
+}
+
+/* Dark Mode */
+@media only screen and (min-width: 0rem) {
+    body.dark-mode {
+        #ownership {
+            background-color: var(--dark);
+
+            .cs-panel {
+                background-color: rgba(255, 255, 255, 0.04);
+            }
+
+            .cs-title,
+            .cs-h3 {
+                color: var(--bodyTextColorWhite);
+            }
+
+            .cs-text,
+            .cs-item-text,
+            .cs-fineprint {
+                color: var(--rainGray);
+            }
+
+            .cs-list-item {
+                box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14);
+            }
+        }
+    }
+}
+
+/*-- -------------------------- -->
+<---             FAQ            -->
+<--- -------------------------- -*/
+
+/* Same accordion as the service pages, driven by assets/js/faq.js. The markup
+   contract is .cs-faq-item > .cs-button, with .active on the open one. */
+
+/* Mobile - 360px */
+@media only screen and (min-width: 0rem) {
+    #faq-1236 {
+        background-color: var(--warmSand);
+        padding: var(--sectionPadding);
+        /* #ownership above is the same tan and already carries bottom room */
+        padding-top: 0;
+
+        /* literal values only - LESS emits custom-property values verbatim */
+        --rule: rgba(27, 42, 56, 0.15);
+
+        .cs-container {
+            width: 100%;
+            max-width: (1280/16rem);
+            margin: auto;
+            display: flex;
+            flex-direction: column;
+            /* 32px - 56px */
+            gap: clamp(2rem, 4vw, 3.5rem);
+        }
+
+        .cs-content {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .cs-topper {
+            font-family: var(--monoFont);
+            font-size: (12/16rem);
+            font-weight: 500;
+            line-height: 1em;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--coral);
+            background-color: rgba(214, 85, 61, 0.14);
+            padding: (8/16rem) (14/16rem);
+            border-radius: (40/16rem);
+            margin: 0 0 (20/16rem);
+        }
+
+        .cs-title {
+            font-family: var(--headerFont);
+            /* 30px - 46px */
+            font-size: clamp(1.875rem, 4vw, 2.875rem);
+            font-weight: 800;
+            line-height: 1.14em;
+            letter-spacing: -0.02em;
+            max-width: 14ch;
+            margin: 0;
+            color: var(--inkNavy);
+
+            .cs-accent {
+                color: var(--coral);
+            }
+        }
+
+        .cs-faq-group {
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            border-top: 1px solid var(--rule);
+        }
+
+        .cs-faq-item {
+            list-style: none;
+            width: 100%;
+            border-bottom: 1px solid var(--rule);
+
+            &.active {
+                .cs-button {
+                    color: var(--coral);
+
+                    /* the plus loses its vertical stroke and reads as a minus */
+                    &:after {
+                        transform: translateY(-50%) rotate(90deg);
+                        opacity: 0;
+                    }
+                }
+
+                .cs-item-p {
+                    /* generous ceiling: the transition needs a real number, and
+                       anything taller than the longest answer works */
+                    max-height: (40/16rem) * 10;
+                    opacity: 1;
+                    padding-bottom: (24/16rem);
+                }
+            }
+        }
+
+        .cs-button {
+            font-family: var(--headerFont);
+            /* 16px - 19px */
+            font-size: clamp(1rem, 1.5vw, 1.1875rem);
+            font-weight: 700;
+            line-height: 1.4em;
+            text-align: left;
+            width: 100%;
+            box-sizing: border-box;
+            padding: (22/16rem) (44/16rem) (22/16rem) 0;
+            background: transparent;
+            border: none;
+            color: var(--inkNavy);
+            display: block;
+            position: relative;
+            transition: color 0.25s;
+
+            &:hover {
+                cursor: pointer;
+                color: var(--coral);
+            }
+
+            /* the plus: a horizontal bar (:before) crossed by a vertical one
+               (:after). Opening rotates and fades the vertical bar out. */
+            &:before,
+            &:after {
+                content: "";
+                background-color: currentColor;
+                display: block;
+                position: absolute;
+                top: 50%;
+                right: (4/16rem);
+            }
+
+            &:before {
+                width: (14/16rem);
+                height: (2/16rem);
+                transform: translateY(-50%);
+            }
+
+            &:after {
+                width: (2/16rem);
+                height: (14/16rem);
+                margin-right: (6/16rem);
+                transform: translateY(-50%);
+                transition: transform 0.3s, opacity 0.3s;
+            }
+        }
+
+        .cs-item-p {
+            font-size: (16/16rem);
+            line-height: 1.65em;
+            max-width: 68ch;
+            margin: 0;
+            padding: 0 (44/16rem) 0 0;
+            color: var(--pugetBlue);
+            /* collapsed state - must be 0, the open value lives in .active */
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: max-height 0.35s, opacity 0.3s, padding-bottom 0.35s;
+        }
+    }
+}
+
+/* Desktop - 1024px */
+@media only screen and (min-width: 64rem) {
+    #faq-1236 {
+        .cs-container {
+            flex-direction: row;
+            align-items: flex-start;
+            gap: clamp(3rem, 6vw, 6rem);
+        }
+
+        .cs-content {
+            width: 30%;
+            /* prevents flexbox from squishing it */
+            flex: none;
+            /* the heading holds its place while the accordion grows below it */
+            position: sticky;
+            top: (140/16rem);
+        }
+
+        .cs-faq-group {
+            flex: 1;
+            /* the group already has a top rule; align it with the title's cap */
+            margin-top: (6/16rem);
+        }
+    }
+}
+
+/* Dark Mode */
+@media only screen and (min-width: 0rem) {
+    body.dark-mode {
+        #faq-1236 {
+            background-color: var(--dark);
+            --rule: rgba(255, 255, 255, 0.12);
+
+            .cs-title {
+                color: var(--bodyTextColorWhite);
+            }
+
+            .cs-button {
+                color: var(--bodyTextColorWhite);
+
+                &:hover {
+                    color: var(--coral);
+                }
+            }
+
+            .cs-faq-item.active .cs-button {
+                color: var(--coral);
+            }
+
+            .cs-item-p {
+                color: var(--rainGray);
+            }
+        }
+    }
+}

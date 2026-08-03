@@ -1,12 +1,5 @@
 ---
 description: "Get in touch with Shoreline Web Design. Tell me about your business and what you need, and I'll reply myself, usually within a day."
-pageHero:
-  topper: "Contact"
-  title: "Let's build your site"
-  accent: "."
-  text:
-    - "Tell me about your business and what you're after. I read and answer every message myself, usually within a day."
-    - "Not ready to commit? I'll redesign your homepage for free first, no strings."
 eleventyComputed:
   title: "{{ page.fileSlug | titleCase }} | {{ client.name }} | {{ client.address.city }}, {{ client.address.state }}"
   permalink: "/{{ page.fileSlug | slugify }}/"
@@ -20,8 +13,106 @@ eleventyComputed:
 
 {% block body %}
 
-    {% include "sections/page-hero.html" %}
+    <!-- ============================================ -->
+    <!--              Hero + contact form             -->
+    <!-- ============================================ -->
 
-    <!-- Contact form to come. -->
+    <!-- Same section as the hero on /free-redesign/, different wording. Like
+         that page, this one does NOT use sections/page-hero.html - the form is
+         the page, so it sits in the hero and the heading is the <h1>. The
+         `pageHero` front matter was removed; don't re-add it or you'll render a
+         second hero above this one.
+
+         NOTE: the section styles in contact.less are a near-copy of the ones in
+         free-redesign.less. Two copies is deliberate (it keeps this page from
+         touching a page that's already signed off). If a THIRD page ever needs
+         this section, pull it into a shared sheet and link it alongside the
+         per-page one, the way the service pages share services.css.
+
+         FORM WIRING: Netlify Forms. The hidden `form-name` input and the
+         honeypot are both required for it to be picked up at build time.
+         Submissions land in the Netlify dashboard under the name "contact".
+
+         NEEDS BRYAN'S CONFIRMATION: the three lines under "What won't happen".
+         They're promises about how you follow up, not observations. -->
+
+    <section id="contact-1700">
+        <div class="cs-container">
+            <div class="cs-content">
+                <span class="cs-topper">Contact</span>
+                <h1 class="cs-title">Talk to the person who builds it<span class="cs-accent">.</span></h1>
+                <p class="cs-text">
+                    Tell me about your business and what you're after. There's no account manager and no call centre: your message comes to me, and I answer it myself.
+                </p>
+                <!-- No headshot block here on purpose. It appears on /about/ and
+                     in the /free-redesign/ hero, and the copy above already says
+                     the message comes straight to Bryan, so on this page it was
+                     ~84px of height buying a point already made. Removing it is
+                     what brings this column level with the form. -->
+
+                <!-- WebHero's exact format: three rows on hairline rules, each
+                     one a tick plus a bold label running straight into prose.
+                     NOT two headed lists of bullets - that ran twice as tall and
+                     pushed the form off screen. Keep it to three rows. -->
+                <ul class="cs-lists">
+                    <li class="cs-list-item">
+                        <strong>What we'll cover:</strong> your business, what your customers actually need to do, and an honest read on whether a new site will help.
+                    </li>
+                    <li class="cs-list-item">
+                        <strong>What you'll get:</strong> a reply from me within one business day, then scope and a fixed price before any work starts.
+                    </li>
+                    <li class="cs-list-item">
+                        <strong>What you won't get:</strong> an automated follow-up sequence, a sales call you have to sit through, or a mailing list.
+                    </li>
+                </ul>
+
+                <p class="cs-alt">
+                    Not ready to talk yet? <a href="/free-redesign/">I'll redesign your homepage for free</a> first, no strings.
+                </p>
+            </div>
+
+            <form class="cs-form" name="contact" method="POST" data-netlify="true" netlify-honeypot="bot-field">
+                <input type="hidden" name="form-name" value="contact">
+                <p class="cs-honeypot">
+                    <label>Leave this empty <input name="bot-field"></label>
+                </p>
+
+                <h2 class="cs-form-title">Send me a message</h2>
+                <p class="cs-form-text">Everything here goes straight to my inbox.</p>
+
+                <label class="cs-label">
+                    Your name
+                    <input class="cs-input" required type="text" id="c-name" name="name" autocomplete="name" placeholder="Jane Doe">
+                </label>
+                <label class="cs-label">
+                    Email
+                    <input class="cs-input" required type="email" id="c-email" name="email" autocomplete="email" placeholder="jane@yourbusiness.com">
+                </label>
+                <label class="cs-label">
+                    Business name
+                    <input class="cs-input" type="text" id="c-business" name="business" autocomplete="organization" placeholder="Your business">
+                </label>
+                <label class="cs-label">
+                    What's this about?
+                    <select class="cs-input cs-select" id="c-topic" name="topic">
+                        <option value="A new website">A new website</option>
+                        <option value="SEO">SEO</option>
+                        <option value="Website maintenance">Website maintenance</option>
+                        <option value="Moving an existing site">Moving an existing site</option>
+                        <option value="Something else">Something else</option>
+                    </select>
+                </label>
+                <!-- cs-label-full spans both columns of the desktop grid; the
+                     four short fields above it pair up two-across -->
+                <label class="cs-label cs-label-full">
+                    Your message
+                    <textarea class="cs-input cs-textarea" required id="c-message" name="message" rows="3" placeholder="What are you trying to do, and by when?"></textarea>
+                </label>
+
+                <button class="cs-button-solid cs-submit" type="submit">Send it</button>
+                <p class="cs-fineprint">I'll reply myself, usually within one business day.</p>
+            </form>
+        </div>
+    </section>
 
 {% endblock %}
