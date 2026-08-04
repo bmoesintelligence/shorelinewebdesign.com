@@ -6,6 +6,11 @@ pageHero:
   accent: "."
   text:
     - "The terms that apply when you work with Shoreline Web Design. Written to be read, not to be survived."
+# Kept OUT of the sitemap while this is still a scaffold. Unlinking it from the
+# footer stops people finding it; leaving it in sitemap.xml would actively invite
+# Google to index a draft, which is worse than either. Delete both this line and
+# the noindex below once the attorney's content lands.
+eleventyExcludeFromCollections: true
 eleventyComputed:
   title: "{{ page.fileSlug | titleCase }} | {{ client.name }} | {{ client.address.city }}, {{ client.address.state }}"
   permalink: "/{{ page.fileSlug | slugify }}/"
@@ -14,6 +19,7 @@ eleventyComputed:
 {% extends "layouts/base.html" %}
 
 {% block head %}
+    <meta name="robots" content="noindex">
     <link rel="stylesheet" href="/assets/css/longform.css">
     <script defer src="/assets/js/toc.js"></script>
 {% endblock %}
@@ -45,16 +51,19 @@ eleventyComputed:
     ║    the fee pays for.                                                     ║
     ║  · Edits: "edits and updates included, no cap stated". The word          ║
     ║    "unlimited" was deliberately dropped - don't reintroduce it here.     ║
-    ║  · $100/month all-in, with a one-time custom build as the alternative.   ║
-    ║  · The $95/hr one-time support rate is STILL A PLACEHOLDER on            ║
-    ║    /pricing/ and the home page. Settle it before it appears here too.    ║
+    ║  · $150/month all-in, with a one-time custom build as the alternative.   ║
+    ║  · $125/hr for support on the one-time tier (set 2026-08-04). Live on    ║
+    ║    /pricing/ and the home page.                                          ║
     ║                                                                          ║
     ║  ── BEFORE THIS PAGE GOES LIVE ──                                        ║
     ║  Have a Washington-licensed attorney review it. This is the one page on  ║
     ║  the site where a template found online is a genuinely bad idea, since   ║
-    ║  most are written for agencies with a different model. It is currently   ║
-    ║  LINKED IN THE FOOTER, so either finish it or drop the link - a live     ║
-    ║  dead-end on a terms page is worse than no page.                         ║
+    ║  most are written for agencies with a different model.                   ║
+    ║                                                                          ║
+    ║  The FOOTER LINK WAS REMOVED 2026-08-04 so launch doesn't ship a live    ║
+    ║  dead-end, and the page is excluded from the sitemap and set to noindex. ║
+    ║  Restoring all three is the last step once the real content lands - the  ║
+    ║  markup to put back is in a comment in sections/footer.html.             ║
     ╚══════════════════════════════════════════════════════════════════════════╝
     #}
 

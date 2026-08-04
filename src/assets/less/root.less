@@ -118,8 +118,15 @@
 	#service-area .cs-item-home,
 	#projects .cs-panel-dark,
 	body.dark-mode {
+		/* Small coral TEXT on dark needs the full 4.5:1, so it has to be this
+		   light. Toppers, links, labels, "read it". */
 		--coralText: #e8846f;
-		--coralAccent: #e8846f;
+		/* Large coral text only needs 3:1, so it does NOT need to be as pale -
+		   and at hero size #e8846f read washed out and off-brand. This measures
+		   4.20 on the navy bands and 3.45 on the raised --medium cards (the
+		   harder of the two), while staying much closer to the light-mode
+		   coral. Don't push it past ~#da5c44 or the cards drop under 3:1. */
+		--coralAccent: #de644b;
 	}
 
 	html,

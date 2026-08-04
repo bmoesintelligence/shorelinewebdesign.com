@@ -63,7 +63,18 @@ module.exports = {
     //                  Richmond Beach neighbourhood groups; Instagram to show
     //                  before/afters of the free redesigns.
     socials: {
-        google: "",
+        // Google Business Profile, created 2026-08-03.
+        //
+        // `/g/11zdcz3557` is the KNOWLEDGE GRAPH ID - Google's permanent
+        // identifier for this business as an entity. It is the stable part of
+        // the URL and the reason this form is used instead of the share.google
+        // short link that the Share button hands out: no redirect hop, on
+        // google.com, and it can't rot.
+        //
+        // The URL copied out of the address bar also carried session tracking
+        // (shem / shndl / kgs / utm_source). Those were stripped - they are
+        // per-visit noise and have no business in a `sameAs` claim.
+        google: "https://www.google.com/search?kgmid=/g/11zdcz3557",
         linkedin: "",
         instagram: "",
         facebook: "",

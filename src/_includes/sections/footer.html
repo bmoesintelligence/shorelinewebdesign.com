@@ -104,7 +104,15 @@
         <div class="cs-bottom">
             <span class="cs-copyright">© {{ currentYear }} Shoreline Web Design &middot; Richmond Beach, WA</span>
             <div class="cs-terms">
-                <a href="/terms/" class="cs-copyright-link">Terms &amp; Conditions</a>
+                <!-- Terms is DELIBERATELY NOT LINKED until the attorney delivers.
+                     The page still exists at /terms/ and still builds - it is a
+                     scaffold with a visible "Draft" notice - but linking it from
+                     every page in the footer means shipping a live dead-end on a
+                     site that sells attention to detail. A missing footer link is
+                     invisible; a broken one is not.
+
+                     PUT THIS BACK the moment /terms/ has real content:
+                     <a href="/terms/" class="cs-copyright-link">Terms &amp; Conditions</a> -->
                 <a href="/privacy-policy/" class="cs-copyright-link">Privacy Policy</a>
                 <!-- /accessibility/ was built but linked from nowhere, which
                      defeats the point: the people who most need an accessibility
