@@ -2,6 +2,40 @@
 title: "Free Homepage Redesign | Shoreline Web Design"
 description: "Send me your website and I'll design a fresh homepage for your business, free. Love it? I'll build the whole thing for $100/month. Don't? Keep the design, no strings."
 permalink: "/free-redesign/"
+faqs:
+  - q: >-
+      What's the catch?
+    a: >-
+      There isn't one, but there is a limit worth being clear about. What you
+      get is a homepage <em>design</em>: a polished look at what your site
+      could be, not a live working website. Building and launching the real
+      thing is the paid part. If you like the design and want to take it
+      elsewhere, that is genuinely fine.
+  - q: >-
+      Why would you do this for free?
+    a: >-
+      Because this shop is new and a design in your hands is worth more than
+      any promise I could make on this page. Some people will like it enough
+      to have it built. Most won't, and that is a fair trade for me.
+  - q: >-
+      How long does it take?
+    a: >-
+      <!-- BRYAN: fill in the real turnaround here. --> I'll tell you when
+      I'll have it back to you as soon as I've looked at your current site,
+      and I'll stick to that date.
+  - q: >-
+      What does it cost to have it built?
+    a: >-
+      $100 a month, everything in it: the build, hosting, the domain setup,
+      SSL and ongoing edits. No build fee up front and no contract. The <a
+      href="/pricing/">pricing page</a> itemises exactly what that covers and
+      what it doesn't.
+  - q: >-
+      Do you redesign every site that comes in?
+    a: >-
+      Each one is real work and I do them myself, so I take on what I can
+      actually do properly. If yours isn't a good fit, I'll say so quickly
+      rather than leave you waiting.
 ---
 
 {% extends "layouts/base.html" %}
@@ -205,47 +239,23 @@ permalink: "/free-redesign/"
                 <h2 class="cs-title">The obvious questions<span class="cs-accent">.</span></h2>
             </div>
             <ul class="cs-faq-group">
-                <li class="cs-faq-item active">
+                <!-- Rendered from the `faqs:` front matter above, which ALSO
+                     drives the FAQPage structured data in components/schema.html.
+                     One source of truth on purpose: hand-written markup plus
+                     hand-written schema drift apart, and schema that disagrees
+                     with the visible page is exactly what earns a manual action.
+                     Markup contract for assets/js/faq.js is unchanged:
+                     .cs-faq-item / .cs-button / .cs-item-p, first one `active`. -->
+                {% for faq in faqs %}
+                <li class="cs-faq-item{% if loop.first %} active{% endif %}">
                     <button class="cs-button">
-                        <span class="cs-button-text">What's the catch?</span>
+                        <span class="cs-button-text">{{ faq.q }}</span>
                     </button>
                     <p class="cs-item-p">
-                        There isn't one, but there is a limit worth being clear about. What you get is a homepage <em>design</em>: a polished look at what your site could be, not a live working website. Building and launching the real thing is the paid part. If you like the design and want to take it elsewhere, that is genuinely fine.
+                        {{ faq.a | safe }}
                     </p>
                 </li>
-                <li class="cs-faq-item">
-                    <button class="cs-button">
-                        <span class="cs-button-text">Why would you do this for free?</span>
-                    </button>
-                    <p class="cs-item-p">
-                        Because this shop is new and a design in your hands is worth more than any promise I could make on this page. Some people will like it enough to have it built. Most won't, and that is a fair trade for me.
-                    </p>
-                </li>
-                <li class="cs-faq-item">
-                    <button class="cs-button">
-                        <span class="cs-button-text">How long does it take?</span>
-                    </button>
-                    <p class="cs-item-p">
-                        <!-- BRYAN: fill in the real turnaround here. -->
-                        I'll tell you when I'll have it back to you as soon as I've looked at your current site, and I'll stick to that date.
-                    </p>
-                </li>
-                <li class="cs-faq-item">
-                    <button class="cs-button">
-                        <span class="cs-button-text">What does it cost to have it built?</span>
-                    </button>
-                    <p class="cs-item-p">
-                        $100 a month, everything in it: the build, hosting, the domain setup, SSL and ongoing edits. No build fee up front and no contract. The <a href="/pricing/">pricing page</a> itemises exactly what that covers and what it doesn't.
-                    </p>
-                </li>
-                <li class="cs-faq-item">
-                    <button class="cs-button">
-                        <span class="cs-button-text">Do you redesign every site that comes in?</span>
-                    </button>
-                    <p class="cs-item-p">
-                        Each one is real work and I do them myself, so I take on what I can actually do properly. If yours isn't a good fit, I'll say so quickly rather than leave you waiting.
-                    </p>
-                </li>
+                {% endfor %}
             </ul>
         </div>
     </section>

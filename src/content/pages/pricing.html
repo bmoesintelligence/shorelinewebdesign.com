@@ -16,6 +16,35 @@ pageHero:
 eleventyComputed:
   title: "{{ page.fileSlug | titleCase }} | {{ client.name }} | {{ client.address.city }}, {{ client.address.state }}"
   permalink: "/{{ page.fileSlug | slugify }}/"
+faqs:
+  - q: >-
+      Is there a contract?
+    a: >-
+      No. It is month to month and you can stop whenever you want. There is no
+      minimum term and no notice period to serve out.
+  - q: >-
+      Is there a setup fee?
+    a: >-
+      Not on the monthly plan. The build is covered by the monthly price,
+      which is the entire point of it. There is nothing to pay before the work
+      starts.
+  - q: >-
+      Who owns the domain?
+    a: >-
+      You do. It is registered in your name and stays that way, whether I set
+      it up for you or you brought it with you.
+  - q: >-
+      What if I need a new page later?
+    a: >-
+      Send it over. A new service, a second location, a seasonal page: that is
+      what the monthly plan is for, and the site is built so that adding one
+      does not mean rebuilding anything around it.
+  - q: >-
+      What happens if I cancel?
+    a: >-
+      Billing stops, your domain and your content stay with you, and the built
+      site goes offline, because the hosting was part of what you were paying
+      for. The section above spells it out in full.
 ---
 
 {% extends "layouts/base.html" %}
@@ -213,46 +242,23 @@ eleventyComputed:
                 <h2 class="cs-title">The money questions<span class="cs-accent">.</span></h2>
             </div>
             <ul class="cs-faq-group">
-                <li class="cs-faq-item active">
+                <!-- Rendered from the `faqs:` front matter above, which ALSO
+                     drives the FAQPage structured data in components/schema.html.
+                     One source of truth on purpose: hand-written markup plus
+                     hand-written schema drift apart, and schema that disagrees
+                     with the visible page is exactly what earns a manual action.
+                     Markup contract for assets/js/faq.js is unchanged:
+                     .cs-faq-item / .cs-button / .cs-item-p, first one `active`. -->
+                {% for faq in faqs %}
+                <li class="cs-faq-item{% if loop.first %} active{% endif %}">
                     <button class="cs-button">
-                        <span class="cs-button-text">Is there a contract?</span>
+                        <span class="cs-button-text">{{ faq.q }}</span>
                     </button>
                     <p class="cs-item-p">
-                        No. It is month to month and you can stop whenever you want. There is no minimum term and no notice period to serve out.
+                        {{ faq.a | safe }}
                     </p>
                 </li>
-                <li class="cs-faq-item">
-                    <button class="cs-button">
-                        <span class="cs-button-text">Is there a setup fee?</span>
-                    </button>
-                    <p class="cs-item-p">
-                        Not on the monthly plan. The build is covered by the monthly price, which is the entire point of it. There is nothing to pay before the work starts.
-                    </p>
-                </li>
-                <li class="cs-faq-item">
-                    <button class="cs-button">
-                        <span class="cs-button-text">Who owns the domain?</span>
-                    </button>
-                    <p class="cs-item-p">
-                        You do. It is registered in your name and stays that way, whether I set it up for you or you brought it with you.
-                    </p>
-                </li>
-                <li class="cs-faq-item">
-                    <button class="cs-button">
-                        <span class="cs-button-text">What if I need a new page later?</span>
-                    </button>
-                    <p class="cs-item-p">
-                        Send it over. A new service, a second location, a seasonal page: that is what the monthly plan is for, and the site is built so that adding one does not mean rebuilding anything around it.
-                    </p>
-                </li>
-                <li class="cs-faq-item">
-                    <button class="cs-button">
-                        <span class="cs-button-text">What happens if I cancel?</span>
-                    </button>
-                    <p class="cs-item-p">
-                        Billing stops, your domain and your content stay with you, and the built site goes offline, because the hosting was part of what you were paying for. The section above spells it out in full.
-                    </p>
-                </li>
+                {% endfor %}
             </ul>
         </div>
     </section>

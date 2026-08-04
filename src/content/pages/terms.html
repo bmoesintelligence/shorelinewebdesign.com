@@ -1,11 +1,11 @@
 ---
-description: "The terms and conditions that apply when you work with Shoreline Web Design."
+description: "The terms that apply when you work with Shoreline Web Design: what's included, what things cost, who owns what, and what happens if you stop."
 pageHero:
   topper: "Legal"
   title: "Terms and conditions"
   accent: "."
   text:
-    - "The terms that apply when you work with Shoreline Web Design."
+    - "The terms that apply when you work with Shoreline Web Design. Written to be read, not to be survived."
 eleventyComputed:
   title: "{{ page.fileSlug | titleCase }} | {{ client.name }} | {{ client.address.city }}, {{ client.address.state }}"
   permalink: "/{{ page.fileSlug | slugify }}/"
@@ -14,13 +14,179 @@ eleventyComputed:
 {% extends "layouts/base.html" %}
 
 {% block head %}
-    <link rel="stylesheet" href="/assets/css/{{ page.fileSlug }}.css">
+    <link rel="stylesheet" href="/assets/css/longform.css">
+    <script defer src="/assets/js/toc.js"></script>
 {% endblock %}
 
 {% block body %}
 
     {% include "sections/page-hero.html" %}
 
-    <!-- Terms content to come. -->
+    {#
+    ╔══════════════════════════════════════════════════════════════════════════╗
+    ║  ⚠  THIS PAGE IS A SCAFFOLD. IT IS NOT FINISHED AND IT IS NOT ADVICE.    ║
+    ╠══════════════════════════════════════════════════════════════════════════╣
+    ║                                                                          ║
+    ║  Unlike the privacy and accessibility pages, this one was NOT written    ║
+    ║  out. That is deliberate. Terms are a contract: they govern what Bryan   ║
+    ║  owes a paying client, what a client owes him, who owns the work, and    ║
+    ║  what happens when someone stops paying. Inventing that language would   ║
+    ║  be inventing his commercial position, and getting it wrong costs real   ║
+    ║  money in the one situation where the page matters at all.               ║
+    ║                                                                          ║
+    ║  What IS below: the section headings a solo web shop's terms need, each  ║
+    ║  with a note on what belongs there and which decisions are already made  ║
+    ║  elsewhere on this site (so the terms don't contradict them).            ║
+    ║                                                                          ║
+    ║  ── DECISIONS ALREADY MADE, DO NOT CONTRADICT ──                         ║
+    ║  · Cancellation (confirmed by Bryan 2026-08-01, and live on              ║
+    ║    /pricing/#ownership): billing stops, the DOMAIN AND CONTENT STAY      ║
+    ║    WITH THE CLIENT, the built site goes offline because hosting is what  ║
+    ║    the fee pays for.                                                     ║
+    ║  · Edits: "edits and updates included, no cap stated". The word          ║
+    ║    "unlimited" was deliberately dropped - don't reintroduce it here.     ║
+    ║  · $100/month all-in, with a one-time custom build as the alternative.   ║
+    ║  · The $95/hr one-time support rate is STILL A PLACEHOLDER on            ║
+    ║    /pricing/ and the home page. Settle it before it appears here too.    ║
+    ║                                                                          ║
+    ║  ── BEFORE THIS PAGE GOES LIVE ──                                        ║
+    ║  Have a Washington-licensed attorney review it. This is the one page on  ║
+    ║  the site where a template found online is a genuinely bad idea, since   ║
+    ║  most are written for agencies with a different model. It is currently   ║
+    ║  LINKED IN THE FOOTER, so either finish it or drop the link - a live     ║
+    ║  dead-end on a terms page is worse than no page.                         ║
+    ╚══════════════════════════════════════════════════════════════════════════╝
+    #}
+
+    <section id="longform">
+        <div class="cs-container">
+            <aside class="cs-rail" aria-label="Contents"></aside>
+
+            <div class="cs-panel">
+                <div class="cs-prose">
+                    <div class="cs-note">
+                        <span class="cs-note-label">Draft</span>
+                        <p>
+                            These terms are being finalised. If you are working with me and need to know where you stand on anything below in the meantime, email <a href="mailto:hello@shorelinewebdesign.com">hello@shorelinewebdesign.com</a> and I will answer it directly and in writing.
+                        </p>
+                    </div>
+
+                    {# Each heading below is a section the finished page needs.
+                       The paragraph under it says what goes there. Replace the
+                       paragraph with the real terms; keep the heading. #}
+
+                    <h2>Who these terms are between</h2>
+                    <p>
+                        {# Legal name of the business (sole proprietorship? LLC?),
+                           registered state, and who the terms bind. NEEDS BRYAN:
+                           the business's actual legal structure and name is not
+                           recorded anywhere in this repo. #}
+                        Section to be completed: the legal entity behind Shoreline Web Design, and who these terms apply to.
+                    </p>
+
+                    <h2>What I provide</h2>
+                    <p>
+                        {# Scope of the monthly plan vs the one-time build. Must
+                           agree with /pricing/ #included, which already lists
+                           what is and isn't covered. Cross-reference rather than
+                           restate, so the two can't drift apart. #}
+                        Section to be completed: the services covered, for each of the two plans.
+                    </p>
+
+                    <h2>What you provide</h2>
+                    <p>
+                        {# Client responsibilities: content, images, brand assets,
+                           timely feedback, and the rights to all of it. This is
+                           the section that protects against a project stalling
+                           for three months waiting on copy. #}
+                        Section to be completed: what I need from you, and by when.
+                    </p>
+
+                    <h2>Fees, billing and late payment</h2>
+                    <p>
+                        {# Amount, billing cycle, payment method, what happens on
+                           a missed payment and after how long. Also whether the
+                           monthly fee can change and with how much notice. #}
+                        Section to be completed: how and when payment works.
+                    </p>
+
+                    <h2>Revisions and ongoing changes</h2>
+                    <p>
+                        {# "Edits and updates included, no cap stated" is the
+                           agreed wording. This section needs to describe what
+                           counts as an edit versus new work - that boundary is
+                           the one that causes disputes, and it is currently
+                           undefined anywhere on the site. #}
+                        Section to be completed: what counts as an included edit, and what counts as new work.
+                    </p>
+
+                    <h2>Who owns what</h2>
+                    <p>
+                        {# Domain: the client's, registered in their name.
+                           Content and images: the client's.
+                           The built site / source: STATE THIS EXPLICITLY. It is
+                           the single most-asked question and the blog post
+                           "What a small business website actually costs" tells
+                           readers to demand a specific answer to it - so this
+                           page had better give one. #}
+                        Section to be completed: ownership of the domain, the content, and the site itself.
+                    </p>
+
+                    <h2>Ending the arrangement</h2>
+                    <p>
+                        {# ALREADY DECIDED - see the banner comment above. Billing
+                           stops, domain and content stay with the client, the
+                           built site goes offline because hosting is what the fee
+                           pays for. Add: notice period, whether there's a minimum
+                           term, and how an export is handled. Must match
+                           /pricing/#ownership word for word in substance. #}
+                        Section to be completed: notice, what you keep, and what happens to the live site.
+                    </p>
+
+                    <h2>Uptime and support</h2>
+                    <p>
+                        {# What is actually promised. The site advertises "usually
+                           within one business day" for replies - decide whether
+                           that becomes a commitment here or stays an
+                           expectation. Don't promise an uptime figure you don't
+                           control; hosting is Netlify's. #}
+                        Section to be completed: response times, and what is and isn't guaranteed.
+                    </p>
+
+                    <h2>Liability</h2>
+                    <p>
+                        {# The cap, and exclusions. THIS IS THE SECTION TO HAVE A
+                           LAWYER WRITE. Boilerplate copied from another site is
+                           frequently unenforceable and occasionally worse than
+                           silence. #}
+                        Section to be completed.
+                    </p>
+
+                    <h2>Changes to these terms</h2>
+                    <p>
+                        {# How existing clients are notified and whether changes
+                           apply to work already underway. #}
+                        Section to be completed.
+                    </p>
+
+                    <h2>Governing law</h2>
+                    <p>
+                        {# Washington State, presumably, and which county for
+                           disputes. Confirm with the attorney review. #}
+                        Section to be completed.
+                    </p>
+
+                    <h2>Getting in touch</h2>
+                    <p>
+                        Questions about any of this go to <a href="mailto:hello@shorelinewebdesign.com">hello@shorelinewebdesign.com</a> and come straight to me.
+                    </p>
+                </div>
+
+                <div class="cs-foot">
+                    <p class="cs-updated">Draft &middot; not yet in force</p>
+                </div>
+            </div>
+        </div>
+    </section>
 
 {% endblock %}

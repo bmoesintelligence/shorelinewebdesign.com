@@ -36,7 +36,7 @@
             line-height: 1em;
             text-transform: uppercase;
             letter-spacing: 0.12em;
-            color: var(--coral);
+            color: var(--coralText);
             background-color: rgba(214, 85, 61, 0.14);
             padding: (8/16rem) (14/16rem);
             border-radius: (40/16rem);
@@ -98,7 +98,7 @@
             font-weight: 500;
             line-height: 1em;
             letter-spacing: 0.1em;
-            color: var(--rainGray);
+            color: var(--pugetBlue);
             /* 20px - 28px */
             margin-bottom: clamp(1.25rem, 2.4vw, 1.75rem);
         }
@@ -127,7 +127,7 @@
 
             .cs-number,
             .cs-h3 {
-                color: var(--coral);
+                color: var(--coralText);
             }
 
             .cs-item-text {
@@ -165,8 +165,12 @@
                 color: var(--bodyTextColorWhite);
             }
 
+            /* .cs-number is --pugetBlue in light mode, which is a dark blue and
+               disappears once these cards go navy. rainGray is the muted-on-dark
+               token (8.2:1 on navy). The pair has to move together. */
             .cs-text,
-            .cs-item-text {
+            .cs-item-text,
+            .cs-number {
                 color: var(--rainGray);
             }
 
@@ -239,7 +243,7 @@
             line-height: 1em;
             text-transform: uppercase;
             letter-spacing: 0.12em;
-            color: var(--coral);
+            color: var(--coralText);
             background-color: rgba(214, 85, 61, 0.14);
             padding: (8/16rem) (14/16rem);
             border-radius: (40/16rem);
@@ -464,7 +468,7 @@
             line-height: 1em;
             text-transform: uppercase;
             letter-spacing: 0.12em;
-            color: var(--coral);
+            color: var(--coralText);
             background-color: rgba(214, 85, 61, 0.18);
             padding: (8/16rem) (14/16rem);
             border-radius: (40/16rem);
@@ -744,7 +748,7 @@
             line-height: 1em;
             text-transform: uppercase;
             letter-spacing: 0.12em;
-            color: var(--coral);
+            color: var(--coralText);
             background-color: rgba(214, 85, 61, 0.14);
             padding: (8/16rem) (14/16rem);
             border-radius: (40/16rem);
@@ -1109,7 +1113,7 @@
         line-height: 1em;
         text-transform: uppercase;
         letter-spacing: 0.12em;
-        color: var(--coral);
+        color: var(--coralText);
         background-color: rgba(214, 85, 61, 0.14);
         padding: (8/16rem) (14/16rem);
         border-radius: (40/16rem);
@@ -1129,7 +1133,7 @@
 
         /* the accented last word */
         .cs-accent {
-            color: var(--coral);
+            color: var(--coralAccent);
         }
     }
 
@@ -1261,7 +1265,7 @@
             line-height: 1em;
             text-transform: uppercase;
             letter-spacing: 0.12em;
-            color: var(--coral);
+            color: var(--coralText);
             background-color: rgba(214, 85, 61, 0.14);
             padding: (8/16rem) (14/16rem);
             border-radius: (40/16rem);
@@ -1395,7 +1399,7 @@
             font-size: (12/16rem);
             font-weight: 500;
             letter-spacing: 0.1em;
-            color: var(--rainGray);
+            color: var(--pugetBlue);
             flex: none;
         }
 
@@ -1465,7 +1469,9 @@
                 color: var(--bodyTextColorWhite);
             }
 
-            .cs-item-text {
+            /* see the note on #services .cs-number above - same pairing */
+            .cs-item-text,
+            .cs-number {
                 color: var(--rainGray);
             }
 

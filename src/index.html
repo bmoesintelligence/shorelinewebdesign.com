@@ -22,9 +22,15 @@ tags: "sitemap" # content/content.json will make sure that all pages in content/
         <link rel="stylesheet" href="/assets/css/local.css"/>
     {% endif %}
 
-    <!-- To ensure proper validation, prevent errors, and encourage developers to check, schema's are an opt-in feature. They're very bespoke and requires some customising  -->
-    <!-- Uncomment the code below to enable Structured Data, and test it when you deploy to Netlify - https://developers.google.com/search/docs/appearance/structured-data -->
-    <!-- {% include "components/home-schema.html" %} -->
+    <!-- Structured data is NOT here. It ships site-wide from
+         components/schema.html, included once in layouts/base.html and driven by
+         front matter - see the header of that file. The kit's opt-in
+         home-schema/post-schema components were deleted.
+
+         Note for the next person: those two used to sit here wrapped in an HTML
+         comment, which does NOT disable a Nunjucks tag - Eleventy still resolves
+         an include inside a comment and fails the build when the file is gone.
+         Comment Nunjucks out with a Nunjucks comment, not an HTML one. -->
 {% endblock %}
 
 {% block body %}

@@ -16,6 +16,48 @@ pageHero:
       style: "secondary"
 eleventyComputed:
   title: "{{ page.fileSlug | titleCase }} | {{ client.name }} | {{ client.address.city }}, {{ client.address.state }}"
+faqs:
+  - q: >-
+      What does a website cost?
+    a: >-
+      $100 a month, all in. That covers the build, hosting, the domain setup,
+      SSL and ongoing edits. There is no separate build fee to find up front,
+      which is the part that usually stops a small business from starting.
+  - q: >-
+      How long does it take?
+    a: >-
+      Most small business sites go live in two to four weeks from the day the
+      scope is signed. The timeline above breaks down what happens in each
+      stage and what you get at the end of it.
+  - q: >-
+      What do you build on?
+    a: >-
+      Hand-written HTML, CSS and JavaScript, built as static pages and served
+      from a global CDN. No WordPress, no page builder, no plugin stack. That
+      is why the pages load quickly and why there is nothing sitting there
+      waiting to be patched.
+  - q: >-
+      Will I be able to edit it myself?
+    a: >-
+      You will not need to. Send the change in plain English and it goes live,
+      usually the same day. There is no dashboard to learn and no password to
+      lose, which for most small business owners is the feature, not the
+      limitation.
+  - q: >-
+      Can you move my existing site over?
+    a: >-
+      Yes. Every old URL gets redirected to its new home so the rankings and
+      the links you already have keep working, and the old site stays up until
+      the new one is verified.
+  - q: >-
+      What happens if I cancel?
+    a: >-
+      ...
+service:
+  name: "Web design"
+  type: "Web design and development"
+  description: >-
+      Custom, hand-coded websites for small businesses across the North Sound. Fast, mobile-first, and built to be found on Google.
 ---
 
 {% extends "layouts/base.html" %}
@@ -448,68 +490,23 @@ eleventyComputed:
                 <h2 class="cs-title">Asked before every project<span class="cs-accent">.</span></h2>
             </div>
             <ul class="cs-faq-group">
-                <li class="cs-faq-item active">
+                <!-- Rendered from the `faqs:` front matter above, which ALSO
+                     drives the FAQPage structured data in components/schema.html.
+                     One source of truth on purpose: hand-written markup plus
+                     hand-written schema drift apart, and schema that disagrees
+                     with the visible page is exactly what earns a manual action.
+                     Markup contract for assets/js/faq.js is unchanged:
+                     .cs-faq-item / .cs-button / .cs-item-p, first one `active`. -->
+                {% for faq in faqs %}
+                <li class="cs-faq-item{% if loop.first %} active{% endif %}">
                     <button class="cs-button">
-                        <span class="cs-button-text">What does a website cost?</span>
+                        <span class="cs-button-text">{{ faq.q }}</span>
                     </button>
                     <p class="cs-item-p">
-                        $100 a month, all in. That covers the build, hosting, the domain setup, SSL and ongoing edits. There is no separate build fee to find up front, which is the part that usually stops a small business from starting.
+                        {{ faq.a | safe }}
                     </p>
                 </li>
-                <li class="cs-faq-item">
-                    <button class="cs-button">
-                        <span class="cs-button-text">How long does it take?</span>
-                    </button>
-                    <p class="cs-item-p">
-                        Most small business sites go live in two to four weeks from the day the scope is signed. The timeline above breaks down what happens in each stage and what you get at the end of it.
-                    </p>
-                </li>
-                <li class="cs-faq-item">
-                    <button class="cs-button">
-                        <span class="cs-button-text">What do you build on?</span>
-                    </button>
-                    <p class="cs-item-p">
-                        Hand-written HTML, CSS and JavaScript, built as static pages and served from a global CDN. No WordPress, no page builder, no plugin stack. That is why the pages load quickly and why there is nothing sitting there waiting to be patched.
-                    </p>
-                </li>
-                <li class="cs-faq-item">
-                    <button class="cs-button">
-                        <span class="cs-button-text">Will I be able to edit it myself?</span>
-                    </button>
-                    <p class="cs-item-p">
-                        You will not need to. Send the change in plain English and it goes live, usually the same day. There is no dashboard to learn and no password to lose, which for most small business owners is the feature, not the limitation.
-                    </p>
-                </li>
-                <li class="cs-faq-item">
-                    <button class="cs-button">
-                        <span class="cs-button-text">Can you move my existing site over?</span>
-                    </button>
-                    <p class="cs-item-p">
-                        Yes. Every old URL gets redirected to its new home so the rankings and the links you already have keep working, and the old site stays up until the new one is verified.
-                    </p>
-                </li>
-                <!-- ==========================================================
-                     BRYAN: WRITE THIS ONE, THEN UNCOMMENT IT.
-
-                     This is the question every no-contract monthly client asks,
-                     and the site currently answers it nowhere. I have left the
-                     answer blank on purpose rather than guess: what a client
-                     keeps when they stop paying is a contractual term, not
-                     something to infer from the stack.
-
-                     Decide and fill in: do they keep the site? Do you hand over
-                     the code? Can they host it elsewhere, and do you help them
-                     move? Does it simply come down?
-
-                <li class="cs-faq-item">
-                    <button class="cs-button">
-                        <span class="cs-button-text">What happens if I cancel?</span>
-                    </button>
-                    <p class="cs-item-p">
-                        ...
-                    </p>
-                </li>
-                     ========================================================== -->
+                {% endfor %}
             </ul>
         </div>
     </section>

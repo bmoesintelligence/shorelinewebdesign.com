@@ -15,10 +15,46 @@
 	:root {
 		/* ── Marine Layer palette ───────────────────────────────── */
 		--inkNavy: #1b2a38; /* primary text, dark section backgrounds */
-		--pugetBlue: #3d6e82; /* secondary text / body copy on light bg */
+		/* Darkened from #3d6e82 on 2026-08-03. The old value measured 4.09:1 on
+		   --warmSand, under the 4.5:1 WCAG AA minimum for body text - and this
+		   is the single most-used pairing on the site. This value measures
+		   4.80:1 on tan and 6.34:1 on the #fdfbf4 cards. The shift is small
+		   enough to be invisible side by side. Don't lighten it back. */
+		--pugetBlue: #366375; /* secondary text / body copy on light bg */
 		--rainGray: #b8c4c9; /* muted text on dark, borders/dividers */
 		--warmSand: #e3dcc9; /* page + soft section backgrounds */
-		--coral: #d6553d; /* CTAs, highlights, active/accent marks */
+		/* ── Coral is THREE values, not one (2026-08-03) ────────────────────
+		   No single shade of coral clears WCAG AA everywhere it is used, so it
+		   is split by job. Measured, not guessed:
+
+		     --coral      #c94a32  FILLS and LARGE DECORATIVE marks. White text
+		                           on it = 4.66 (was 4.02 on the old #d6553d,
+		                           which failed for 16px/600 button labels).
+		                           As large text on tan = 3.40, over the 3.0 bar,
+		                           so the .cs-accent period still passes.
+		     --coralText  #963320  Coral as SMALL TEXT on light surfaces.
+		                           5.50 on tan, 7.27 on the #fdfbf4 cards.
+		     --coralText  #e8846f  ...overridden to this on dark surfaces, where
+		                           it has to go LIGHTER, not darker.
+		                           5.55 on navy, 4.56 on --medium.
+
+		   Rule of thumb: `color:` wants --coralText, `background-color:` and
+		   `border-color:` want --coral. The .cs-accent period is the deliberate
+		   exception - it is large and decorative, so it keeps --coral. */
+		/* #c2452e, not #c94a32: button labels use --bodyTextColorWhite (a warm
+		   off-white, #faf7ef) rather than pure white, which measured 4.35 on
+		   #c94a32 - just under. This clears it at 4.69 and is indistinguishable.
+		   Safe to nudge because --coralAccent below is now its own value, so the
+		   brand's accent period doesn't move with it. */
+		--coral: #c2452e; /* fills and borders */
+		--coralText: #963320; /* coral as small TEXT on light surfaces */
+		/* The .cs-accent period and other LARGE coral text. Same value as
+		   --coral on light (3.40 on tan, over the 3.0 large-text bar) but it
+		   flips lighter on dark surfaces, where --coral alone measures 3.14 on
+		   navy and only 2.6 on the raised --medium cards. It needs its own token
+		   because --coralText would render the brand's period in the very dark
+		   #963320 on light backgrounds. */
+		--coralAccent: #c94a32;
 		--coralDark: #b8412b; /* coral hover/active */
 
 		/* ── CodeStitch semantic aliases (map kit vars → palette) ── */
@@ -50,6 +86,40 @@
 		--headerFont: "Sora", "Helvetica Neue", Arial, sans-serif;
 		--bodyFont: "Inter", "Helvetica Neue", Arial, sans-serif;
 		--monoFont: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+	}
+
+	/* ── Dark surfaces flip --coralText lighter ──────────────────────────────
+	   Coral text on navy has to go LIGHTER to clear AA, the opposite direction
+	   from coral text on tan. Custom properties inherit, so setting the token on
+	   the navy element re-points every `color: var(--coralText)` inside it -
+	   toppers, labels, links - without touching a single component rule.
+
+	   This list is EXHAUSTIVE as of 2026-08-03 and was derived by parsing every
+	   `background-color: var(--dark|--inkNavy|--medium)` in the stylesheets and
+	   discarding the ones inside `body.dark-mode` blocks. Deliberately excluded:
+	   buttons, the nav marquee, the hero badge, `pre`, the /work/ browser-chrome
+	   frame and the #sbs-r-870 bars - all navy, none of them carry coral text.
+
+	   ⚠ ADD A NEW NAVY SECTION, ADD IT HERE, or its toppers will render in the
+	   dark-on-light coral and be close to unreadable.
+
+	   It lives in root.less rather than each page sheet because root.css loads
+	   on every page and an unmatched selector costs nothing. */
+	#speed,
+	#included,
+	#footer,
+	#compare,
+	#services-1282,
+	#redesign-steps,
+	#free-redesign .cs-container,
+	#services .cs-item-featured,
+	#pricing .cs-item-featured,
+	#tiers .cs-item-featured,
+	#service-area .cs-item-home,
+	#projects .cs-panel-dark,
+	body.dark-mode {
+		--coralText: #e8846f;
+		--coralAccent: #e8846f;
 	}
 
 	html,
@@ -1772,7 +1842,7 @@
             transition: color 0.25s;
 
             &:hover {
-                color: var(--coral);
+                color: var(--coralText);
             }
         }
 
@@ -1784,6 +1854,52 @@
             color: var(--rainGray);
         }
 
+        /* Social / listing icons under the blurb. The whole <ul> is absent from
+           the markup until at least one profile URL is set in _data/client.js,
+           so this styles nothing today - by design.
+           Icons are inline SVG so they inherit currentColor; an <img> couldn't
+           be recoloured on hover or in dark mode. */
+        .cs-socials {
+            margin: (24/16rem) 0 0;
+            padding: 0;
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            gap: (12/16rem);
+        }
+
+        .cs-social {
+            width: (38/16rem);
+            height: (38/16rem);
+            border-radius: 50%;
+            /* hairline as inset shadow, never border */
+            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.18);
+            color: var(--rainGray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.3s, box-shadow 0.3s, background-color 0.3s;
+
+            svg {
+                width: (16/16rem);
+                height: (16/16rem);
+                display: block;
+            }
+
+            &:hover {
+                color: #fff;
+                background-color: var(--coral);
+                box-shadow: inset 0 0 0 1px var(--coral);
+            }
+
+            /* a visible focus ring - the footer sits on navy, so the default
+               UA outline is nearly invisible here */
+            &:focus-visible {
+                outline: 2px solid var(--coralAccent);
+                outline-offset: 2px;
+            }
+        }
+
         /* small mono column headings */
         .cs-header {
             font-family: var(--monoFont);
@@ -1792,7 +1908,7 @@
             line-height: 1em;
             text-transform: uppercase;
             letter-spacing: 0.12em;
-            color: var(--coral);
+            color: var(--coralText);
             display: block;
             margin-bottom: (16/16rem);
         }
@@ -2207,7 +2323,7 @@
             line-height: 1em;
             text-transform: uppercase;
             letter-spacing: 0.12em;
-            color: var(--coral);
+            color: var(--coralText);
             background-color: rgba(214, 85, 61, 0.14);
             padding: (8/16rem) (14/16rem);
             border-radius: (40/16rem);
@@ -2228,7 +2344,7 @@
 
             /* the accented tail (e.g. a coral period) */
             .cs-accent {
-                color: var(--coral);
+                color: var(--coralAccent);
             }
         }
 
@@ -2308,7 +2424,7 @@
             }
 
             &:hover {
-                color: var(--coral);
+                color: var(--coralText);
 
                 .cs-arrow {
                     transform: translateX(4px);
@@ -2345,7 +2461,7 @@
             color: var(--bodyTextColorWhite);
 
             &:hover {
-                color: var(--coral);
+                color: var(--coralText);
             }
         }
     }

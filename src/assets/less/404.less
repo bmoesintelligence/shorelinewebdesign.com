@@ -1,0 +1,173 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// 404
+// This file was 0 bytes, so #error-404 rendered as unstyled markup on the base
+// layout - a bare h1 and a link jammed under the nav. It is the page people see
+// when something is broken, so it is the last place to look broken.
+//
+// Deliberately NOT a full-height hero. The nav and the footer are the useful
+// things on this page (they contain every route someone might have wanted), so
+// the section is sized to leave both visible rather than filling the viewport
+// and pushing the footer out of reach.
+// ─────────────────────────────────────────────────────────────────────────────
+
+/* Mobile - 360px */
+@media only screen and (min-width: 0rem) {
+    #error-404 {
+        background-color: var(--warmSand);
+        /* matches #page-hero's top so the nav overlap is identical to every
+           other interior page */
+        padding: clamp(7.5rem, 15vw, 11rem) 1rem clamp(3.75rem, 7.82vw, 6.25rem);
+        text-align: center;
+
+        .cs-container {
+            width: 100%;
+            max-width: (620/16rem);
+            margin: auto;
+            display: flex;
+            flex-direction: column;
+            /* .cs-topper is display:block globally - centring the pill needs
+               the flex parent, text-align alone won't do it */
+            align-items: center;
+        }
+
+        /* the code itself, in mono - the same treatment the /work/ row numbers
+           and the #glance labels use */
+        .cs-topper {
+            font-family: var(--monoFont);
+            font-size: (12/16rem);
+            font-weight: 500;
+            line-height: 1em;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--coralText);
+            background-color: rgba(214, 85, 61, 0.14);
+            padding: (8/16rem) (14/16rem);
+            border-radius: (40/16rem);
+            margin: 0 0 (24/16rem);
+        }
+
+        .cs-title {
+            font-family: var(--headerFont);
+            /* 30px - 50px */
+            font-size: clamp(1.875rem, 4.6vw, 3.125rem);
+            font-weight: 800;
+            line-height: 1.12em;
+            letter-spacing: -0.02em;
+            margin: 0;
+            color: var(--inkNavy);
+        }
+
+        .cs-text {
+            font-size: (17/16rem);
+            line-height: 1.65em;
+            max-width: (460/16rem);
+            margin: (20/16rem) 0 (36/16rem);
+            color: var(--pugetBlue);
+        }
+
+        /* Matches the #page-hero button in root.less exactly. Left to the kit's
+           defaults this rendered uppercase with a small radius, which is not the
+           pill every other button on the site uses.
+           The kit's .cs-button-solid is uppercase globally and carries a sweep
+           pseudo-element - both get overridden, see the note in CLAUDE.md. */
+        .cs-button-solid {
+            font-family: var(--bodyFont);
+            font-size: (16/16rem);
+            font-weight: 600;
+            line-height: 1em;
+            text-align: center;
+            text-transform: none;
+            text-decoration: none;
+            width: auto;
+            padding: (18/16rem) (32/16rem);
+            border-radius: (48/16rem);
+            background-color: var(--coral);
+            color: #fff;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            /* clip, not hidden - house rule */
+            overflow: clip;
+            z-index: 1;
+            transition: background-color 0.25s, transform 0.25s;
+
+            /* kill the global sweep pseudo */
+            &:before {
+                display: none;
+            }
+
+            &:hover {
+                background-color: var(--coralDark);
+                transform: translateY((-2/16rem));
+            }
+        }
+
+        /* the useful part: where they might actually have been going */
+        .cs-links {
+            margin: (36/16rem) 0 0;
+            padding: (28/16rem) 0 0;
+            /* hairline as inset shadow, never border */
+            box-shadow: inset 0 1px 0 rgba(27, 42, 56, 0.15);
+            width: 100%;
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: (12/16rem) (24/16rem);
+        }
+
+        .cs-link {
+            font-family: var(--monoFont);
+            font-size: (13/16rem);
+            line-height: 1em;
+            color: var(--pugetBlue);
+            text-decoration: none;
+            transition: color 0.3s;
+
+            &:hover {
+                color: var(--coralText);
+            }
+        }
+    }
+}
+
+/* Dark Mode */
+@media only screen and (min-width: 0rem) {
+    body.dark-mode {
+        #error-404 {
+            background-color: var(--dark);
+
+            .cs-title {
+                color: var(--bodyTextColorWhite);
+            }
+
+            .cs-text,
+            .cs-link {
+                color: var(--rainGray);
+            }
+
+            .cs-link:hover {
+                color: var(--coralText);
+            }
+
+            .cs-links {
+                box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15);
+            }
+        }
+    }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    #error-404 {
+        .cs-link,
+        .cs-button-solid {
+            transition: none;
+        }
+
+        .cs-button-solid:hover {
+            transform: none;
+        }
+    }
+}

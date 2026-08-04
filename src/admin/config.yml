@@ -1,14 +1,73 @@
-# Replace the "backend" object below with the snippet from DecapBridge. We need something here to get the CMS to work locally, but this alone won't work in production
+# ─────────────────────────────────────────────────────────────────────────────
+# Decap CMS — the editor served at /admin/
+#
+# How this works: /admin/index.html loads the Decap bundle, which reads this
+# file and renders an editor. There is no server and no database. Pressing
+# "Publish" makes Decap COMMIT A MARKDOWN FILE to the GitHub repo; that push
+# triggers a Netlify build, and the post goes live a minute or so later. All
+# content lives in git, in src/content/blog/.
+# ─────────────────────────────────────────────────────────────────────────────
+
+# ---------------------------------------------------------------------------
+# BACKEND — how the browser gets permission to commit to GitHub.
+#
+# This is DecapBridge, configured 2026-08-03. The kit shipped bare
+# `git-gateway`, which routes through NETLIFY Identity - Netlify is retiring
+# that, and new setups are unsupported.
+#
+# `name: git-gateway` below is NOT Netlify's. It is the same client-side
+# protocol pointed at DecapBridge's own gateway (see gateway_url), which holds
+# the GitHub token and makes the commits. Don't "fix" the name back to
+# `github`; that is a different backend needing its own OAuth proxy.
+#
+# The two endpoint UUIDs identify this site inside DecapBridge. They are not
+# secrets - the GitHub token lives on their side, never in this repo. Regenerate
+# them at decapbridge.com if the repo or token ever changes.
+#
+# PKCE requires Decap CMS >= 3.8.3; admin/index.html pins 3.15.1. See the note
+# there before touching that version.
+# ---------------------------------------------------------------------------
 backend:
     name: git-gateway
+    repo: bmoesintelligence/shorelinewebdesign.com
+    branch: main
+    auth_type: pkce
+    base_url: https://auth.decapbridge.com
+    auth_endpoint: /sites/7a184695-af18-45f3-ac74-512a15d930a5/pkce
+    auth_token_endpoint: /sites/7a184695-af18-45f3-ac74-512a15d930a5/token
+    gateway_url: https://gateway.decapbridge.com
 
-# Keep this to allow you to edit the cms locally
+    # Puts the editor's name in the git history rather than a generic bot commit
+    commit_messages:
+        create: Create {{collection}} “{{slug}}” - {{author-name}} <{{author-login}}> via DecapBridge
+        update: Update {{collection}} “{{slug}}” - {{author-name}} <{{author-login}}> via DecapBridge
+        delete: Delete {{collection}} “{{slug}}” - {{author-name}} <{{author-login}}> via DecapBridge
+        uploadMedia: Upload “{{path}}” - {{author-name}} <{{author-login}}> via DecapBridge
+        deleteMedia: Delete “{{path}}” - {{author-name}} <{{author-login}}> via DecapBridge
+        openAuthoring: Message {{message}} - {{author-name}} <{{author-login}}> via DecapBridge
+
+# Maps the claims in DecapBridge's PKCE token onto the user Decap displays
+auth:
+    email_claim: email
+    first_name_claim: first_name
+    last_name_claim: last_name
+    avatar_url_claim: avatar_url
+
+# Shown on the CMS login screen
+logo_url: https://decapbridge.com/decapcms-with-bridge.svg
+
+# Turns on the editor's "View site" / "View live" links
+site_url: https://www.shorelinewebdesign.com
+
+# Lets you run the CMS against local files instead of GitHub. Start the site
+# with `npm start`, run `npx decap-server` in a second terminal, then open
+# http://localhost:8080/admin/ - it edits src/content/blog/ directly, with no
+# login and no commits. This is the safe way to try things out.
 local_backend: true
 
-# change url to a link to the image you want to use, no file paths, must be a URL
-logo_url: https://codestitch.app/frontend/images/logo.png
-
-# Image folders
+# Where Decap uploads images to, and the path it writes into the markdown.
+# media_folder is a path in the repo; public_folder is the URL the built site
+# serves that same file from.
 media_folder: "src/assets/images/blog"
 public_folder: "/assets/images/blog"
 
@@ -18,19 +77,67 @@ collections:
       label: "Blog"
       folder: "src/content/blog"
       create: true
+      # Filename, derived from the title. src/content/blog/blog.json turns that
+      # same slug into the URL, so a post titled "Why your site is slow" is
+      # written to why-your-site-is-slow.md and served at
+      # /blog/why-your-site-is-slow/. There is deliberately no separate "URL
+      # slug" field any more - the kit had one, and it was a second thing to
+      # fill in that could silently disagree with the filename.
       slug: "{{slug}}"
+      # Makes the editor's "View live" link point at the right URL
+      preview_path: "blog/{{slug}}"
+      sortable_fields: ["date", "title"]
       fields:
-          - { label: "Title", name: "title", widget: "string" }
-          - {
-                label: "URL Slug",
-                name: "url",
-                widget: "string",
-                hint: 'Specify where the page will be written to. If you use "Blog Post", the post will be accessible from "blog/blog-post"',
-            }
-          - { label: "Description", name: "description", widget: "string" }
-          - { label: "Author", name: "author", widget: "string" }
-          - { label: "Date", name: "date", widget: "datetime" }
-          - { label: "Tags", name: "tags", widget: "list", default: ["post"] }
-          - { label: "Featured Image", name: "image", widget: "image" }
-          - { label: "Image Caption", name: "imageAlt", widget: "string" }
-          - { label: "Body", name: "body", widget: "markdown" }
+          - label: "Title"
+            name: "title"
+            widget: "string"
+            hint: "Also the browser tab title and the headline Google shows. Front-load the words someone would actually search for."
+
+          # These two are separate ON PURPOSE. They were one field to begin with
+          # and it pulled in two directions: search results truncate around 155
+          # characters, while the on-page intro wants room to breathe. One field
+          # meant every post compromised on both.
+          - label: "Search description"
+            name: "description"
+            widget: "text"
+            hint: "SEO only, not shown on the post itself. Becomes the meta description, the snippet under the title in Google, and the summary on the /blog/ card. Keep it to 120-155 characters or it gets cut off."
+
+          - label: "Standfirst"
+            name: "standfirst"
+            widget: "text"
+            required: false
+            hint: "The intro paragraph under the headline, on the post itself. Write it as the opening of the article. Optional - leave empty and the post starts at its first section."
+
+          - label: "Date"
+            name: "date"
+            widget: "datetime"
+
+          - label: "Author"
+            name: "author"
+            widget: "string"
+            default: "Bryan Moe"
+            hint: "Not displayed on the post - every post here is by the same person. Kept for structured data later."
+
+          - label: "Featured image"
+            name: "image"
+            widget: "image"
+            required: false
+            hint: "Optional. Shown at the top of the post and on the /blog/ card. Roughly 2:1, at least 1680px wide. Leave empty for a text-only post."
+
+          - label: "Image alt text"
+            name: "imageAlt"
+            widget: "string"
+            required: false
+            hint: "Describe the image for screen readers, and for anyone whose image fails to load. Leave empty if there is no image."
+
+          # Hidden on purpose. Eleventy builds `collections.post` from this tag,
+          # so an emptied or edited value silently drops the post off /blog/.
+          # Not a decision worth exposing in the editor.
+          - label: "Tags"
+            name: "tags"
+            widget: "hidden"
+            default: ["post"]
+
+          - label: "Body"
+            name: "body"
+            widget: "markdown"

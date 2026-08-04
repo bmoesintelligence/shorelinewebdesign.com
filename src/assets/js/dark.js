@@ -1,6 +1,14 @@
 //
 //    The Dark Mode System
 //
+//    Everyone lands on LIGHT unless they have clicked the toggle before. This
+//    is a deliberate change from the CodeStitch kit, which defaulted to the OS
+//    `prefers-color-scheme` setting: "Marine Layer" is the pitch, and under the
+//    kit's rule every visitor on a dark OS (roughly half of them) never saw the
+//    tan/navy palette or the daylight dioramas unless they went looking.
+//
+//    The toggle is untouched and a click is remembered forever.
+//
 
 const darkModeToggle = document.getElementById("dark-mode-toggle");
 
@@ -28,13 +36,10 @@ function disableDarkMode() {
 function detectColorScheme() {
 	let theme = "light"; // Default to light theme
 
-	// 1. Check localStorage for a saved 'theme' preference
+	// Check localStorage for a saved 'theme' preference. There is deliberately
+	// no `prefers-color-scheme` fallback here - see the note at the top.
 	if (localStorage.getItem("theme")) {
 		theme = localStorage.getItem("theme");
-	}
-	// 2. If no saved preference, check browser's system preference
-	else if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
-		theme = "dark";
 	}
 
 	// Apply the detected theme and set the initial aria-pressed state

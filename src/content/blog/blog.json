@@ -3,6 +3,6 @@
     "tags": "post",
     "eleventyComputed": {
         "preloadImg": "{{ image }}",
-        "permalink": "/blog/{{ url | slugify }}/index.html"
+        "permalink": "/blog/{{ page.fileSlug | slugify }}/index.html"
     }
 }

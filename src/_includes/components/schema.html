@@ -1,0 +1,156 @@
+{#
+  ─────────────────────────────────────────────────────────────────────────────
+  STRUCTURED DATA — one @graph for the whole site
+  ─────────────────────────────────────────────────────────────────────────────
+  Included once from layouts/base.html, so every page gets the right blocks
+  without per-page includes to forget. What it emits is driven by front matter:
+
+    (always)              ProfessionalService + WebSite + BreadcrumbList
+    `service:` block   →  Service
+    `faqs:` list       →  FAQPage
+    tagged `post`      →  BlogPosting
+
+  Built as Nunjucks objects and serialised with `| dump`, NOT hand-written JSON.
+  The kit's components juggled commas inside a JSON literal with {% if %} — one
+  absent optional field and the whole block became unparseable, silently. An
+  object can't produce a trailing comma.
+
+  `<` is escaped to < so a stray "</script>" in any string can't break out
+  of the tag.
+
+  ⚠ Nothing here may state a fact the site doesn't. No review counts, no
+  aggregate ratings, no invented opening hours — fabricated markup is worth a
+  manual action, and there are no reviews yet.
+#}
+
+{%- set base = client.domain -%}
+{%- set bizId = base + "/#business" -%}
+{%- set siteId = base + "/#website" -%}
+
+{#- ── areaServed: the towns, from the one data file that also feeds the
+      marquee and the service-area section, so they can't drift ── -#}
+{%- set areas = [] -%}
+{%- for town in serviceArea.towns -%}
+  {%- set areas = areas.concat([{ "@type": "City", "name": town, "containedInPlace": { "@type": "State", "name": "Washington" } }]) -%}
+{%- endfor -%}
+
+{#- ── sameAs: the profiles that actually exist. This is how Google ties the
+      site to a Google Business Profile / LinkedIn / etc. Empty entries in
+      client.socials are skipped, and the key is omitted entirely when none are
+      set - an empty sameAs array is noise. ── -#}
+{%- set sameAs = [] -%}
+{%- for key, url in client.socials -%}
+  {%- if url -%}{%- set sameAs = sameAs.concat([url]) -%}{%- endif -%}
+{%- endfor -%}
+
+{#- There is deliberately NO "logo" key below. The only logo file in the repo is
+    the kit's unused logo-black.svg, and pointing schema at it would assert
+    someone else's mark as this business's. Add one when a real logo exists.
+    (Note: a Nunjucks comment cannot live INSIDE the object literal - it is an
+    expression, not a template block. That is why this sits out here.) -#}
+{%- set business = {
+  "@type": "ProfessionalService",
+  "@id": bizId,
+  "name": client.name,
+  "url": base + "/",
+  "email": client.email,
+  "image": base + "/assets/images/og-default.jpg",
+  "description": "Hand-coded websites for small businesses across the North Sound, built and supported by one engineer.",
+  "founder": { "@type": "Person", "name": "Bryan Moe" },
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": client.address.city,
+    "addressRegion": client.address.state,
+    "addressCountry": client.address.country
+  },
+  "areaServed": areas,
+  "knowsAbout": ["Web design", "Web development", "Search engine optimization", "Website maintenance", "Core Web Vitals", "Web accessibility"]
+} -%}
+
+{%- if sameAs.length -%}
+  {%- set business = business | merge({ "sameAs": sameAs }) -%}
+{%- endif -%}
+
+{#- No streetAddress on purpose: this is a service-area business run from home.
+    An invented or home address is worse than none, and areaServed is the
+    correct signal. See the note in _data/client.js. -#}
+
+{%- set website = {
+  "@type": "WebSite",
+  "@id": siteId,
+  "url": base + "/",
+  "name": client.name,
+  "publisher": { "@id": bizId },
+  "inLanguage": "en-US"
+} -%}
+
+{%- set graph = [business, website] -%}
+
+{#- ── BreadcrumbList, derived from the URL so it can't disagree with it ── -#}
+{%- set crumbs = [{ "@type": "ListItem", "position": 1, "name": "Home", "item": base + "/" }] -%}
+{#- Nunjucks has no `split` filter; the JS string method works directly -#}
+{%- set segs = page.url.split("/") -%}
+{%- set acc = "" -%}
+{%- for seg in segs -%}
+  {%- if seg -%}
+    {%- set acc = acc + "/" + seg -%}
+    {%- set crumbs = crumbs.concat([{
+      "@type": "ListItem",
+      "position": loop.index + 1,
+      "name": seg | replace("-", " ") | title,
+      "item": base + acc + "/"
+    }]) -%}
+  {%- endif -%}
+{%- endfor -%}
+{%- if crumbs.length > 1 -%}
+  {%- set graph = graph.concat([{ "@type": "BreadcrumbList", "@id": base + page.url + "#breadcrumb", "itemListElement": crumbs }]) -%}
+{%- endif -%}
+
+{#- ── Service, from the page's `service:` front matter ── -#}
+{%- if service -%}
+  {%- set svc = {
+    "@type": "Service",
+    "@id": base + page.url + "#service",
+    "name": service.name,
+    "description": service.description,
+    "serviceType": service.type,
+    "provider": { "@id": bizId },
+    "areaServed": areas,
+    "url": base + page.url
+  } -%}
+  {%- set graph = graph.concat([svc]) -%}
+{%- endif -%}
+
+{#- ── FAQPage, from the same `faqs:` list the visible accordion renders ── -#}
+{%- if faqs -%}
+  {%- set qa = [] -%}
+  {%- for f in faqs -%}
+    {%- set qa = qa.concat([{
+      "@type": "Question",
+      "name": f.q,
+      "acceptedAnswer": { "@type": "Answer", "text": f.a }
+    }]) -%}
+  {%- endfor -%}
+  {%- set graph = graph.concat([{ "@type": "FAQPage", "@id": base + page.url + "#faq", "mainEntity": qa }]) -%}
+{%- endif -%}
+
+{#- ── BlogPosting ── -#}
+{%- if tags and "post" in tags -%}
+  {%- set article = {
+    "@type": "BlogPosting",
+    "@id": base + page.url + "#article",
+    "mainEntityOfPage": base + page.url,
+    "headline": title,
+    "description": description,
+    "image": base + (image or "/assets/images/og-default.jpg"),
+    "datePublished": date | isoDate,
+    "dateModified": date | isoDate,
+    "author": { "@type": "Person", "name": author or "Bryan Moe" },
+    "publisher": { "@id": bizId },
+    "isPartOf": { "@id": siteId },
+    "inLanguage": "en-US"
+  } -%}
+  {%- set graph = graph.concat([article]) -%}
+{%- endif -%}
+
+<script type="application/ld+json">{{ { "@context": "https://schema.org", "@graph": graph } | dump | replace("<", "\\u003c") | safe }}</script>

@@ -12,12 +12,43 @@
         <meta name="generator" content="{{ eleventy.generator }}">
 
         <!--Social Media Display-->
+        <!-- The kit defaulted og:image to /assets/images/logo-small.png, which
+             does not exist in this repo - so every shared link, on every page,
+             previewed with a broken image. It also emitted a RELATIVE path;
+             scrapers require an absolute URL, so even a real file would have
+             failed. Both fixed here.
+
+             Default is the hero diorama: it is the site's signature visual and
+             the only image that reads at share-card size. A post with its own
+             `image` overrides it. Served as JPEG at 1200x630 because several
+             scrapers still don't decode avif/webp. -->
+        {# og-default.jpg is a PRE-BUILT 1200x630 file, not a getUrl call. The
+           Sharp shortcode emits a placeholder comment that a later transform
+           swaps for the real path; capture that into a variable and the comment
+           lands inside the attribute. Share cards also want one stable URL that
+           scrapers can cache, so a committed file is the right shape here. It
+           is the hero diorama on the warm-sand background - regenerate with the
+           snippet in CLAUDE.md if the scene changes. #}
+        {% set ogImageUrl = client.domain + (image or "/assets/images/og-default.jpg") %}
+        <meta property="og:site_name" content="{{ client.name }}"/>
         <meta property="og:title" content="{{ title }}"/>
         <meta property="og:description" content="{{ description }}"/>
-        <meta property="og:type" content="website"/>
+        <meta property="og:type" content="{% if page.url.startsWith('/blog/') and page.url != '/blog/' %}article{% else %}website{% endif %}"/>
         <meta property="og:url" content="{{ client.domain }}{{ page.url }}"/>
-        <meta property="og:image" content="{{ image or "/assets/images/logo-small.png" }}"/>
-        <meta property="og:image:secure_url" content="{{ image or "/assets/images/logo-small.png" }}"/>
+        <meta property="og:image" content="{{ ogImageUrl }}"/>
+        <meta property="og:image:secure_url" content="{{ ogImageUrl }}"/>
+        <meta property="og:image:width" content="1200"/>
+        <meta property="og:image:height" content="630"/>
+        <meta property="og:image:alt" content="{{ imageAlt or 'An isometric illustration of the Richmond Beach waterfront, with a Washington State ferry at the dock.' }}"/>
+        <meta name="twitter:card" content="summary_large_image"/>
+        <meta name="twitter:title" content="{{ title }}"/>
+        <meta name="twitter:description" content="{{ description }}"/>
+        <meta name="twitter:image" content="{{ ogImageUrl }}"/>
+
+        <!-- Structured data. One @graph covering the whole site, driven by front
+             matter - see the header of the component. Included here rather than
+             per-page so a new page can't silently ship without it. -->
+        {% include "components/schema.html" %}
 
         <!--Favicons-->
         <!-- https://realfavicongenerator.net/ -->
@@ -29,9 +60,21 @@
         <link rel="manifest" href="/assets/favicons/site.webmanifest"/>
 
         <!-- Preloads -->
-        <link rel="preload" as="image" href="/assets/svgs/logo-black.svg">
-        <link rel="preload" as="font" type="font/woff2" href="/assets/fonts/roboto-v29-latin-regular.woff2" crossorigin>
-        <link rel="preload" as="font" type="font/woff2" href="/assets/fonts/roboto-v29-latin-700.woff2" crossorigin>
+        <!-- logo-black.svg was preloaded here by the kit. This site's logo is
+             live text (<h3>Shoreline Web Design</h3> in sections/header.html),
+             so that file is never rendered - it was one wasted request on every
+             page. Removed 2026-08-03. If a real logo image ever lands, preload
+             it here AND point the schema logo at it. -->
+        <!-- Preload the two fonts that actually render above the fold: Sora for
+             the headline, Inter for body copy. IBM Plex Mono is deliberately not
+             preloaded - it only sets small toppers and labels, so it can arrive
+             a beat later without shifting the layout.
+
+             These replace two Roboto preloads inherited from the CodeStitch kit.
+             Roboto is not used on this site and those files do not exist, so
+             they were producing two 404s on every page - 34 across the site. -->
+        <link rel="preload" as="font" type="font/woff2" href="/assets/fonts/sora-v17-latin-800.woff2" crossorigin>
+        <link rel="preload" as="font" type="font/woff2" href="/assets/fonts/inter-v20-latin-regular.woff2" crossorigin>
 
         <!-- Sitewide Stylesheets and Scripts -->
         <link rel="stylesheet" href="/assets/css/root.css">

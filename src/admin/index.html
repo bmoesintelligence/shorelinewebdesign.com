@@ -13,17 +13,24 @@
 </head>
 
 <body>
-    <script src="https://unpkg.com/decap-cms@3.0.0/dist/decap-cms.js"></script>
+    <!-- Pinned deliberately, not on a range. 3.8.3 is the FLOOR for DecapBridge's
+         PKCE auth flow, which this site uses - the kit shipped 3.0.0, which
+         fails at login with no useful error. Don't drop below 3.8.3. -->
+    <script src="https://unpkg.com/decap-cms@3.15.1/dist/decap-cms.js"></script>
 
     <!-- Decap CMS preview pane script -->
     <!-- Edit this script to customize the preview pane for your blog posts.  -->
     <!-- Documentation: https://decapcms.org/docs/customization/ -->
     <script type="text/babel">
+        // Mirrors the real post layout in _includes/layouts/post.html:
+        // date over title, description, optional cover, then the body. The
+        // author byline the kit rendered here was removed to match - every
+        // post on this site is by the same person.
         const BlogPreview = createClass({
             render: function () {
                 // Get all the props from the collection
                 const data = this.props.entry.get("data").toJS();
-                const { title, author, date: rawDate, image } = data;
+                const { title, description, date: rawDate, image, imageAlt } = data;
                 const date = typeof rawDate === "string" ? new Date(rawDate) : rawDate;
                 let formattedDate = "";
                 if (date) {
@@ -34,20 +41,18 @@
                     }).format(date);
                 }
 
-                const cover = this.props.getAsset(image);
+                // The featured image is optional, so only resolve and render it
+                // when one has actually been chosen
+                const cover = image ? this.props.getAsset(image) : null;
 
                 // Create elements for the preview pane in JSX, to be processed by Babel
                 return (
                     <div className="blog">
+                        <span className="date">{formattedDate}</span>
                         <h1 className="title">{title}</h1>
+                        {description && <p className="description">{description}</p>}
 
-                        <div className="metadata">
-                            <span className="author">{author}</span>
-                            <span className="dot"></span>
-                            <span className="date">{formattedDate}</span>
-                        </div>
-
-                        <img src={cover?.toString()} className="cover" alt="Cover" />
+                        {cover && <img src={cover.toString()} className="cover" alt={imageAlt || ""} />}
 
                         <hr className="divider" />
 

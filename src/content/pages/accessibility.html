@@ -1,11 +1,11 @@
 ---
-description: "Shoreline Web Design's commitment to building websites everyone can use, and how to reach us if something isn't working."
+description: "How accessible this site actually is, measured rather than claimed, including what still falls short and what was fixed."
 pageHero:
   topper: "Accessibility"
   title: "Accessibility"
   accent: "."
   text:
-    - "Building websites everyone can use matters, including this one. Here's the approach, and how to reach me if something isn't working for you."
+    - "Most accessibility statements are a paragraph of good intentions. This one lists what has been checked, what passes, and what is still outstanding."
 eleventyComputed:
   title: "{{ page.fileSlug | titleCase }} | {{ client.name }} | {{ client.address.city }}, {{ client.address.state }}"
   permalink: "/{{ page.fileSlug | slugify }}/"
@@ -14,13 +14,125 @@ eleventyComputed:
 {% extends "layouts/base.html" %}
 
 {% block head %}
-    <link rel="stylesheet" href="/assets/css/{{ page.fileSlug }}.css">
+    <link rel="stylesheet" href="/assets/css/longform.css">
+    <script defer src="/assets/js/toc.js"></script>
 {% endblock %}
 
 {% block body %}
 
     {% include "sections/page-hero.html" %}
 
-    <!-- Accessibility statement content to come. -->
+    <!-- ============================================ -->
+    <!--            Accessibility statement           -->
+    <!-- ============================================ -->
+
+    <!-- Shared long-form shell (longform.less) + toc.js.
+
+         ⚠ THE CLAIMS BELOW WERE MEASURED on 2026-08-03, not asserted:
+           - contrast ratios computed from the :root tokens against the real
+             background each pairing sits on
+           - `prefers-reduced-motion` blocks confirmed in root/local/work/
+             contact/free-redesign/longform .less
+           - skip link, lang="en", labelled form controls and alt attributes
+             all confirmed present in the built markup
+
+         The "Where it currently falls short" section names REAL, measured
+         failures. Do not soften or remove one while it is still true - a
+         statement that overclaims is worse than none, and naming the boundary is
+         what makes the rest believable (same logic as the "not included" column
+         on /pricing/).
+
+         The three contrast failures this page originally named (body text,
+         coral as small text, and button labels) were all FIXED on 2026-08-03 -
+         see the palette note in CLAUDE.md. What remains is decorative mock-up
+         text only. If the palette moves again, re-run the audit and update this
+         page IN THE SAME COMMIT. -->
+
+    <section id="longform">
+        <div class="cs-container">
+            <aside class="cs-rail" aria-label="Contents"></aside>
+
+            <div class="cs-panel">
+                <div class="cs-prose">
+                    <h2>The standard I'm working to</h2>
+                    <p>
+                        <strong>WCAG 2.2 Level AA.</strong> That is the level most accessibility legislation points at, including the ADA guidance in the United States.
+                    </p>
+                    <p>
+                        I am not going to tell you this site fully conforms, because I have not had it independently audited and I would rather be accurate than reassuring. What follows is what I have actually checked myself.
+                    </p>
+
+                    <h2>What's in place</h2>
+                    <ul>
+                        <li><strong>Real HTML.</strong> Headings are headings, buttons are buttons, lists are lists. Screen readers work by reading structure, and this site is hand-written, so the structure is genuinely there rather than approximated with styled <code>div</code>s.</li>
+                        <li><strong>Keyboard operable.</strong> Every link, button, form field and the FAQ accordions can be reached and used with a keyboard alone, in an order that matches the page.</li>
+                        <li><strong>A skip link.</strong> The first thing a keyboard or screen reader user reaches is a link that jumps past the navigation to the main content.</li>
+                        <li><strong>Motion respects your settings.</strong> The illustrated scenes on the home page animate as you scroll. If your device is set to reduce motion, they stop. Nothing on this site moves on its own, autoplays, or flashes.</li>
+                        <li><strong>Labelled forms.</strong> Every field has a real label attached to it, not placeholder text pretending to be one. Placeholder text disappears when you start typing, which is why it is not a label.</li>
+                        <li><strong>Described images.</strong> Images that carry meaning have alternative text. Images that are purely decorative are marked so screen readers skip them rather than reading a filename aloud.</li>
+                        <li><strong>Text that scales.</strong> Type is sized in relative units, so it grows when you increase your browser's text size instead of staying stubbornly fixed.</li>
+                        <li><strong>Light and dark.</strong> A toggle in the navigation, remembered between visits.</li>
+                        <li><strong>Nothing third-party in the way.</strong> No chat widget, no popup, no cookie banner, no consent modal. Those are a common cause of keyboard traps on small business sites, and this site has none of them.</li>
+                    </ul>
+
+                    <h2>Where it currently falls short</h2>
+                    <p>
+                        One thing, measured. I would rather write it down than let you discover it.
+                    </p>
+
+                    <div class="cs-note">
+                        <span class="cs-note-label">Known issue</span>
+                        <p>
+                            <strong>Some decorative mock-ups are deliberately faint in dark mode.</strong> A few places on this site draw a fake browser window or a wireframe sketch to illustrate a point. The small print inside those drawings sits below the contrast standard. They carry no information, and where they represent a real page the same text appears properly elsewhere, but they are measurably low contrast and it would be dishonest to leave them off this list.
+                        </p>
+                    </div>
+
+                    <p>
+                        Everything that is actual content, on every page, in both light and dark mode, now measures at or above the standard.
+                    </p>
+
+                    <div class="cs-note">
+                        <span class="cs-note-label">Fixed 3 August 2026</span>
+                        <p>
+                            Three things were under and are not any more. Body text on the sand background moved from 4.1 to 4.8. The coral accent, which measured 2.9 as small text, now uses a deeper shade for text and a lighter one on dark sections, because no single version of it cleared the bar everywhere. Button labels moved from 4.0 to 4.7.
+                        </p>
+                    </div>
+
+                    <h2>What I haven't done</h2>
+                    <p>
+                        Being straight about the limits of the above:
+                    </p>
+                    <ul>
+                        <li>No independent third-party audit.</li>
+                        <li>No testing with real users of assistive technology, which is the only test that genuinely counts.</li>
+                        <li>Screen reader testing has been spot checks, not a systematic pass over every page.</li>
+                    </ul>
+
+                    <h2>Websites I build for clients</h2>
+                    <p>
+                        The same approach applies to client work: semantic markup, keyboard operability, labelled forms, described images, and motion that respects the visitor's settings. It is a large part of why I hand-code rather than assemble pages from a builder, where the generated markup is often the thing standing between a visitor and your content.
+                    </p>
+                    <p>
+                        If you need a formal conformance audit for legal or procurement reasons, say so early. That is specialist work, and I will tell you honestly whether it is something I should be doing or whether you want a dedicated auditor.
+                    </p>
+
+                    <h2>Telling me something is broken</h2>
+                    <p>
+                        If any part of this site is difficult or impossible to use, I want to know, and you do not need to be polite about it.
+                    </p>
+                    <p>
+                        Email <a href="mailto:hello@shorelinewebdesign.com">hello@shorelinewebdesign.com</a>. If you can, tell me the page, what you were trying to do, and what device or assistive technology you were using. Any of those helps; all three helps most. It comes straight to me and I will reply.
+                    </p>
+                    <p>
+                        If something is blocking you right now and you would rather just get an answer from a person, email me and say what you need. I will send it to you directly.
+                    </p>
+                </div>
+
+                <div class="cs-foot">
+                    <p class="cs-updated">Last reviewed 3 August 2026</p>
+                </div>
+            </div>
+        </div>
+    </section>
 
 {% endblock %}

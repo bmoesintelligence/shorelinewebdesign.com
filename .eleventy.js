@@ -21,6 +21,7 @@ const javascript = require("./src/config/processors/javascript");
 const filterPostDate = require("./src/config/filters/postDate");
 const filterIsoDate = require("./src/config/filters/isoDate");
 const filterTitleCase = require("./src/config/filters/titleCase");
+const filterReadingTime = require("./src/config/filters/readingTime");
 const isProduction = process.env.ELEVENTY_ENV === "PROD";
 
 module.exports = function (eleventyConfig) {
@@ -103,6 +104,23 @@ module.exports = function (eleventyConfig) {
 	 * Powered by Luxon: https://moment.github.io/luxon/api-docs/
 	 */
 	eleventyConfig.addFilter("isoDate", filterIsoDate);
+
+	/*
+	 * ⏱ Reading Time Filter
+	 * Whole minutes, from the RENDERED body, at 200wpm. Floored at 1.
+	 * Usage: {{ content | readingTime }}
+	 */
+	eleventyConfig.addFilter("readingTime", filterReadingTime);
+
+	/*
+	 * 🧩 Object Merge Filter
+	 * Returns a NEW object with b's keys layered over a's. Nunjucks has no way to
+	 * conditionally add a key to an object literal, and no built-in merge, so
+	 * components/schema.html needs this to attach optional blocks (sameAs and
+	 * friends) without duplicating the whole literal in an if/else.
+	 * Usage: {{ obj | merge({ key: value }) }}
+	 */
+	eleventyConfig.addFilter("merge", (a, b) => Object.assign({}, a, b));
 
 	// ═════════════════════════════════════════════════════════════════════════
 	// SHORTCODES

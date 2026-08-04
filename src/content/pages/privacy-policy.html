@@ -1,11 +1,11 @@
 ---
-description: "How Shoreline Web Design collects, uses, and protects your personal information."
+description: "What Shoreline Web Design collects, what it doesn't, and who else touches it. No analytics, no tracking pixels, no cookies, no mailing list."
 pageHero:
   topper: "Legal"
   title: "Privacy policy"
   accent: "."
   text:
-    - "How Shoreline Web Design collects, uses, and protects your information."
+    - "There is very little to tell, which is rather the point. This site has no analytics, no tracking pixels and no cookies. The only information I hold is what you type into a form and send me."
 eleventyComputed:
   title: "{{ page.fileSlug | titleCase }} | {{ client.name }} | {{ client.address.city }}, {{ client.address.state }}"
   permalink: "/{{ page.fileSlug | slugify }}/"
@@ -14,13 +14,196 @@ eleventyComputed:
 {% extends "layouts/base.html" %}
 
 {% block head %}
-    <link rel="stylesheet" href="/assets/css/{{ page.fileSlug }}.css">
+    <link rel="stylesheet" href="/assets/css/longform.css">
+    <script defer src="/assets/js/toc.js"></script>
 {% endblock %}
 
 {% block body %}
 
     {% include "sections/page-hero.html" %}
 
-    <!-- Privacy policy content to come. -->
+    <!-- ============================================ -->
+    <!--                 Policy body                  -->
+    <!-- ============================================ -->
+
+    <!-- Shared long-form shell (longform.less): raised panel, plus a contents
+         rail that toc.js builds at runtime from the h2s below.
+
+         ⚠ EVERY FACTUAL CLAIM ON THIS PAGE WAS CHECKED against the codebase on
+         2026-08-03. Not assumed - checked:
+           - no analytics or tag manager anywhere in src/
+           - `document.cookie` appears nowhere
+           - the only localStorage key is `theme` (assets/js/dark.js)
+           - the two Netlify forms are in contact.html and free-redesign.html,
+             and the field lists below match them exactly
+
+         IF ANY OF THAT CHANGES, THIS PAGE CHANGES IN THE SAME COMMIT. A privacy
+         policy that is merely out of date is worse than none: it is a false
+         statement about what you do with people's information.
+
+         ⚠ BRYAN INTENDS TO ADD GOOGLE ANALYTICS (said 2026-08-03). Ready-made
+         replacement copy for that is in a comment further down, at the end of
+         the "What I don't collect" section. Swapping it in is a two-minute job,
+         but it MUST happen at the same time the script goes in, not afterwards.
+
+         NEEDS BRYAN'S CONFIRMATION, marked inline:
+           - the retention period for form submissions (a policy choice) -->
+
+    <section id="longform">
+        <div class="cs-container">
+            <aside class="cs-rail" aria-label="Contents"></aside>
+
+            <div class="cs-panel">
+                <div class="cs-prose">
+                    <h2>Who this is</h2>
+                    <p>
+                        Shoreline Web Design is one person: me, Bryan Moe, working from Richmond Beach in North Seattle. Where this page says "I", that is who it means. There is no team and nobody else with access.
+                    </p>
+                    <p>
+                        This policy covers this website and the forms on it. It does not cover the websites I build for clients, which are the responsibility of the businesses that own them.
+                    </p>
+
+                    <h2>What I collect</h2>
+                    <p>
+                        Only what you type into a form and choose to send. There are two forms on this site.
+                    </p>
+                    <p>
+                        <strong>The contact form</strong> asks for your name, your email address, your business name, what your enquiry is about, and your message. Name, email and message are required; the rest are optional.
+                    </p>
+                    <p>
+                        <strong>The free homepage redesign form</strong> asks for your name, your email address, your business name, your current website address, and anything you'd like to tell me about the business. Name, email and business name are required.
+                    </p>
+                    <p>
+                        If you email me directly instead, then I have whatever your email contains, which is how email has always worked.
+                    </p>
+
+                    <h2>What I don't collect</h2>
+                    <p>
+                        This section is the important one, and it is short on purpose.
+                    </p>
+                    <ul>
+                        <li><strong>No analytics.</strong> There is no Google Analytics, no tag manager, and no privacy-friendly alternative either. I do not know how many people visit this site or which pages they read.</li>
+                        <li><strong>No tracking pixels and no advertising.</strong> Nothing here reports back to Meta, Google, LinkedIn or anyone else, and this site takes no part in any advertising network.</li>
+                        <li><strong>No cookies.</strong> Not essential ones, not optional ones. That is why you have never seen a cookie banner here.</li>
+                        <li><strong>No mailing list.</strong> Sending a form does not subscribe you to anything, because there is nothing to subscribe to. If I reply, it is a person writing back about your enquiry.</li>
+                        <li><strong>No selling or sharing.</strong> I do not sell, rent or trade what you send me, and I do not hand it to anyone else for their own purposes.</li>
+                    </ul>
+
+                    <!-- ══════════════════════════════════════════════════════
+                         WHEN ANALYTICS GOES IN, REPLACE THE <ul> ABOVE.
+
+                         (a) If it's GOOGLE ANALYTICS - note this also needs a
+                         cookie notice, and a consent banner before the script
+                         runs for visitors in the EU/UK:
+
+                           <li><strong>Analytics, and what it means.</strong> This
+                           site uses Google Analytics to count visits and see
+                           which pages get read. It sets cookies in your browser
+                           and sends Google your IP address, the pages you view
+                           and rough location. I use it to know which articles
+                           are worth writing more of. I cannot identify you from
+                           it, but Google may be able to.</li>
+                           <li><strong>No tracking pixels and no advertising.</strong>
+                           ... (unchanged)</li>
+                           <li><strong>No mailing list.</strong> ... (unchanged)</li>
+                           <li><strong>No selling or sharing.</strong> ... (unchanged)</li>
+
+                         ...and DELETE the "No cookies" bullet entirely. Also fix
+                         the page hero text and the meta description at the top
+                         of this file, which both claim no analytics and no
+                         cookies.
+
+                         (b) If it's COOKIELESS (Plausible / Fathom) - lighter
+                         change, no banner needed, keep the "No cookies" bullet:
+
+                           <li><strong>Analytics, without cookies.</strong> This
+                           site counts visits using [NAME], which is
+                           privacy-focused: no cookies, no fingerprinting, and
+                           nothing that follows you between websites. I see how
+                           many people read a page and where they came from. I
+                           cannot see who you are.</li>
+
+                         Then change "No analytics" above to reflect it.
+                         ══════════════════════════════════════════════════════ -->
+
+                    <h2>What is stored in your browser</h2>
+                    <p>
+                        One thing. If you use the light and dark toggle in the navigation, your choice is saved in your browser's local storage under the name <code>theme</code>, so the site remembers it next time.
+                    </p>
+                    <p>
+                        That value never leaves your device and I cannot see it. It is not a cookie and it is not an identifier. Clearing your browsing data removes it.
+                    </p>
+
+                    <h2>Who else is involved</h2>
+                    <p>
+                        Running a website means other companies are unavoidably in the chain. These are all of them.
+                    </p>
+                    <ul>
+                        <li><strong>Netlify</strong> hosts this site and receives the form submissions. As with any web host, their servers record technical information about requests, which can include your IP address and browser type. That is their standard logging, not something I set up or can switch off.</li>
+                        <li><strong>Porkbun</strong> registers the domain and forwards email sent to my address on to my personal inbox.</li>
+                        <li><strong>DigitalOcean</strong> serves one small icon used by the dark mode button, so your browser makes a request to their network when a page loads. That is left over from the starter template this site was built on, and I intend to remove it by hosting the icon here instead.</li>
+                    </ul>
+                    <p>
+                        Each of those has its own privacy policy covering what it does with that information.
+                    </p>
+
+                    <h2>How long I keep things</h2>
+                    <p>
+                        Form submissions stay in the Netlify dashboard and in my email, so I have a record of what we discussed. I delete enquiries that did not turn into work once they are clearly no longer live.
+                    </p>
+                    <!-- NEEDS BRYAN'S CONFIRMATION: if you want to commit to a
+                         specific period, replace the sentence above with e.g.
+                         "I delete enquiries that did not turn into work after
+                         twelve months." A stated number is stronger - but only
+                         state one you will actually honour. -->
+                    <p>
+                        Records relating to actual client work are kept while I am working with that client, and afterwards for as long as I need them for tax and accounting purposes.
+                    </p>
+
+                    <h2>What you can ask me to do</h2>
+                    <p>
+                        Write to <a href="mailto:hello@shorelinewebdesign.com">hello@shorelinewebdesign.com</a> and ask me to send you a copy of anything I hold about you, correct it, or delete it. Tell me which email address you used and I will find it.
+                    </p>
+                    <p>
+                        You do not need to give a reason and I will not ask for one. Depending on where you live you may have a formal right to this under laws such as the GDPR, but I would rather just do it because you asked.
+                    </p>
+
+                    <div class="cs-note">
+                        <span class="cs-note-label">One caveat</span>
+                        <p>
+                            If we have worked together, I may need to keep invoices and related records to meet tax obligations, even after a deletion request. That is a legal requirement rather than a preference, and it applies to the billing record, not to your enquiry.
+                        </p>
+                    </div>
+
+                    <h2>Children</h2>
+                    <p>
+                        This site sells web design to businesses. It is not aimed at children and I do not knowingly collect anything from them.
+                    </p>
+
+                    <h2>Security, honestly stated</h2>
+                    <p>
+                        This site is static, has no database and has no login, so there is no store of user accounts here to breach. Form submissions travel over an encrypted connection and sit in Netlify's dashboard and my email, both protected by strong passwords and two-factor authentication.
+                    </p>
+                    <p>
+                        Nobody can promise perfect security and I am not going to. What I can tell you is that the amount of information held here is very small, and that is the most effective protection there is.
+                    </p>
+
+                    <h2>Changes</h2>
+                    <p>
+                        If this policy changes, the date at the bottom changes with it. There is no mailing list to notify you, so if it matters to you, check back.
+                    </p>
+
+                    <h2>Getting in touch</h2>
+                    <p>
+                        Questions about any of this go to <a href="mailto:hello@shorelinewebdesign.com">hello@shorelinewebdesign.com</a> and come straight to me.
+                    </p>
+                </div>
+
+                <div class="cs-foot">
+                    <p class="cs-updated">Last updated 3 August 2026</p>
+                </div>
+            </div>
+        </div>
+    </section>
 
 {% endblock %}

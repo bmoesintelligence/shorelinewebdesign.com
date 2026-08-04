@@ -18,6 +18,46 @@ eleventyComputed:
   # Literal, not titleCase — the filter only uppercases the first letter of each
   # hyphen-separated chunk, so "seo" would render as "Seo".
   title: "SEO | {{ client.name }} | {{ client.address.city }}, {{ client.address.state }}"
+faqs:
+  - q: >-
+      How long until I see results?
+    a: >-
+      Local search moves in months, not weeks. Technical fixes and a properly
+      built Google Business Profile can show up within a few weeks; competing
+      for the searches that matter most usually takes longer. Anyone promising
+      faster is guessing.
+  - q: >-
+      Do you guarantee first-page rankings?
+    a: >-
+      No, and nobody honestly can. Google does not sell placement and does not
+      publish its ranking weights. What can be promised is the work: a
+      technically clean site, a properly built local presence, and reporting
+      you can actually read.
+  - q: >-
+      I already have a website. Do I still need this?
+    a: >-
+      Often yes. A site can look fine and still be invisible, usually because
+      the titles, headings and structured data were never written
+      deliberately. The audit tells you which it is before you spend anything.
+  - q: >-
+      What is the map pack?
+    a: >-
+      The block of three local businesses with a map that sits above the
+      ordinary blue links. For a lot of local searches it is where most of the
+      clicks go, and getting into it is Google Business Profile work rather
+      than blogging.
+  - q: >-
+      Do you write the content?
+    a: >-
+      The structure, titles and descriptions, yes. Longer content is a
+      conversation: you know your business and your customers better than I
+      do, so the usual arrangement is you supply the substance and I make it
+      work for search.
+service:
+  name: "Local SEO"
+  type: "Search engine optimization"
+  description: >-
+      Local search optimisation for small businesses in North Seattle: technical SEO, Google Business Profile, structured data and local landing content.
 ---
 
 {% extends "layouts/base.html" %}
@@ -455,46 +495,23 @@ eleventyComputed:
                 <h2 class="cs-title">Asked before every engagement<span class="cs-accent">.</span></h2>
             </div>
             <ul class="cs-faq-group">
-                <li class="cs-faq-item active">
+                <!-- Rendered from the `faqs:` front matter above, which ALSO
+                     drives the FAQPage structured data in components/schema.html.
+                     One source of truth on purpose: hand-written markup plus
+                     hand-written schema drift apart, and schema that disagrees
+                     with the visible page is exactly what earns a manual action.
+                     Markup contract for assets/js/faq.js is unchanged:
+                     .cs-faq-item / .cs-button / .cs-item-p, first one `active`. -->
+                {% for faq in faqs %}
+                <li class="cs-faq-item{% if loop.first %} active{% endif %}">
                     <button class="cs-button">
-                        <span class="cs-button-text">How long until I see results?</span>
+                        <span class="cs-button-text">{{ faq.q }}</span>
                     </button>
                     <p class="cs-item-p">
-                        Local search moves in months, not weeks. Technical fixes and a properly built Google Business Profile can show up within a few weeks; competing for the searches that matter most usually takes longer. Anyone promising faster is guessing.
+                        {{ faq.a | safe }}
                     </p>
                 </li>
-                <li class="cs-faq-item">
-                    <button class="cs-button">
-                        <span class="cs-button-text">Do you guarantee first-page rankings?</span>
-                    </button>
-                    <p class="cs-item-p">
-                        No, and nobody honestly can. Google does not sell placement and does not publish its ranking weights. What can be promised is the work: a technically clean site, a properly built local presence, and reporting you can actually read.
-                    </p>
-                </li>
-                <li class="cs-faq-item">
-                    <button class="cs-button">
-                        <span class="cs-button-text">I already have a website. Do I still need this?</span>
-                    </button>
-                    <p class="cs-item-p">
-                        Often yes. A site can look fine and still be invisible, usually because the titles, headings and structured data were never written deliberately. The audit tells you which it is before you spend anything.
-                    </p>
-                </li>
-                <li class="cs-faq-item">
-                    <button class="cs-button">
-                        <span class="cs-button-text">What is the map pack?</span>
-                    </button>
-                    <p class="cs-item-p">
-                        The block of three local businesses with a map that sits above the ordinary blue links. For a lot of local searches it is where most of the clicks go, and getting into it is Google Business Profile work rather than blogging.
-                    </p>
-                </li>
-                <li class="cs-faq-item">
-                    <button class="cs-button">
-                        <span class="cs-button-text">Do you write the content?</span>
-                    </button>
-                    <p class="cs-item-p">
-                        The structure, titles and descriptions, yes. Longer content is a conversation: you know your business and your customers better than I do, so the usual arrangement is you supply the substance and I make it work for search.
-                    </p>
-                </li>
+                {% endfor %}
             </ul>
         </div>
     </section>
