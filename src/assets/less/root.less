@@ -2945,12 +2945,22 @@ html.theme-anim .cs-nav-pill-fill {
             line-height: 1.6em;
             margin: 0;
             color: var(--pugetBlue);
+            /* Avoids an orphan - the last line of this paragraph was landing as
+               a single word. Ignored by browsers that don't support it, which
+               just get the default greedy wrapping they got before. */
+            text-wrap: pretty;
         }
 
         .cs-consent-link {
             color: var(--coralText);
             text-decoration: underline;
             text-underline-offset: (2/16rem);
+            /* Keep the link on one line. Broken across a line break the
+               underline reads as two separate links rather than one phrase,
+               which is what it looked like before this rule. The phrase is
+               short enough (~90px at 14px) that it cannot overflow even at
+               320px; it just moves to the next line intact. */
+            white-space: nowrap;
         }
 
         /* Both buttons stretch equally. Refusing must not be visually harder

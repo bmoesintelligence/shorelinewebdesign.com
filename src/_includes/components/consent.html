@@ -3,7 +3,7 @@
   with no analytics there is nothing to consent to and a banner asking permission
   to set cookies that don't exist is theatre.
 
-  Contract with assets/js/consent.js — change both together:
+  Contract with assets/js/consent.js, change both together:
     #cs-consent            the banner element, hidden until JS decides to show it
     [data-consent="accept"]  / [data-consent="decline"]   the two buttons
     body.consent-open      set while the banner is visible
@@ -33,11 +33,22 @@
 <div id="cs-consent" role="dialog" aria-modal="false" aria-labelledby="cs-consent-title" data-ga4="{{ client.analytics.ga4 }}" hidden>
     <div class="cs-consent-inner">
         <div class="cs-consent-copy">
+            {#
+              Copy is deliberately short: three lines on desktop, and the banner is
+              only as tall as it needs to be. It says the three things that matter
+              and stops - what it is, what it costs you, and that refusing is free.
+
+              Voice matches the rest of the site: first person, plain, states the
+              limit rather than talking past it. No "we value your privacy", no
+              "enhance your experience", no exclamation marks. The title borrows
+              the register of /privacy-policy/'s "There is very little to tell,
+              which is rather the point."
+            #}
             <h2 id="cs-consent-title" class="cs-consent-title">Cookies, briefly</h2>
             <p class="cs-consent-text">
-                I'd like to use Google Analytics to see which pages get read. It sets cookies and
-                sends Google your IP address and rough location. Say no and the site works exactly
-                the same. <a href="/privacy-policy/" class="cs-consent-link">What I collect</a>.
+                Google Analytics, so I can see which pages get read. It sets cookies and shares
+                your IP and rough location with Google. Say no and nothing else changes.
+                <a href="/privacy-policy/" class="cs-consent-link">What I collect</a>.
             </p>
         </div>
         <div class="cs-consent-actions">
