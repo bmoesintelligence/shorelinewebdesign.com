@@ -115,7 +115,7 @@ collections:
           - label: "Author"
             name: "author"
             widget: "string"
-            default: "Bryan Moe"
+            default: "Bryan Moore"
             hint: "Not displayed on the post - every post here is by the same person. Kept for structured data later."
 
           - label: "Featured image"

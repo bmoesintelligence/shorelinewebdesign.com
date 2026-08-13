@@ -20,7 +20,7 @@
  * fields was the kit's home-schema.html, now replaced by
  * components/schema.html, which never emits a street address at all. For structured data this is a
  * service-area business: use `areaServed`, not a `PostalAddress` street.
- */
+ */ 
 module.exports = {
     name: "Shoreline Web Design",
 
@@ -42,6 +42,27 @@ module.exports = {
 
     //! Include the protocol (https://) and NO trailing slash.
     domain: "https://www.shorelinewebdesign.com",
+
+    // Analytics. Same guard discipline as `socials` below: an EMPTY STRING EMITS
+    // NOTHING - no gtag script, no consent banner, no cookie. So this file is the
+    // single switch, and there is never a placeholder ID sitting in the markup.
+    //
+    // ga4 is the Measurement ID from Google Analytics > Admin > Data Streams, in
+    // the form "G-XXXXXXXXXX". Paste it and analytics turns on everywhere.
+    //
+    // ⚠ TURNING THIS ON IS NOT JUST A SCRIPT. GA4 sets cookies and sends Google
+    // the visitor's IP, pages viewed and rough location, so it comes with:
+    //   - the consent banner (components/consent.html + assets/js/consent.js),
+    //     which is what actually loads gtag - nothing fires before Accept;
+    //   - /privacy-policy/, which must describe it. That page's own header
+    //     comment says it: a privacy policy that is merely out of date is a
+    //     false statement about what you do with people's information.
+    //   - README.md, which claims the public site makes no third-party requests
+    //     and sets no cookies. True today; false the moment someone accepts.
+    // All of those were updated in the same commit that added this field.
+    analytics: {
+        ga4: "G-YJDDSNZ9R6",
+    },
 
     // Social / listing profiles. The footer renders an icon for each entry that
     // has a URL, and components/schema.html feeds the same list into the

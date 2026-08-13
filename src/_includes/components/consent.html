@@ -1,0 +1,49 @@
+{#
+  Cookie consent banner. Renders ONLY when client.analytics.ga4 is set, because
+  with no analytics there is nothing to consent to and a banner asking permission
+  to set cookies that don't exist is theatre.
+
+  Contract with assets/js/consent.js — change both together:
+    #cs-consent            the banner element, hidden until JS decides to show it
+    [data-consent="accept"]  / [data-consent="decline"]   the two buttons
+    body.consent-open      set while the banner is visible
+
+  DESIGN CONSTRAINTS, all load-bearing:
+
+  - position: fixed, never in the document flow. CLS is 0 on this site and a
+    banner that pushes content down when JS runs would destroy that on the one
+    metric that is currently perfect.
+
+  - The banner starts hidden and is revealed by JS only when no choice is stored.
+    Rendering it visible and hiding it in JS makes it flash on every page load for
+    people who already answered.
+
+  - Decline is a real button, the same size and weight as Accept, not a link or an
+    X in the corner. Consent that is harder to refuse than to give is not consent,
+    and the whole point of choosing the banner over cookieless analytics was to do
+    this properly.
+
+  - No "manage preferences" tier. There is exactly one thing to decide here:
+    analytics on or off. A three-level modal for a single boolean is the pattern
+    that made these banners hated.
+#}
+{% if client.analytics.ga4 %}
+{# data-ga4 carries the Measurement ID to consent.js, so the ID lives in
+   _data/client.js only and never gets hard-coded into a JS file. #}
+<div id="cs-consent" role="dialog" aria-modal="false" aria-labelledby="cs-consent-title" data-ga4="{{ client.analytics.ga4 }}" hidden>
+    <div class="cs-consent-inner">
+        <div class="cs-consent-copy">
+            <h2 id="cs-consent-title" class="cs-consent-title">Cookies, briefly</h2>
+            <p class="cs-consent-text">
+                I'd like to use Google Analytics to see which pages get read. It sets cookies and
+                sends Google your IP address and rough location. Say no and the site works exactly
+                the same. <a href="/privacy-policy/" class="cs-consent-link">What I collect</a>.
+            </p>
+        </div>
+        <div class="cs-consent-actions">
+            <button type="button" class="cs-consent-btn cs-consent-decline" data-consent="decline">No thanks</button>
+            <button type="button" class="cs-consent-btn cs-consent-accept" data-consent="accept">That's fine</button>
+        </div>
+    </div>
+</div>
+{% endif %}

@@ -8,7 +8,7 @@ standfirst: Ask five people what a website costs and you'll get five answers
   job. That's not because anyone is lying. It's because "a website" describes
   about six different products.
 date: 2026-08-01T09:00:00.000-07:00
-author: Bryan Moe
+author: Bryan Moore
 tags:
   - post
 ---

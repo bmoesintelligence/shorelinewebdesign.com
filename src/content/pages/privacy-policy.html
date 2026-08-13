@@ -1,11 +1,11 @@
 ---
-description: "What Shoreline Web Design collects, what it doesn't, and who else touches it. No analytics, no tracking pixels, no cookies, no mailing list."
+description: "What Shoreline Web Design collects, what it doesn't, and who else touches it. Analytics are off unless you allow them. No tracking pixels, no advertising, no mailing list."
 pageHero:
   topper: "Legal"
   title: "Privacy policy"
   accent: "."
   text:
-    - "There is very little to tell, which is rather the point. This site has no analytics, no tracking pixels and no cookies. The only information I hold is what you type into a form and send me."
+    - "There is very little to tell, which is rather the point. Analytics are off until you allow them, and there are no tracking pixels and no advertising either way. Otherwise the only information I hold is what you type into a form and send me."
 eleventyComputed:
   title: "{{ page.fileSlug | titleCase }} | {{ client.name }} | {{ client.address.city }}, {{ client.address.state }}"
   permalink: "/{{ page.fileSlug | slugify }}/"
@@ -30,10 +30,16 @@ eleventyComputed:
          rail that toc.js builds at runtime from the h2s below.
 
          ⚠ EVERY FACTUAL CLAIM ON THIS PAGE WAS CHECKED against the codebase on
-         2026-08-03. Not assumed - checked:
-           - no analytics or tag manager anywhere in src/
-           - `document.cookie` appears nowhere
-           - the only localStorage key is `theme` (assets/js/dark.js)
+         2026-08-03, and re-checked on 2026-08-13 when analytics went in:
+           - Google Analytics is CONSENT-GATED. gtag is not in any page's head;
+             assets/js/consent.js injects it only after "granted" is stored.
+             Decline and Google is never contacted and no cookie is set.
+           - localStorage keys are `theme` (assets/js/dark.js) and
+             `analytics-consent` (assets/js/consent.js). Nothing else.
+           - `document.cookie` still appears nowhere in src/ - the only cookies
+             that can exist are the ones gtag sets after consent.
+           - the whole thing is switched by client.analytics.ga4 in
+             _data/client.js; empty means no banner, no script, no cookies.
            - the two Netlify forms are in contact.html and free-redesign.html,
              and the field lists below match them exactly
 
@@ -41,10 +47,9 @@ eleventyComputed:
          policy that is merely out of date is worse than none: it is a false
          statement about what you do with people's information.
 
-         ⚠ BRYAN INTENDS TO ADD GOOGLE ANALYTICS (said 2026-08-03). Ready-made
-         replacement copy for that is in a comment further down, at the end of
-         the "What I don't collect" section. Swapping it in is a two-minute job,
-         but it MUST happen at the same time the script goes in, not afterwards.
+         ⚠ README.md makes overlapping claims ("no third-party requests", "no
+         cookies", "no analytics"). It was corrected in the same commit. Keep the
+         two in step.
 
          NEEDS BRYAN'S CONFIRMATION, marked inline:
            - the retention period for form submissions (a policy choice) -->
@@ -57,7 +62,7 @@ eleventyComputed:
                 <div class="cs-prose">
                     <h2>Who this is</h2>
                     <p>
-                        Shoreline Web Design is one person: me, Bryan Moe, working from Richmond Beach in North Seattle. Where this page says "I", that is who it means. There is no team and nobody else with access.
+                        Shoreline Web Design is one person: me, Bryan Moore, working from Richmond Beach in North Seattle. Where this page says "I", that is who it means. There is no team and nobody else with access.
                     </p>
                     <p>
                         This policy covers this website and the forms on it. It does not cover the websites I build for clients, which are the responsibility of the businesses that own them.
@@ -77,54 +82,41 @@ eleventyComputed:
                         If you email me directly instead, then I have whatever your email contains, which is how email has always worked.
                     </p>
 
+                    <h2>Analytics, and how to refuse them</h2>
+                    <p>
+                        This site can use Google Analytics to count visits and see which pages get
+                        read. It is <strong>off until you say otherwise</strong>.
+                    </p>
+                    <ul>
+                        <li><strong>Nothing loads before you agree.</strong> The Google Analytics script is not on the page when you arrive. It is only fetched if you press <em>That's fine</em> on the banner, so choosing <em>No thanks</em> means Google is never contacted at all and no cookie is ever set.</li>
+                        <li><strong>What it collects if you do agree.</strong> Cookies in your browser, plus your IP address, the pages you view, roughly where you are and what device you are on, sent to Google. I use it to know which articles are worth writing more of. I cannot identify you from it; Google may be able to.</li>
+                        <li><strong>Changing your mind.</strong> Your answer is remembered in your own browser, not on my server. Clearing this site's data in your browser settings makes the banner reappear so you can answer again.</li>
+                        <li><strong>Refusing costs you nothing.</strong> Every page works identically either way. There is no content behind the banner and no nagging if you decline.</li>
+                    </ul>
+
                     <h2>What I don't collect</h2>
                     <p>
                         This section is the important one, and it is short on purpose.
                     </p>
                     <ul>
-                        <li><strong>No analytics.</strong> There is no Google Analytics, no tag manager, and no privacy-friendly alternative either. I do not know how many people visit this site or which pages they read.</li>
-                        <li><strong>No tracking pixels and no advertising.</strong> Nothing here reports back to Meta, Google, LinkedIn or anyone else, and this site takes no part in any advertising network.</li>
-                        <li><strong>No cookies.</strong> Not essential ones, not optional ones. That is why you have never seen a cookie banner here.</li>
+                        <li><strong>No tracking pixels and no advertising.</strong> Nothing here reports back to Meta, LinkedIn or anyone else, and this site takes no part in any advertising network. Google Analytics, if you allow it, is the only third party involved and it is not used for advertising.</li>
                         <li><strong>No mailing list.</strong> Sending a form does not subscribe you to anything, because there is nothing to subscribe to. If I reply, it is a person writing back about your enquiry.</li>
                         <li><strong>No selling or sharing.</strong> I do not sell, rent or trade what you send me, and I do not hand it to anyone else for their own purposes.</li>
                     </ul>
 
-                    <!-- ══════════════════════════════════════════════════════
-                         WHEN ANALYTICS GOES IN, REPLACE THE <ul> ABOVE.
+                    <!-- The consent banner and the gated gtag loader landed 2026-08-13.
+                         The long "WHEN ANALYTICS GOES IN" instruction block that used
+                         to sit here has been carried out and removed.
 
-                         (a) If it's GOOGLE ANALYTICS - note this also needs a
-                         cookie notice, and a consent banner before the script
-                         runs for visitors in the EU/UK:
+                         The cookieless option it also described (Plausible / Fathom)
+                         was considered and NOT taken: GA4 with a real banner was the
+                         deliberate choice. If that is ever revisited, the argument for
+                         cookieless was that it needs no banner, keeps the "no cookies"
+                         line true, and - with a server-side tool like Netlify Analytics -
+                         preserves the zero-third-party-request property the README sells.
 
-                           <li><strong>Analytics, and what it means.</strong> This
-                           site uses Google Analytics to count visits and see
-                           which pages get read. It sets cookies in your browser
-                           and sends Google your IP address, the pages you view
-                           and rough location. I use it to know which articles
-                           are worth writing more of. I cannot identify you from
-                           it, but Google may be able to.</li>
-                           <li><strong>No tracking pixels and no advertising.</strong>
-                           ... (unchanged)</li>
-                           <li><strong>No mailing list.</strong> ... (unchanged)</li>
-                           <li><strong>No selling or sharing.</strong> ... (unchanged)</li>
-
-                         ...and DELETE the "No cookies" bullet entirely. Also fix
-                         the page hero text and the meta description at the top
-                         of this file, which both claim no analytics and no
-                         cookies.
-
-                         (b) If it's COOKIELESS (Plausible / Fathom) - lighter
-                         change, no banner needed, keep the "No cookies" bullet:
-
-                           <li><strong>Analytics, without cookies.</strong> This
-                           site counts visits using [NAME], which is
-                           privacy-focused: no cookies, no fingerprinting, and
-                           nothing that follows you between websites. I see how
-                           many people read a page and where they came from. I
-                           cannot see who you are.</li>
-
-                         Then change "No analytics" above to reflect it.
-                         ══════════════════════════════════════════════════════ -->
+                         Whatever is used, the rule above holds: this page changes in
+                         the same commit as the script, never afterwards. -->
 
                     <h2>What is stored in your browser</h2>
                     <p>

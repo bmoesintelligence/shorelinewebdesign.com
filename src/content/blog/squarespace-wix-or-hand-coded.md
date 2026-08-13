@@ -7,7 +7,7 @@ standfirst: I build websites by hand, so you can guess which way I'm biased. I'm
   answer is that a lot of small businesses should use Squarespace and would be
   worse off paying me.
 date: 2026-07-03T09:00:00.000-07:00
-author: Bryan Moe
+author: Bryan Moore
 tags:
   - post
 ---

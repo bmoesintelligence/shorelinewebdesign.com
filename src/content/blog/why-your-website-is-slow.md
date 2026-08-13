@@ -8,7 +8,7 @@ standfirst: Almost every small-business owner I talk to has been told their
   on. The usual answer is "you need better hosting," which is occasionally true
   and usually not. Here is what is actually going on, without the jargon.
 date: 2026-07-20T09:00:00.000-07:00
-author: Bryan Moe
+author: Bryan Moore
 tags:
   - post
 ---

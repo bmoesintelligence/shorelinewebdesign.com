@@ -2885,3 +2885,187 @@ html.theme-anim .cs-nav-pill-fill {
         }
     }
 }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// COOKIE CONSENT BANNER
+// Markup: _includes/components/consent.html   Behaviour: assets/js/consent.js
+// Only exists at all when client.analytics.ga4 is set.
+//
+// Lives in root.less, and at the END of it, for two reasons: the banner can
+// appear on all 18 URLs so a per-page sheet would need linking from every one,
+// and appending avoids surgery on the brace structure of the blocks above.
+//
+// position: FIXED is a requirement, not a preference. This site measures CLS 0
+// and the banner is revealed by JS after first paint. Any layout participation
+// (a flow element, a sticky footer, body padding compensation) would shift
+// content post-paint and turn a perfect 0 into a visible regression on the one
+// metric that is currently flawless.
+// ─────────────────────────────────────────────────────────────────────────────
+
+/* Mobile - 360px */
+@media only screen and (min-width: 0rem) {
+    #cs-consent {
+        position: fixed;
+        z-index: 9999;
+        left: (16/16rem);
+        right: (16/16rem);
+        bottom: (16/16rem);
+        max-width: (720/16rem);
+        margin: 0 auto;
+        background-color: #fdfbf4;
+        border-radius: (16/16rem);
+        padding: (20/16rem);
+        /* hairline as inset shadow, never border - house rule. The drop shadow
+           is separate, and lifts the notice off whatever it covers. */
+        box-shadow: inset 0 0 0 1px rgba(27, 42, 56, 0.14), 0 (8/16rem) (32/16rem) rgba(27, 42, 56, 0.18);
+        animation: cs-consent-in 0.28s cubic-bezier(0.22, 1, 0.36, 1) both;
+
+        &[hidden] {
+            display: none;
+        }
+
+        .cs-consent-inner {
+            display: flex;
+            flex-direction: column;
+            gap: (16/16rem);
+        }
+
+        .cs-consent-title {
+            font-family: var(--headerFont);
+            font-size: (17/16rem);
+            font-weight: 800;
+            line-height: 1.2em;
+            letter-spacing: -0.01em;
+            margin: 0 0 (6/16rem);
+            color: var(--inkNavy);
+        }
+
+        .cs-consent-text {
+            font-size: (14/16rem);
+            line-height: 1.6em;
+            margin: 0;
+            color: var(--pugetBlue);
+        }
+
+        .cs-consent-link {
+            color: var(--coralText);
+            text-decoration: underline;
+            text-underline-offset: (2/16rem);
+        }
+
+        /* Both buttons stretch equally. Refusing must not be visually harder
+           than agreeing - that is the entire reason for building a real banner
+           rather than a decorative one. */
+        .cs-consent-actions {
+            display: flex;
+            gap: (10/16rem);
+        }
+
+        .cs-consent-btn {
+            flex: 1 1 0;
+            font-family: var(--bodyFont);
+            font-size: (15/16rem);
+            font-weight: 600;
+            line-height: 1em;
+            /* the kit's buttons are uppercase globally; this site is sentence case */
+            text-transform: none;
+            padding: (14/16rem) (20/16rem);
+            border: none;
+            border-radius: (48/16rem);
+            cursor: pointer;
+            transition: background-color 0.25s, color 0.25s;
+        }
+
+        .cs-consent-accept {
+            background-color: var(--coral);
+            color: #fff;
+
+            &:hover {
+                background-color: var(--coralDark);
+            }
+        }
+
+        .cs-consent-decline {
+            background-color: transparent;
+            color: var(--pugetBlue);
+            box-shadow: inset 0 0 0 1px rgba(27, 42, 56, 0.22);
+
+            &:hover {
+                background-color: rgba(27, 42, 56, 0.06);
+                color: var(--inkNavy);
+            }
+        }
+    }
+
+    @keyframes cs-consent-in {
+        from {
+            opacity: 0;
+            transform: translateY((12/16rem));
+        }
+        to {
+            opacity: 1;
+            transform: none;
+        }
+    }
+}
+
+/* Tablet - side by side once there is room */
+@media only screen and (min-width: 37.5rem) {
+    #cs-consent {
+        padding: (20/16rem) (24/16rem);
+
+        .cs-consent-inner {
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+            gap: (24/16rem);
+        }
+
+        .cs-consent-actions {
+            flex-shrink: 0;
+        }
+
+        .cs-consent-btn {
+            flex: 0 0 auto;
+        }
+    }
+}
+
+/* Dark Mode - tan panels flip to the raised-on-navy colour, not warm white */
+@media only screen and (min-width: 0rem) {
+    body.dark-mode {
+        #cs-consent {
+            background-color: var(--medium);
+            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.14), 0 (8/16rem) (32/16rem) rgba(0, 0, 0, 0.45);
+
+            .cs-consent-title {
+                color: var(--bodyTextColorWhite);
+            }
+
+            .cs-consent-text {
+                color: var(--rainGray);
+            }
+
+            .cs-consent-decline {
+                color: var(--rainGray);
+                box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.24);
+
+                &:hover {
+                    background-color: rgba(255, 255, 255, 0.08);
+                    color: var(--bodyTextColorWhite);
+                }
+            }
+        }
+    }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    #cs-consent {
+        animation: none;
+
+        .cs-consent-btn {
+            transition: none;
+        }
+    }
+}

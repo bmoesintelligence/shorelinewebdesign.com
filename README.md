@@ -69,10 +69,17 @@ one stylesheet rather than duplicating it.
 - **Scroll-driven animation** on the home page uses CSS `view()` timelines, so it costs no
   JavaScript.
 
-16 pages. The public site makes **no third-party requests** and sets no cookies — every font,
-icon and script is served from the same origin, and there is no analytics. (`/admin/` loads
-Decap from a CDN, but that route is for the site's own editing and is not part of any visitor
-page.)
+18 pages. Every font, icon and script is served from the same origin, so **a visitor who
+declines analytics makes no third-party requests at all and is sent no cookies.**
+
+Google Analytics is **consent-gated, and the gate is real**: `gtag` appears in no page's
+head. `assets/js/consent.js` injects it only after a visitor accepts, so declining means
+Google is never contacted. The whole thing is switched by one field in `_data/client.js` —
+empty means no banner, no script, no cookie. A pleasant side effect is that Lighthouse never
+accepts, so audits measure the site as it is for anyone who says no.
+
+(`/admin/` loads Decap from a CDN, but that route is for the site's own editing and is not
+part of any visitor page.)
 
 ## Credit
 

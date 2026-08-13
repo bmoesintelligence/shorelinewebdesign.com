@@ -82,6 +82,11 @@
         <script defer src="/assets/js/nav.js"></script>
         <script defer src="/assets/js/nav-pill.js"></script>
         <script defer src="/assets/js/faq.js"></script>
+        {# consent.js is what LOADS Google Analytics, and only after Accept. There
+           is deliberately no gtag snippet in this head: putting it here and
+           "gating" it afterwards is how consent banners end up decorative. With
+           client.analytics.ga4 empty this script finds no banner and no-ops. #}
+        <script defer src="/assets/js/consent.js"></script>
 
         {% block head %}{% endblock %}
 
@@ -96,6 +101,12 @@
             {% block body %}{% endblock %}
         </main>
         {% include "sections/footer.html" %}
+
+        {# Last in the body, outside <main>, and position: fixed in root.less, so
+           it overlays rather than participating in layout. CLS is 0 on this site
+           and the banner is revealed by JS after first paint - anything in the
+           flow here would shift content post-paint. #}
+        {% include "components/consent.html" %}
 
     </body>
 </html>

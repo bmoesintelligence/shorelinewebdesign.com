@@ -116,8 +116,28 @@ faqs:
                 </label>
                 <label class="cs-label">
                     Your website
-                    <input class="cs-input" type="url" id="fr-url" name="website" autocomplete="url" placeholder="yourbusiness.com">
-                    
+                    {#
+                      type="text", NOT type="url". This was type="url", which makes the
+                      browser demand a scheme: "bryan.com" was rejected with "Please enter
+                      a URL" and only "https://bryan.com" passed. Three things made that
+                      a trap rather than a nudge:
+
+                        - the placeholder is "yourbusiness.com", so the field showed an
+                          example it then refused to accept;
+                        - #redesign-steps above says "Drop me your current URL, OR JUST
+                          YOUR BUSINESS NAME if you don't have a site yet", so this field
+                          is meant to accept things that are not URLs at all;
+                        - nobody types a scheme. Small business owners write their domain
+                          the way they say it out loud.
+
+                      This is the free redesign form - the site's main lead magnet - so a
+                      validation error here costs an actual lead. Accept what people type
+                      and normalise it on my end; it is one field I read by eye anyway.
+
+                      inputmode="url" keeps the URL-friendly keyboard on mobile (dot and
+                      slash on the main layer) without imposing any validation.
+                    #}
+                    <input class="cs-input" type="text" inputmode="url" id="fr-url" name="website" autocomplete="url" placeholder="yourbusiness.com">
                 </label>
                 <!-- cs-label-full spans both columns of the desktop grid; the
                      four short fields above it pair up two-across so the whole
