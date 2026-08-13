@@ -92,6 +92,11 @@
             }
         }
 
+        /* ── spec-sheet header: coral tick, mono index, hairline to the edge ──
+           The index used to be a lone 12px numeral floating ~24px above the
+           heading, which read as an orphan rather than as an index. Setting it
+           as a ruled header row gives the card a structure to hang off, and
+           both the tick and the rule are pseudo-elements, so no extra markup. */
         .cs-number {
             font-family: var(--monoFont);
             font-size: (12/16rem);
@@ -99,8 +104,33 @@
             line-height: 1em;
             letter-spacing: 0.1em;
             color: var(--pugetBlue);
-            /* 20px - 28px */
-            margin-bottom: clamp(1.25rem, 2.4vw, 1.75rem);
+            /* stretch past the card's align-items: flex-start so the rule can
+               run the full content width */
+            width: 100%;
+            box-sizing: border-box;
+            display: flex;
+            align-items: center;
+            gap: (10/16rem);
+            /* 18px - 24px */
+            margin-bottom: clamp(1.125rem, 2.2vw, 1.5rem);
+
+            /* the one spot of coral on a plain card */
+            &:before {
+                content: "";
+                width: (6/16rem);
+                height: (6/16rem);
+                background-color: var(--coral);
+                border-radius: (1/16rem);
+                flex: none;
+            }
+
+            /* hairline filling whatever's left of the row */
+            &:after {
+                content: "";
+                height: 1px;
+                background-color: rgba(27, 42, 56, 0.12);
+                flex: 1 1 auto;
+            }
         }
 
         .cs-h3 {
@@ -116,8 +146,37 @@
         .cs-item-text {
             font-size: (15/16rem);
             line-height: 1.55em;
-            margin: 0;
+            /* 18px - 24px of clearance above the footer rule. This has to be a
+               real margin: the tag below uses `margin-top: auto` to sit on the
+               card's floor, and auto collapses to ZERO on any card whose body
+               already fills the height — which left the hairline 2px off the
+               last line of text on five of the six cards. */
+            margin: 0 0 clamp(1.125rem, 2vw, 1.5rem);
             color: var(--pugetBlue);
+        }
+
+        /* ── spec-sheet footer ──
+           A taxonomy label, not a claim: it names the discipline the card sits
+           under, so it adds a dimension rather than restating the heading.
+           `margin-top: auto` pins it to the card's floor, which also closes the
+           dead space these cards carried — the body is one short sentence and
+           the tiles were running ~40% empty at desktop. */
+        .cs-tag {
+            font-family: var(--monoFont);
+            font-size: (11/16rem);
+            font-weight: 500;
+            line-height: 1em;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--pugetBlue);
+            opacity: 0.7;
+            width: 100%;
+            box-sizing: border-box;
+            /* 16px - 20px */
+            margin-top: auto;
+            padding-top: clamp(1rem, 2vw, 1.25rem);
+            /* hairline as an inset shadow, never a border — house rule */
+            box-shadow: inset 0 1px 0 rgba(27, 42, 56, 0.1);
         }
 
         /* the standout card — inverted */
@@ -133,6 +192,35 @@
             .cs-item-text {
                 color: var(--rainGray);
             }
+
+            /* the rules and the tag have to flip for the navy surface */
+            .cs-number:after {
+                background-color: rgba(255, 255, 255, 0.18);
+            }
+
+            .cs-tag {
+                color: var(--rainGray);
+                box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16);
+            }
+        }
+    }
+}
+
+/* Large phone - 430px — the six cards go two-up.
+   One per row made this the tallest section on the page at 1461px, and not
+   because the cards are big: they are 159px each, so it was purely the count.
+   Two-up takes it to 1096.
+
+   430 is a FLOOR, not a guess. It was tried at 368 to catch the common 375 /
+   390 / 414 handsets, and the headings fell apart: a 171px column broke them
+   to three lines ("Loads in / under a / second", "Hand-coded, / not /
+   templated") to save 250px on a 10,500px page. At 430 the column is 191px
+   and every heading holds to two lines or fewer, all the way up. Don't lower
+   this without re-checking the h3 wrap. */
+@media only screen and (min-width: 26.875rem) {
+    #services {
+        .cs-card-group {
+            grid-template-columns: repeat(2, 1fr);
         }
     }
 }
@@ -188,9 +276,35 @@
                 color: var(--pugetBlue);
             }
 
+            /* spec-sheet rules on the raised --medium cards */
+            .cs-number:after {
+                background-color: rgba(255, 255, 255, 0.14);
+            }
+
+            .cs-tag {
+                color: var(--rainGray);
+                box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
+            }
+
             .cs-item-featured {
                 background-color: var(--coral);
                 border-color: var(--coral);
+
+                /* This card is a SOLID CORAL fill in dark mode, so the coral
+                   tick would vanish into it and the muted rules would barely
+                   register. Everything on this one surface goes white. */
+                .cs-number:before {
+                    background-color: #fff;
+                }
+
+                .cs-number:after {
+                    background-color: rgba(255, 255, 255, 0.4);
+                }
+
+                .cs-tag {
+                    color: rgba(255, 255, 255, 0.85);
+                    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35);
+                }
 
                 .cs-number,
                 .cs-h3 {
@@ -215,10 +329,21 @@
         background-color: var(--warmSand);
         padding: var(--sectionPadding);
 
+        /* The container IS the raised panel — same lift as #steps-276, #fit,
+           the /work/ rows and /about/#story, so no wrapper element is needed.
+           Before this the portrait frame sat naked on flat tan, which is the
+           exact state the /work/ rows were in at v1 and got called unfinished
+           for. A shade deeper than the page is what makes the frame inside it
+           read as raised. */
         .cs-container {
             width: 100%;
             max-width: (1280/16rem);
             margin: auto;
+            box-sizing: border-box;
+            background-color: rgba(27, 42, 56, 0.05);
+            border-radius: clamp(1.25rem, 2.5vw, 2rem);
+            /* 24px - 64px */
+            padding: clamp(1.5rem, 4.5vw, 4rem);
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -361,16 +486,101 @@
 }
 
 /* Desktop - 1024px */
+/* the teaser's route to /about/ — mirrors #hero .cs-button-transparent */
+@media only screen and (min-width: 0rem) {
+    #about {
+        /* A bordered pill, not a bare text link. As plain text with an arrow
+           it had no affordance and read as a stray sentence; this is the same
+           secondary-button idiom as the nav's Free Redesign item.
+           Hairline via inset shadow, never a border — house rule, and it also
+           keeps the pill's height identical on hover when it fills. */
+        .cs-link {
+            font-family: var(--bodyFont);
+            font-size: (15/16rem);
+            font-weight: 600;
+            line-height: (44/16rem);
+            text-decoration: none;
+            text-transform: none;
+            color: var(--inkNavy);
+            box-sizing: border-box;
+            padding: 0 (24/16rem);
+            border-radius: (40/16rem);
+            box-shadow: inset 0 0 0 1px rgba(27, 42, 56, 0.25);
+            /* 24px - 32px below the copy; the stats' own divider provides the
+               separation underneath */
+            margin-top: clamp(1.5rem, 2.6vw, 2rem);
+            display: inline-flex;
+            align-items: center;
+            gap: (10/16rem);
+            transition: color 0.25s, background-color 0.25s, box-shadow 0.25s;
+
+            .cs-arrow {
+                display: inline-block;
+                transition: transform 0.25s;
+            }
+
+            &:hover {
+                color: var(--warmSand);
+                background-color: var(--inkNavy);
+                box-shadow: inset 0 0 0 1px var(--inkNavy);
+
+                .cs-arrow {
+                    transform: translateX(4px);
+                }
+            }
+        }
+    }
+}
+
+/* 600px to 1023px — pair the portrait and the copy, same treatment the hero
+   gets in critical.less. #about had the identical shape: a `min-width: 0`
+   stacked block and a 64rem row block with nothing between, so at 1000px a
+   340px photo sat centred above a 600px text column with the rest of the width
+   empty. It was the second-tallest section on the page at 1208px.
+
+   Ratio flex-grow (4:6) rather than the desktop block's fixed `flex: 0 0 440px`
+   — that fixed basis is what makes pairing impossible here, since at 600 it
+   would claim 440 of the 568 available and leave the copy 80px. Growing from a
+   zero basis splits what's left after the gap: ~208/312 at 600, ~372/558 at
+   1023. The photo leads, matching the desktop order.
+
+   BOUNDED, so the ratio can't cascade into the 64rem block below and override
+   its fixed 440px column. */
+@media only screen and (min-width: 37.5rem) and (max-width: 63.999rem) {
+    #about {
+        .cs-container {
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .cs-image-group {
+            flex: 4 1 0;
+            max-width: none;
+            margin: 0;
+        }
+
+        .cs-content {
+            flex: 6 1 0;
+            max-width: none;
+        }
+    }
+}
+
 @media only screen and (min-width: 64rem) {
     #about {
         .cs-container {
             flex-direction: row;
             align-items: center;
             justify-content: space-between;
-            /* cap so space-between doesn't dump excess width between the columns;
-               sized to the two columns (440 + ~80 gap + 600) so the gap stays a
-               normal column gutter, not a cavern */
-            max-width: (1120/16rem);
+            /* 1280, matching the nav bar and /about/#story so the three line up.
+               It was capped at 1120 to stop space-between dumping the excess
+               between the columns — that was the right call when this was bare
+               content on tan, but the panel's own 64px padding now absorbs the
+               difference, and the content cap below was raised to close the
+               rest. `gap` is a real gap, so space-between can only spread what
+               is left AFTER it; the columns fill, so nothing spreads. */
+            max-width: (1280/16rem);
         }
 
         .cs-image-group {
@@ -382,7 +592,8 @@
 
         .cs-content {
             flex: 1 1 auto;
-            max-width: (600/16rem);
+            /* raised from 600 with the container — see the note above */
+            max-width: (656/16rem);
         }
     }
 }
@@ -392,6 +603,22 @@
     body.dark-mode {
         #about {
             background-color: var(--dark);
+
+            .cs-container {
+                background-color: rgba(255, 255, 255, 0.04);
+            }
+
+            .cs-link {
+                color: var(--bodyTextColorWhite);
+                box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.25);
+
+                /* a navy fill is invisible on a navy page — lift instead */
+                &:hover {
+                    color: #fff;
+                    background-color: rgba(255, 255, 255, 0.12);
+                    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.4);
+                }
+            }
 
             .cs-title,
             .cs-stat-number {
@@ -564,9 +791,9 @@
     }
 }
 
-/* Desktop + scroll-timeline only — the breaching pod is progressive enhancement */
+/* 600px up + scroll-timeline only — the breaching pod is progressive enhancement */
 @supports (animation-timeline: view()) {
-    @media only screen and (min-width: 64rem) {
+    @media only screen and (min-width: 37.5rem) {
         /* One shared clock: the section's own pass through the viewport, named so
            every orca scrubs off the same progress (like the ferry's --ferry-lane).
            If each used its own view() they'd desync, since they sit at different
@@ -686,6 +913,27 @@
     100% {
         transform: translate(9vw, 5.5vw) rotate(2deg);
         opacity: 0;
+    }
+}
+
+/* 600px to 1023px — keep the pod clear of the copy.
+   The pod was gated to 1024+ with the note "below that it would collide with
+   the centred content". That was true, not superstition: at 768 the copy fills
+   the section width, so an orca swam straight through the paragraph.
+
+   Rather than hide it, confine the pod to the open water BELOW the copy — the
+   band the three badges sit in, which has clear margins either side of them.
+   The orcas position in % of .cs-pod, so insetting the pod is a single lever
+   that remaps the whole formation without touching six per-orca rules. */
+@media only screen and (min-width: 37.5rem) and (max-width: 63.999rem) {
+    #speed .cs-pod {
+        inset: 54% 0 0 0;
+    }
+
+    /* smaller in a narrower band, so the pod reads as distant rather than as
+       three animals crowding the numbers */
+    #speed .cs-orca {
+        width: clamp(3.25rem, 7vw, 4.5rem) !important;
     }
 }
 
@@ -876,7 +1124,15 @@
             /* 44px - 60px */
             font-size: clamp(2.75rem, 5.5vw, 3.75rem);
             font-weight: 800;
-            line-height: 1em;
+            /* Unitless, NOT 1em. `1em` computes to an absolute length here —
+               60px — and line-height inherits as that computed value, so the
+               17px "/mo" span was handed a 60px line box. Baseline-aligned in
+               this flex row it hung ~14px below the figure, making the Monthly
+               card's price 74px tall against Custom's 60px, and every element
+               under it — note, divider, list — sat 14px lower than its
+               neighbour. Unitless inherits as a RATIO, so each child sizes to
+               its own text. */
+            line-height: 1;
             letter-spacing: -0.03em;
             color: var(--inkNavy);
             display: flex;
@@ -966,7 +1222,7 @@
             position: relative;
             overflow: hidden;
             z-index: 1;
-            transition: background-color 0.25s, color 0.25s, transform 0.25s;
+            transition: background-color 0.25s, color 0.25s, transform 0.25s, box-shadow 0.25s;
 
             /* kill the global sweep pseudo */
             &:before {
@@ -989,17 +1245,36 @@
             }
         }
 
-        /* secondary — the one-time build */
+        /* secondary — the one-time build.
+           `inset` box-shadow, never a border — house rule, and here is the cost
+           of breaking it: a real 2px border made this button 56px tall against
+           the featured card's 52px, so the two CTAs never sat on the same line.
+           A shadow paints inside the box and changes no geometry. */
         .cs-button-transparent {
             background-color: transparent;
-            border: 2px solid rgba(27, 42, 56, 0.25);
+            box-shadow: inset 0 0 0 2px rgba(27, 42, 56, 0.25);
             color: var(--inkNavy);
 
             &:hover {
                 background-color: var(--inkNavy);
-                border-color: var(--inkNavy);
+                box-shadow: inset 0 0 0 2px var(--inkNavy);
                 color: #fff;
             }
+        }
+    }
+}
+
+/* Below 768px — stop the single-column cards going edge to edge.
+   They are stacked here, so without a cap each ticket stretched to the full
+   section width: 568px at a 600px viewport, which reads as a slab rather than
+   a card. 420px is above the inner width of any phone (358px at 390), so
+   handsets are unchanged and this only bites on the larger screens where the
+   stretch was actually visible. Bounded so it can't reach the two-up layout
+   below, which has its own 860px cap on the group. */
+@media only screen and (max-width: 47.999rem) {
+    #pricing {
+        .cs-card-group {
+            max-width: (420/16rem);
         }
     }
 }
@@ -1053,12 +1328,12 @@
             }
 
             .cs-button-transparent {
-                border-color: rgba(255, 255, 255, 0.3);
+                box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.3);
                 color: var(--bodyTextColorWhite);
 
                 &:hover {
                     background-color: var(--bodyTextColorWhite);
-                    border-color: var(--bodyTextColorWhite);
+                    box-shadow: inset 0 0 0 2px var(--bodyTextColorWhite);
                     color: var(--inkNavy);
                 }
             }
@@ -1122,12 +1397,16 @@
 
     #free-redesign .cs-title {
         font-family: var(--headerFont);
-        /* 32px - 50px */
-        font-size: clamp(2rem, 5vw, 3.125rem);
+        /* 32px - 50px. 4.2vw, not 5: at 1024 the desktop block gives the copy
+           a 393px column, and a 50px headline in a 15ch box broke it to FOUR
+           lines with "your" stranded. Easing the ramp and widening the measure
+           keeps "your homepage." together from 1024 up; the 50px ceiling still
+           lands around 1250 where the column can carry it. */
+        font-size: clamp(2rem, 4.2vw, 3.125rem);
         font-weight: 800;
         line-height: 1.1em;
         letter-spacing: -0.02em;
-        max-width: 15ch;
+        max-width: 17ch;
         margin: 0 0 (18/16rem);
         color: var(--bodyTextColorWhite);
 
@@ -1194,8 +1473,14 @@
     }
 }
 
-/* Desktop - 1024px — copy left, example right */
-@media only screen and (min-width: 64rem) {
+/* 600px — copy left, example right.
+   Last section on the page carrying the kit's default shape (a min-width:0
+   block and a 64rem block, nothing between), which left it stacked from 600 to
+   1023 with a full-width screenshot under full-width copy.
+   Unlike the hero, #about and #service-area, this one needed no re-proportioning
+   to come down: its split is already percentage flex rather than a fixed basis,
+   so the same 48/52 works the whole way. */
+@media only screen and (min-width: 37.5rem) {
     #free-redesign .cs-container {
         flex-direction: row;
         align-items: center;
@@ -1211,16 +1496,47 @@
     }
 }
 
+/* 600px to 1023px — ease the headline into the narrower column.
+   Pairing at 600 gives the copy ~48% of the width, and at 5vw the headline
+   fractured to four lines with "your" stranded on its own. Copy takes the
+   larger share here and the type steps down so "your homepage." holds
+   together. Bounded so neither leaks into the desktop block. */
+@media only screen and (min-width: 37.5rem) and (max-width: 63.999rem) {
+    #free-redesign .cs-content {
+        flex: 1 1 54%;
+    }
+
+    #free-redesign .cs-picture {
+        flex: 1 1 46%;
+    }
+
+    #free-redesign .cs-title {
+        /* 28px - 40px */
+        font-size: clamp(1.75rem, 4.2vw, 2.5rem);
+    }
+
+    #free-redesign .cs-text {
+        font-size: (16/16rem);
+    }
+}
+
 /* Dark Mode */
 @media only screen and (min-width: 0rem) {
     body.dark-mode #free-redesign {
         background-color: var(--dark);
 
         /* the page is already dark, so lift the card off it with a lighter fill
-           and a faint coral edge instead of the light-mode navy-on-tan contrast */
+           and a faint coral edge instead of the light-mode navy-on-tan contrast.
+
+           `inset` box-shadow, never `border` — house rule, and this is the case
+           that proves it: as a real 1px border it existed only in dark mode, so
+           the card grew 2px and the section moved 1px every time the theme was
+           switched. Harmless while the swap was instant; visible the moment the
+           crossfade made it a transition. A shadow paints inside the box and
+           changes no geometry. */
         .cs-container {
             background-color: var(--medium);
-            border: 1px solid rgba(214, 85, 61, 0.35);
+            box-shadow: inset 0 0 0 1px rgba(214, 85, 61, 0.35);
         }
     }
 }
@@ -1571,8 +1887,15 @@
     }
 }
 
-/* Desktop - 1024px */
-@media only screen and (min-width: 64rem) {
+/* 600px — the three quotes go side by side, matching the hero and #about.
+   Third instance of the same pattern on this page: one column until 64rem, so
+   between 600 and 1023 three one-sentence quotes were stretched the full width
+   of a container running to 1280. A quote card that wide with a single line in
+   it reads as a mistake.
+
+   Three columns rather than two, because there are exactly three items — a
+   two-up grid would leave a single orphan on the second row. */
+@media only screen and (min-width: 37.5rem) {
     #reviews {
         .cs-card-group {
             grid-template-columns: repeat(3, 1fr);
@@ -1640,7 +1963,11 @@
             align-items: flex-start;
         }
 
-        /* outlined pill, per the comp */
+        /* pill-badge topper — same as every interior page.
+           Was a grey outlined pill ("per the comp"), the only topper on the
+           site not using the coral badge documented in CLAUDE.md's component
+           idioms. Nothing else about this section is a special case, so the
+           deviation just read as an inconsistency. */
         .cs-topper {
             font-family: var(--monoFont);
             font-size: (12/16rem);
@@ -1648,9 +1975,9 @@
             line-height: 1em;
             text-transform: uppercase;
             letter-spacing: 0.12em;
-            color: var(--pugetBlue);
-            padding: (9/16rem) (15/16rem);
-            border: 1px solid rgba(27, 42, 56, 0.2);
+            color: var(--coralText);
+            background-color: rgba(214, 85, 61, 0.14);
+            padding: (8/16rem) (14/16rem);
             border-radius: (40/16rem);
             margin-bottom: (20/16rem);
         }
@@ -1714,6 +2041,44 @@
     }
 }
 
+/* 600px to 1023px — pair the copy and the arrival diorama, same treatment the
+   hero and #about get. Fourth section on this page with the kit's default
+   shape (a `min-width: 0` block and a 64rem block, nothing between), so from
+   600 to 1023 a 560px text column sat above a 640px scene with the rest of a
+   1280px container empty.
+
+   The desktop block's `flex: 0 1 var(--sceneWidth)` is a 640px basis, which
+   can't pair at this size — it would claim more than the whole 568px available
+   at 600. Growing both from a zero basis splits what's left after the gap.
+
+   The ferry lives inside .cs-image-group and berths on percentages, so it
+   docks correctly at the smaller scene with no extra work.
+
+   BOUNDED, so the ratio can't cascade into the 64rem block and override its
+   fixed scene-width basis. */
+@media only screen and (min-width: 37.5rem) and (max-width: 63.999rem) {
+    #service-area {
+        .cs-container {
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .cs-content {
+            /* the copy gets the larger share: it carries a wrapping list of
+               town pills, which stacks into a very tall column if starved */
+            flex: 6 1 0;
+            max-width: none;
+        }
+
+        .cs-image-group {
+            flex: 5 1 0;
+            max-width: var(--sceneWidth);
+            margin: 0;
+        }
+    }
+}
+
 /* Desktop - 1024px */
 @media only screen and (min-width: 64rem) {
     #service-area {
@@ -1725,6 +2090,11 @@
 
         .cs-content {
             flex: 1 1 auto;
+            /* Fluid cap, not the base block's flat 560. At 1024 a fixed 560 of
+               the 941 available left the diorama 381px — smaller than the
+               427px it gets at 1023, so the illustration shrank as the window
+               grew. Same fix as the hero's .cs-content in critical.less. */
+            max-width: clamp(20rem, 44vw, 35rem);
         }
 
         .cs-image-group {
@@ -1742,15 +2112,15 @@
             background-color: var(--dark);
 
             .cs-title,
-
-            .cs-text,
-            .cs-topper {
+            .cs-text {
                 color: var(--rainGray);
             }
 
-            .cs-topper {
-                border-color: rgba(255, 255, 255, 0.25);
-            }
+            /* No .cs-topper override here, deliberately. It now uses the shared
+               coral badge, and --coralText already flips to the pale variant
+               under body.dark-mode via the token block in root.less — the same
+               way every other section's topper works. Overriding it here would
+               re-break the consistency. */
 
             .cs-item {
                 background-color: var(--medium);

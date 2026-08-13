@@ -1,5 +1,9 @@
 ---
-title: "Shoreline Web Design"
+# Every other page is "X | Shoreline Web Design | Richmond Beach, WA".
+# This one was the bare brand name — the page that matters most for local
+# search carried neither a service term beyond the name nor a location.
+# 59 chars, so it stays clear of the ~60-char SERP truncation.
+title: "Shoreline Web Design | Hand-coded websites in North Seattle"
 description: "Hand-coded websites for small businesses across North Seattle, from $150/month."
 permalink: "/"
 tags: "sitemap" # content/content.json will make sure that all pages in content/ are marked with a "sitemap" tag, for automatic sitemap generation. As index.html is not in content/, we need to add it here to ensure the root page is included in the sitemap generation
@@ -48,7 +52,10 @@ tags: "sitemap" # content/content.json will make sure that all pages in content/
                 </p>
                 <div class="cs-button-group">
                     <a href="/contact/" class="cs-button-solid">Get started</a>
-                    <a href="#work" class="cs-button-transparent">See the work<span class="cs-arrow" aria-hidden="true">&rarr;</span></a>
+                    <!-- /work/, not the home page's own #work section. The hero's
+                         secondary CTA should hand someone to the full portfolio,
+                         not scroll them to a three-item teaser of it. -->
+                    <a href="/work/" class="cs-button-transparent">See the work<span class="cs-arrow" aria-hidden="true">&rarr;</span></a>
                 </div>
             </div>
             <!-- Edmonds waterfront diorama. The ferry departs from the slip on scroll. -->
@@ -57,7 +64,7 @@ tags: "sitemap" # content/content.json will make sure that all pages in content/
                 <!-- day + night, toggled by the kit's .cs-light/.cs-dark (see root.less).
                      Only one ever displays; the night hull is lazy so it isn't fetched
                      until dark mode. Mirrors the ferry's swap in components/ferry.html. -->
-                <img class="cs-scene cs-light" src="/assets/images/hero-scene.png" alt="Isometric illustration of the Edmonds waterfront and ferry terminal" width="1215" height="1073" decoding="async" fetchpriority="high">
+                <img class="cs-scene cs-light" src="/assets/images/hero-scene.png" alt="Isometric illustration of the Edmonds waterfront and ferry terminal" width="1183" height="841" decoding="async" fetchpriority="high">
                 <img class="cs-scene cs-dark" src="/assets/images/hero-scene-night.png" alt="Isometric illustration of the Edmonds waterfront and ferry terminal at night" width="1200" height="883" loading="lazy" decoding="async">
                 <!-- Night bloom (dark mode only): a blurred, boosted copy of the night
                      scene, screen-composited so the lit windows and lamps spill glow
@@ -81,18 +88,22 @@ tags: "sitemap" # content/content.json will make sure that all pages in content/
                  leaves open: what it costs, what the catch is, who you deal with. -->
             <ul class="cs-card-group">
                 <li class="cs-item">
+                    <span class="cs-kicker">Upfront</span>
                     <span class="cs-number">$0</span>
                     <span class="cs-label">to start, no contract</span>
                 </li>
                 <li class="cs-item">
+                    <span class="cs-kicker">Monthly</span>
                     <span class="cs-number">$150</span>
                     <span class="cs-label">a month, everything included</span>
                 </li>
                 <li class="cs-item">
+                    <span class="cs-kicker">Experience</span>
                     <span class="cs-number">10+</span>
                     <span class="cs-label">years engineering experience</span>
                 </li>
                 <li class="cs-item">
+                    <span class="cs-kicker">Team</span>
                     <span class="cs-number">1</span>
                     <span class="cs-label">engineer, start to finish</span>
                 </li>
@@ -122,6 +133,7 @@ tags: "sitemap" # content/content.json will make sure that all pages in content/
                     <p class="cs-item-text">
                         Most of your customers will find you on one.
                     </p>
+                    <span class="cs-tag">Responsive</span>
                 </li>
                 <li class="cs-item">
                     <span class="cs-number">02</span>
@@ -129,6 +141,7 @@ tags: "sitemap" # content/content.json will make sure that all pages in content/
                     <p class="cs-item-text">
                         Slow sites lose people before the page appears.
                     </p>
+                    <span class="cs-tag">Performance</span>
                 </li>
                 <li class="cs-item">
                     <span class="cs-number">03</span>
@@ -136,6 +149,7 @@ tags: "sitemap" # content/content.json will make sure that all pages in content/
                     <p class="cs-item-text">
                         Structured so search engines can actually read it.
                     </p>
+                    <span class="cs-tag">Search</span>
                 </li>
                 <!-- the standout card, inverted per the comp. This is the one that
                      pays off the section title, so it gets the emphasis. -->
@@ -145,6 +159,7 @@ tags: "sitemap" # content/content.json will make sure that all pages in content/
                     <p class="cs-item-text">
                         Send the change, it goes live. No dashboard, no ticket.
                     </p>
+                    <span class="cs-tag">Support</span>
                 </li>
                 <li class="cs-item">
                     <span class="cs-number">05</span>
@@ -152,6 +167,7 @@ tags: "sitemap" # content/content.json will make sure that all pages in content/
                     <p class="cs-item-text">
                         Included and monitored. Nothing to set up or renew.
                     </p>
+                    <span class="cs-tag">Infrastructure</span>
                 </li>
                 <li class="cs-item">
                     <span class="cs-number">06</span>
@@ -159,6 +175,7 @@ tags: "sitemap" # content/content.json will make sure that all pages in content/
                     <p class="cs-item-text">
                         No page builder, no theme a hundred others are using.
                     </p>
+                    <span class="cs-tag">Build</span>
                 </li>
             </ul>
         </div>
@@ -192,6 +209,10 @@ tags: "sitemap" # content/content.json will make sure that all pages in content/
                 <p class="cs-text">
                     He started Shoreline Web Design from Richmond Beach because too many local businesses were stuck with slow, bloated sites they couldn't even edit themselves. He takes clients one at a time, so yours gets built properly and stays that way.
                 </p>
+                <!-- This section is a teaser for /about/ and had no route to it.
+                     Sits with the prose, ABOVE the stats' divider: below it the
+                     link read as a stray line orphaned under the spec row. -->
+                <a href="/about/" class="cs-link">Read the full story<span class="cs-arrow" aria-hidden="true">&rarr;</span></a>
                 <!-- The two halves of the section title: the engineer, and the
                      not-a-template-shop. Deliberately not the hero's stats. -->
                 <ul class="cs-ul">
@@ -443,7 +464,7 @@ tags: "sitemap" # content/content.json will make sure that all pages in content/
             </div>
             <!-- Arrival landing diorama. The ferry sails in and berths on scroll. -->
             <div class="cs-image-group">
-                <img class="cs-scene cs-light" src="/assets/images/service-area-scene.png" alt="Isometric illustration of the ferry landing across the Sound" width="1200" height="1064" loading="lazy" decoding="async">
+                <img class="cs-scene cs-light" src="/assets/images/service-area-scene.png" alt="Isometric illustration of the ferry landing across the Sound" width="1115" height="783" loading="lazy" decoding="async">
                 <img class="cs-scene cs-dark" src="/assets/images/service-area-scene-night.png" alt="Isometric illustration of the ferry landing across the Sound at night" width="1200" height="830" loading="lazy" decoding="async">
                 <!-- Night bloom (dark mode only) — see hero note. -->
                 <img class="cs-scene-glow cs-dark" src="/assets/images/service-area-scene-night.png" alt="" aria-hidden="true" width="1200" height="830" loading="lazy" decoding="async">

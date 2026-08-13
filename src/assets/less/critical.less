@@ -67,9 +67,28 @@
 
         .cs-title {
             font-family: var(--headerFont);
-            /* 34px - 58px — floor fits "actually deserves." on a 360px phone;
-               ceiling fits it inside the 580px column above */
-            font-size: clamp(2.125rem, 5vw, 4rem);
+            /* ── The three-line rule ──
+               The h1 is hard-broken into exactly three lines by
+               <br class="cs-title-break">. Those breaks force where lines 1
+               and 2 end, but they cannot stop line 3, "actually deserves.",
+               from wrapping again if it outgrows its column — which turns the
+               heading into four lines and wrecks the hero.
+
+               In Sora 800 that string measures 8.98 x the font-size. So every
+               band below has to satisfy, with headroom:
+
+                   8.98 x font-size  <=  0.92 x column width
+
+               Check that inequality whenever either number changes, or when
+               the headline copy changes. It is the whole reason these clamps
+               are the values they are.
+
+               30px - 34px here. 9.4vw rather than a flat floor: at 320px the
+               column is only 288px and a 34px title needs 305px, so the
+               heading has always wrapped to four lines on the smallest phones.
+               This eases it to 30px at 320 and is back to the full 34px by
+               ~362px, so nothing changes on a normal handset. */
+            font-size: clamp(1.875rem, 9.4vw, 2.125rem);
             font-weight: 800;
             line-height: 1.15em;
             letter-spacing: -0.02em;
@@ -169,6 +188,7 @@
         }
 
         .cs-badge {
+            /* clears the reveal curtain (z-index 5) — see the note there */
             width: (78/16rem);
             height: (78/16rem);
             box-sizing: border-box;
@@ -183,7 +203,7 @@
             position: absolute;
             top: (-18/16rem);
             right: (-6/16rem);
-            z-index: 3;
+            z-index: 6;
             transform: rotate(8deg);
         }
 
@@ -198,6 +218,318 @@
     }
 }
 
+/*-- -------------------------- -->
+<---        Hero intro          -->
+<--- -------------------------- -*/
+
+/* A staggered entrance for the hero, on load.
+   ─────────────────────────────────────────
+   Modelled on webhero.co, but WITHOUT their inline flag script. Theirs adds a
+   class to <html> before paint, hides the hero with it, and reveals at runtime
+   — which needs a 2.4s failsafe timer to un-hide the page if that JS never
+   runs. Ours is pure CSS in the render-blocking critical sheet, so there is no
+   JS to fail and nothing can get stuck invisible.
+
+   ⚠ THE DIORAMA IS THE LCP ELEMENT, not the headline. Measured: median LCP
+   80ms on IMG.cs-scene. Chrome does not count an element at opacity 0 as
+   painted, so fading that image would push LCP out by the whole intro — on the
+   page that advertises a 95+ PageSpeed score. It therefore animates on
+   TRANSFORM ONLY; a translated element still paints, so LCP is untouched.
+   Everything else is text or buttons and can fade freely.
+
+   LONGHAND animation properties only, never the `animation` shorthand: the
+   ferry inside .cs-image-group runs on `animation-timeline`, and the shorthand
+   resets that to `auto` and kills it silently. Same rule as the ferry itself.
+
+   `backwards` fill, not `both`: it holds the opening frame through the delay
+   but leaves nothing applied afterwards, so no residual transform lingers on
+   .cs-image-group to form a containing block around the ferry. */
+@media only screen and (min-width: 0rem) {
+    @keyframes hero-in {
+        from {
+            opacity: 0;
+            transform: translateY((26/16rem));
+        }
+    }
+
+    /* ── the scene reveal ──
+       The scene appears to fade in, and does not move. It is NOT the image that
+       fades: a curtain the colour of the page sits over the tile and fades OUT.
+
+       This matters. .cs-scene is the LCP element, and fading the image itself
+       measured LCP at 1168ms against 72ms for a transform — Chrome withholds
+       the entry until the fade COMPLETES, so it costs the delay plus the whole
+       duration. Fading a curtain over the top leaves the image at full opacity
+       the entire time, so it is counted at first paint and the reveal is
+       visually identical.
+
+       The curtain must match whatever is behind the tile, so it is re-coloured
+       in the dark-mode block below. */
+    @keyframes hero-scene-reveal {
+        from {
+            opacity: 1;
+        }
+    }
+
+    /* ── the ferry docks in ──
+       The exact reverse of `ferry-depart` in root.less: on scroll the boat
+       leaves the berth and runs down-left to translate(-16%, 67%), fading out.
+       On load it starts there and sails back in.
+
+       It rides .cs-ferry-BOAT, not .cs-ferry. The outer element already carries
+       the scroll-driven departure, and two animations on one element both
+       writing `transform` means the last one wins — the scroll animation would
+       simply overwrite this at its 0% keyframe. Putting the arrival on the
+       inner box lets the two transforms compose instead of fight.
+
+       That move also rescales the offsets. .cs-ferry spans the whole scene, but
+       the boat is only 28% of its width, so the same visual distance is a much
+       larger percentage here:
+         x: -22% of scene W  ->  -22/28      = -79% of the boat
+         y: +17% of scene H  ->  +0.121W / 0.213W = +57% of the boat
+       (scene ratio 1.407, hull ratio 1.315.) */
+    @keyframes hero-ferry-dock {
+        0% {
+            transform: translate(-79%, 57%);
+            opacity: 0;
+        }
+        30% {
+            opacity: 1;
+        }
+        100% {
+            transform: translate(0, 0);
+            opacity: 1;
+        }
+    }
+
+    /* ── the two tuning knobs ──
+       On `body`, not #hero: #stats is a SIBLING section, and custom properties
+       inherit down the tree rather than sideways, so a hero-scoped variable is
+       invisible to it. critical.css only loads on the home page, which is the
+       only place either section exists.
+
+       Literal values, no (n/16rem) math: LESS passes custom-property values
+       through verbatim and the browser drops anything it can't parse — silently.
+
+       --intro-step is the gap between elements, --intro-dur is how long each
+       one takes. The run ends with the ferry docking at ~1.55s. Past about 1.5s
+       this stops reading as considered and starts reading as slow, and repeat
+       visitors feel it most. */
+    body {
+        --intro-dur: 0.9s;
+        --intro-step: 0.13s;
+    }
+
+    #hero {
+        .cs-topper,
+        .cs-title,
+        .cs-text,
+        .cs-button-group,
+        .cs-badge {
+            animation-duration: var(--intro-dur);
+            animation-fill-mode: backwards;
+            /* the settle the nav pill uses, so the motion feels like one system */
+            animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .cs-topper,
+        .cs-title,
+        .cs-text,
+        .cs-button-group,
+        /* the badge rides with the copy: it is small, decorative and not the
+           LCP candidate, so a plain fade is fine for it */
+        .cs-badge {
+            animation-name: hero-in;
+        }
+
+        /* the curtain — see hero-scene-reveal above */
+        .cs-image-group:after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-color: var(--warmSand);
+            /* Above the scene and the ferry, but BELOW the badge. The badge is
+               positioned at top:-18px/right:-6px, so it overhangs this box —
+               an inset:0 curtain covered part of it and left the rest showing,
+               cutting a hard edge straight across it. It reveals with its own
+               fade instead, timed to land as the curtain finishes. */
+            z-index: 5;
+            opacity: 0;
+            pointer-events: none;
+            animation-name: hero-scene-reveal;
+            /* shorter than the text fades: the ferry has to dock in AFTER the
+               curtain has cleared, or its journey happens behind it */
+            animation-duration: 0.5s;
+            animation-delay: calc(var(--intro-step) * 0.8);
+            animation-fill-mode: backwards;
+            animation-timing-function: ease-out;
+        }
+
+
+
+        .cs-topper {
+            animation-delay: 0s;
+        }
+        .cs-title {
+            animation-delay: var(--intro-step);
+        }
+        .cs-image-group {
+            /* half a beat behind the headline: the scene is the biggest object
+               on screen and leading with it flattens the stagger */
+            animation-delay: calc(var(--intro-step) * 1.5);
+        }
+        .cs-text {
+            animation-delay: calc(var(--intro-step) * 2);
+        }
+        .cs-button-group {
+            animation-delay: calc(var(--intro-step) * 3);
+        }
+
+        /* as the curtain finishes, so it appears on a revealed tile rather than
+           floating over a blank one */
+        .cs-badge {
+            animation-delay: 0.55s;
+        }
+
+        /* Longer and later than the rest: a boat crossing water should not move
+           at the speed of a fading paragraph. ease-out so it decelerates into
+           the slip, the same landing the #service-area arrival uses.
+           Longhand only — the shorthand would reset animation-timeline, which
+           is what drives the departure on the parent. */
+        .cs-ferry-boat {
+            animation-name: hero-ferry-dock;
+            animation-duration: 0.95s;
+            /* starts as the curtain finishes clearing (~0.6s), so the boat is
+               seen for its whole approach instead of appearing mid-course.
+               0.95s rather than 1.5s: the full crossing read as a wait. */
+            animation-delay: 0.6s;
+            animation-fill-mode: backwards;
+            animation-timing-function: ease-out;
+        }
+    }
+
+    /* The stats strip sits in the opening viewport, so it belongs to the same
+       entrance rather than waiting for a scroll. It picks up where the hero's
+       buttons leave off (3 steps) and sweeps left to right a half-step apart,
+       landing with the ferry at ~1.55s. Not an LCP candidate — the diorama is —
+       so a plain fade is fine here. */
+    #stats .cs-item {
+        animation-name: hero-in;
+        animation-duration: var(--intro-dur);
+        animation-fill-mode: backwards;
+        animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+
+        &:nth-of-type(1) {
+            animation-delay: calc(var(--intro-step) * 3.5);
+        }
+        &:nth-of-type(2) {
+            animation-delay: calc(var(--intro-step) * 4);
+        }
+        &:nth-of-type(3) {
+            animation-delay: calc(var(--intro-step) * 4.5);
+        }
+        &:nth-of-type(4) {
+            animation-delay: calc(var(--intro-step) * 5);
+        }
+    }
+
+    /* Reduced motion: nothing animates in. Handled here rather than by refusing
+       to add a flag class, which is how webhero.co does it — a media query
+       needs no script at all. */
+    @media (prefers-reduced-motion: reduce) {
+        #hero {
+            .cs-topper,
+            .cs-title,
+            .cs-text,
+            .cs-button-group,
+            .cs-badge,
+            .cs-ferry-boat {
+                animation-name: none;
+            }
+
+            /* The curtain must not be left sitting over the scene. This has to
+               stay INSIDE #hero — nested one level deeper it compiles to
+               `#stats .cs-item .cs-image-group:after`, which matches nothing,
+               and the reveal keeps running under reduced motion. */
+            .cs-image-group:after {
+                animation-name: none;
+                display: none;
+            }
+        }
+
+        #stats .cs-item {
+            animation-name: none;
+        }
+    }
+}
+
+/* Small tablet / large phone - 600px — the hero pairs up HERE, not at 1024
+   ─────────────────────────────────────────────────────────────────────────
+   The hero used to have no tablet treatment at all: it jumped from the
+   `min-width: 0` block straight to the 64rem one, so everything from 768 to
+   1023 ran the mobile layout on a canvas up to 1000px wide. The content stayed
+   capped at 600px however far the container grew, which left it stranded in
+   the middle with 84px of dead air at 768 rising to 212px at 1023, and made
+   the section 1157px tall — against 652px one pixel later at 1024.
+
+   Narrowing the container to match the scene was tried first and was the wrong
+   fix: it tidied the alignment but kept every bit of the empty margin, because
+   the empty margin WAS the complaint.
+
+   So the row layout starts at 37.5rem instead. The hero now stacks ONLY on
+   portrait phones and is paired at every width above that, which is one fewer
+   layout state to reason about and leaves no band where a narrow column floats
+   in an empty field.
+
+   Proportions here are 50/50 via `flex: 1 1 0` rather than the fixed 580px
+   content cap the desktop block uses. That cap is what makes the pairing
+   impossible at this size: 736px of usable width minus 580 leaves the diorama
+   118px. An even split gives both sides ~269px at 600, ~349px at 768 and
+   ~470px at 1023.
+
+   BOUNDED on purpose. As an unbounded `min-width: 37.5rem` block these flex
+   values would cascade into the 64rem block below — which sets the content's
+   max-width but never resets `flex-basis` — and hold the desktop hero at 50/50
+   instead of its intended proportions. A bounded range can't leak. */
+@media only screen and (min-width: 37.5rem) and (max-width: 63.999rem) {
+    #hero {
+        .cs-container {
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .cs-content {
+            /* even split; no fixed cap, or the scene gets the remainder */
+            flex: 1 1 0;
+            max-width: none;
+        }
+
+        .cs-image-group {
+            flex: 1 1 0;
+            max-width: var(--sceneWidth);
+            margin: 0;
+        }
+
+        .cs-title {
+            /* 24px - 45px. See the three-line rule in the base block.
+               Here the column is an even split, roughly 0.475vw - 16, so at
+               600px it is only 269px wide. 4.8vw put a 29px title in it,
+               needing 260px against a 247px budget — on the edge of wrapping
+               to four lines. 4.4vw gives 26px at 600 and 45px at 1023, inside
+               budget at both ends. */
+            font-size: clamp(1.5rem, 4.4vw, 2.8125rem);
+        }
+
+        .cs-text {
+            /* 15px - 18px. The column is only ~269px at 600, where the base
+               18px gave 24-character lines. */
+            font-size: clamp(0.9375rem, 1.9vw, 1.125rem);
+            margin-bottom: (28/16rem);
+        }
+    }
+}
+
 /* Desktop - 1024px */
 @media only screen and (min-width: 64rem) {
     #hero {
@@ -208,10 +540,26 @@
         }
 
         .cs-content {
-            /* narrowed so the scene isn't squeezed by flex-shrink; sized to
-               hold "actually deserves." on one line at the cap below */
+            /* The cap is FLUID rather than a flat 580px: at 1024 a fixed 580
+               took 572 of the 941 available and left the diorama 369px, so the
+               scene got SMALLER crossing up from the tablet layout (469 → 369)
+               — wider window, smaller illustration.
+
+               46vw, not 44: see the three-line rule in the base block. At 44vw
+               the column grew at 0.44vw while the 5vw title needed 0.449vw, so
+               "actually deserves." outgrew its column and wrapped to a fourth
+               line everywhere from 1040 to 1310 — the whole laptop range. The
+               column has to widen at least as fast as the type inside it. */
             flex: 1 1 auto;
-            max-width: (580/16rem);
+            max-width: clamp(20rem, 46vw, 36.25rem);
+        }
+
+        .cs-title {
+            /* 34px - 60px. Was 5vw/64px, which needed 575px of the 580px
+               column — 5px of slack, and only above 1310. 4.7vw against the
+               46vw column above holds ~8% headroom at every width from 1024
+               up, so the heading stays three lines. */
+            font-size: clamp(2.125rem, 4.7vw, 3.75rem);
         }
 
         .cs-image-group {
@@ -238,6 +586,11 @@
     body.dark-mode {
         #hero {
             background-color: var(--dark);
+
+            /* the reveal curtain has to match whatever sits behind the tile */
+            .cs-image-group:after {
+                background-color: var(--dark);
+            }
 
             .cs-title {
                 color: var(--bodyTextColorWhite);
@@ -307,9 +660,15 @@
         position: relative;
         z-index: 10;
 
+        /* Was `width: 70%`, which made this the only section on the page that
+           insets proportionally: at 1024 it gave a 694px container against the
+           hero's 992, squeezing four cards into 152px each. A flat cap keeps
+           the tiles chunky at the top end (1100 is within 2px of what 70% used
+           to yield at 1600) while letting the strip line up with the hero and
+           the sections below it everywhere narrower. */
         .cs-container {
-            width: 70%;
-            max-width: (1280/16rem);
+            width: 100%;
+            max-width: (1100/16rem);
             margin: auto;
         }
 
@@ -337,9 +696,15 @@
             display: flex;
             flex-direction: column;
             align-items: flex-start;
-            /* keep figure + label together as one centred block */
-            justify-content: center;
-            gap: (10/16rem);
+            /* Figure pinned to the top, label pinned to the floor, slack in
+               between — the spec-sheet structure the #services cards use.
+               Anchoring both ends is also what keeps the four figures on one
+               baseline AND the four footer rules on one line; centring the
+               block did neither. */
+            justify-content: flex-start;
+            /* spacing is set as padding either side of the rule below, so the
+               figure and the label sit symmetrically around it */
+            gap: 0;
             transition: transform 0.3s, box-shadow 0.3s;
 
             &:hover {
@@ -348,10 +713,29 @@
             }
         }
 
+        /* mono category above the figure — the top tier of category / value /
+           note. Deliberately no coral tick: the figure below is already this
+           card's accent, and two coral marks in a 160px tile is one too many. */
+        .cs-kicker {
+            font-family: var(--monoFont);
+            font-size: (11/16rem);
+            font-weight: 500;
+            line-height: 1em;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--pugetBlue);
+            opacity: 0.75;
+            /* 14px - 18px */
+            margin-bottom: clamp(0.875rem, 1.8vw, 1.125rem);
+        }
+
         .cs-number {
             font-family: var(--headerFont);
-            /* 40px - 60px — big enough to carry the tile on its own */
-            font-size: clamp(2.5rem, 5.5vw, 3.75rem);
+            /* 44px - 76px. Pushed up from 40-60: in a stat strip the figure
+               IS the design, and two rounds of corner glyphs proved that
+               anything parked beside it competes rather than adds. Scale is
+               what gives this section presence. */
+            font-size: clamp(2.75rem, 6.5vw, 4.75rem);
             font-weight: 800;
             line-height: 1em;
             letter-spacing: -0.02em;
@@ -364,9 +748,24 @@
             /* Reserve one numeral's worth of height and sit the figure on its
                floor, so every label in the row starts at the same y even if a
                figure ever wraps or runs shorter. Matches the font-size above. */
-            min-height: clamp(2.5rem, 5.5vw, 3.75rem);
+            min-height: clamp(2.75rem, 6.5vw, 4.75rem);
             display: flex;
             align-items: flex-end;
+            /* ── the spec rule, carried by the FIGURE, not the label ──
+               It was first hung off the label with `margin-top: auto` and a
+               reserved height. That aligned the figures but let the rules
+               staircase: at 320 and 360 the tiles are ~134px wide and two of
+               the labels wrap past any reserve, so their boxes grew upward and
+               the four rules landed 16px apart.
+               Anchored to the figure it is self-aligning — the figure block is
+               a fixed height at the top of every card, so the rule cannot
+               drift no matter how the label wraps underneath it. */
+            width: 100%;
+            box-sizing: border-box;
+            /* 14px - 18px */
+            padding-bottom: clamp(0.875rem, 1.8vw, 1.125rem);
+            /* inset shadow, never a border — house rule */
+            box-shadow: inset 0 -1px 0 rgba(27, 42, 56, 0.1);
         }
 
         .cs-label {
@@ -375,21 +774,22 @@
             font-weight: 500;
             line-height: 1.35em;
             color: var(--pugetBlue);
+            /* Sits directly under the rule that .cs-number carries, matching
+               its padding so the hairline is centred in the gap. No reserved
+               height and no `margin-top: auto` here: the figure above is what
+               fixes the rule's position, so the label is free to wrap to
+               however many lines it needs without moving anything. */
+            padding-top: clamp(0.875rem, 1.8vw, 1.125rem);
         }
     }
 }
 
-/* Tablet - 768px */
+/* Tablet - 768px — all four in one row.
+   This was 64rem, which left a 2x2 block sitting under a hero that had already
+   gone side by side. With the container above no longer clamped to 70% there
+   is room for the row here: 736px of container gives 173px cards, wider than
+   the 152px they used to get at 1024. Below 768 they stay 2x2. */
 @media only screen and (min-width: 48rem) {
-    #stats {
-        .cs-card-group {
-            grid-template-columns: repeat(2, 1fr);
-        }
-    }
-}
-
-/* Desktop - 1024px */
-@media only screen and (min-width: 64rem) {
     #stats {
         .cs-card-group {
             grid-template-columns: repeat(4, 1fr);
@@ -409,9 +809,16 @@
                 box-shadow: none;
             }
 
-            .cs-label {
+            .cs-label,
+            .cs-kicker {
                 color: var(--rainGray);
             }
+
+            /* the spec rule has to flip for the raised --medium tile */
+            .cs-number {
+                box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.12);
+            }
+
         }
     }
 }

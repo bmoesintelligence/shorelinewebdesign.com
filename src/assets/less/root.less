@@ -117,6 +117,10 @@
 	#tiers .cs-item-featured,
 	#service-area .cs-item-home,
 	#projects .cs-panel-dark,
+	/* the collapsed nav's menu panel — navy in light mode, darker in dark mode.
+	   No-op on desktop, where the wrapper is an unstyled div and nothing inside
+	   it reads --coralText. */
+	#cs-navigation .cs-ul-wrapper,
 	body.dark-mode {
 		/* Small coral TEXT on dark needs the full 4.5:1, so it has to be this
 		   light. Toppers, links, labels, "read it". */
@@ -588,6 +592,21 @@
 /* Mobile - 1023px */
 @media only screen and (max-width: 1023.5px) {
     body {
+        /* ── surfaces of the collapsed nav ──
+           Two of them, and they are deliberately different: the bar is warm
+           white like the desktop pill, the open menu is an ink-navy band. That
+           is the site's own tan → navy rhythm rather than the kit's white
+           dropdown, and it gives the panel enough weight to read as an object
+           in its own right. body.dark-mode re-points all five below.
+
+           Colours only — LESS emits custom-property values VERBATIM, so no
+           (n/16rem) math is allowed in here. */
+        --navBarSurface: #fff;
+        --navBarHairline: rgba(27, 42, 56, 0.16);
+        --navMenuSurface: var(--inkNavy);
+        --navMenuHairline: rgba(255, 255, 255, 0.1);
+        --navMenuText: var(--bodyTextColorWhite);
+
         &.cs-open {
             overflow: hidden;
         }
@@ -596,6 +615,14 @@
             #cs-navigation {
                 /* 53px, same height as the cs-top-container */
                 transform: translateY(-3.3125rem);
+
+                /* ...then nudge the pill back down so it keeps a little air
+                   above it once the town band is gone, instead of jamming
+                   against the viewport top. Desktop does the same at 18px,
+                   against its larger resting gap. */
+                .cs-container {
+                    transform: translateY((8/16rem));
+                }
             }
         }
     }
@@ -604,26 +631,31 @@
         width: 100%;
         /* prevents padding from affecting height and width */
         box-sizing: border-box;
-        background-color: #fff;
-        box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+        /* transparent so .cs-container can float as a rounded pill, exactly the
+           way it does on desktop. The surface and shadow moved onto it. */
+        background-color: transparent;
         position: fixed;
         z-index: 10000;
         transition: transform 0.3s;
 
+        /* Invisible on purpose. The kit painted this a dark blurred scrim over
+           the page; that's gone, but the ELEMENT has to stay — it is the
+           tap-outside-to-close target. nav.js closes the menu when a click
+           lands on #cs-navigation itself, and since the header is only as tall
+           as the bar, this pseudo is the only thing covering the page below it
+           that reports as the header. Delete it and the menu can only be
+           dismissed from the toggle. */
         &:before {
             content: "";
             width: 100%;
             height: 0vh;
-            background: rgba(0, 0, 0, 0.6);
-            opacity: 0;
+            background: transparent;
             display: block;
             position: absolute;
             top: 100%;
             right: 0;
             z-index: -1100;
-            transition: height 0.5s, opacity 0.5s;
-            -webkit-backdrop-filter: blur(10px);
-            backdrop-filter: blur(10px);
+            transition: height 0.5s;
         }
 
         &.cs-active {
@@ -637,21 +669,35 @@
                 transition-delay: 0.15s;
             }
 
-            .cs-li {
+            .cs-li,
+            .cs-mobile-actions {
                 opacity: 1;
                 transform: translateY(0);
             }
         }
 
         .cs-container {
-            width: 100%;
+            /* auto, not 100% — a block-level flex box fills the line on its own,
+               and 100% plus side margins would overflow the viewport */
+            width: auto;
             /* prevents padding from affecting height and width */
             box-sizing: border-box;
-            padding: (20/16rem) (16/16rem);
+            /* the desktop signature, carried down: a floating rounded pill with
+               side gutters rather than an edge-to-edge slab */
+            margin: (10/16rem) (10/16rem) 0;
+            padding: (10/16rem) (10/16rem) (10/16rem) (16/16rem);
+            background-color: var(--navBarSurface);
+            border-radius: (18/16rem);
+            /* navy-tinted, matching the desktop pill — the kit's grey
+               rgba(149,157,165,…) reads cold against warm sand */
+            box-shadow: 0 (8/16rem) (24/16rem) rgba(27, 42, 56, 0.16);
             display: flex;
             justify-content: flex-end;
             align-items: center;
+            gap: (4/16rem);
             position: relative;
+            /* so the scrolled-state nudge above animates */
+            transition: transform 0.3s;
         }
 
         .cs-logo {
@@ -677,22 +723,52 @@
         }
 
         .cs-nav {
+            order: 3;
+        }
+
+        /* Supersedes the 768px rule for the whole collapsed range. It was
+           absolutely positioned at a magic `right: 90px` measured against the
+           old full-bleed bar; now that .cs-container is an inset pill with its
+           own padding, that offset drifts. Laid out in the flex row instead:
+           logo · theme · toggle, which is the order it already appeared in. */
+        #dark-mode-toggle {
+            width: (44/16rem);
+            height: (44/16rem);
+            margin: 0;
             order: 2;
+            position: relative;
+            right: auto;
+            bottom: auto;
         }
 
         .cs-toggle {
-            width: (46/16rem);
-            height: (46/16rem);
+            width: (44/16rem);
+            height: (44/16rem);
             margin: 0 0 0 auto;
-            background-color: var(--primary);
+            /* A quiet hairline at rest, not the kit's solid coral square. Coral
+               is rationed to one accent and in the collapsed nav that accent is
+               the CTA at the foot of the menu — so the toggle spends it only on
+               the open state, where it means something.
+
+               `inset` box-shadow, never `border`: a real border would grow this
+               button's box and shift the bar's alignment. */
+            background-color: transparent;
             border: none;
+            border-radius: (12/16rem);
+            box-shadow: inset 0 0 0 1px var(--navBarHairline);
             display: flex;
             justify-content: center;
             align-items: center;
-            transition: transform 0.6s;
+            transition: transform 0.6s, background-color 0.3s, box-shadow 0.3s;
 
             &.cs-active {
                 transform: rotate(180deg);
+                background-color: var(--primary);
+                box-shadow: inset 0 0 0 1px var(--primary);
+
+                .cs-line {
+                    background-color: #fff;
+                }
             }
         }
 
@@ -724,8 +800,11 @@
         .cs-line {
             width: 100%;
             height: 2px;
-            background-color: #fafbfc;
+            /* ink on the light bar; the .cs-active block above flips them white
+               once the button itself goes coral */
+            background-color: var(--headerColor);
             border-radius: 2px;
+            transition: background-color 0.3s;
             position: absolute;
             left: 50%;
             transform: translateX(-50%);
@@ -776,16 +855,30 @@
 /* Small Desktop - 1024px */
 @media only screen and (max-width: 1023.5px) {
     #cs-navigation {
+        /* An ink-navy card hanging below the floating bar. It is positioned
+           against .cs-container (the only positioned ancestor), so `left: 0`
+           and `width: 100%` line its edges up with the pill above it for free —
+           no second set of gutters to keep in sync. */
         .cs-ul-wrapper {
             width: 100%;
             height: auto;
-            padding-bottom: (48/16rem);
-            background-color: #fff;
+            padding: (8/16rem) 0;
+            background-color: var(--navMenuSurface);
+            border-radius: (18/16rem);
+            /* clips the rows' hover fill to the rounded corners */
             overflow: hidden;
-            box-shadow: inset rgba(0, 0, 0, 0.2) 0px 8px 24px;
+            box-shadow: 0 (14/16rem) (34/16rem) rgba(11, 20, 28, 0.34);
             opacity: 0;
             position: absolute;
-            top: 100%;
+            /* a small gap, so the panel reads as a separate card rather than an
+               extension of the bar.
+
+               Literal rem, NOT the (n/16rem) house style: LESS does not evaluate
+               that math inside calc(), it emits it verbatim and the browser
+               drops the whole declaration — silently, with no build error. Same
+               trap as the custom-property one at the top of this file. The
+               desktop dropdown at .cs-drop-ul does it the same way. */
+            top: calc(100% + 0.5rem);
             left: 0;
             z-index: -1;
             transform: scaleY(0);
@@ -796,19 +889,23 @@
         .cs-ul {
             width: 100%;
             height: auto;
-            max-height: 65vh;
+            max-height: 62vh;
             margin: 0;
-            padding: (48/16rem) 0 0 0;
-            overflow: scroll;
+            padding: 0;
+            box-sizing: border-box;
+            /* auto, not scroll — `scroll` reserves a permanent gutter on some
+               platforms and adds a horizontal bar under the rows */
+            overflow-y: auto;
             display: flex;
             flex-direction: column;
             justify-content: flex-start;
-            align-items: center;
-            gap: (20/16rem);
+            /* stretch, not center: each row is a full-width target now */
+            align-items: stretch;
+            gap: 0;
         }
 
         .cs-li {
-            text-align: center;
+            text-align: left;
             list-style: none;
             width: 100%;
             margin-right: 0;
@@ -816,6 +913,14 @@
             /* transition from these values */
             transform: translateY(-4.375rem);
             transition: transform 0.6s, opacity 0.9s;
+
+            /* Hairline rules between the destinations. `inset` box-shadow, not
+               border — house rule, and it also keeps every row exactly the same
+               height as its neighbours. The CTA row is excluded so the rule
+               above it reads as the divider between links and actions. */
+            &:not(.cs-li-cta) {
+                box-shadow: inset 0 -1px 0 var(--navMenuHairline);
+            }
 
             &:nth-of-type(1) {
                 transition-delay: 0.05s;
@@ -859,38 +964,179 @@
         }
 
         .cs-li-link {
-            /* 16px - 24px */
-            font-size: clamp(1rem, 2.5vw, 1.5rem);
+            font-size: (17/16rem);
             line-height: 1.2em;
             text-decoration: none;
             margin: 0;
-            padding: 0.25rem;
-            color: var(--headerColor);
-            display: inline-block;
+            /* prevents padding from affecting height and width */
+            box-sizing: border-box;
+            /* the whole row is the target — 47px tall, clear of the 44px touch
+               minimum, instead of a small centred word floating in a big gap */
+            padding: (15/16rem) (20/16rem);
+            color: var(--navMenuText);
+            display: block;
             position: relative;
+            transition: color 0.25s, background-color 0.25s;
 
             &:before {
-                /* active state underline */
+                /* Active-page marker: a coral rule down the leading edge. The
+                   kit drew a full-width underline, which was sized for a
+                   centred inline link — on a full-row block it struck a line
+                   right across the panel. A fill, so --coral (not --coralText). */
                 content: "";
-                width: 100%;
-                height: 1px;
-                background: currentColor;
+                width: (3/16rem);
+                height: 100%;
+                background: var(--coral);
                 opacity: 1;
                 display: none;
                 position: absolute;
-                bottom: (-2/16rem);
+                top: 0;
                 left: 0;
             }
 
             &.cs-active {
-                color: var(--primary);
+                /* small coral text on a navy surface — the panel is in the
+                   --coralText override list at the top of this file, so this
+                   resolves to the pale variant in both themes */
+                color: var(--coralText);
                 &:before {
                     display: block;
                 }
             }
 
             &:hover {
-                color: var(--primary);
+                color: #fff;
+                background-color: rgba(255, 255, 255, 0.05);
+            }
+        }
+
+        /* The desktop Free Redesign pill. It lives inside .cs-ul, which can't
+           put it on a row with the "Get started" button (that sits outside
+           .cs-nav entirely), so the collapsed menu restates both in
+           .cs-mobile-buttons below and this one stands down. */
+        .cs-li-cta {
+            display: none;
+        }
+
+        /* ── the foot of the menu ──
+           Sits outside .cs-ul on purpose — see the note in header.html — which
+           also parks it below the list's overflow scroll, so the actions stay
+           put when a long menu scrolls. */
+        .cs-mobile-actions {
+            padding: (14/16rem) (20/16rem) (10/16rem);
+            opacity: 0;
+            transform: translateY(-4.375rem);
+            transition: transform 0.6s, opacity 0.9s;
+            transition-delay: 0.3s;
+        }
+
+        .cs-mobile-buttons {
+            display: flex;
+            align-items: stretch;
+            gap: (10/16rem);
+        }
+
+        .cs-mobile-ghost,
+        .cs-mobile-cta {
+            font-family: var(--bodyFont);
+            /* 13px - 15px. Both labels have to survive two-up at 320px, where
+               each button is ~125px wide; below 13px they wrap. */
+            font-size: clamp(0.8125rem, 3.4vw, 0.9375rem);
+            font-weight: 600;
+            line-height: (44/16rem);
+            text-align: center;
+            text-decoration: none;
+            /* the kit uppercases .cs-button-solid globally; every button on this
+               site is sentence case, which is why neither of these is one */
+            text-transform: none;
+            white-space: nowrap;
+            /* prevents padding from affecting height and width */
+            box-sizing: border-box;
+            padding: 0 (12/16rem);
+            border-radius: (40/16rem);
+            display: block;
+            /* equal halves — `0` basis, so the longer label doesn't claim more
+               room than the shorter one */
+            flex: 1 1 0;
+            min-width: 0;
+            transition: color 0.25s, background-color 0.25s;
+        }
+
+        /* the lead magnet keeps the bordered-pill treatment it has on desktop */
+        .cs-mobile-ghost {
+            /* inset, so its height matches the solid button beside it exactly —
+               a 2px border would make it 4px taller */
+            box-shadow: inset 0 0 0 2px var(--coral);
+            color: var(--navMenuText);
+
+            &:hover {
+                color: #fff;
+                background-color: rgba(194, 69, 46, 0.18);
+            }
+        }
+
+        .cs-mobile-cta {
+            background-color: var(--primary);
+            color: #fff;
+
+            &:hover {
+                background-color: var(--coralDark);
+            }
+        }
+
+        /* ── social row ──
+           Same circle-and-hairline idiom as the footer's .cs-social (this panel
+           is a navy surface too), just smaller — it's a footnote to the menu,
+           not a section of it. Rendered by components/socials.html, which emits
+           nothing at all while no profile URL is set. */
+        .cs-mobile-socials {
+            margin: (14/16rem) 0 0;
+            padding: (12/16rem) 0 0;
+            list-style: none;
+            /* hairline separating the actions from the icons — inset shadow on
+               the top edge, never a border */
+            box-shadow: inset 0 1px 0 var(--navMenuHairline);
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: (8/16rem);
+        }
+
+        /* 32px, smaller than the footer's 38px — this row is a footnote to the
+           menu, not a section of it. Sized so a FULL set of six profiles fits
+           on one line even at 320px (6×32 + 5×8 = 232, against 260 of usable
+           width); at 34px with a 10px gap the last one wrapped alone, which
+           reads as a mistake rather than a wrap. Clear of the 24px WCAG 2.2
+           target minimum. Re-check the arithmetic if a seventh is ever added. */
+        .cs-social {
+            width: (32/16rem);
+            height: (32/16rem);
+            border-radius: 50%;
+            box-shadow: inset 0 0 0 1px var(--navMenuHairline);
+            color: var(--rainGray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            /* don't let a long row squeeze the circles into ovals */
+            flex: none;
+            transition: color 0.3s, box-shadow 0.3s, background-color 0.3s;
+
+            svg {
+                width: (14/16rem);
+                height: (14/16rem);
+                display: block;
+            }
+
+            &:hover {
+                color: #fff;
+                background-color: var(--coral);
+                box-shadow: inset 0 0 0 1px var(--coral);
+            }
+
+            /* the panel is navy, so the default UA outline is nearly invisible */
+            &:focus-visible {
+                outline: 2px solid var(--coralAccent);
+                outline-offset: 2px;
             }
         }
     }
@@ -908,6 +1154,9 @@
             position: relative;
 
             .cs-dropdown-toggle {
+                /* fills the row like the anchors beside it, rather than
+                   shrink-wrapping the word "Services" */
+                width: 100%;
                 text-align: inherit;
                 /* Reset default button styles */
                 background: none;
@@ -921,8 +1170,10 @@
             &.cs-active {
                 .cs-drop-ul {
                     height: auto;
-                    margin: (12/16rem) 0 0 0;
-                    padding: (12/16rem) 0;
+                    /* flush against the toggle above it — the recess IS the
+                       separation, so a margin would leave a navy seam */
+                    margin: 0;
+                    padding: (4/16rem) 0;
                     opacity: 1;
                     visibility: visible;
                 }
@@ -939,28 +1190,40 @@
         }
 
         .cs-drop-icon {
-            width: (15/16rem);
+            width: (14/16rem);
             height: auto;
             position: absolute;
             top: 50%;
-            right: (-20/16rem);
-            transform: translateY(-50%);
+            /* inside the row's right padding now that the toggle is full-width;
+               it used to hang outside a shrink-wrapped, centred button */
+            right: (20/16rem);
+            transform: translateY(-50%) rotate(0deg);
+            transition: transform 0.3s;
         }
 
+        .cs-dropdown.cs-active .cs-drop-icon {
+            transform: translateY(-50%) rotate(180deg);
+        }
+
+        /* A recess inside the navy panel, not the kit's solid coral block. A
+           coral fill this large was the loudest thing anywhere on the site and
+           broke the one-accent rule; darkening the surface reads as "nested"
+           without spending the accent at all. */
         .cs-drop-ul {
             width: 100%;
             height: 0;
             margin: 0;
             padding: 0;
-            background-color: var(--primary);
+            background-color: rgba(0, 0, 0, 0.22);
+            box-shadow: inset 0 1px 0 var(--navMenuHairline), inset 0 -1px 0 var(--navMenuHairline);
             overflow: hidden;
             opacity: 0;
             display: flex;
             visibility: hidden;
             flex-direction: column;
             justify-content: flex-start;
-            align-items: center;
-            gap: (12/16rem);
+            align-items: stretch;
+            gap: 0;
             transition: padding 0.3s, margin 0.3s, height 0.3s, opacity 0.3s, visibility 0.3s;
         }
 
@@ -970,9 +1233,15 @@
 
         .cs-li-link {
             &.cs-drop-link {
-                /* 14px - 16px */
-                font-size: clamp(0.875rem, 2vw, 1.25rem);
-                color: #fff;
+                font-size: (15/16rem);
+                /* indented under its parent, so the hierarchy is legible from
+                   the alignment rather than from a second surface colour */
+                padding: (12/16rem) (20/16rem) (12/16rem) (34/16rem);
+                color: var(--rainGray);
+
+                &:hover {
+                    color: #fff;
+                }
             }
         }
     }
@@ -1336,6 +1605,12 @@
             line-height: (44/16rem);
             margin-left: (8/16rem);
         }
+
+        /* the collapsed nav's restated CTA — .cs-nav-button is the real one up
+           here, so this must not also render */
+        .cs-mobile-actions {
+            display: none;
+        }
     }
 }
                                 
@@ -1518,6 +1793,57 @@
 }
 
 /*-- -------------------------- -->
+<---      Theme crossfade       -->
+<--- -------------------------- -*/
+
+/* Present ONLY while the toggle is switching themes - dark.js adds this class
+   to <html> for ~360ms and then removes it (see the note in that file for why
+   it is not applied on load).
+
+   Colour properties only. `transition: all` would sweep up transform and
+   width, and for the length of the switch the nav pill would crawl instead of
+   springing. The pill is excluded below for the same reason, since a hover
+   landing inside the window would otherwise override its own easing.
+
+   No reduced-motion block needed here: dark.js never adds the class when
+   reduced motion is set, so these rules simply never match. */
+html.theme-anim,
+html.theme-anim *,
+html.theme-anim *::before,
+html.theme-anim *::after {
+    transition-property: background-color, border-color, color, fill, stroke, box-shadow;
+    transition-duration: 300ms;
+    transition-timing-function: ease;
+}
+
+/* the travelling nav pill keeps its own spring */
+html.theme-anim .cs-nav-pill,
+html.theme-anim .cs-nav-pill-fill {
+    transition-property: transform, width, height;
+}
+
+/*-- -------------------------- -->
+<---        Nav wordmark        -->
+<--- -------------------------- -*/
+
+/* All breakpoints */
+@media only screen and (min-width: 0rem) {
+    /* The wordmark was an <h3>; it is a <span> now (see header.html for why).
+       These values reproduce exactly what the h3 computed to — Sora 700 at
+       18.72px with a 1.2em line-height — since its size came from the browser's
+       default h3 sizing rather than from any rule of ours. Nothing shifts. */
+    #cs-navigation .cs-logo-text {
+        font-family: var(--headerFont);
+        /* 18.72px — the UA default h3 size this used to inherit */
+        font-size: (18.72/16rem);
+        font-weight: 700;
+        line-height: 1.2em;
+        margin: 0;
+        color: var(--headerColor);
+    }
+}
+
+/*-- -------------------------- -->
 <---   Navigation — Dark Mode   -->
 <--- -------------------------- -*/
 
@@ -1553,9 +1879,8 @@
                 background-color: var(--navBandSurface);
             }
 
-            /* the wordmark is an <h3> — pin it to the warm cream the rest of the
-               bar uses, or the global dark heading rule takes it to #fff */
-            .cs-logo h3 {
+            /* pin the wordmark to the warm cream the rest of the bar uses */
+            .cs-logo-text {
                 color: var(--navSurfaceText);
             }
         }
@@ -1565,20 +1890,34 @@
 /* Mobile - 1023px */
 @media only screen and (max-width: 1023.5px) {
     body.dark-mode {
-        #cs-navigation {
-            background-color: var(--navSurface);
-            box-shadow: 0 (8/16rem) (24/16rem) rgba(0, 0, 0, 0.45);
+        /* Re-points the five collapsed-nav tokens declared on `body` in the
+           Mobile Navigation section. Nothing below sets a surface directly, so
+           the bar and the menu can't drift apart.
 
-            .cs-ul-wrapper {
-                background-color: var(--navSurface);
-                box-shadow: inset 0 (8/16rem) (24/16rem) rgba(0, 0, 0, 0.35);
+           The bar takes the elevated slate; the menu goes a step DARKER than it
+           rather than lighter. In light mode the two are separated by tan vs
+           navy, and on a dark page the only way to keep that separation is to
+           push them apart in the other direction — matching both to --navSurface
+           merged them into one slab as soon as the menu opened. */
+        --navBarSurface: var(--navSurface);
+        --navBarHairline: rgba(255, 255, 255, 0.16);
+        --navMenuSurface: var(--navBandSurface);
+        --navMenuHairline: var(--navHairline);
+        --navMenuText: var(--navSurfaceText);
+
+        #cs-navigation {
+            /* on a dark page a drop shadow alone doesn't separate a panel — the
+               lit top edge is what does the work (same reasoning as desktop) */
+            .cs-container {
+                box-shadow: var(--navShadow), inset 0 0 0 1px var(--navHairline);
             }
 
-            /* Top-level items only. .cs-drop-link carries .cs-li-link too, and
-               the mobile dropdown panel is coral — its white text already reads
-               on either theme, so it must not be recoloured here. */
-            .cs-ul > .cs-li > .cs-li-link {
-                color: var(--navSurfaceText);
+            .cs-ul-wrapper {
+                box-shadow: var(--navShadow), inset 0 0 0 1px var(--navHairline);
+            }
+
+            .cs-line {
+                background-color: var(--navSurfaceText);
             }
         }
     }
@@ -2015,6 +2354,26 @@
 }
 
 /* Tablet - 768px */
+/* Below 768px — the site links go two-up.
+   Stacked one per row they were six rows of a single short word each, which is
+   most of why the footer ran past 1200px tall on a phone. Two columns halves
+   that and fills the width the column already occupies.
+
+   Row-major (`grid-template-columns`), not column-major via `grid-auto-flow`:
+   a seventh link then just adds a fourth row, where fixed rows plus column
+   flow would silently spill into a third column and overflow. Bounded, because
+   at 48rem the nav becomes the narrow middle column of the three-up wrapper
+   below and has to go back to a single stack. */
+@media only screen and (max-width: 47.999rem) {
+    #footer {
+        .cs-nav-ul {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: (14/16rem) (20/16rem);
+        }
+    }
+}
+
 @media only screen and (min-width: 48rem) {
     #footer {
         .cs-wrapper {
@@ -2079,6 +2438,38 @@
         display: block;
     }
 
+    /* ── day/night scenes must occupy the same box ──
+       The night renders are not re-colours of the day ones; they are separate
+       artwork on different canvases (the night hero adds a moon, which is why
+       it is proportionally taller):
+
+           hero          1183x841 (1.407)  vs night 1200x883 (1.359)
+           service-area  1115x783 (1.424)  vs night 1200x830 (1.446)
+
+       With `width: 100%; height: auto` that meant equal width, unequal height —
+       the hero rendered 429px light and 444px dark, so toggling the theme
+       shoved everything below it down 15px. Invisible before the crossfade was
+       added; obvious once colours started transitioning.
+
+       Pinning aspect-ratio to the DAY canvas fixes the height. `fill` rather
+       than `contain`: the ferry berths on percentages of .cs-image-group, whose
+       height is the image's height, so the artwork has to keep filling the box
+       edge to edge or the berth stops landing on the slip. `fill` stretches the
+       night render by ~3.4% vertically, which is imperceptible and keeps the
+       art-to-box mapping 1:1 — verified against the dock in both themes.
+
+       If the night scenes are ever re-exported at the day proportions, these
+       two rules become no-ops and can go. */
+    #hero .cs-scene {
+        aspect-ratio: 1183 / 841;
+        object-fit: fill;
+    }
+
+    #service-area .cs-scene {
+        aspect-ratio: 1115 / 783;
+        object-fit: fill;
+    }
+
     /* Night bloom over the whole diorama (dark mode only). A blurred, boosted
        copy of the night scene, screen-composited so the lit windows and lamps
        spill soft light while the near-black water and roofs add nothing. Laid
@@ -2130,8 +2521,14 @@
         pointer-events: none;
         /* the hull and its glow copy share this width so they stay aligned */
         --hull-w: 28%;
-        /* desktop only */
-        display: none;
+        /* Every width. The berth is a percentage of .cs-image-group, which the
+           ferry sits inside, and the scene holds a constant 1.407 ratio from
+           320 up — so the boat docks correctly at any size with no per-
+           breakpoint tuning. It used to be gated to 1024+, which meant the
+           stacked phone layout showed an empty slip even though the scene is
+           BIGGER there (567px at 599) than at the pairing breakpoint (264px
+           at 600). */
+        display: block;
     }
 
     /* boat box, sized to the hull (against the scene, not the viewport, so it
@@ -2212,15 +2609,11 @@
     }
 }
 
-/* Desktop - 1024px */
-@media only screen and (min-width: 64rem) {
-    .cs-ferry {
-        display: block;
-    }
-}
-
 @supports (animation-timeline: view()) {
-    @media only screen and (min-width: 64rem) {
+    /* No width gate. These are scroll-driven, so they run on the compositor
+       and cost nothing per frame; the resting berth below is what shows when
+       the timeline is unsupported or motion is reduced. */
+    @media only screen and (min-width: 0rem) {
         /* NB: never the `animation` shorthand — it resets animation-duration
            (to 0s) and animation-timeline (to auto), killing this silently. */
         .cs-ferry {
@@ -2293,6 +2686,8 @@
 @media (prefers-reduced-motion: reduce) {
     .cs-ferry,
     .cs-ferry-glow,
+    /* .cs-ferry-boat itself carries the hero's dock-in intro (critical.less) */
+    .cs-ferry-boat,
     .cs-ferry-boat:before,
     .cs-scene-glow {
         animation: none !important;

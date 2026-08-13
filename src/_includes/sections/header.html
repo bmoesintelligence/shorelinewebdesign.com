@@ -21,7 +21,12 @@
         <!--Nav Logo-->
         <a href="/" class="cs-logo" aria-label="Shoreline Web Design home">
             <!--<img src="https://csimg.nyc3.cdn.digitaloceanspaces.com/Images/Logos/consulting-logo.svg" alt="Shoreline Web Design" width="197" height="43" decoding="async">-->
-            <h3>Shoreline Web Design</h3>
+            <!-- A SPAN, not a heading. As an <h3> this put a stray heading in the
+                 document outline BEFORE the page's <h1>, so anyone navigating by
+                 heading landed on the logo first. It's a link label, not a
+                 section title. Styled in root.less to match exactly what the h3
+                 rendered as, so nothing moves. -->
+            <span class="cs-logo-text">Shoreline Web Design</span>
         </a>
         <!--Navigation List-->
         <nav class="cs-nav" aria-label="main navigation">
@@ -88,6 +93,36 @@
                         </a>
                     </li>
                 </ul>
+                <!-- Collapsed-nav actions: the two CTAs side by side, then the
+                     social row. Both buttons are RESTATED here rather than reused
+                     from above — Free Redesign lives in .cs-ul as .cs-li-cta and
+                     "Get started" is the .cs-nav-button outside .cs-nav, so there is
+                     no arrangement of the desktop markup that puts them in one row.
+                     Both desktop originals are hidden below 1024px, and this block
+                     is hidden at 1024px and up, so only ever one pair renders.
+
+                     Deliberately OUTSIDE .cs-ul, and deliberately NOT carrying
+                     .cs-li-link or .cs-nav-button: nav-pill.js collects its targets
+                     with `.cs-ul > .cs-li > .cs-li-link` and grabs the button with
+                     `querySelector(".cs-nav-button")`. Either class here would hand
+                     the desktop pill a display:none element to measure, or steal the
+                     button reference outright. Sitting outside .cs-ul also keeps the
+                     pair clear of the list's max-height overflow scroll. -->
+                <div class="cs-mobile-actions">
+                    <div class="cs-mobile-buttons">
+                        <!-- Capitalisation matches the desktop nav item verbatim; see
+                             the note in the summary about "Free Redesign" vs the
+                             site's sentence-case button rule. Not changed here
+                             unilaterally, because it would make the two disagree. -->
+                        <a href="/free-redesign/" class="cs-mobile-ghost">Free Redesign</a>
+                        <a href="/contact/" class="cs-mobile-cta">Get started</a>
+                    </div>
+                    {# Same component the footer uses, so the icons can't drift.
+                       Renders nothing at all unless a profile URL is set. #}
+                    {% set socialsClass = "cs-mobile-socials" %}
+                    {% set socialsLabel = "Shoreline Web Design elsewhere" %}
+                    {% include "components/socials.html" %}
+                </div>
             </div>
         </nav>
         <a href="/contact/" class="cs-button-solid cs-nav-button">Get Started</a>

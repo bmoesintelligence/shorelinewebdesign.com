@@ -12,6 +12,30 @@
 
 const darkModeToggle = document.getElementById("dark-mode-toggle");
 
+//
+//    Theme crossfade
+//
+//    A class on <html> for the length of the switch, and only for that. It is
+//    NOT applied inside enableDarkMode/disableDarkMode, because those also run
+//    on every page load via detectColorScheme() - transitioning colours there
+//    would make the saved theme visibly fade in on arrival.
+//
+//    Scoping it to the click is also what keeps the transition off everything
+//    else: a permanent `transition: background-color` on * is the usual way
+//    this is done and it makes every hover and focus feel sluggish forever.
+//
+const THEME_ANIM_MS = 300;
+let themeAnimTimer;
+
+function crossfadeTheme() {
+	if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+	const root = document.documentElement;
+	root.classList.add("theme-anim");
+	clearTimeout(themeAnimTimer);
+	// a little longer than the CSS duration so nothing is cut mid-fade
+	themeAnimTimer = setTimeout(() => root.classList.remove("theme-anim"), THEME_ANIM_MS + 60);
+}
+
 // Helper functions to toggle dark mode
 function enableDarkMode() {
 	document.body.classList.add("dark-mode");
@@ -52,6 +76,9 @@ detectColorScheme();
 // Add event listener to the dark mode button toggle
 if (darkModeToggle) {
 	darkModeToggle.addEventListener("click", () => {
+		// Arm the crossfade BEFORE the class flips, so the transition is already
+		// in place when the colours change. Only here, never in detectColorScheme.
+		crossfadeTheme();
 		// On click, toggle the theme based on the current saved value
 		localStorage.getItem("theme") === "light" ? enableDarkMode() : disableDarkMode();
 	});
