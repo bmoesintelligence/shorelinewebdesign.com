@@ -450,36 +450,27 @@ service:
     <!--                   Proof                      -->
     <!-- ============================================ -->
 
-    <!-- PLACEHOLDER CONTENT. There are no real testimonials or project
-         screenshots yet, so the quote is labelled as illustrative and the
-         screenshots are empty CSS frames rather than stock photos or broken
-         images. Replace both with real client work before launch, and swap
-         .cs-work-shot for a <picture> using the getUrl shortcode. -->
-    <section id="proof">
-        <div class="cs-container">
-            <div class="cs-content">
-                <span class="cs-topper">Sample, not yet real</span>
-                <h2 class="cs-title">Found by the people nearby<span class="cs-accent">.</span></h2>
-            </div>
-            <blockquote class="cs-quote">
-                <p class="cs-quote-text">&ldquo;Describe what changed in enquiries or calls, in the client's own words.&rdquo;</p>
-                <cite class="cs-quote-cite">Illustrative example &middot; not a real client quote</cite>
-            </blockquote>
-            <ul class="cs-work-group">
-                <li class="cs-work-item">
-                    <div class="cs-work-shot" aria-hidden="true"><span>project screenshot</span></div>
-                    <h3 class="cs-work-title">Project name</h3>
-                    <p class="cs-work-text">One line on what the site had to do, and what changed after it launched.</p>
-                </li>
-                <li class="cs-work-item">
-                    <div class="cs-work-shot" aria-hidden="true"><span>project screenshot</span></div>
-                    <h3 class="cs-work-title">Project name</h3>
-                    <p class="cs-work-text">One line on what the site had to do, and what changed after it launched.</p>
-                </li>
-            </ul>
-            <a href="/work/" class="cs-link">See the work<span class="cs-arrow" aria-hidden="true">&rarr;</span></a>
-        </div>
-    </section>
+    {#
+      PROOF — removed 2026-08-13, before launch. Restore from git history once
+      there is a REAL client quote and two real projects to put here.
+
+      This page's version was headed "Found by the people nearby".
+
+      It held an invented testimonial ("Illustrative example - not a real
+      client quote") over two empty project cards reading "Project name".
+      Labelled or not, a quote in a blockquote with a citation reads as a
+      testimonial to anyone skimming, and invented social proof is deceptive
+      under the FTC's endorsement rules regardless of the disclaimer. It also
+      undercuts the one thing this site actually sells: proof over promises.
+
+      Real proof exists on /work/ - two live client sites - and real reviews
+      will come from the Google Business Profile. Point here when they do.
+
+      Styles remain in services.less under #proof, so restoring is markup only.
+      Note #compare above is navy and #faq-1236 and #related below are both
+      tan, as this section was: removing it took three tan sections in a row
+      down to two. Anything that goes back in this slot should be navy.
+    #}
 
     <!-- ============================================ -->
     <!--                Price band                    -->

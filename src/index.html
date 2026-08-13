@@ -418,31 +418,28 @@ tags: "sitemap" # content/content.json will make sure that all pages in content/
     </section>
 
 
-    <!-- ============================================ -->
-    <!--                  Reviews                     -->
-    <!-- ============================================ -->
+    {#
+      REVIEWS — removed 2026-08-13, before launch. Restore from git history
+      (the commit that removed it) once there are REAL reviews to put here.
 
-    <section id="reviews">
-        <div class="cs-container">
-            <!-- Deliberately understated: these are illustrative, not real testimonials. -->
-            <h2 class="cs-title">// sample quotes, shown for illustration</h2>
-            <ul class="cs-card-group">
-                <li class="cs-item">
-                    <blockquote class="cs-item-text">&ldquo;Our site loads instantly now.&rdquo;</blockquote>
-                    <cite class="cs-name">Sample, Edmonds</cite>
-                </li>
-                <li class="cs-item">
-                    <blockquote class="cs-item-text">&ldquo;Felt like working with an engineer, not a salesperson.&rdquo;</blockquote>
-                    <cite class="cs-name">Sample, Shoreline</cite>
-                </li>
-                <li class="cs-item">
-                    <blockquote class="cs-item-text">&ldquo;$150/month, no surprises.&rdquo;</blockquote>
-                    <cite class="cs-name">Sample, Lynnwood</cite>
-                </li>
-            </ul>
-        </div>
-    </section>
+      It held three invented quotes attributed to "Sample, Edmonds",
+      "Sample, Shoreline" and "Sample, Lynnwood" under a mono heading saying
+      they were illustrative. The label was not enough: to anyone skimming,
+      three quotes with a name and a town read as three testimonials. Invented
+      social proof is deceptive under the FTC's endorsement rules whether or
+      not it carries a disclaimer, and it is the exact opposite of what this
+      site sells.
 
+      Having no reviews is a fine state for a new business. Faking them is not.
+      The real ones will come from the Google Business Profile - it is where
+      reviews live and the two live clients on /work/ could leave them.
+
+      Its styles are still in local.less under #reviews, so restoring is markup
+      only. Note that #work and #service-area are BOTH tan: this section was
+      also tan, so removing it took three tan sections in a row down to two.
+      Whatever goes back in this slot should be a navy band, or the rhythm
+      needs rethinking.
+    #}
 
     <!-- ============================================ -->
     <!--                Service Area                  -->
