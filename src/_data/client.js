@@ -62,6 +62,19 @@ module.exports = {
     //   3. ONE of instagram / facebook, not both. Facebook for the Shoreline and
     //                  Richmond Beach neighbourhood groups; Instagram to show
     //                  before/afters of the free redesigns.
+    //   4. github    - credibility for the "hand-coded, no page builder" claim,
+    //                  but only if the profile is CURATED. A dentist in Edmonds
+    //                  will never click it; a technical buyer will, and a wall
+    //                  of abandoned repos argues against you.
+    //   5. x         - lowest value on this list for a LOCAL service business.
+    //                  Reach for small accounts is poor and the buyers aren't
+    //                  there. Only worth it if you already post.
+    //
+    // Considered and deliberately NOT included: Nextdoor and Yelp. Both are
+    // listing/review sites rather than social profiles, so this stays one kind
+    // of thing. If either is ever wanted, note that Yelp's burst mark is in the
+    // git history of components/socials.html but the Nextdoor one was only an
+    // approximation - use their real brand asset, not a generic house glyph.
     socials: {
         // Google Business Profile, created 2026-08-03.
         //
@@ -75,9 +88,60 @@ module.exports = {
         // (shem / shndl / kgs / utm_source). Those were stripped - they are
         // per-visit noise and have no business in a `sameAs` claim.
         google: "https://www.google.com/search?kgmid=/g/11zdcz3557",
-        linkedin: "",
+
+        // GitHub profile, added 2026-08-13. Real and live. Backs the
+        // "hand-coded, no page builder" claim - the repos are the receipts.
+        github: "https://github.com/bmoesintelligence",
+
+        // Unset profiles cost nothing while empty - the icon, the <li> and the
+        // `sameAs` entry are each guarded, so an unset profile emits no markup
+        // anywhere. NEVER park a placeholder URL here: these render as real
+        // footer links AND as `sameAs` claims in the structured data, so a
+        // dummy value is an outbound dead link on all 17 pages and a false
+        // statement to Google about which profiles are this business.
+        // (example.com placeholders sat here until 2026-08-13 and were doing
+        // exactly that.) See the ordering note above for which to create next.
+
+        // Decided 2026-08-13:
+        //   linkedin  - PERSONAL profile, not a Company Page. The credential
+        //               being verified is Bryan's, and a one-person shop's
+        //               Company Page with single-digit followers is weaker
+        //               proof than a real career history. Link Shoreline from
+        //               the profile's Experience section instead.
+        //   facebook  - CHOSEN over Instagram. The Shoreline / Richmond Beach
+        //               neighbourhood groups are where the buyers actually
+        //               are; Instagram needs a stream of before/afters that
+        //               won't exist until the free-redesign gallery has work
+        //               in it. Revisit then - but still only ONE of the two.
+        //   instagram - deliberately not created. See above.
+        //   x         - deliberately skipped. Lowest value on this list for a
+        //               local service business: poor organic reach for small
+        //               accounts and the buyers aren't on it.
+        // Personal profile, added 2026-08-13. NO trailing slash - the `/` form
+        // 301s and the bare form is a 200, and a `sameAs` should name the
+        // destination rather than a redirect to it (same reasoning as the
+        // stripped tracking params on the Google URL above).
+        linkedin: "https://www.linkedin.com/in/bryanallenmoore",
+
+        // Page (not a personal profile), created 2026-08-13. Verified public to
+        // a logged-out crawler - og:title is "Shoreline Web Design" and the
+        // og:description matches the site's own positioning.
+        //
+        // `shorelinewebdesign` was taken, hence the `wa` suffix. Keep the `www.`
+        // form: the bare facebook.com host 301s to it.
+        //
+        // NO ADDRESS AND NO HOURS on this Page, deliberately. Facebook couples
+        // opening hours to a physical address, and this is a service-area
+        // business run from home - the same reason `address.street`, `phone` and
+        // the map link are absent from this file and the GBP is registered as
+        // service-area. A Page address is public, renders on a map, and is
+        // scraped into data brokers within weeks, which is not undone by
+        // deleting it later. Hours live as plain text in the Page bio instead.
+        // Don't trade the address for a Page feature; none of them are worth it.
+        facebook: "https://www.facebook.com/shorelinewebdesignwa",
+
         instagram: "",
-        facebook: "",
+        x: "",
     },
 
     // Passing the isProduction variable for use in HTML templates
