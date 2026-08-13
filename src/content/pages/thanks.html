@@ -1,0 +1,66 @@
+---
+title: "Message sent"
+description: "Your message reached Shoreline Web Design. Bryan replies himself, usually within one business day."
+permalink: "/thanks/"
+# Reached only by submitting the contact form (its action points here). Kept out
+# of collections so content.json's `tags: sitemap` doesn't list it, and noindex'd
+# below: a confirmation page has nothing to offer a search visitor, and an
+# indexed one gets found out of context by people who never sent anything.
+eleventyExcludeFromCollections: true
+---
+
+{% extends "layouts/base.html" %}
+
+{% block head %}
+
+    <link rel="stylesheet" href="/assets/css/thanks.css">
+    <meta name="robots" content="noindex">
+
+{% endblock %}
+
+{% block body %}
+
+    {#
+      Confirmation for the CONTACT form. /thanks/redesign/ is the free-redesign
+      equivalent; both share thanks.css. The copy here repeats the promises the
+      contact page already makes - one business day, no sequence, no list - and
+      invents nothing beyond them. If those promises change on /contact/, change
+      them here in the same commit or the site contradicts itself at exactly the
+      moment someone is deciding whether to trust it.
+    #}
+    <section id="thanks">
+        <div class="cs-container">
+            <span class="cs-topper">Message sent</span>
+            <h1 class="cs-title">Thanks, I've got it<span class="cs-accent">.</span></h1>
+            <p class="cs-text">
+                Your message came straight to my inbox. No queue, no account manager.
+            </p>
+
+            <ul class="cs-next">
+                <li class="cs-next-li">
+                    <span class="cs-next-num">01</span>
+                    <p class="cs-next-text"><strong>I read it myself.</strong> Every message comes to me directly.</p>
+                </li>
+                <li class="cs-next-li">
+                    <span class="cs-next-num">02</span>
+                    <p class="cs-next-text"><strong>You'll hear back within one business day.</strong> If it's the weekend, that means Monday.</p>
+                </li>
+                <li class="cs-next-li">
+                    <span class="cs-next-num">03</span>
+                    <p class="cs-next-text"><strong>Then scope and a fixed price</strong>, before any work starts. No sales call you have to sit through, no follow-up sequence, no mailing list.</p>
+                </li>
+            </ul>
+
+            <a href="/" class="cs-button-solid">Back to home</a>
+
+            <!-- Somewhere to go while waiting. Same idea as the 404's shortcut row. -->
+            <ul class="cs-links">
+                <li><a class="cs-link" href="/work/">See the work</a></li>
+                <li><a class="cs-link" href="/pricing/">Pricing</a></li>
+                <li><a class="cs-link" href="/blog/">Blog</a></li>
+                <li><a class="cs-link" href="/free-redesign/">Free homepage redesign</a></li>
+            </ul>
+        </div>
+    </section>
+
+{% endblock %}

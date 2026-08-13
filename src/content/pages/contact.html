@@ -71,7 +71,10 @@ eleventyComputed:
                 </p>
             </div>
 
-            <form class="cs-form" name="contact" method="POST" data-netlify="true" netlify-honeypot="bot-field">
+            {# action= is what sends a submitter to our own confirmation page.
+               Without it Netlify shows its generic branded success page, which
+               is a jarring end to the only conversion action on the site. #}
+            <form class="cs-form" name="contact" method="POST" action="/thanks/" data-netlify="true" netlify-honeypot="bot-field">
                 <input type="hidden" name="form-name" value="contact">
                 <p class="cs-honeypot">
                     <label>Leave this empty <input name="bot-field"></label>

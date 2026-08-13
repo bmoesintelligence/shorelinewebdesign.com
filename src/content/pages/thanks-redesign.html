@@ -1,0 +1,68 @@
+---
+title: "Redesign requested"
+description: "Your free homepage redesign request reached Shoreline Web Design. Bryan designs it himself and sends it over, no strings."
+permalink: "/thanks/redesign/"
+# Reached only by submitting the free-redesign form (its action points here).
+# Excluded from collections and noindex'd for the same reason as /thanks/.
+eleventyExcludeFromCollections: true
+---
+
+{% extends "layouts/base.html" %}
+
+{% block head %}
+
+    <link rel="stylesheet" href="/assets/css/thanks.css">
+    <meta name="robots" content="noindex">
+
+{% endblock %}
+
+{% block body %}
+
+    {#
+      Confirmation for the FREE REDESIGN form. Shares thanks.css with /thanks/.
+
+      The three steps below are the same three on /free-redesign/ (#redesign-steps),
+      restated from the other side of the form. Deliberately NO TIMELINE: that page
+      doesn't promise one, so promising one here would be inventing a commitment on
+      Bryan's behalf at the moment expectations get set. If a turnaround is ever
+      committed to, it goes on /free-redesign/ first and then here.
+
+      The "keep it either way" line is the whole pitch of the lead magnet and is
+      worth repeating after submission, which is exactly when someone starts
+      wondering what they just signed up for.
+    #}
+    <section id="thanks">
+        <div class="cs-container">
+            <span class="cs-topper">Redesign requested</span>
+            <h1 class="cs-title">Your redesign is on my desk<span class="cs-accent">.</span></h1>
+            <p class="cs-text">
+                Nothing else is needed from you. Here's what happens from here.
+            </p>
+
+            <ul class="cs-next">
+                <li class="cs-next-li">
+                    <span class="cs-next-num">01</span>
+                    <p class="cs-next-text"><strong>I look at what you've got</strong> and design a new homepage around your business, not a template.</p>
+                </li>
+                <li class="cs-next-li">
+                    <span class="cs-next-num">02</span>
+                    <p class="cs-next-text"><strong>I send the design over</strong> for you to look at. I'll email you if I need anything to get started.</p>
+                </li>
+                <li class="cs-next-li">
+                    <span class="cs-next-num">03</span>
+                    <p class="cs-next-text"><strong>The design is yours either way.</strong> Want the real, built version? $150 a month, everything included. If not, keep the design and we're square.</p>
+                </li>
+            </ul>
+
+            <a href="/" class="cs-button-solid">Back to home</a>
+
+            <ul class="cs-links">
+                <li><a class="cs-link" href="/work/">See the work</a></li>
+                <li><a class="cs-link" href="/pricing/">What's included</a></li>
+                <li><a class="cs-link" href="/blog/">Blog</a></li>
+                <li><a class="cs-link" href="/contact/">Ask me something</a></li>
+            </ul>
+        </div>
+    </section>
+
+{% endblock %}

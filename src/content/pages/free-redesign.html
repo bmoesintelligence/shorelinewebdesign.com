@@ -89,7 +89,11 @@ faqs:
                 </div>
             </div>
 
-            <form class="cs-form" name="free-redesign" method="POST" data-netlify="true" netlify-honeypot="bot-field">
+            {# action= sends submitters to our own confirmation rather than
+               Netlify's generic branded one. Note it is /thanks/redesign/, NOT
+               /thanks/ - the two forms promise different things and the
+               confirmations differ accordingly. #}
+            <form class="cs-form" name="free-redesign" method="POST" action="/thanks/redesign/" data-netlify="true" netlify-honeypot="bot-field">
                 <input type="hidden" name="form-name" value="free-redesign">
                 <p class="cs-honeypot">
                     <label>Leave this empty <input name="bot-field"></label>
