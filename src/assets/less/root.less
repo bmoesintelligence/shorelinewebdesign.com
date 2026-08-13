@@ -2438,6 +2438,23 @@ html.theme-anim .cs-nav-pill-fill {
         display: block;
     }
 
+    /* The hero day scene is wrapped in a <picture> so it can ship avif/webp with
+       a png fallback (it has alpha, so jpeg is not an option). `display: contents`
+       makes the wrapper generate NO box, leaving the <img> a direct layout child
+       of .cs-image-group exactly as it was before the wrapper existed.
+
+       That is load-bearing, not tidiness: .cs-image-group's height IS the image's
+       height, and the ferry berths on percentages of that box, so a stray inline
+       line-box would move where the boat docks — silently, and only at some widths.
+
+       The wrapper also carries .cs-light rather than the <img>. The global toggle
+       above sets `display` on whichever element holds that class, and `display:
+       none !important` beats this rule, so dark mode still hides the whole
+       <picture> rather than leaving an empty wrapper behind. */
+    .cs-scene-pic {
+        display: contents;
+    }
+
     /* ── day/night scenes must occupy the same box ──
        The night renders are not re-colours of the day ones; they are separate
        artwork on different canvases (the night hero adds a moon, which is why

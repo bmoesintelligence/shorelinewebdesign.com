@@ -64,7 +64,42 @@ tags: "sitemap" # content/content.json will make sure that all pages in content/
                 <!-- day + night, toggled by the kit's .cs-light/.cs-dark (see root.less).
                      Only one ever displays; the night hull is lazy so it isn't fetched
                      until dark mode. Mirrors the ferry's swap in components/ferry.html. -->
-                <img class="cs-scene cs-light" src="/assets/images/hero-scene.png" alt="Isometric illustration of the Edmonds waterfront and ferry terminal" width="1183" height="841" decoding="async" fetchpriority="high">
+                {#
+                  DAY SCENE — the LCP element on this page, so it is the one image
+                  on the site whose bytes actually move a Core Web Vital.
+
+                  It was a raw 185KB PNG at its full 1183px, served to every device.
+                  --sceneWidth caps this box at 40rem/640px, and PSI's mobile device
+                  renders it around 380 CSS px, so a phone was fetching roughly three
+                  times the pixels it could show. That was ~1.7s of a 3.2s mobile LCP.
+
+                  PNG was chosen because the diorama has ALPHA and the house rule says
+                  "transparency: PNG fallback, never JPEG". The JPEG half is right;
+                  the PNG-only part was wrong - AVIF and WebP both carry alpha, so the
+                  fallback chain can be avif -> webp -> png and every current browser
+                  gets the small one. The <img> keeps the untouched PNG as its src, so
+                  a browser with neither format still renders exactly what it did.
+
+                  The wrapper carries `cs-light`, not the <img>, because the global
+                  toggle in root.less sets `display` on whatever holds that class -
+                  left on the <img>, the <picture> would stay in the layout in dark
+                  mode. `.cs-scene-pic { display: contents }` then keeps the wrapper
+                  from generating a box at all, which matters more here than usual:
+                  .cs-image-group's height IS this image's height, and the ferry
+                  berths on percentages of that box. An extra inline line-box would
+                  silently move where the boat docks.
+                #}
+                <picture class="cs-light cs-scene-pic">
+                    <source
+                        type="image/avif"
+                        sizes="(min-width: 64rem) 640px, (min-width: 37.5rem) 50vw, 100vw"
+                        srcset="{% getUrl "/assets/images/hero-scene.png" | resize({ width: 640 }) | avif %} 640w, {% getUrl "/assets/images/hero-scene.png" | resize({ width: 800 }) | avif %} 800w, {% getUrl "/assets/images/hero-scene.png" | resize({ width: 1183 }) | avif %} 1183w">
+                    <source
+                        type="image/webp"
+                        sizes="(min-width: 64rem) 640px, (min-width: 37.5rem) 50vw, 100vw"
+                        srcset="{% getUrl "/assets/images/hero-scene.png" | resize({ width: 640 }) | webp %} 640w, {% getUrl "/assets/images/hero-scene.png" | resize({ width: 800 }) | webp %} 800w, {% getUrl "/assets/images/hero-scene.png" | resize({ width: 1183 }) | webp %} 1183w">
+                    <img class="cs-scene" src="/assets/images/hero-scene.png" alt="Isometric illustration of the Edmonds waterfront and ferry terminal" width="1183" height="841" decoding="async" fetchpriority="high">
+                </picture>
                 <img class="cs-scene cs-dark" src="/assets/images/hero-scene-night.png" alt="Isometric illustration of the Edmonds waterfront and ferry terminal at night" width="1200" height="883" loading="lazy" decoding="async">
                 <!-- Night bloom (dark mode only): a blurred, boosted copy of the night
                      scene, screen-composited so the lit windows and lamps spill glow
