@@ -1,7 +1,8 @@
 {
-	"name": "intermediate-website-kit-less",
-	"version": "2.0.1",
-	"description": "The official CodeStitch Intermediate kit, featuring 11ty, Decap CMS and LESS - all set up for you! Perfect for websites of all sizes.",
+	"name": "shorelinewebdesign.com",
+	"version": "1.0.0",
+	"description": "Marketing site for Shoreline Web Design. Static Eleventy build, hand-written LESS, no page builder.",
+	"private": true,
 	"main": "index.js",
 	"scripts": {
 		"watch:cms": "npx decap-server",
@@ -17,15 +18,12 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/CodeStitchOfficial/Intermediate-Website-Kit-LESS.git"
+		"url": "git+https://github.com/bmoesintelligence/shorelinewebdesign.com.git"
 	},
 	"keywords": [],
-	"author": "",
-	"license": "ISC",
-	"bugs": {
-		"url": "https://github.com/CodeStitchOfficial/Intermediate-Website-Kit-LESS/issues"
-	},
-	"homepage": "https://github.com/CodeStitchOfficial/Intermediate-Website-Kit-LESS#readme",
+	"author": "Bryan Moore",
+	"license": "UNLICENSED",
+	"homepage": "https://www.shorelinewebdesign.com",
 	"dependencies": {
 		"@11ty/eleventy": "^3.1.6",
 		"@codestitchofficial/eleventy-plugin-minify": "^1.1.3",

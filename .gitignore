@@ -2,3 +2,8 @@
 .cache
 node_modules
 public
+.DS_Store
+
+# Internal working notes - LOCAL ONLY. This repo is public; keep it that way.
+# Back these up to a private repo or gist, never this one.
+CLAUDE.md
