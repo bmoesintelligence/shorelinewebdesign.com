@@ -24,9 +24,11 @@
 module.exports = {
     name: "Shoreline Web Design",
 
-    // NOTE: this mailbox does not exist yet. The nav, the footer and the footer
-    // CTA all already advertise it, so set up free email forwarding at Porkbun
-    // (hello@ -> personal inbox) before launch, or anyone who writes in bounces.
+    // LIVE as of 2026-08-13. Porkbun email forwarding, hello@ -> the personal
+    // Gmail. Verified in DNS: MX points at fwd1/fwd2.porkbun.com and there is an
+    // SPF record (`include:_spf.porkbun.com`), which is what keeps forwarded mail
+    // out of spam. It is FORWARDING, not a mailbox - replies come from the
+    // personal address unless a send-as identity is set up in Gmail.
     email: "hello@shorelinewebdesign.com",
 
     // Not a mailing address - just the locality used in page titles
