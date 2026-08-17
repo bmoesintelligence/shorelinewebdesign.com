@@ -43,9 +43,23 @@
   {%- if url -%}{%- set sameAs = sameAs.concat([url]) -%}{%- endif -%}
 {%- endfor -%}
 
-{#- There is deliberately NO "logo" key below. The only logo file in the repo is
-    the kit's unused logo-black.svg, and pointing schema at it would assert
-    someone else's mark as this business's. Add one when a real logo exists.
+{#- "logo" was deliberately absent until 2026-08-16: the only logo file in the
+    repo was the kit's unused logo-black.svg, and pointing schema at it would
+    have asserted someone else's mark as this business's. A real logo now exists,
+    so it is set below.
+
+    It points at the 512px manifest icon rather than the wordmark SVG: Google
+    wants a raster for an organisation logo, at least 112x112, and prefers it
+    square-ish and uncropped. The wordmark is 4.13:1 and would be letterboxed.
+
+    "image" is the share card (og-card.png), which is the right shape for a
+    preview but the wrong shape for a logo - hence both keys, pointing at
+    different files on purpose.
+
+    ⚠ Both files must actually exist. These keys pointed at og-default.jpg until
+    that file was archived, which left every page's structured data asserting a
+    404. If an image is renamed, grep this file.
+
     (Note: a Nunjucks comment cannot live INSIDE the object literal - it is an
     expression, not a template block. That is why this sits out here.) -#}
 {%- set business = {
@@ -54,7 +68,8 @@
   "name": client.name,
   "url": base + "/",
   "email": client.email,
-  "image": base + "/assets/images/og-default.jpg",
+  "image": base + "/assets/images/og-card.png",
+  "logo": base + "/assets/favicons/web-app-manifest-512x512.png",
   "description": "Hand-coded websites for small businesses across the North Sound, built and supported by one engineer.",
   "founder": { "@type": "Person", "name": "Bryan Moore" },
   "address": {
@@ -142,7 +157,7 @@
     "mainEntityOfPage": base + page.url,
     "headline": title,
     "description": description,
-    "image": base + (image or "/assets/images/og-default.jpg"),
+    "image": base + (image or "/assets/images/og-card.png"),
     "datePublished": date | isoDate,
     "dateModified": date | isoDate,
     "author": { "@type": "Person", "name": author or "Bryan Moore" },
