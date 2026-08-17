@@ -3,35 +3,32 @@
  *
  *   node scripts/build-favicons.js
  *
- * EVERY output comes from one source: design/logo/swd_logo_white_black_bg.svg,
- * the light mark on a solid tile. One artwork for the tab icon, the iOS touch
- * icon and the manifest icons, so the brand is identical everywhere it appears.
+ * TWO sources, because the tab and the app icons have incompatible constraints.
  *
- * Three separate constraints all pointed at the tile, and each was measured
- * rather than assumed:
+ *   TAB ICONS  favicon.svg, favicon.ico, favicon-96x96.png
+ *              from swd_icon_black_blue.svg - transparent, no tile, recoloured.
  *
- *   1. CHROME'S DARK TAB STRIP. The transparent two-tone variant
- *      (swd_icon_black_blue.svg) is the prettier icon and was tried first, but
- *      #1b2a38 on #202124 is very nearly invisible. Rendering it against both
- *      chrome colours at 32px made that immediate.
+ *   APP ICONS  apple-touch-icon.png, web-app-manifest-{192,512}.png
+ *              from swd_logo_white_black_bg.svg - opaque navy tile.
  *
- *   2. iOS COMPOSITES THE TOUCH ICON onto a tile of its own, so a transparent
- *      one renders as a solid black square. It must be opaque regardless.
+ * Why they can't share artwork:
  *
- *   3. MASKABLE CROPPING. site.webmanifest declares purpose:"maskable", which
- *      lets Android crop to a circle or squircle, so the content has to sit
- *      inside the middle ~80%. Measured: this variant has a 12.3% margin and
- *      survives; the tan-background variant has 1.5% and would lose its outer
- *      ring, which is why it is not used.
+ *   A tab icon sits directly on browser chrome, which may be white or near
+ *   black, and the brand navy #1b2a38 measures 14.6:1 against white but 1.10:1
+ *   against Chrome's #202124 - invisible. A tile fixes that but reads heavy in
+ *   a dark tab, so the tab icons stay transparent and are recoloured instead
+ *   (see the note above `tab` below).
  *
- * The tan tile (swd_logo_black_tan_bg.svg) also reads fine on both chromes and
- * is a one-line swap here if the navy ever feels too heavy in a tab - but it
- * would need padding added before it could serve as a maskable icon.
+ *   App icons cannot be transparent at all. iOS composites the touch icon onto
+ *   its own tile and renders a transparent one as a solid black square, and
+ *   site.webmanifest declares purpose:"maskable", so Android crops to a circle
+ *   or squircle and needs both opacity and a safe margin. Measured: the
+ *   white-on-navy variant leaves a 12.3% margin and survives the crop; the
+ *   tan-background variant leaves 1.5% and would lose its outer ring, which is
+ *   why that one is unused.
  *
- * Colour normalisation: the exports use pure `black` and pure `white`. Both are
- * remapped to the site's tokens - inkNavy #1b2a38 and the warm off-white
- * #faf7ef - so the tab icon matches the site rather than sitting slightly
- * colder than everything around it.
+ * Everything is rendered from vector at each size, never downscaled from a
+ * larger raster.
  */
 const fs = require("fs");
 const path = require("path");
@@ -82,8 +79,33 @@ function buildIco(pngs) {
 (async () => {
     fs.mkdirSync(OUT, { recursive: true });
 
-    // swd_icon_black_blue.svg (transparent, two-tone) is deliberately NOT used -
-    // see the note on favicon.svg below for why the tile won.
+    // ── the tab icon: transparent, and LIFTED off the brand navy ─────────────
+    // Colours here are not the logo's. They can't be: measured against a white
+    // tab strip and Chrome's dark one (#202124), the brand navy #1b2a38 scores
+    // 14.6:1 and 1.10:1 - invisible in dark Chrome. The wave blue #2E4865 only
+    // reaches 1.71:1. Lifting to #3f6c9b / #6b98c2 clears 3:1 on BOTH, which is
+    // the minimum for a non-text graphic, while keeping the two-tone depth of
+    // Bryan's artwork.
+    //
+    // A tile was tried first and works, but reads heavy in a dark tab. This is
+    // the trade: a slightly off-brand blue that is always legible, versus exact
+    // brand colour that vanishes for every dark-mode user.
+    //
+    // The viewBox is also tightened to the artwork (the export has padding), so
+    // the mark fills the 16-32px box instead of floating in it.
+    const tab = Buffer.from(
+        fs.readFileSync(path.join(SRC, "swd_icon_black_blue.svg")).toString()
+            .replace(/viewBox="[^"]*"/, 'viewBox="7.6 32.15 154.7 154.7"')
+            .replace(/width="\d+"\s+height="\d+"/, "")
+            .replaceAll('fill="black"', 'fill="#3f6c9b"')
+            .replace(/fill="#2E4865"/gi, 'fill="#6b98c2"')
+    );
+
+    // ── the tile: only where opacity is REQUIRED ─────────────────────────────
+    // iOS composites the touch icon onto its own tile, so a transparent one
+    // renders as a solid black square. The manifest icons declare
+    // purpose:"maskable", so they get cropped to a circle or squircle and need
+    // both opacity and a safe margin.
     const tile = load("swd_logo_white_black_bg.svg", [
         ['fill="black"', `fill="${INK}"`],
         ['fill="white"', `fill="${WARM}"`],
@@ -93,29 +115,24 @@ function buildIco(pngs) {
     const note = (f) => written.push([f, fs.statSync(path.join(OUT, f)).size]);
 
     // ── scalable tab icon ────────────────────────────────────────────────────
-    // The TILE, not the transparent mark.
+    // Worth knowing if you ever try to make this theme-adaptive: a
+    // prefers-color-scheme block inside favicon.svg does NOT work in Chrome.
+    // Two reasons, both verified in a real browser:
     //
-    // The transparent navy version was tried first and fails in the real world:
-    // against Chrome's dark tab strip (#202124) a #1b2a38 mark is very nearly
-    // invisible. The obvious fix - prefers-color-scheme inside the SVG - does
-    // not save it either, for two compounding reasons:
-    //
-    //   1. Chrome picks favicon-96x96.png over favicon.svg, because a
-    //      size-matched raster wins over a vector. The SVG is never consulted.
+    //   1. Chrome never loads favicon.svg here. favicon-96x96.png is declared
+    //      first in base.html and a size-matched raster wins over a vector.
     //   2. Chrome's support for prefers-color-scheme inside a favicon is
-    //      unreliable regardless. Firefox honours it; Chrome largely does not.
+    //      unreliable anyway. Firefox honours it; Chrome largely does not.
     //
-    // A tile sidesteps all of it by carrying its own contrast rather than
-    // borrowing the browser's, and it makes every icon in the set - tab,
-    // touch icon, manifest - the same artwork. Verified against both a white
-    // and a #202124 tab strip at 32px.
-    fs.writeFileSync(path.join(OUT, "favicon.svg"), tile);
+    // Recolouring for contrast, as done above, is the approach that actually
+    // survives contact with a browser.
+    fs.writeFileSync(path.join(OUT, "favicon.svg"), tab);
     note("favicon.svg");
 
     // ── raster tab icons, each rendered from the vector, never downscaled ────
+    const clear = { r: 0, g: 0, b: 0, alpha: 0 };
     for (const size of [96]) {
-        await sharp(tile).resize(size, size, { fit: "contain", background: INK })
-            .flatten({ background: INK })
+        await sharp(tab).resize(size, size, { fit: "contain", background: clear })
             .png({ compressionLevel: 9 }).toFile(path.join(OUT, `favicon-${size}x${size}.png`));
         note(`favicon-${size}x${size}.png`);
     }
@@ -123,9 +140,8 @@ function buildIco(pngs) {
     // ── favicon.ico: 16 / 32 / 48 in one container ───────────────────────────
     const icoParts = [];
     for (const size of [16, 32, 48]) {
-        const data = await sharp(tile)
-            .resize(size, size, { fit: "contain", background: INK })
-            .flatten({ background: INK })
+        const data = await sharp(tab)
+            .resize(size, size, { fit: "contain", background: clear })
             .png({ compressionLevel: 9 }).toBuffer();
         icoParts.push({ size, data });
     }
