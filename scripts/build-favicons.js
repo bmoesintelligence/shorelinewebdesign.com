@@ -3,26 +3,30 @@
  *
  *   node scripts/build-favicons.js
  *
- * Sources (design/logo/), and why each is used where:
+ * EVERY output comes from one source: design/logo/swd_logo_white_black_bg.svg,
+ * the light mark on a solid tile. One artwork for the tab icon, the iOS touch
+ * icon and the manifest icons, so the brand is identical everywhere it appears.
  *
- *   swd_icon_black_blue.svg      transparent, two-tone. Used for the tab icons
- *                                (favicon.svg, favicon.ico, favicon-96x96.png).
- *                                Transparent so it sits on whatever chrome the
- *                                browser paints, light or dark.
+ * Three separate constraints all pointed at the tile, and each was measured
+ * rather than assumed:
  *
- *   swd_logo_white_black_bg.svg  light mark on a solid tile. Used for
- *                                apple-touch-icon and the two manifest icons.
- *                                iOS composites the touch icon onto a tile and
- *                                a transparent one renders as a black box, so
- *                                it MUST be opaque.
+ *   1. CHROME'S DARK TAB STRIP. The transparent two-tone variant
+ *      (swd_icon_black_blue.svg) is the prettier icon and was tried first, but
+ *      #1b2a38 on #202124 is very nearly invisible. Rendering it against both
+ *      chrome colours at 32px made that immediate.
  *
- *                                The manifest declares purpose:"maskable",
- *                                which lets Android crop to a circle or
- *                                squircle. That needs the content inside the
- *                                middle ~80%. Measured: this variant has a
- *                                12.3% margin and survives; the tan variant has
- *                                1.5% and would lose its outer ring, which is
- *                                why it is not used here.
+ *   2. iOS COMPOSITES THE TOUCH ICON onto a tile of its own, so a transparent
+ *      one renders as a solid black square. It must be opaque regardless.
+ *
+ *   3. MASKABLE CROPPING. site.webmanifest declares purpose:"maskable", which
+ *      lets Android crop to a circle or squircle, so the content has to sit
+ *      inside the middle ~80%. Measured: this variant has a 12.3% margin and
+ *      survives; the tan-background variant has 1.5% and would lose its outer
+ *      ring, which is why it is not used.
+ *
+ * The tan tile (swd_logo_black_tan_bg.svg) also reads fine on both chromes and
+ * is a one-line swap here if the navy ever feels too heavy in a tab - but it
+ * would need padding added before it could serve as a maskable icon.
  *
  * Colour normalisation: the exports use pure `black` and pure `white`. Both are
  * remapped to the site's tokens - inkNavy #1b2a38 and the warm off-white
@@ -78,7 +82,8 @@ function buildIco(pngs) {
 (async () => {
     fs.mkdirSync(OUT, { recursive: true });
 
-    const tab = load("swd_icon_black_blue.svg", [['fill="black"', `fill="${INK}"`]]);
+    // swd_icon_black_blue.svg (transparent, two-tone) is deliberately NOT used -
+    // see the note on favicon.svg below for why the tile won.
     const tile = load("swd_logo_white_black_bg.svg", [
         ['fill="black"', `fill="${INK}"`],
         ['fill="white"', `fill="${WARM}"`],
@@ -87,33 +92,30 @@ function buildIco(pngs) {
     const written = [];
     const note = (f) => written.push([f, fs.statSync(path.join(OUT, f)).size]);
 
-    // ── scalable tab icon, theme-adaptive ────────────────────────────────────
-    // A flat navy mark on a transparent background all but disappears against a
-    // dark browser tab strip, which is now a common default. Browsers honour
-    // prefers-color-scheme INSIDE an SVG favicon, so the fills are swapped for
-    // classes and the dark rule lightens them. Firefox, Chrome and Safari all
-    // read this; anything that doesn't falls back to favicon.ico, which stays
-    // navy - acceptable, since browsers old enough to lack SVG favicon support
-    // also tend to have light chrome.
-    const adaptive = tab.toString()
-        .replace(new RegExp(`fill="${INK}"`, "g"), 'class="ink"')
-        .replace(/fill="#2E4865"/gi, 'class="wave"')
-        .replace(/<svg([^>]*)>/, `<svg$1>
-  <style>
-    .ink  { fill: ${INK}; }
-    .wave { fill: #2e4865; }
-    @media (prefers-color-scheme: dark) {
-      .ink  { fill: ${WARM}; }
-      .wave { fill: #7ba6c9; }
-    }
-  </style>`);
-    fs.writeFileSync(path.join(OUT, "favicon.svg"), adaptive);
+    // ── scalable tab icon ────────────────────────────────────────────────────
+    // The TILE, not the transparent mark.
+    //
+    // The transparent navy version was tried first and fails in the real world:
+    // against Chrome's dark tab strip (#202124) a #1b2a38 mark is very nearly
+    // invisible. The obvious fix - prefers-color-scheme inside the SVG - does
+    // not save it either, for two compounding reasons:
+    //
+    //   1. Chrome picks favicon-96x96.png over favicon.svg, because a
+    //      size-matched raster wins over a vector. The SVG is never consulted.
+    //   2. Chrome's support for prefers-color-scheme inside a favicon is
+    //      unreliable regardless. Firefox honours it; Chrome largely does not.
+    //
+    // A tile sidesteps all of it by carrying its own contrast rather than
+    // borrowing the browser's, and it makes every icon in the set - tab,
+    // touch icon, manifest - the same artwork. Verified against both a white
+    // and a #202124 tab strip at 32px.
+    fs.writeFileSync(path.join(OUT, "favicon.svg"), tile);
     note("favicon.svg");
 
     // ── raster tab icons, each rendered from the vector, never downscaled ────
-    const transparent = { r: 0, g: 0, b: 0, alpha: 0 };
     for (const size of [96]) {
-        await sharp(tab).resize(size, size, { fit: "contain", background: transparent })
+        await sharp(tile).resize(size, size, { fit: "contain", background: INK })
+            .flatten({ background: INK })
             .png({ compressionLevel: 9 }).toFile(path.join(OUT, `favicon-${size}x${size}.png`));
         note(`favicon-${size}x${size}.png`);
     }
@@ -121,8 +123,9 @@ function buildIco(pngs) {
     // ── favicon.ico: 16 / 32 / 48 in one container ───────────────────────────
     const icoParts = [];
     for (const size of [16, 32, 48]) {
-        const data = await sharp(tab)
-            .resize(size, size, { fit: "contain", background: transparent })
+        const data = await sharp(tile)
+            .resize(size, size, { fit: "contain", background: INK })
+            .flatten({ background: INK })
             .png({ compressionLevel: 9 }).toBuffer();
         icoParts.push({ size, data });
     }
