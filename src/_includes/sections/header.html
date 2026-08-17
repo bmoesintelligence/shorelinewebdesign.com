@@ -20,13 +20,21 @@
     <div class="cs-container">
         <!--Nav Logo-->
         <a href="/" class="cs-logo" aria-label="Shoreline Web Design home">
-            <!--<img src="https://csimg.nyc3.cdn.digitaloceanspaces.com/Images/Logos/consulting-logo.svg" alt="Shoreline Web Design" width="197" height="43" decoding="async">-->
-            <!-- A SPAN, not a heading. As an <h3> this put a stray heading in the
-                 document outline BEFORE the page's <h1>, so anyone navigating by
-                 heading landed on the logo first. It's a link label, not a
-                 section title. Styled in root.less to match exactly what the h3
-                 rendered as, so nothing moves. -->
-            <span class="cs-logo-text">Shoreline Web Design</span>
+            {#
+              The wordmark carries the business name as artwork, so there is no
+              text node here any more.
+
+              It replaced a <span class="cs-logo-text">Shoreline Web Design</span>,
+              which itself replaced an <h3>. The <h3> was wrong because it put a
+              stray heading in the document outline ahead of every page's <h1>, so
+              anyone navigating by heading landed on the logo first. Don't
+              reintroduce a heading here, and don't add visible text beside the
+              wordmark - it would render the name twice.
+
+              The name is still exposed to assistive tech by aria-label on this
+              <a>, and to crawlers by the schema in components/schema.html.
+            #}
+            {% include "components/logo-wordmark.html" %}
         </a>
         <!--Navigation List-->
         <nav class="cs-nav" aria-label="main navigation">

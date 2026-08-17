@@ -14,7 +14,18 @@
         <div class="cs-wrapper">
             <!-- Brand -->
             <div class="cs-content">
-                <a href="/" class="cs-logo">Shoreline Web Design</a>
+                {# Same wordmark as the header, so the top and bottom of every
+                   page agree. aria-label carries the name now that the anchor
+                   holds artwork instead of a text node.
+
+                   The footer is navy in BOTH themes, so the wordmark is forced
+                   light here rather than following --inkNavy. Its waves need no
+                   rule: #footer is already in the navy-surface token block near
+                   the top of root.less, which sets --logoWave to the light
+                   variant. #}
+                <a href="/" class="cs-logo" aria-label="Shoreline Web Design home">
+                    {% include "components/logo-wordmark.html" %}
+                </a>
                 <p class="cs-blurb">
                     Hand-coded websites for small businesses across North Seattle. Built and supported by one engineer, from Richmond Beach.
                 </p>

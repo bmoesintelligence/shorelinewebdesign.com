@@ -56,15 +56,25 @@
         <link rel="icon" type="image/svg+xml" href="/assets/favicons/favicon.svg"/>
         <link rel="shortcut icon" href="/assets/favicons/favicon.ico"/>
         <link rel="apple-touch-icon" sizes="180x180" href="/assets/favicons/apple-touch-icon.png"/>
-        <meta name="apple-mobile-web-app-title" content="Starter Kit"/>
+        {# The name iOS shows under the icon when someone adds the site to their
+           home screen. Was the kit's "Starter Kit" until 2026-08-16. Kept short
+           deliberately: iOS truncates around 12 characters, and "Shoreline Web
+           D..." is worse than just "Shoreline". Matches short_name in
+           site.webmanifest - change both together. #}
+        <meta name="apple-mobile-web-app-title" content="Shoreline"/>
         <link rel="manifest" href="/assets/favicons/site.webmanifest"/>
 
         <!-- Preloads -->
-        <!-- logo-black.svg was preloaded here by the kit. This site's logo is
-             live text (<h3>Shoreline Web Design</h3> in sections/header.html),
-             so that file is never rendered - it was one wasted request on every
-             page. Removed 2026-08-03. If a real logo image ever lands, preload
-             it here AND point the schema logo at it. -->
+        {# The kit preloaded logo-black.svg here; that file is never rendered and
+           the preload was one wasted request per page. Removed 2026-08-03.
+
+           Still nothing to preload for the logo, and deliberately so: as of
+           2026-08-16 the wordmark is INLINE SVG in components/logo-wordmark.html,
+           so it arrives inside the HTML with no request of its own and nothing to
+           preload. That is also why it cannot be preloaded - there is no URL.
+
+           If the logo ever becomes an external file again, preload it here AND
+           point the schema logo at it in components/schema.html. #}
         <!-- Preload the two fonts that actually render above the fold: Sora for
              the headline, Inter for body copy. IBM Plex Mono is deliberately not
              preloaded - it only sets small toppers and labels, so it can arrive

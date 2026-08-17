@@ -57,6 +57,17 @@
 		--coralAccent: #c94a32;
 		--coralDark: #b8412b; /* coral hover/active */
 
+		/* ── Logo ──
+		   The wave blue from the logo artwork. Deliberately its own token rather
+		   than reusing --pugetBlue (#366375): the mark was drawn with a deeper,
+		   bluer water and forcing it to the greyer body-copy blue changes the
+		   artwork. Consumed by components/logo-mark.html, which is inlined so the
+		   stylesheet can reach the fills; the arc uses currentColor and needs no
+		   token. assets/svgs/logo-mark.svg carries the same value as a literal,
+		   because favicons and the og:image rasterise without a stylesheet.
+		   Overridden in the dark block below - #2E4865 on navy is invisible. */
+		--logoWave: #2e4865;
+
 		/* ── CodeStitch semantic aliases (map kit vars → palette) ── */
 		--primary: var(--coral);
 		--primaryLight: #e2705a;
@@ -131,6 +142,12 @@
 		   harder of the two), while staying much closer to the light-mode
 		   coral. Don't push it past ~#da5c44 or the cards drop under 3:1. */
 		--coralAccent: #de644b;
+		/* Logo waves. #2e4865 is barely distinguishable from the navy surfaces it
+		   sits on in dark mode, so the water lightens instead. Measured 4.6:1 on
+		   --dark and 3.9:1 on the raised --medium cards, which is comfortable for
+		   a graphic element (3:1 is the non-text minimum). The arc needs nothing
+		   here: it is currentColor and follows the logo text. */
+		--logoWave: #7ba6c9;
 	}
 
 	html,
@@ -1828,19 +1845,6 @@ html.theme-anim .cs-nav-pill-fill {
 
 /* All breakpoints */
 @media only screen and (min-width: 0rem) {
-    /* The wordmark was an <h3>; it is a <span> now (see header.html for why).
-       These values reproduce exactly what the h3 computed to — Sora 700 at
-       18.72px with a 1.2em line-height — since its size came from the browser's
-       default h3 sizing rather than from any rule of ours. Nothing shifts. */
-    #cs-navigation .cs-logo-text {
-        font-family: var(--headerFont);
-        /* 18.72px — the UA default h3 size this used to inherit */
-        font-size: (18.72/16rem);
-        font-weight: 700;
-        line-height: 1.2em;
-        margin: 0;
-        color: var(--headerColor);
-    }
 }
 
 /*-- -------------------------- -->
@@ -1877,11 +1881,6 @@ html.theme-anim .cs-nav-pill-fill {
         #cs-navigation {
             .cs-top-bar {
                 background-color: var(--navBandSurface);
-            }
-
-            /* pin the wordmark to the warm cream the rest of the bar uses */
-            .cs-logo-text {
-                color: var(--navSurfaceText);
             }
         }
     }
@@ -3077,5 +3076,64 @@ html.theme-anim .cs-nav-pill-fill {
         .cs-consent-btn {
             transition: none;
         }
+    }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// LOGO WORDMARK
+// Inline SVG from components/logo-wordmark.html, sitting inside .cs-logo.
+//
+// One rule rather than an addition to each of the two .cs-logo blocks above:
+// those live in separate media queries (collapsed nav and desktop nav) and the
+// wordmark behaves identically in both - it just fills whatever height .cs-logo
+// already sets, which is 40px collapsed and clamp(40px, 4vw, 44px) on desktop.
+//
+// The artwork is 1181 x 278, a 4.25:1 ratio, so height drives width. Setting a
+// width would fight the aspect ratio and letterbox the mark.
+// ─────────────────────────────────────────────────────────────────────────────
+
+@media only screen and (min-width: 0rem) {
+    .cs-logo-wordmark {
+        /* THIS is the size dial. 28px - 34px tall, which lands the lockup at
+           119px - 145px wide (the artwork is 4.25:1, so height drives width).
+
+           Deliberately NOT height:100%. .cs-logo is a 40-44px box, and filling
+           it made the wordmark ~170-187px wide, which crowded the nav toggle on
+           small screens and read as oversized generally. A two-line lockup also
+           carries more visual weight than the single line of text it replaced,
+           so matching the old box height matched the wrong thing.
+
+           Nudge these two numbers to taste; nothing else needs to change. */
+        height: clamp(1.5rem, 2.6vw, 1.875rem);
+        width: auto;
+        display: block;
+        /* the viewBox is already trimmed to the artwork, so nothing to contain */
+        flex-shrink: 0;
+        /* the type is currentColor, so the whole lockup follows this. Light mode
+           gets ink navy; the dark-mode block below flips it. */
+        color: var(--inkNavy);
+    }
+
+    body.dark-mode .cs-logo-wordmark {
+        color: var(--bodyTextColorWhite);
+    }
+
+    /* The footer is navy in BOTH themes, so its wordmark is always the light
+       one - it does not follow the theme the way the header's does. Slightly
+       larger than the header too: the footer logo sits above a paragraph of
+       blurb rather than competing with nav items, so it can breathe.
+
+       The old text logo had margin-bottom 14px from `.cs-logo`; that still
+       applies to the anchor, so spacing below is unchanged. */
+    #footer .cs-logo-wordmark {
+        color: var(--bodyTextColorWhite);
+        height: clamp(1.75rem, 3vw, 2.125rem);
+    }
+
+    /* The collapsed nav panel is a navy pill even in light mode, so a logo
+       inside it needs the dark treatment regardless of theme - same reasoning as
+       the --coralText override on #cs-navigation .cs-ul-wrapper. */
+    #cs-navigation .cs-ul-wrapper .cs-logo-wordmark {
+        color: var(--bodyTextColorWhite);
     }
 }

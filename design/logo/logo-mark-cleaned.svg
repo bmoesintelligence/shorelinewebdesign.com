@@ -1,0 +1,25 @@
+<!--
+  Shoreline Web Design mark. Drawn by Bryan in Figma, cleaned here.
+
+  Three changes from the Figma export:
+
+  1. viewBox tightened from the exported 174x212 to the artwork's real bounds
+     (x 7.6-162.3, y 32.4-186.6 = 154.7 x 154.2) and squared to 154.7. The export
+     carried uneven padding, which would have left the mark off-centre and
+     undersized inside every favicon tile generated from it.
+  2. The arc was pure #000000. Everything else on this site is the inkNavy token
+     #1b2a38; black read as harsh beside the real headings.
+  3. Colours are literal here on purpose. This file is the SOURCE used to
+     generate favicons, the og:image and anything rasterised, so it must render
+     identically without a stylesheet. The header uses the INLINE version in
+     components/logo-mark.html instead, which swaps these for currentColor and a
+     custom property so it can adapt to dark mode.
+
+  The wave blue #2E4865 is Bryan's choice from the logo design, kept as drawn.
+  It is deeper than the site's pugetBlue token #366375; both now exist as tokens.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="7.6 32.15 154.7 154.7" role="img" aria-label="Shoreline Web Design">
+  <path d="M71.0319 33.1251C34.8002 39.7501 9.361 69.1209 7.92936 106.221C7.2686 123.446 7.04834 123.225 15.7483 119.25C19.6028 117.483 25.9901 115.496 29.8445 114.833L37.0028 113.619L38.2142 104.233C45.923 48.1417 128.188 48.8042 130.831 104.896L131.271 114.502L138.76 115.165C142.945 115.496 149.552 117.152 153.627 118.698C157.591 120.354 161.226 121.348 161.666 121.017C163.208 119.36 161.996 97.498 159.794 89.1063C153.076 63.3792 131.712 41.6271 106.272 34.7813C98.4534 32.573 78.7407 31.6896 71.0319 33.1251Z" fill="#1b2a38"/>
+  <path d="M27.4219 127.973C19.4927 130.513 12.1143 134.708 12.1143 136.585C12.1143 139.015 17.6206 150.167 18.832 150.167C19.3826 150.167 22.4662 148.842 25.6598 147.185C35.7915 141.775 50.1079 142.548 64.4244 149.283C84.3573 158.779 96.251 159.221 115.743 151.271C129.399 145.75 136.227 144.756 143.165 147.406C145.918 148.4 148.891 149.504 149.772 149.725C152.636 150.719 159.354 135.813 156.821 133.935C147.24 126.869 130.28 126.427 115.633 132.942C97.2421 141.113 86.1193 141.444 72.3535 134.267C55.8345 125.544 41.4079 123.446 27.4219 127.973Z" fill="#2E4865"/>
+  <path d="M32.0473 156.24C23.0169 158.779 23.0169 159.331 34.0296 168.606C39.646 173.465 41.5182 174.458 45.1524 174.458C48.0157 174.458 52.3106 175.894 58.0372 178.875C69.8207 185.058 75.7676 186.604 87.5511 186.604C107.814 186.604 129.84 176.667 141.844 162.092L144.376 159.11L139.751 157.896C133.694 156.24 124.884 157.785 114.752 162.202C99.4448 168.938 85.679 169.49 72.5739 163.969C50.879 154.804 42.7296 153.258 32.0473 156.24Z" fill="#2E4865"/>
+</svg>
