@@ -635,10 +635,20 @@
 
                 /* ...then nudge the pill back down so it keeps a little air
                    above it once the town band is gone, instead of jamming
-                   against the viewport top. Desktop does the same at 18px,
-                   against its larger resting gap. */
+                   against the viewport top.
+
+                   16px, not the 8px this was. The maths: the pill rests at
+                   `margin-top: 10px` BELOW the 53px band, so once the nav
+                   translates up by that same 53px the pill's gap from the
+                   viewport top is just its margin plus this nudge. At 8px that
+                   was 18px of air, against desktop's 26 + 18 = 44px - which is
+                   why it read as touching the top on a phone and fine on a
+                   laptop. 26px here matches desktop's RESTING gap, which is the
+                   right target: the bar is smaller, so it does not need
+                   desktop's full scrolled gap, but it does need to look
+                   deliberate rather than jammed. */
                 .cs-container {
-                    transform: translateY((8/16rem));
+                    transform: translateY((16/16rem));
                 }
             }
         }

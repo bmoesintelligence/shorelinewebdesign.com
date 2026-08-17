@@ -7,6 +7,22 @@
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        {# Paints the iOS status bar / dynamic island surround and the Android
+           toolbar. WITHOUT this, Safari samples whatever colour happens to be at
+           the top of the page and repaints as you scroll: navy while the town
+           marquee is up there, then WHITE the moment the nav pill takes its
+           place. That flicker behind the dynamic island is what this fixes.
+
+           Ink navy because it matches the marquee, which is the top-most band at
+           rest - so there is no seam on arrival, and no change on scroll either.
+
+           Deliberately NOT split by prefers-color-scheme: this site's dark mode
+           is a manual toggle in localStorage, not an OS preference, so an OS
+           media query would disagree with the actual theme roughly half the
+           time. Navy suits both themes. If the status bar should ever follow
+           the toggle, assets/js/consent.js shows the pattern - set the content
+           attribute from dark.js instead of adding a media variant here. #}
+        <meta name="theme-color" content="#1b2a38">
         <meta name="description" content="{{ description }}">
         <link rel="canonical" href="{{ client.domain }}{{ page.url }}">
         <meta name="generator" content="{{ eleventy.generator }}">
