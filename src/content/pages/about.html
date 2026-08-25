@@ -78,7 +78,7 @@ eleventyComputed:
             </div>
             <figure class="cs-photo-frame">
                 <picture class="cs-photo">
-                    <source srcset="{% getUrl "/assets/images/headshot.jpg" | resize({ width: 900, height: 1125 }) | avif %}" type="image/avif">
+                    <source srcset="{% getUrl "/assets/images/headshot.jpg" | resize({ width: 900, height: 1125 }) | avif(codec.avif) %}" type="image/avif">
                     <source srcset="{% getUrl "/assets/images/headshot.jpg" | resize({ width: 900, height: 1125 }) | webp %}" type="image/webp">
                     <img src="{% getUrl "/assets/images/headshot.jpg" | resize({ width: 900, height: 1125 }) | jpeg %}" alt="Bryan, who designs and builds every Shoreline Web Design site" width="900" height="1125" loading="lazy" decoding="async">
                 </picture>

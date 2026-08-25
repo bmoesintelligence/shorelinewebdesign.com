@@ -93,19 +93,61 @@ tags: "sitemap" # content/content.json will make sure that all pages in content/
                     <source
                         type="image/avif"
                         sizes="(min-width: 64rem) 640px, (min-width: 37.5rem) 50vw, 100vw"
-                        srcset="{% getUrl "/assets/images/hero-scene.png" | resize({ width: 640 }) | avif %} 640w, {% getUrl "/assets/images/hero-scene.png" | resize({ width: 800 }) | avif %} 800w, {% getUrl "/assets/images/hero-scene.png" | resize({ width: 1183 }) | avif %} 1183w">
+                        srcset="{% getUrl "/assets/images/hero-scene.png" | resize({ width: 640 }) | avif(codec.avif) %} 640w, {% getUrl "/assets/images/hero-scene.png" | resize({ width: 800 }) | avif(codec.avif) %} 800w, {% getUrl "/assets/images/hero-scene.png" | resize({ width: 1183 }) | avif(codec.avif) %} 1183w">
                     <source
                         type="image/webp"
                         sizes="(min-width: 64rem) 640px, (min-width: 37.5rem) 50vw, 100vw"
                         srcset="{% getUrl "/assets/images/hero-scene.png" | resize({ width: 640 }) | webp %} 640w, {% getUrl "/assets/images/hero-scene.png" | resize({ width: 800 }) | webp %} 800w, {% getUrl "/assets/images/hero-scene.png" | resize({ width: 1183 }) | webp %} 1183w">
                     <img class="cs-scene" src="/assets/images/hero-scene.png" alt="Isometric illustration of the Edmonds waterfront and ferry terminal" width="1183" height="841" decoding="async" fetchpriority="high">
                 </picture>
-                <img class="cs-scene cs-dark" src="/assets/images/hero-scene-night.png" alt="Isometric illustration of the Edmonds waterfront and ferry terminal at night" width="1200" height="883" loading="lazy" decoding="async">
-                <!-- Night bloom (dark mode only): a blurred, boosted copy of the night
-                     scene, screen-composited so the lit windows and lamps spill glow
-                     while the dark surfaces add nothing. Overlaps the night scene
-                     exactly. Same trick as the ferry's .cs-ferry-glow. -->
-                <img class="cs-scene-glow cs-dark" src="/assets/images/hero-scene-night.png" alt="" aria-hidden="true" width="1200" height="883" loading="lazy" decoding="async">
+                {#
+                  NIGHT SCENE. Only ever fetched in dark mode - it is
+                  display:none + lazy, and browsers do not load a lazy image
+                  that is display:none - so it costs a light-mode visitor
+                  nothing. It was still 337KB for anyone who does toggle, the
+                  single heaviest file on the site.
+
+                  ⚠ `.cs-dark` on a <picture> needs the override in root.less
+                  (`body.dark-mode .cs-dark.cs-scene-pic`). The global toggle's
+                  `display: block !important` outranks `.cs-scene-pic` and would
+                  otherwise put a box back around this, moving the berth. The
+                  day scene never needed it because nothing sets `display` on
+                  `.cs-light` in light mode.
+                #}
+                <picture class="cs-dark cs-scene-pic">
+                    <source
+                        type="image/avif"
+                        sizes="(min-width: 64rem) 640px, (min-width: 37.5rem) 50vw, 100vw"
+                        srcset="{% getUrl "/assets/images/hero-scene-night.png" | resize({ width: 640 }) | avif(codec.avif) %} 640w, {% getUrl "/assets/images/hero-scene-night.png" | resize({ width: 800 }) | avif(codec.avif) %} 800w, {% getUrl "/assets/images/hero-scene-night.png" | resize({ width: 1200 }) | avif(codec.avif) %} 1200w">
+                    <source
+                        type="image/webp"
+                        sizes="(min-width: 64rem) 640px, (min-width: 37.5rem) 50vw, 100vw"
+                        srcset="{% getUrl "/assets/images/hero-scene-night.png" | resize({ width: 640 }) | webp %} 640w, {% getUrl "/assets/images/hero-scene-night.png" | resize({ width: 800 }) | webp %} 800w, {% getUrl "/assets/images/hero-scene-night.png" | resize({ width: 1200 }) | webp %} 1200w">
+                    <img class="cs-scene" src="/assets/images/hero-scene-night.png" alt="Isometric illustration of the Edmonds waterfront and ferry terminal at night" width="1200" height="883" loading="lazy" decoding="async">
+                </picture>
+                {#
+                  Night bloom (dark mode only): a blurred, boosted copy of the
+                  night scene, screen-composited so the lit windows and lamps
+                  spill glow while the dark surfaces add nothing. Overlaps the
+                  night scene exactly. Same trick as the ferry's .cs-ferry-glow.
+
+                  The srcset here is IDENTICAL to the one above on purpose. Same
+                  candidates + same `sizes` means the browser picks the same URL
+                  it already has, so the bloom is a cache hit and costs zero
+                  extra bytes. Give it its own width and it becomes a second
+                  download of the largest image on the page.
+                #}
+                <picture class="cs-dark cs-scene-pic">
+                    <source
+                        type="image/avif"
+                        sizes="(min-width: 64rem) 640px, (min-width: 37.5rem) 50vw, 100vw"
+                        srcset="{% getUrl "/assets/images/hero-scene-night.png" | resize({ width: 640 }) | avif(codec.avif) %} 640w, {% getUrl "/assets/images/hero-scene-night.png" | resize({ width: 800 }) | avif(codec.avif) %} 800w, {% getUrl "/assets/images/hero-scene-night.png" | resize({ width: 1200 }) | avif(codec.avif) %} 1200w">
+                    <source
+                        type="image/webp"
+                        sizes="(min-width: 64rem) 640px, (min-width: 37.5rem) 50vw, 100vw"
+                        srcset="{% getUrl "/assets/images/hero-scene-night.png" | resize({ width: 640 }) | webp %} 640w, {% getUrl "/assets/images/hero-scene-night.png" | resize({ width: 800 }) | webp %} 800w, {% getUrl "/assets/images/hero-scene-night.png" | resize({ width: 1200 }) | webp %} 1200w">
+                    <img class="cs-scene-glow" src="/assets/images/hero-scene-night.png" alt="" aria-hidden="true" width="1200" height="883" loading="lazy" decoding="async">
+                </picture>
                 {% include "components/ferry.html" %}
 
             </div>
@@ -228,7 +270,7 @@ tags: "sitemap" # content/content.json will make sure that all pages in content/
             <div class="cs-image-group">
                 <figure class="cs-card">
                     <picture class="cs-photo">
-                        <source srcset="{% getUrl "/assets/images/headshot.jpg" | resize({ width: 800, height: 1000 }) | avif %}" type="image/avif">
+                        <source srcset="{% getUrl "/assets/images/headshot.jpg" | resize({ width: 800, height: 1000 }) | avif(codec.avif) %}" type="image/avif">
                         <source srcset="{% getUrl "/assets/images/headshot.jpg" | resize({ width: 800, height: 1000 }) | webp %}" type="image/webp">
                         <img src="{% getUrl "/assets/images/headshot.jpg" | resize({ width: 800, height: 1000 }) | jpeg %}" alt="Bryan, founder of Shoreline Web Design" width="800" height="1000" loading="lazy" decoding="async">
                     </picture>
@@ -277,14 +319,14 @@ tags: "sitemap" # content/content.json will make sure that all pages in content/
              journey, each orca rides its own bob. Purely atmospheric. -->
         <div class="cs-pod" aria-hidden="true">
             <!-- Beat 1: pod surfaces upper-left as the section enters. -->
-            <img class="cs-orca cs-orca1" src="/assets/images/orca.png" alt="" width="540" height="357" loading="lazy" decoding="async">
-            <img class="cs-orca cs-orca2" src="/assets/images/orca.png" alt="" width="540" height="357" loading="lazy" decoding="async">
-            <img class="cs-orca cs-orca3" src="/assets/images/orca.png" alt="" width="540" height="357" loading="lazy" decoding="async">
+            <picture class="cs-orca-pic"><source type="image/avif" srcset="{% getUrl "/assets/images/orca.png" | resize({ width: 220 }) | avif(codec.avif) %}"><source type="image/webp" srcset="{% getUrl "/assets/images/orca.png" | resize({ width: 220 }) | webp %}"><img class="cs-orca cs-orca1" src="{% getUrl "/assets/images/orca.png" | resize({ width: 220 }) | png %}" alt="" width="540" height="357" loading="lazy" decoding="async"></picture>
+            <picture class="cs-orca-pic"><source type="image/avif" srcset="{% getUrl "/assets/images/orca.png" | resize({ width: 220 }) | avif(codec.avif) %}"><source type="image/webp" srcset="{% getUrl "/assets/images/orca.png" | resize({ width: 220 }) | webp %}"><img class="cs-orca cs-orca2" src="{% getUrl "/assets/images/orca.png" | resize({ width: 220 }) | png %}" alt="" width="540" height="357" loading="lazy" decoding="async"></picture>
+            <picture class="cs-orca-pic"><source type="image/avif" srcset="{% getUrl "/assets/images/orca.png" | resize({ width: 220 }) | avif(codec.avif) %}"><source type="image/webp" srcset="{% getUrl "/assets/images/orca.png" | resize({ width: 220 }) | webp %}"><img class="cs-orca cs-orca3" src="{% getUrl "/assets/images/orca.png" | resize({ width: 220 }) | png %}" alt="" width="540" height="357" loading="lazy" decoding="async"></picture>
             <!-- Beat 2: a second pod, same triangle + same glide, bottom-right, on
                  continued scroll. -->
-            <img class="cs-orca cs-orca4" src="/assets/images/orca.png" alt="" width="540" height="357" loading="lazy" decoding="async">
-            <img class="cs-orca cs-orca5" src="/assets/images/orca.png" alt="" width="540" height="357" loading="lazy" decoding="async">
-            <img class="cs-orca cs-orca6" src="/assets/images/orca.png" alt="" width="540" height="357" loading="lazy" decoding="async">
+            <picture class="cs-orca-pic"><source type="image/avif" srcset="{% getUrl "/assets/images/orca.png" | resize({ width: 220 }) | avif(codec.avif) %}"><source type="image/webp" srcset="{% getUrl "/assets/images/orca.png" | resize({ width: 220 }) | webp %}"><img class="cs-orca cs-orca4" src="{% getUrl "/assets/images/orca.png" | resize({ width: 220 }) | png %}" alt="" width="540" height="357" loading="lazy" decoding="async"></picture>
+            <picture class="cs-orca-pic"><source type="image/avif" srcset="{% getUrl "/assets/images/orca.png" | resize({ width: 220 }) | avif(codec.avif) %}"><source type="image/webp" srcset="{% getUrl "/assets/images/orca.png" | resize({ width: 220 }) | webp %}"><img class="cs-orca cs-orca5" src="{% getUrl "/assets/images/orca.png" | resize({ width: 220 }) | png %}" alt="" width="540" height="357" loading="lazy" decoding="async"></picture>
+            <picture class="cs-orca-pic"><source type="image/avif" srcset="{% getUrl "/assets/images/orca.png" | resize({ width: 220 }) | avif(codec.avif) %}"><source type="image/webp" srcset="{% getUrl "/assets/images/orca.png" | resize({ width: 220 }) | webp %}"><img class="cs-orca cs-orca6" src="{% getUrl "/assets/images/orca.png" | resize({ width: 220 }) | png %}" alt="" width="540" height="357" loading="lazy" decoding="async"></picture>
         </div>
         <div class="cs-container">
             <div class="cs-content">
@@ -360,7 +402,15 @@ tags: "sitemap" # content/content.json will make sure that all pages in content/
     <!-- ============================================ -->
 
     <!-- Free-redesign teaser: the on-ramp to /free-redesign/. WebHero-style dark
-         card: left-aligned copy, a real redesign example on the right. -->
+         card: left-aligned copy, a real homepage on the right.
+
+         The example is the Example Teriyaki DEMO hero, not a client site. The
+         section promises a homepage, so the shot has to read as the top of one -
+         which is why it is the hero and not the menu or gallery band.
+         #work sits directly below and its card 03 is the same hero shot, on
+         purpose - Bryan's call, 2026-08-24. Don't "fix" it to a second view.
+         Deliberately NOT a link: .cs-button-solid below is this section's only
+         ask, and a second outbound click would compete with it. -->
     <section id="free-redesign">
         <div class="cs-container">
             <div class="cs-content">
@@ -372,9 +422,9 @@ tags: "sitemap" # content/content.json will make sure that all pages in content/
                 <a href="/free-redesign/" class="cs-button-solid">Claim a free redesign<span class="cs-arrow" aria-hidden="true">&rarr;</span></a>
             </div>
             <picture class="cs-picture">
-                <source srcset="{% getUrl "/assets/images/bryan-van-dusen.jpg" | resize({ width: 900, height: 675 }) | avif %}" type="image/avif">
-                <source srcset="{% getUrl "/assets/images/bryan-van-dusen.jpg" | resize({ width: 900, height: 675 }) | webp %}" type="image/webp">
-                <img class="cs-graphic" src="{% getUrl "/assets/images/bryan-van-dusen.jpg" | resize({ width: 900, height: 675 }) | jpeg %}" alt="A homepage designed by Shoreline Web Design" width="900" height="675" loading="lazy" decoding="async">
+                <source srcset="{% getUrl "/assets/images/demo-teriyaki.jpg" | resize({ width: 900, height: 675 }) | avif(codec.avif) %}" type="image/avif">
+                <source srcset="{% getUrl "/assets/images/demo-teriyaki.jpg" | resize({ width: 900, height: 675 }) | webp %}" type="image/webp">
+                <img class="cs-graphic" src="{% getUrl "/assets/images/demo-teriyaki.jpg" | resize({ width: 900, height: 675 }) | jpeg %}" alt="The homepage of the Example Teriyaki demo restaurant site, designed and built by Shoreline Web Design" width="900" height="675" loading="lazy" decoding="async">
             </picture>
         </div>
     </section>
@@ -390,14 +440,20 @@ tags: "sitemap" # content/content.json will make sure that all pages in content/
                 <span class="cs-topper">Our work</span>
                 <h2 class="cs-title">Recent work</h2>
             </div>
-            <!-- Card 01 is real (live client site). Cards 02-03 are placeholder
-                 drop-zones for the concept/demo builds still to come. -->
+            <!-- Cards 01-02 are live CLIENT sites. Card 03 is the Example Teriyaki
+                 DEMO - a real, live build for a business that does not exist. Its
+                 name and its one-line text both say so; the /work/ page carries the
+                 full framing. Never relabel it as a client project.
+                 Card 03 is the same hero shot #free-redesign uses just above. That
+                 repeat is deliberate, not an oversight.
+                 The .cs-placeholder / .cs-ph-* drop-zone styles this card used to
+                 use are still in local.less, unused, in case a slot goes empty again. -->
             <ul class="cs-card-group">
                 <li class="cs-item">
                     <figure class="cs-card">
                         <a href="https://www.bryanvandusen.com/" target="_blank" rel="noopener" class="cs-thumb-link" aria-label="Visit the Bryan Van Dusen website (opens in a new tab)">
                             <picture class="cs-thumb">
-                                <source srcset="{% getUrl "/assets/images/bryan-van-dusen.jpg" | resize({ width: 760, height: 570 }) | avif %}" type="image/avif">
+                                <source srcset="{% getUrl "/assets/images/bryan-van-dusen.jpg" | resize({ width: 760, height: 570 }) | avif(codec.avif) %}" type="image/avif">
                                 <source srcset="{% getUrl "/assets/images/bryan-van-dusen.jpg" | resize({ width: 760, height: 570 }) | webp %}" type="image/webp">
                                 <img src="{% getUrl "/assets/images/bryan-van-dusen.jpg" | resize({ width: 760, height: 570 }) | jpeg %}" alt="Bryan Van Dusen children's author website homepage" width="760" height="570" loading="lazy" decoding="async">
                             </picture>
@@ -416,7 +472,7 @@ tags: "sitemap" # content/content.json will make sure that all pages in content/
                     <figure class="cs-card">
                         <a href="https://bk2026.com/" target="_blank" rel="noopener" class="cs-thumb-link" aria-label="Visit the Bryan & Katie wedding website (opens in a new tab)">
                             <picture class="cs-thumb">
-                                <source srcset="{% getUrl "/assets/images/bk2026.jpg" | resize({ width: 760, height: 570 }) | avif %}" type="image/avif">
+                                <source srcset="{% getUrl "/assets/images/bk2026.jpg" | resize({ width: 760, height: 570 }) | avif(codec.avif) %}" type="image/avif">
                                 <source srcset="{% getUrl "/assets/images/bk2026.jpg" | resize({ width: 760, height: 570 }) | webp %}" type="image/webp">
                                 <img src="{% getUrl "/assets/images/bk2026.jpg" | resize({ width: 760, height: 570 }) | jpeg %}" alt="Bryan and Katie wedding website homepage" width="760" height="570" loading="lazy" decoding="async">
                             </picture>
@@ -433,19 +489,21 @@ tags: "sitemap" # content/content.json will make sure that all pages in content/
                 </li>
                 <li class="cs-item">
                     <figure class="cs-card">
-                        <div class="cs-placeholder">
-                            <svg class="cs-ph-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
-                            <span class="cs-ph-label">RB Hardware homepage</span>
-                            <span class="cs-ph-browse">or browse files</span>
-                        </div>
-                        <figcaption class="cs-filename">rb_hardware.jpg</figcaption>
+                        <a href="https://demo-teriyaki-website.netlify.app/" target="_blank" rel="noopener" class="cs-thumb-link" aria-label="Visit the Example Teriyaki demo site (opens in a new tab)">
+                            <picture class="cs-thumb">
+                                <source srcset="{% getUrl "/assets/images/demo-teriyaki.jpg" | resize({ width: 760, height: 570 }) | avif(codec.avif) %}" type="image/avif">
+                                <source srcset="{% getUrl "/assets/images/demo-teriyaki.jpg" | resize({ width: 760, height: 570 }) | webp %}" type="image/webp">
+                                <img src="{% getUrl "/assets/images/demo-teriyaki.jpg" | resize({ width: 760, height: 570 }) | jpeg %}" alt="Example Teriyaki demo restaurant website homepage" width="760" height="570" loading="lazy" decoding="async">
+                            </picture>
+                        </a>
+                        <figcaption class="cs-filename">demo-teriyaki-website.netlify.app</figcaption>
                     </figure>
                     <div class="cs-flex">
-                        <h3 class="cs-h3">Richmond Beach Hardware</h3>
+                        <h3 class="cs-h3">Example Teriyaki</h3>
                         <span class="cs-number">03</span>
                     </div>
                     <p class="cs-item-text">
-                        Hours, services &amp; directions.
+                        Demo build for a restaurant that doesn't exist.
                     </p>
                 </li>
             </ul>
@@ -496,10 +554,59 @@ tags: "sitemap" # content/content.json will make sure that all pages in content/
             </div>
             <!-- Arrival landing diorama. The ferry sails in and berths on scroll. -->
             <div class="cs-image-group">
-                <img class="cs-scene cs-light" src="/assets/images/service-area-scene.png" alt="Isometric illustration of the ferry landing across the Sound" width="1115" height="783" loading="lazy" decoding="async">
-                <img class="cs-scene cs-dark" src="/assets/images/service-area-scene-night.png" alt="Isometric illustration of the ferry landing across the Sound at night" width="1200" height="830" loading="lazy" decoding="async">
-                <!-- Night bloom (dark mode only) — see hero note. -->
-                <img class="cs-scene-glow cs-dark" src="/assets/images/service-area-scene-night.png" alt="" aria-hidden="true" width="1200" height="830" loading="lazy" decoding="async">
+                {#
+                  Same treatment as the hero day scene above, and the same two
+                  traps: `.cs-light` goes on the <picture> (the global toggle
+                  sets `display` on whatever holds the class, so on the <img> the
+                  wrapper would survive into dark mode), and `.cs-scene-pic`
+                  keeps it out of layout so .cs-image-group's height stays the
+                  image's height - the arriving ferry berths on percentages of
+                  that box.
+
+                  This one was NOT covered by the hero fix and was still a raw
+                  123KB PNG at 1115px. It is the largest image a light-mode
+                  visitor actually downloads: the night scenes are display:none
+                  + lazy, so they are never fetched unless dark mode is toggled.
+
+                  Widths mirror the hero because the box is the same: capped at
+                  --sceneWidth (40rem/640px) on desktop, fluid below.
+                #}
+                <picture class="cs-light cs-scene-pic">
+                    <source
+                        type="image/avif"
+                        sizes="(min-width: 64rem) 640px, (min-width: 37.5rem) 50vw, 100vw"
+                        srcset="{% getUrl "/assets/images/service-area-scene.png" | resize({ width: 640 }) | avif(codec.avif) %} 640w, {% getUrl "/assets/images/service-area-scene.png" | resize({ width: 800 }) | avif(codec.avif) %} 800w, {% getUrl "/assets/images/service-area-scene.png" | resize({ width: 1115 }) | avif(codec.avif) %} 1115w">
+                    <source
+                        type="image/webp"
+                        sizes="(min-width: 64rem) 640px, (min-width: 37.5rem) 50vw, 100vw"
+                        srcset="{% getUrl "/assets/images/service-area-scene.png" | resize({ width: 640 }) | webp %} 640w, {% getUrl "/assets/images/service-area-scene.png" | resize({ width: 800 }) | webp %} 800w, {% getUrl "/assets/images/service-area-scene.png" | resize({ width: 1115 }) | webp %} 1115w">
+                    <img class="cs-scene" src="/assets/images/service-area-scene.png" alt="Isometric illustration of the ferry landing across the Sound" width="1115" height="783" loading="lazy" decoding="async">
+                </picture>
+                {# Night scene + bloom — see the hero notes above for both the
+                   `.cs-dark` on a <picture> caveat and why the bloom repeats
+                   this srcset verbatim rather than sizing itself. #}
+                <picture class="cs-dark cs-scene-pic">
+                    <source
+                        type="image/avif"
+                        sizes="(min-width: 64rem) 640px, (min-width: 37.5rem) 50vw, 100vw"
+                        srcset="{% getUrl "/assets/images/service-area-scene-night.png" | resize({ width: 640 }) | avif(codec.avif) %} 640w, {% getUrl "/assets/images/service-area-scene-night.png" | resize({ width: 800 }) | avif(codec.avif) %} 800w, {% getUrl "/assets/images/service-area-scene-night.png" | resize({ width: 1200 }) | avif(codec.avif) %} 1200w">
+                    <source
+                        type="image/webp"
+                        sizes="(min-width: 64rem) 640px, (min-width: 37.5rem) 50vw, 100vw"
+                        srcset="{% getUrl "/assets/images/service-area-scene-night.png" | resize({ width: 640 }) | webp %} 640w, {% getUrl "/assets/images/service-area-scene-night.png" | resize({ width: 800 }) | webp %} 800w, {% getUrl "/assets/images/service-area-scene-night.png" | resize({ width: 1200 }) | webp %} 1200w">
+                    <img class="cs-scene" src="/assets/images/service-area-scene-night.png" alt="Isometric illustration of the ferry landing across the Sound at night" width="1200" height="830" loading="lazy" decoding="async">
+                </picture>
+                <picture class="cs-dark cs-scene-pic">
+                    <source
+                        type="image/avif"
+                        sizes="(min-width: 64rem) 640px, (min-width: 37.5rem) 50vw, 100vw"
+                        srcset="{% getUrl "/assets/images/service-area-scene-night.png" | resize({ width: 640 }) | avif(codec.avif) %} 640w, {% getUrl "/assets/images/service-area-scene-night.png" | resize({ width: 800 }) | avif(codec.avif) %} 800w, {% getUrl "/assets/images/service-area-scene-night.png" | resize({ width: 1200 }) | avif(codec.avif) %} 1200w">
+                    <source
+                        type="image/webp"
+                        sizes="(min-width: 64rem) 640px, (min-width: 37.5rem) 50vw, 100vw"
+                        srcset="{% getUrl "/assets/images/service-area-scene-night.png" | resize({ width: 640 }) | webp %} 640w, {% getUrl "/assets/images/service-area-scene-night.png" | resize({ width: 800 }) | webp %} 800w, {% getUrl "/assets/images/service-area-scene-night.png" | resize({ width: 1200 }) | webp %} 1200w">
+                    <img class="cs-scene-glow" src="/assets/images/service-area-scene-night.png" alt="" aria-hidden="true" width="1200" height="830" loading="lazy" decoding="async">
+                </picture>
                 {% include "components/ferry.html" %}
             </div>
         </div>

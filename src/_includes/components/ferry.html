@@ -9,10 +9,46 @@
         <!-- day + night, toggled by the kit's .cs-light/.cs-dark. Only one ever
              displays; the hidden night image is lazy so it isn't fetched until
              dark mode. -->
-        <img class="cs-ferry-hull cs-light" src="/assets/images/ferry.png" alt="" width="1084" height="824" decoding="async">
-        <img class="cs-ferry-hull cs-dark" src="/assets/images/ferry-night.png" alt="" width="1159" height="934" loading="lazy" decoding="async">
-        <!-- night bloom: a blurred copy screen-composited over the hull so the
-             lit windows glow. Overlaps the night hull exactly. -->
-        <img class="cs-ferry-glow cs-dark" src="/assets/images/ferry-night.png" alt="" width="1159" height="934" loading="lazy" decoding="async">
+        {#
+          The hull ships at 540px, not its native 1084. .cs-ferry-boat is
+          `width: var(--hull-w)` = 28% of the scene, and the scene is capped at
+          --sceneWidth (40rem/640px), so the boat NEVER renders above ~180 CSS
+          px. It was sending a 1084px/101KB PNG for a 180px slot - the single
+          most oversized image on the site, and one of only three PNGs a
+          light-mode visitor actually downloads.
+
+          540 is 3x the largest rendered size, which covers every plausible DPR.
+
+          `.cs-light` sits on the <picture>, and `.cs-ferry-pic` (root.less)
+          gives it `display: contents` - without it the wrapper is inline, so
+          its width shrink-to-fits its contents while the contents size
+          themselves off it, and the boat collapses. The berth is unchanged
+          because the <img> is still a direct child of .cs-ferry-boat.
+        #}
+        <picture class="cs-light cs-ferry-pic">
+            <source type="image/avif" srcset="{% getUrl "/assets/images/ferry.png" | resize({ width: 540 }) | avif(codec.avif) %}">
+            <source type="image/webp" srcset="{% getUrl "/assets/images/ferry.png" | resize({ width: 540 }) | webp %}">
+            <img class="cs-ferry-hull" src="{% getUrl "/assets/images/ferry.png" | resize({ width: 540 }) | png %}" alt="" width="1084" height="824" decoding="async">
+        </picture>
+        {# Night hull, then its bloom: a blurred copy screen-composited over the
+           hull so the lit windows glow, overlapping it exactly. Both use the
+           SAME single-width source, so the bloom is a cache hit rather than a
+           second download.
+
+           ⚠ `.cs-dark` on a <picture> relies on the override in root.less
+           (`body.dark-mode .cs-dark.cs-ferry-pic`) - without it the toggle's
+           `display: block !important` beats `display: contents`, the wrapper
+           becomes an inline box sizing itself off its own contents, and the
+           hull collapses. #}
+        <picture class="cs-dark cs-ferry-pic">
+            <source type="image/avif" srcset="{% getUrl "/assets/images/ferry-night.png" | resize({ width: 540 }) | avif(codec.avif) %}">
+            <source type="image/webp" srcset="{% getUrl "/assets/images/ferry-night.png" | resize({ width: 540 }) | webp %}">
+            <img class="cs-ferry-hull" src="{% getUrl "/assets/images/ferry-night.png" | resize({ width: 540 }) | png %}" alt="" width="1159" height="934" loading="lazy" decoding="async">
+        </picture>
+        <picture class="cs-dark cs-ferry-pic">
+            <source type="image/avif" srcset="{% getUrl "/assets/images/ferry-night.png" | resize({ width: 540 }) | avif(codec.avif) %}">
+            <source type="image/webp" srcset="{% getUrl "/assets/images/ferry-night.png" | resize({ width: 540 }) | webp %}">
+            <img class="cs-ferry-glow" src="{% getUrl "/assets/images/ferry-night.png" | resize({ width: 540 }) | png %}" alt="" width="1159" height="934" loading="lazy" decoding="async">
+        </picture>
     </div>
 </div>

@@ -57,9 +57,9 @@ permalink: "/blog/"
                             <a href="{{ post.url }}" class="cs-link">
                                 {% if post.data.image %}
                                     <picture class="cs-picture">
-                                        <source media="(max-width: 600px)" srcset="{% getUrl post.data.image | resize({ width: 1120, height: 640 }) | avif %}" type="image/avif">
+                                        <source media="(max-width: 600px)" srcset="{% getUrl post.data.image | resize({ width: 1120, height: 640 }) | avif(codec.avif) %}" type="image/avif">
                                         <source media="(max-width: 600px)" srcset="{% getUrl post.data.image | resize({ width: 1120, height: 640 }) | webp %}" type="image/webp">
-                                        <source media="(min-width: 601px)" srcset="{% getUrl post.data.image | resize({ width: 800, height: 460 }) | avif %}" type="image/avif">
+                                        <source media="(min-width: 601px)" srcset="{% getUrl post.data.image | resize({ width: 800, height: 460 }) | avif(codec.avif) %}" type="image/avif">
                                         <source media="(min-width: 601px)" srcset="{% getUrl post.data.image | resize({ width: 800, height: 460 }) | webp %}" type="image/webp">
                                         <img src="{% getUrl post.data.image | resize({ width: 800, height: 460 }) | jpeg %}" alt="{{ post.data.imageAlt }}" width="400" height="230" loading="lazy" decoding="async">
                                     </picture>

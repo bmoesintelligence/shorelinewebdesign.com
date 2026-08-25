@@ -78,7 +78,7 @@ faqs:
                 </p>
                 <div class="cs-author">
                     <picture class="cs-profile">
-                        <source srcset="{% getUrl "/assets/images/headshot.jpg" | resize({ width: 120, height: 120 }) | avif %}" type="image/avif">
+                        <source srcset="{% getUrl "/assets/images/headshot.jpg" | resize({ width: 120, height: 120 }) | avif(codec.avif) %}" type="image/avif">
                         <source srcset="{% getUrl "/assets/images/headshot.jpg" | resize({ width: 120, height: 120 }) | webp %}" type="image/webp">
                         <img src="{% getUrl "/assets/images/headshot.jpg" | resize({ width: 120, height: 120 }) | jpeg %}" alt="Bryan, who does the redesign himself" width="120" height="120" loading="lazy" decoding="async">
                     </picture>
@@ -202,7 +202,7 @@ faqs:
          a <picture> using the getUrl shortcode, exactly like the /work/ rows:
 
              <picture class="cs-shot">
-               <source srcset="{% raw %}{% getUrl "/assets/images/x.jpg" | resize({ width: 1000, height: 750 }) | avif %}{% endraw %}" type="image/avif">
+               <source srcset="{% raw %}{% getUrl "/assets/images/x.jpg" | resize({ width: 1000, height: 750 }) | avif(codec.avif) %}{% endraw %}" type="image/avif">
                ...
              </picture>
 

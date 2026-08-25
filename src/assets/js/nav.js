@@ -13,11 +13,13 @@
 			dropdown: ".cs-dropdown",
 			dropdownMenu: ".cs-drop-ul",
 			topBar: ".cs-top-bar",
+			footer: "#footer",
 		},
 		CLASSES: {
 			active: "cs-active",
 			menuOpen: "cs-open",
 			scroll: "scroll",
+			atFooter: "cs-at-footer",
 		},
 	};
 
@@ -28,6 +30,7 @@
 		hamburger: document.querySelector(CONFIG.SELECTORS.hamburger),
 		menuWrapper: document.querySelector(CONFIG.SELECTORS.menuWrapper),
 		topBar: document.querySelector(CONFIG.SELECTORS.topBar),
+		footer: document.querySelector(CONFIG.SELECTORS.footer),
 	};
 
 	// Utilities
@@ -102,6 +105,10 @@
 
 			// When closing the mobile menu, also close any open dropdowns
 			isClosing && dropdownManager.closeAll();
+
+			// The menu state feeds the at-footer decision, so re-derive it here:
+			// opening the menu over the footer has to bring the bar back.
+			footerManager.apply();
 		},
 	};
 
@@ -192,6 +199,56 @@
 		},
 	};
 
+	// Footer Management
+	//
+	// Slide the fixed bar out of the way once the footer is on screen. #footer
+	// opens with .cs-cta, the site's only closing ask, and by then the footer
+	// already carries every nav link plus a Get started button - so the bar is
+	// covering the closing headline while duplicating what is visible below it.
+	//
+	// An IntersectionObserver, NOT a scroll threshold: the overlap depends on
+	// viewport HEIGHT, not scroll depth (measured at max scroll 2026-08-24 -
+	// 1512x831 buried 52px of the headline, 1280x800 buried 64px, 1440x900
+	// cleared it). A pixel threshold would reproduce the inconsistency it fixes.
+	const footerManager = {
+		footerInView: false,
+
+		// Re-derived from both inputs every time, so neither can strand the other.
+		apply() {
+			if (!elements.navigation) return;
+
+			// Never hide a nav whose mobile menu is open, or the open menu slides
+			// off the top with it and the toggle goes with it.
+			const menuOpen = elements.navigation.classList.contains(CONFIG.CLASSES.active);
+			const hide = this.footerInView && !menuOpen;
+
+			elements.navigation.classList.toggle(CONFIG.CLASSES.atFooter, hide);
+
+			// A bar parked off-screen must not stay in the tab order, or a keyboard
+			// user tabs into something they cannot see. The skip link lives outside
+			// #cs-navigation, so it is unaffected.
+			elements.navigation.inert = hide;
+		},
+
+		init() {
+			// No footer, or no observer support: leave the bar exactly as it was.
+			if (!elements.footer || !elements.navigation || !("IntersectionObserver" in window)) return;
+
+			// Root shrunk to the top quarter of the viewport, so the bar leaves as
+			// the footer reaches the band it would collide in rather than the
+			// moment a single pixel of footer appears at the bottom of the screen.
+			// A fraction, not a pixel count, so it scales with viewport height -
+			// which is the variable causing the problem in the first place.
+			new IntersectionObserver(
+				(entries) => {
+					this.footerInView = entries[0].isIntersecting;
+					this.apply();
+				},
+				{ rootMargin: "0px 0px -75% 0px", threshold: 0 }
+			).observe(elements.footer);
+		},
+	};
+
 	// Scroll Effects Management
 	const scrollManager = {
 		handleScrollEffects() {
@@ -261,5 +318,6 @@
 	// Initialize navigation system
 	init.inertState();
 	init.eventListeners();
+	footerManager.init();
 })();
                                 

@@ -2460,8 +2460,44 @@ html.theme-anim .cs-nav-pill-fill {
        above sets `display` on whichever element holds that class, and `display:
        none !important` beats this rule, so dark mode still hides the whole
        <picture> rather than leaving an empty wrapper behind. */
-    .cs-scene-pic {
+    /* .cs-ferry-pic is the same idea applied to the hull, and it is load-bearing
+       for a different reason. .cs-ferry-hull is `width: 100%` of .cs-ferry-boat,
+       which is itself `width: var(--hull-w)`. A <picture> defaults to inline,
+       so its width would shrink-to-fit its contents while its contents sized
+       themselves off it - circular, and it collapses. `display: contents`
+       removes the wrapper from layout entirely and the <img> goes back to being
+       a direct child of .cs-ferry-boat, exactly as before it was wrapped. */
+    /* .cs-orca-pic is the same again. The orcas are `position: absolute` inside
+       .cs-pod, so a wrapper around them would be a static inline box with no
+       in-flow content - six empty line boxes in the pod. `display: contents`
+       means the absolutely-positioned <img> resolves against .cs-pod exactly as
+       it did unwrapped, which is what keeps the scroll-driven formation intact. */
+    .cs-scene-pic,
+    .cs-ferry-pic,
+    .cs-orca-pic {
         display: contents;
+    }
+
+    /* ⚠ The .cs-dark wrappers need this stated separately, and the asymmetry is
+       not obvious. The global toggle sets
+
+           body.dark-mode .cs-dark { display: block !important }   (0,2,1)
+
+       which is both more specific than the rule above (0,1,0) AND !important,
+       so on a <picture class="cs-dark cs-scene-pic"> it wins and puts a real
+       box back around the night artwork - the exact thing `display: contents`
+       is there to prevent. Matching on both classes scores (0,3,1) and takes it
+       back.
+
+       The .cs-light wrappers need no equivalent because in LIGHT mode nothing
+       sets `display` on .cs-light at all; only `.cs-dark { display: none }`
+       applies, so `display: contents` is uncontested. That is why the hero day
+       scene has worked since it was wrapped and this was never needed before. */
+    body.dark-mode {
+        .cs-dark.cs-scene-pic,
+        .cs-dark.cs-ferry-pic {
+            display: contents !important;
+        }
     }
 
     /* ── day/night scenes must occupy the same box ──
@@ -3145,5 +3181,45 @@ html.theme-anim .cs-nav-pill-fill {
        the --coralText override on #cs-navigation .cs-ul-wrapper. */
     #cs-navigation .cs-ul-wrapper .cs-logo-wordmark {
         color: var(--bodyTextColorWhite);
+    }
+}
+
+/*-- -------------------------- -->
+<---   Nav: hidden at footer    -->
+<--- -------------------------- -*/
+
+/* The fixed bar slides away once #footer enters view, and comes back on the way
+   up. nav.js adds .cs-at-footer from an IntersectionObserver.
+
+   WHY: #footer opens with .cs-cta, the site's only closing ask, and by the time
+   it is on screen the footer already carries every nav link plus a Get started
+   button. So the bar is covering the closing headline while duplicating what is
+   visible a few hundred pixels below it.
+
+   ⚠ WHY AN OBSERVER AND NOT A SCROLL THRESHOLD. The collision depends on
+   VIEWPORT HEIGHT, not scroll depth. Measured at max scroll, 2026-08-24:
+   1512x831 buried 52px of the CTA headline, 1280x800 buried 64px, and 1440x900
+   cleared it by 17px. A pixel threshold would reproduce exactly the
+   inconsistency it is meant to fix.
+
+   ⚠ SPECIFICITY IS LOAD-BEARING. `body.scroll #cs-navigation` (1,1,0) up in the
+   desktop block already sets `transform: translateY(-3.3125rem)` to clear the
+   town banner. A plain `#cs-navigation.cs-at-footer` is also (1,1,0) and would
+   depend on source order alone. The leading `body` makes this (1,2,0) so it
+   wins wherever it sits in the file.
+
+   ⚠ NOT translateY(-100%). #cs-navigation is only as tall as its bar, and on
+   desktop .cs-container floats 26px below the top on its own margin, so a flat
+   -100% leaves the pill's top edge and its shadow on screen. The extra 3rem
+   clears both. */
+body #cs-navigation.cs-at-footer {
+    transform: translateY(calc(-100% - 3rem));
+}
+
+@media (prefers-reduced-motion: reduce) {
+    /* Snap rather than slide. Scoped to this state on purpose: the desktop
+       scroll slide above is pre-existing behaviour and is left alone. */
+    body #cs-navigation.cs-at-footer {
+        transition: none;
     }
 }

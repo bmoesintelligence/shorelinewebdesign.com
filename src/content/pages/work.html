@@ -43,10 +43,13 @@ eleventyComputed:
          tan-navy-tan rhythm instead of running as one flat tan field.
          Hence .cs-panel-* on every <li>; .cs-project-inner is the flex row.
 
-         Items 01 and 02 are real, live sites. Item 03 is a clearly labelled
-         concept build with no live URL and no screenshot - a CSS wireframe
-         rather than a stock mockup, so nothing on this page pretends to be a
-         client project that isn't one.
+         Items 01 and 02 are real, live CLIENT sites. Item 03 is a DEMO: a
+         complete, live restaurant site built for a business that does not
+         exist, hosted on a free netlify.app subdomain and noindexed at its
+         own end. It is chipped "Demo build" rather than "Live site" and the
+         copy says outright that it is not a client, so nothing on this page
+         pretends to be a client project that isn't one. That distinction is
+         the whole reason the chip text differs - do not level them out.
 
          NEEDS BRYAN'S CONFIRMATION: the "Build" row on each project states the
          stack as hand-coded static (Eleventy). Correct it per project if either
@@ -68,7 +71,7 @@ eleventyComputed:
                                 <span class="cs-frame-url">bryanvandusen.com</span>
                             </div>
                             <picture class="cs-shot">
-                                <source srcset="{% getUrl "/assets/images/bryan-van-dusen.jpg" | resize({ width: 1000, height: 750 }) | avif %}" type="image/avif">
+                                <source srcset="{% getUrl "/assets/images/bryan-van-dusen.jpg" | resize({ width: 1000, height: 750 }) | avif(codec.avif) %}" type="image/avif">
                                 <source srcset="{% getUrl "/assets/images/bryan-van-dusen.jpg" | resize({ width: 1000, height: 750 }) | webp %}" type="image/webp">
                                 <img src="{% getUrl "/assets/images/bryan-van-dusen.jpg" | resize({ width: 1000, height: 750 }) | jpeg %}" alt="The Bryan Van Dusen author website homepage" width="1000" height="750" loading="lazy" decoding="async">
                             </picture>
@@ -114,7 +117,7 @@ eleventyComputed:
                                 <span class="cs-frame-url">bk2026.com</span>
                             </div>
                             <picture class="cs-shot">
-                                <source srcset="{% getUrl "/assets/images/bk2026.jpg" | resize({ width: 1000, height: 750 }) | avif %}" type="image/avif">
+                                <source srcset="{% getUrl "/assets/images/bk2026.jpg" | resize({ width: 1000, height: 750 }) | avif(codec.avif) %}" type="image/avif">
                                 <source srcset="{% getUrl "/assets/images/bk2026.jpg" | resize({ width: 1000, height: 750 }) | webp %}" type="image/webp">
                                 <img src="{% getUrl "/assets/images/bk2026.jpg" | resize({ width: 1000, height: 750 }) | jpeg %}" alt="The Bryan and Katie wedding website homepage" width="1000" height="750" loading="lazy" decoding="async">
                             </picture>
@@ -147,6 +150,14 @@ eleventyComputed:
                     </div>
                 </div>
             </li>
+
+            {# ── Richmond Beach Hardware, the concept row this replaced ──────────
+               Removed 2026-08-24 when the Example Teriyaki demo took slot 03. It was
+               never built or live: a CSS wireframe standing in for a screenshot, and
+               a "Not live yet" status where the visit link goes. Kept here rather than
+               deleted because .cs-project-concept, .cs-wireframe, .cs-wf-* and
+               .cs-status are all still in work.less, so restoring it is markup-only.
+               If it stays out, strip those styles too.
 
             <!-- 03 — Richmond Beach Hardware (concept, not a client) -->
             <li class="cs-project cs-panel-light cs-project-concept">
@@ -202,7 +213,53 @@ eleventyComputed:
                     </div>
                 </div>
             </li>
+            #}
 
+            <!-- 03 — Example Teriyaki (demo build, deliberately not a client) -->
+            <li class="cs-project cs-panel-light">
+                <div class="cs-project-inner">
+                    <a href="https://demo-teriyaki-website.netlify.app/" target="_blank" rel="noopener" class="cs-frame-link" aria-label="Visit the Example Teriyaki demo site (opens in a new tab)">
+                        <div class="cs-frame">
+                            <div class="cs-frame-bar" aria-hidden="true">
+                                <span class="cs-dot"></span>
+                                <span class="cs-dot"></span>
+                                <span class="cs-dot"></span>
+                                <span class="cs-frame-url">demo-teriyaki-website.netlify.app</span>
+                            </div>
+                            <picture class="cs-shot">
+                                <source srcset="{% getUrl "/assets/images/demo-teriyaki.jpg" | resize({ width: 1000, height: 750 }) | avif(codec.avif) %}" type="image/avif">
+                                <source srcset="{% getUrl "/assets/images/demo-teriyaki.jpg" | resize({ width: 1000, height: 750 }) | webp %}" type="image/webp">
+                                <img src="{% getUrl "/assets/images/demo-teriyaki.jpg" | resize({ width: 1000, height: 750 }) | jpeg %}" alt="The Example Teriyaki demo restaurant website homepage" width="1000" height="750" loading="lazy" decoding="async">
+                            </picture>
+                        </div>
+                    </a>
+                    <div class="cs-project-content">
+                        <div class="cs-meta">
+                            <span class="cs-number">03</span>
+                            <span class="cs-chip">Demo build</span>
+                        </div>
+                        <h2 class="cs-project-title">Example Teriyaki</h2>
+                        <p class="cs-project-text">
+                            A restaurant site for a business that doesn't exist. One page: menu, gallery, hours and directions, photo-led on a palette deliberately unlike this one. It's a demo rather than a client build, so every name, number and address on it is fake on purpose.
+                        </p>
+                        <dl class="cs-specs">
+                            <div class="cs-spec">
+                                <dt>Type</dt>
+                                <dd>Restaurant, demo build</dd>
+                            </div>
+                            <div class="cs-spec">
+                                <dt>Scope</dt>
+                                <dd>Menu, gallery and visit details</dd>
+                            </div>
+                            <div class="cs-spec">
+                                <dt>Build</dt>
+                                <dd>Hand-coded, static, no page builder</dd>
+                            </div>
+                        </dl>
+                        <a href="https://demo-teriyaki-website.netlify.app/" target="_blank" rel="noopener" class="cs-link">Visit the demo<span class="cs-arrow" aria-hidden="true">&rarr;</span></a>
+                    </div>
+                </div>
+            </li>
         </ol>
 
         <!-- Closing note. Sits quietly on the page tan below the panels rather
