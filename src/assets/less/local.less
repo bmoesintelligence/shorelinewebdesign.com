@@ -1458,18 +1458,85 @@
         }
     }
 
-    /* the redesign example */
+    /* ── the redesign example: three homepages crossfading ──────────────
+       Order and reasoning are in the comment on the markup in index.html.
+
+       The WRAPPER carries the frame (radius, shadow) and the three shots stack
+       inside it. Putting the shadow on each shot instead makes it PULSE: mid
+       crossfade two layers paint at ~50% each, which is darker than one at
+       100%, so the box deepens twice a cycle. One shadow on a box that never
+       changes opacity holds still.
+
+       aspect-ratio goes on this DIV, never on the <picture> elements. On a
+       <picture> it silently does nothing: the img inside resolves its height
+       against an indefinite box, falls back to its own natural ratio, and the
+       picture then grows to fit its content rather than to the ratio. */
     #free-redesign .cs-picture {
+        /* one number retimes the whole loop - the keyframes are proportional,
+           and the two delays below are calc()d off it. 9s = 2.4s a shot with
+           0.6s of crossfade between. */
+        --redesignCycle: 9s;
+
+        position: relative;
         width: 100%;
+        aspect-ratio: 4 / 3;
         display: block;
+        border-radius: (10/16rem);
+        /* clip, NOT hidden: hidden forms a scroll container and kills the
+           view() timelines the ferry and the orcas run on - house rule */
+        overflow: clip;
+        box-shadow: 0 (18/16rem) (40/16rem) rgba(0, 0, 0, 0.45);
+    }
+
+    #free-redesign .cs-shot {
+        position: absolute;
+        inset: 0;
+        display: block;
+        /* the resting state is "only shot 1". The animation is what reveals 2
+           and 3, so anything that can't run it - reduced motion below - lands
+           on the single teriyaki shot this section carried before the fade. */
+        opacity: 0;
+        animation-duration: var(--redesignCycle);
+        animation-timing-function: ease-in-out;
+        animation-iteration-count: infinite;
+        /* longhand, never the `animation` shorthand - house rule */
+    }
+
+    /* ⚠ THERE IS ALWAYS AN OPAQUE LAYER UNDER THE ONE THAT IS FADING, and that
+       is the whole design of this. The obvious build - three layers sharing one
+       set of keyframes on staggered negative delays - looks wrong: `over`
+       compositing means two layers at 50% cover 0.5 + 0.5x0.5 = 75%, so 25% of
+       the navy card shows through and the picture greys out at the midpoint of
+       every crossfade. Measured, not guessed; it is plainly visible in a frame
+       grabbed mid-fade.
+
+       So shot 1 never animates and stays opaque, and each layer above it fades
+       in over whatever is already solid beneath. Coverage is 1 at every instant
+       of the loop. Shot 2 then SNAPS to 0 (73.33% -> 73.4%) rather than fading:
+       by then shot 3 is fully opaque on top of it, so the jump cannot be seen,
+       and it means the 3 -> 1 handover is a clean two-layer crossfade instead
+       of a three-way blend.
+
+       ⚠ Keep the numbers in the two keyframe blocks in step. Shot 2's hold has
+       to END exactly where shot 3's fade-in ENDS (73.33%), or the snap happens
+       in the open and the picture flickers. */
+    #free-redesign .cs-shot-1 {
+        opacity: 1;
+    }
+
+    #free-redesign .cs-shot-2 {
+        animation-name: cs-redesign-fade-2;
+    }
+
+    #free-redesign .cs-shot-3 {
+        animation-name: cs-redesign-fade-3;
     }
 
     #free-redesign .cs-graphic {
         width: 100%;
-        height: auto;
+        height: 100%;
         display: block;
-        border-radius: (10/16rem);
-        box-shadow: 0 (18/16rem) (40/16rem) rgba(0, 0, 0, 0.45);
+        object-fit: cover;
     }
 }
 
@@ -1538,6 +1605,60 @@
             background-color: var(--medium);
             box-shadow: inset 0 0 0 1px rgba(214, 85, 61, 0.35);
         }
+    }
+}
+
+/* The rotation, as two keyframe sets over one 9s cycle. Shot 1 is the floor and
+   is not animated at all.
+
+     0    - 0.6s   shot 3 fades out, revealing shot 1
+     0.6  - 3s     shot 1  (teriyaki)
+     3    - 3.6s   shot 2 fades in over shot 1
+     3.6  - 6s     shot 2  (dog food)
+     6    - 6.6s   shot 3 fades in over shot 2
+     6.6  - 9s     shot 3  (Van Dusen), and shot 2 snaps off underneath it
+
+   Percentages, not seconds, so retiming is the --redesignCycle token alone. */
+@keyframes cs-redesign-fade-2 {
+    0%,
+    33.33% {
+        opacity: 0;
+    }
+
+    40%,
+    73.33% {
+        opacity: 1;
+    }
+
+    /* hidden under shot 3 by now - see the note above */
+    73.4%,
+    100% {
+        opacity: 0;
+    }
+}
+
+@keyframes cs-redesign-fade-3 {
+    0% {
+        opacity: 1;
+    }
+
+    6.67%,
+    66.67% {
+        opacity: 0;
+    }
+
+    73.33%,
+    100% {
+        opacity: 1;
+    }
+}
+
+/* Reduced motion - hold the first shot.
+   Killing the animation drops every layer back to its declared opacity, which
+   is 0 on .cs-shot and 1 on .cs-shot-1, so this needs no second rule. */
+@media (prefers-reduced-motion: reduce) {
+    #free-redesign .cs-shot {
+        animation-name: none;
     }
 }
                                 

@@ -404,11 +404,28 @@ tags: "sitemap" # content/content.json will make sure that all pages in content/
     <!-- Free-redesign teaser: the on-ramp to /free-redesign/. WebHero-style dark
          card: left-aligned copy, a real homepage on the right.
 
-         The example is the Example Teriyaki DEMO hero, not a client site. The
-         section promises a homepage, so the shot has to read as the top of one -
-         which is why it is the hero and not the menu or gallery band.
-         #work sits directly below and its card 03 is the same hero shot, on
-         purpose - Bryan's call, 2026-08-24. Don't "fix" it to a second view.
+         The example CROSSFADES through three homepages - the two demos and one
+         live client site - on a 9s loop, 2.4s each. The section promises a
+         homepage, so every shot is the top of one, never a menu or gallery band.
+         #work sits directly below and reuses all three, on purpose - Bryan's
+         call, 2026-08-24 for the teriyaki repeat. Don't "fix" it to other views.
+
+         THE RESIZE ARGS MUST MATCH #work's CARDS EXACTLY (760x570, same filter
+         chain). Same args mean the same hashed filenames, so all three are a
+         cache hit against images the grid below already fetches and the fade
+         costs nothing over the wire. Ask for a different width here and each
+         one becomes a second download of a file the page already has.
+
+         Order is teriyaki, dog food, Van Dusen. The FIRST one is the static
+         fallback: .cs-shot is opacity 0 with .cs-shot-1 at 1, and the animation
+         is what reveals the other two, so reduced-motion (and anything that
+         can't animate) lands on exactly the single teriyaki shot this section
+         carried before the fade existed.
+
+         One alt on the first image describes the whole rotation; 2 and 3 are
+         alt="" because all three are stacked in the DOM at once and a screen
+         reader would otherwise read three descriptions of one slot.
+
          Deliberately NOT a link: .cs-button-solid below is this section's only
          ask, and a second outbound click would compete with it. -->
     <section id="free-redesign">
@@ -421,11 +438,23 @@ tags: "sitemap" # content/content.json will make sure that all pages in content/
                 </p>
                 <a href="/free-redesign/" class="cs-button-solid">Claim a free redesign<span class="cs-arrow" aria-hidden="true">&rarr;</span></a>
             </div>
-            <picture class="cs-picture">
-                <source srcset="{% getUrl "/assets/images/demo-teriyaki.jpg" | resize({ width: 900, height: 675 }) | avif(codec.avif) %}" type="image/avif">
-                <source srcset="{% getUrl "/assets/images/demo-teriyaki.jpg" | resize({ width: 900, height: 675 }) | webp %}" type="image/webp">
-                <img class="cs-graphic" src="{% getUrl "/assets/images/demo-teriyaki.jpg" | resize({ width: 900, height: 675 }) | jpeg %}" alt="The homepage of the Example Teriyaki demo restaurant site, designed and built by Shoreline Web Design" width="900" height="675" loading="lazy" decoding="async">
-            </picture>
+            <div class="cs-picture">
+                <picture class="cs-shot cs-shot-1">
+                    <source srcset="{% getUrl "/assets/images/demo-teriyaki.jpg" | resize({ width: 760, height: 570 }) | avif(codec.avif) %}" type="image/avif">
+                    <source srcset="{% getUrl "/assets/images/demo-teriyaki.jpg" | resize({ width: 760, height: 570 }) | webp %}" type="image/webp">
+                    <img class="cs-graphic" src="{% getUrl "/assets/images/demo-teriyaki.jpg" | resize({ width: 760, height: 570 }) | jpeg %}" alt="Homepages designed and built by Shoreline Web Design: the Example Teriyaki demo, the Moe Balls demo, and the Bryan Van Dusen author site" width="760" height="570" loading="lazy" decoding="async">
+                </picture>
+                <picture class="cs-shot cs-shot-2">
+                    <source srcset="{% getUrl "/assets/images/demo-dog-food.jpg" | resize({ width: 760, height: 570 }) | avif(codec.avif) %}" type="image/avif">
+                    <source srcset="{% getUrl "/assets/images/demo-dog-food.jpg" | resize({ width: 760, height: 570 }) | webp %}" type="image/webp">
+                    <img class="cs-graphic" src="{% getUrl "/assets/images/demo-dog-food.jpg" | resize({ width: 760, height: 570 }) | jpeg %}" alt="" width="760" height="570" loading="lazy" decoding="async">
+                </picture>
+                <picture class="cs-shot cs-shot-3">
+                    <source srcset="{% getUrl "/assets/images/bryan-van-dusen.jpg" | resize({ width: 760, height: 570 }) | avif(codec.avif) %}" type="image/avif">
+                    <source srcset="{% getUrl "/assets/images/bryan-van-dusen.jpg" | resize({ width: 760, height: 570 }) | webp %}" type="image/webp">
+                    <img class="cs-graphic" src="{% getUrl "/assets/images/bryan-van-dusen.jpg" | resize({ width: 760, height: 570 }) | jpeg %}" alt="" width="760" height="570" loading="lazy" decoding="async">
+                </picture>
+            </div>
         </div>
     </section>
                                     
