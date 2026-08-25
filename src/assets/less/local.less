@@ -1739,6 +1739,10 @@
             transform: rotate(-0.75deg);
         }
 
+        .cs-item:nth-of-type(4) .cs-card {
+            transform: rotate(1deg);
+        }
+
         .cs-item:hover .cs-card {
             transform: rotate(0deg) translateY(-0.375rem);
             box-shadow: 0 (22/16rem) (44/16rem) rgba(27, 42, 56, 0.18);
@@ -1756,10 +1760,13 @@
 }
 
 /* Desktop - 1024px */
-@media only screen and (min-width: 64rem) {
+/* Four projects, so the row stays 2x2 here and only goes four-across at 80rem.
+   Three columns would orphan the last card on a row of its own, and four at
+   this width squeezes the thumbnail below the width its .cs-filename needs. */
+@media only screen and (min-width: 80rem) {
     #work {
         .cs-card-group {
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(4, 1fr);
         }
     }
 }

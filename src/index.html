@@ -440,12 +440,15 @@ tags: "sitemap" # content/content.json will make sure that all pages in content/
                 <span class="cs-topper">Our work</span>
                 <h2 class="cs-title">Recent work</h2>
             </div>
-            <!-- Cards 01-02 are live CLIENT sites. Card 03 is the Example Teriyaki
-                 DEMO - a real, live build for a business that does not exist. Its
-                 name and its one-line text both say so; the /work/ page carries the
-                 full framing. Never relabel it as a client project.
+            <!-- Cards 01-02 are live CLIENT sites. Cards 03-04 are DEMOS - real,
+                 live builds for businesses that do not exist. Their one-line texts
+                 say so; the /work/ page carries the full framing. Never relabel
+                 either as a client project.
                  Card 03 is the same hero shot #free-redesign uses just above. That
                  repeat is deliberate, not an oversight.
+                 Four cards, so the grid runs 1 / 2 / 4 across rather than the 3 it
+                 used to: three columns would have left card 04 orphaned on a second
+                 row. The tilt below is per-card, so a fifth needs its own angle.
                  The .cs-placeholder / .cs-ph-* drop-zone styles this card used to
                  use are still in local.less, unused, in case a slot goes empty again. -->
             <ul class="cs-card-group">
@@ -504,6 +507,25 @@ tags: "sitemap" # content/content.json will make sure that all pages in content/
                     </div>
                     <p class="cs-item-text">
                         Demo build for a restaurant that doesn't exist.
+                    </p>
+                </li>
+                <li class="cs-item">
+                    <figure class="cs-card">
+                        <a href="https://demo-dog-food-website.netlify.app/" target="_blank" rel="noopener" class="cs-thumb-link" aria-label="Visit the Moe Balls demo site (opens in a new tab)">
+                            <picture class="cs-thumb">
+                                <source srcset="{% getUrl "/assets/images/demo-dog-food.jpg" | resize({ width: 760, height: 570 }) | avif(codec.avif) %}" type="image/avif">
+                                <source srcset="{% getUrl "/assets/images/demo-dog-food.jpg" | resize({ width: 760, height: 570 }) | webp %}" type="image/webp">
+                                <img src="{% getUrl "/assets/images/demo-dog-food.jpg" | resize({ width: 760, height: 570 }) | jpeg %}" alt="Moe Balls demo dog treat brand website homepage" width="760" height="570" loading="lazy" decoding="async">
+                            </picture>
+                        </a>
+                        <figcaption class="cs-filename">demo-dog-food-website.netlify.app</figcaption>
+                    </figure>
+                    <div class="cs-flex">
+                        <h3 class="cs-h3">Moe Balls</h3>
+                        <span class="cs-number">04</span>
+                    </div>
+                    <p class="cs-item-text">
+                        Demo build for a dog treat brand that doesn't exist.
                     </p>
                 </li>
             </ul>

@@ -43,13 +43,16 @@ eleventyComputed:
          tan-navy-tan rhythm instead of running as one flat tan field.
          Hence .cs-panel-* on every <li>; .cs-project-inner is the flex row.
 
-         Items 01 and 02 are real, live CLIENT sites. Item 03 is a DEMO: a
-         complete, live restaurant site built for a business that does not
-         exist, hosted on a free netlify.app subdomain and noindexed at its
-         own end. It is chipped "Demo build" rather than "Live site" and the
-         copy says outright that it is not a client, so nothing on this page
+         Items 01 and 02 are real, live CLIENT sites. Items 03 and 04 are
+         DEMOS: complete, live sites built for businesses that do not exist,
+         hosted on free netlify.app subdomains and noindexed at their own end.
+         Both are chipped "Demo build" rather than "Live site" and the copy on
+         each says outright that it is not a client, so nothing on this page
          pretends to be a client project that isn't one. That distinction is
          the whole reason the chip text differs - do not level them out.
+         The two demos are deliberately unalike - photo-led restaurant, then a
+         hand-lettered product brand - because showing range is the only reason
+         a second one exists.
 
          NEEDS BRYAN'S CONFIRMATION: the "Build" row on each project states the
          stack as hand-coded static (Eleventy). Correct it per project if either
@@ -257,6 +260,52 @@ eleventyComputed:
                             </div>
                         </dl>
                         <a href="https://demo-teriyaki-website.netlify.app/" target="_blank" rel="noopener" class="cs-link">Visit the demo<span class="cs-arrow" aria-hidden="true">&rarr;</span></a>
+                    </div>
+                </div>
+            </li>
+
+            <!-- 04 — Moe Balls (demo build, deliberately not a client) -->
+            <li class="cs-project cs-panel-dark">
+                <div class="cs-project-inner">
+                    <a href="https://demo-dog-food-website.netlify.app/" target="_blank" rel="noopener" class="cs-frame-link" aria-label="Visit the Moe Balls demo site (opens in a new tab)">
+                        <div class="cs-frame">
+                            <div class="cs-frame-bar" aria-hidden="true">
+                                <span class="cs-dot"></span>
+                                <span class="cs-dot"></span>
+                                <span class="cs-dot"></span>
+                                <span class="cs-frame-url">demo-dog-food-website.netlify.app</span>
+                            </div>
+                            <picture class="cs-shot">
+                                <source srcset="{% getUrl "/assets/images/demo-dog-food.jpg" | resize({ width: 1000, height: 750 }) | avif(codec.avif) %}" type="image/avif">
+                                <source srcset="{% getUrl "/assets/images/demo-dog-food.jpg" | resize({ width: 1000, height: 750 }) | webp %}" type="image/webp">
+                                <img src="{% getUrl "/assets/images/demo-dog-food.jpg" | resize({ width: 1000, height: 750 }) | jpeg %}" alt="The Moe Balls demo dog treat brand website homepage" width="1000" height="750" loading="lazy" decoding="async">
+                            </picture>
+                        </div>
+                    </a>
+                    <div class="cs-project-content">
+                        <div class="cs-meta">
+                            <span class="cs-number">04</span>
+                            <span class="cs-chip">Demo build</span>
+                        </div>
+                        <h2 class="cs-project-title">Moe Balls</h2>
+                        <p class="cs-project-text">
+                            A dog treat brand that doesn't exist. One page: the story, the flavours, the ingredients and a sign-up for the next bake. Hand-lettered type and flat colour blocking, built to look nothing like the restaurant demo above. Another demo rather than a client build, so nothing on it is real and nothing is for sale.
+                        </p>
+                        <dl class="cs-specs">
+                            <div class="cs-spec">
+                                <dt>Type</dt>
+                                <dd>Product brand, demo build</dd>
+                            </div>
+                            <div class="cs-spec">
+                                <dt>Scope</dt>
+                                <dd>Story, flavours and bake list</dd>
+                            </div>
+                            <div class="cs-spec">
+                                <dt>Build</dt>
+                                <dd>Hand-coded, static, no page builder</dd>
+                            </div>
+                        </dl>
+                        <a href="https://demo-dog-food-website.netlify.app/" target="_blank" rel="noopener" class="cs-link">Visit the demo<span class="cs-arrow" aria-hidden="true">&rarr;</span></a>
                     </div>
                 </div>
             </li>
