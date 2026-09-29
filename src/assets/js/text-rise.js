@@ -173,7 +173,7 @@
         }
     }
 
-    function split(el) {
+    function split(el, html) {
         if (el.classList.contains("is-split")) return false;
         wrapWords(el);
         var count = assignLines(el);
@@ -222,6 +222,35 @@
                     : "flex-start";
 
         el.classList.add("is-split");
+
+        /* ── the split has to be CHECKED, not assumed ──
+           Every line here was measured inside the running paragraph and is now
+           in a box of its own, and those two are only the same thing while no
+           word can break in the middle. `.cs-w { white-space: nowrap }` in
+           root.less is what holds that - see the note there - but a word wider
+           than the container still has nowhere to go, and a line that re-wraps
+           inside a mask built for one line is worse than no split at all: the
+           mask clips, so the second line is cut off rather than merely ugly.
+
+           So measure. A mask taller than about one and a half line-heights
+           wrapped, and the whole element goes back to plain text and keeps the
+           block-level rise the stylesheet already gives it. Silent, correct,
+           and self-healing on the next resize. */
+        if (html !== undefined) {
+            var lh = parseFloat(window.getComputedStyle(el).lineHeight) || 0;
+            if (lh > 0) {
+                var wrapped = masks.some(function (m) {
+                    return m.getBoundingClientRect().height > lh * 1.6;
+                });
+                if (wrapped) {
+                    el.innerHTML = html;
+                    el.classList.remove("is-split");
+                    el.style.alignItems = "";
+                    return false;
+                }
+            }
+        }
+
         return true;
     }
 
@@ -272,7 +301,7 @@
         if (started) return;
 
         var html = el.innerHTML;
-        if (split(el)) splits.push({ el: el, html: html });
+        if (split(el, html)) splits.push({ el: el, html: html });
     }
 
     function run() {
@@ -311,7 +340,7 @@
             splits.forEach(function (rec) {
                 var wasIn = rec.el.classList.contains("is-in");
                 restore(rec);
-                split(rec.el);
+                split(rec.el, rec.html);
                 /* the entrance already happened; the new lines must not replay
                    it, they just need to be visible */
                 if (wasIn) rec.el.classList.add("is-in");

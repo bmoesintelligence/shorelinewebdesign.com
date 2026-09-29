@@ -475,6 +475,24 @@
 		overflow-x: clip;
 		font-family: var(--bodyFont);
 		font-size: 100%;
+		/* ⚠ THE PAGE GROUND, and it was missing in light mode only.
+		   `body.dark-mode` has set --dark since the kit shipped; light mode
+		   painted nothing, so every section carried its own background and the
+		   ROOT CANVAS - white - was what showed through any gap between them.
+
+		   That is not theoretical. The flipped wave divider at the bottom of
+		   #speed takes `transform: scaleY(-1)`, which in WebKit puts it on its
+		   own compositing layer, and the layer's top edge does not land exactly
+		   on #speed's bottom: iOS Safari drew a one-device-pixel WHITE line the
+		   full width of the page, between the navy and the sand. Reproduced in
+		   Playwright's WebKit at dpr 3 and bisected to the transform - removing
+		   the flip removed the line, removing the clip-path, the crests, the
+		   bands and the animations did not.
+
+		   Painting the ground here is the fix rather than chasing the seam: a
+		   subpixel gap over warm sand is warm sand. It also covers every other
+		   place on the site where two sections meet on a fractional boundary. */
+		background-color: var(--warmSand);
 		transition: background-color 0.3s;
 		color: var(--bodyTextColor);
 	}
@@ -4866,6 +4884,29 @@ body #cs-navigation.cs-at-footer {
        moves at all. */
     .cs-rise-in {
         display: block;
+    }
+
+    /* ── one word, one box ──
+       ⚠ Load-bearing for the SPLIT, not for the look. text-rise.js measures
+       each word's top to decide which line it is on, and then moves the whole
+       word into that line's block. A word the browser breaks INSIDE - at a
+       hyphen, a soft hyphen, a slash - reports the top of its first fragment,
+       so it is filed on the earlier line and that line is then wider than the
+       box it has just been given, and re-wraps.
+
+       Measured on the home hero at 402px: "Hand-coded" broke after the hyphen,
+       so line 1 became "Fast, custom, and built to be found. Hand-coded" in a
+       370px box and rendered as two ragged lines with the rest of the paragraph
+       still following its own breaks. It reads as broken spacing, which is
+       exactly what it is.
+
+       nowrap removes the only break opportunity that is INSIDE a word; the
+       spaces between the spans are untouched, so the paragraph still wraps
+       normally. A word wider than its container would now overflow rather than
+       break - text-rise.js checks for that after splitting and puts the
+       paragraph back rather than shipping it. */
+    .cs-w {
+        white-space: nowrap;
     }
 
     /* 115%, not 100%: the extra 15% is travel that happens entirely out of

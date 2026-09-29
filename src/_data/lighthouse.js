@@ -40,11 +40,23 @@
  * future run captures all four, add them and widen the footnote then — do not
  * assume desktop matches mobile on the other three.
  *
- * STALE AS OF THIS COMMIT. These are the launch-week figures (2026-08-13).
- * Since then the home page has gained the waterline nav, the wave dividers, the
- * text-rise headings, the #services proof trays and the three-way homepage
- * crossfade. The date printed on the page is honest, but re-run PSI before
- * treating these as current.
+ * ⚠ RE-MEASURED 2026-09-29, from Bryan's own PSI run on the live site after the
+ * homepage redesign shipped. The launch-week figures (2026-08-13) were mobile
+ * 94/95/100/100 and desktop 100; the page had been printing those through the
+ * waterline nav, the wave dividers, the text-rise headings, the #services proof
+ * trays and the homepage crossfade, and was understating itself by then -
+ * mobile performance had gone 94 -> 95 and accessibility 95 -> 97.
+ *
+ * ⚠ THE MOBILE/DESKTOP SPLIT BELOW IS READ FROM TWO SCREENSHOTS, not from a
+ * labelled API response - the anonymous PSI quota was exhausted, so the run
+ * could not be repeated here. Both tabs reported accessibility 97, best
+ * practices 100 and SEO 100; only performance differed, 95 against 100. The 95
+ * is recorded as MOBILE and the 100 as desktop, because desktop scores at or
+ * above mobile essentially always and that is how the launch-week pair fell.
+ *
+ * If that is backwards the page merely understates itself, which is the correct
+ * direction for a number a visitor is invited to check. Swap them on the next
+ * run that captures the tab labels.
  */
 
 /* ⚠ TWO KEYS BELOW ARE NO LONGER RENDERED, as of 2026-09-25.
@@ -61,15 +73,15 @@
 
 module.exports = {
     // ISO, for anyone diffing this file
-    measured: "2026-08-13",
+    measured: "2026-09-29",
     // Not currently printed — see the note above. Keep it in step with `measured`.
-    measuredLabel: "13 Aug 2026",
+    measuredLabel: "29 Sep 2026",
 
     /* PSI strategy=mobile. The `arc` on each gauge ring IS this number, so the
        ring can never disagree with the figure printed inside it. */
     mobile: {
-        performance: 94,
-        accessibility: 95,
+        performance: 95,
+        accessibility: 97,
         bestPractices: 100,
         seo: 100,
     },
