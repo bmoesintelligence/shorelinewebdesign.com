@@ -1,4 +1,31 @@
 // ─────────────────────────────────────────────────────────────────────────────
+// MIXIN — frosted glass
+//
+// ⚠ Declared here as well as in root.less, deliberately. Every .less file in
+// src/assets/less/ is compiled as its own stylesheet (there are no @imports and
+// no partials convention), so a mixin in root.less is invisible from this file.
+// The VALUES are shared - --glass and --glassCard are custom properties on
+// :root in root.css, which loads on every page - so there is still exactly one
+// place to change the blur or the alpha. Only these two prefixed declarations
+// are duplicated.
+//
+// ⚠ TOP LEVEL. LESS scopes a mixin to the block it is declared in, so one
+// inside an @media block is invisible to every other @media block, and the
+// failure mode is not "undefined mixin" - it is a parse error that
+// src/config/processors/less.js CATCHES AND LOGS rather than throwing. The
+// build reports success and public/ keeps serving the previous stylesheet.
+//
+// ⚠ The -webkit- prefix must stay. Autoprefixer adds none (no browserslist in
+// this project, and its defaults assume Safari is new enough); less.js passes
+// `remove: false` so it does not strip this one either. iOS Safari 15-17 needs
+// it.
+// ─────────────────────────────────────────────────────────────────────────────
+.glass() {
+	-webkit-backdrop-filter: var(--glass);
+	backdrop-filter: var(--glass);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // CRITICAL PAGE STYLES
 // Above-the-fold and high-priority styles for the home page's landing section.
 // Put the first section of the home page in here, so it loads immediately.
@@ -23,7 +50,7 @@
 
         .cs-container {
             width: 100%;
-            max-width: (1280/16rem);
+            max-width: var(--containerWidth);
             margin: auto;
             display: flex;
             flex-direction: column;
@@ -42,6 +69,17 @@
             align-items: flex-start;
         }
 
+        /* ── the masked rise ──
+           .cs-rise (the window) and .cs-rise-in (the line that travels through
+           it) are defined once in root.less, because the same two classes now
+           drive every section on the page. Only the TIMING is here: #hero runs
+           its entrance off the stylesheet on load, everything below it waits
+           for IntersectionObserver. See "Rise and reveal" in root.less. */
+
+        /* Its own window — no extra element needed, it already generates a box.
+           The flex row that pairs the pin with the text moved onto .cs-rise-in,
+           because the thing that travels has to be a child of the thing that
+           clips. */
         .cs-topper {
             font-family: var(--monoFont);
             font-size: (14/16rem);
@@ -50,10 +88,27 @@
             text-transform: uppercase;
             letter-spacing: 0.1em;
             color: var(--coralText);
-            display: flex;
-            align-items: center;
-            gap: (8/16rem);
-            margin-bottom: (20/16rem);
+            display: block;
+            overflow: clip;
+            /* ── clip room ──
+               This box is a mask, so anything that leaves it is cut. It needs
+               to hold two things: the comma's tail and the pin's round bottom
+               (a few px), and the beacon ring, which scales the 9px pin to
+               23.4px and so overhangs ~3.3px vertically and ~7.2px to the LEFT
+               of x=0.
+
+               Every pixel of padding is taken straight back out of the margins,
+               so the topper occupies exactly the space it did before: 20px of
+               gap below it, and its text on the same baseline. Change the ring's
+               scale in pin-ping and these four numbers have to be rechecked. */
+            padding: (8/16rem) 0 (8/16rem) (10/16rem);
+            margin: (-8/16rem) 0 (12/16rem) (-10/16rem);
+
+            .cs-rise-in {
+                display: flex;
+                align-items: center;
+                gap: (8/16rem);
+            }
         }
 
         .cs-pin {
@@ -63,16 +118,41 @@
             border-radius: 50%;
             display: inline-block;
             flex: none;
+            /* the ring below is absolute against this */
+            position: relative;
+
+            /* the beacon — see AMBIENT MOTION below. A second coral disc that
+               grows out of the dot and fades. It sits UNDER nothing and hits
+               nothing: inset 0 means it starts exactly the pin's size, and
+               scaling a pseudo-element cannot reflow the row the way a growing
+               width would. */
+            &:after {
+                content: "";
+                position: absolute;
+                inset: 0;
+                border-radius: 50%;
+                background-color: var(--coral);
+                animation-name: pin-ping;
+                animation-duration: 2.8s;
+                /* out fast, then a long tail — a ping decays, it does not
+                   travel at a constant speed */
+                animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+                animation-iteration-count: infinite;
+                /* after the topper has finished rising into place */
+                animation-delay: 1.9s;
+            }
         }
 
         .cs-title {
             font-family: var(--headerFont);
             /* ── The three-line rule ──
-               The h1 is hard-broken into exactly three lines by
-               <br class="cs-title-break">. Those breaks force where lines 1
-               and 2 end, but they cannot stop line 3, "actually deserves.",
-               from wrapping again if it outgrows its column — which turns the
-               heading into four lines and wrecks the hero.
+               The h1 is exactly three lines, one .cs-rise mask each. Those
+               spans fix where lines 1 and 2 end, but they cannot stop line 3,
+               "actually deserves.", from wrapping again if it outgrows its
+               column — which turns the heading into four lines and wrecks the
+               hero. (It was three <br class="cs-title-break"> until the masked
+               rise went in; a <br> generates no box, so there is nothing to
+               clip a line against.)
 
                In Sora 800 that string measures 8.98 x the font-size. So every
                band below has to satisfy, with headroom:
@@ -96,6 +176,16 @@
             max-width: none;
             margin: 0 0 (20/16rem);
             color: var(--inkNavy);
+            /* A flex COLUMN, not a block. Three line masks stacked as blocks
+               would collapse their compensating margins into each other (see
+               .cs-rise) and shift the spacing; flex items never collapse, so
+               the padding and the negative margin cancel exactly and the
+               heading measures the same as it did unmasked. flex-start keeps
+               each window hugging its own line instead of stretching to the
+               column, so a mask can never clip a neighbouring line. */
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
         }
 
         /* payoff line carries the accent colour */
@@ -103,6 +193,13 @@
             color: var(--coralAccent);
         }
 
+        /* Also its own mask. No descender padding needed here, unlike the
+           heading: line-height 1.6em leaves ~0.15em of half-leading either
+           side of the glyph box, which is already more room than a "g" wants.
+           This one rises as a BLOCK rather than per line — splitting a
+           wrapping paragraph into lines needs JS, and there is none on this
+           page. Three lines of travel in one move, which is why it gets a
+           slower duration than the heading below. */
         .cs-text {
             font-size: (18/16rem);
             line-height: 1.6em;
@@ -110,6 +207,7 @@
             max-width: 46ch;
             margin: 0 0 (36/16rem);
             color: var(--pugetBlue);
+            overflow: clip;
         }
 
         .cs-button-group {
@@ -245,6 +343,26 @@
    but leaves nothing applied afterwards, so no residual transform lingers on
    .cs-image-group to form a containing block around the ferry. */
 @media only screen and (min-width: 0rem) {
+    /* ── the rise ──
+       What the type does: it slides up into place from behind the bottom edge
+       of its own mask and never changes opacity. Nothing is ever seen
+       half-transparent, so the heading never sits washed-out grey over the
+       tan the way a cross-fade leaves it mid-flight.
+
+       115%, not 100%: the extra 15% is travel that happens entirely out of
+       sight, so the line enters the window already moving instead of peeling
+       off the edge from a standstill. Same figure clarvos.com uses for the
+       effect this is modelled on.
+
+       No opacity here on purpose — see .cs-button-group below for what still
+       fades and why. */
+    @keyframes hero-rise {
+        from {
+            transform: translateY(115%);
+        }
+    }
+
+    /* The plain fade, kept for everything that CANNOT be masked. */
     @keyframes hero-in {
         from {
             opacity: 0;
@@ -302,6 +420,71 @@
         }
     }
 
+    /* ─────────────────────────────────────────────────────────────────────
+       AMBIENT MOTION — the two things that never stop
+       ─────────────────────────────────────────────────────────────────────
+       Everything else in the hero is an ENTRANCE: it plays once and the page
+       goes still. These two keep going, so the section reads as live rather
+       than as a screenshot that finished loading.
+
+       Rationed to exactly two, and both are decorative and aria-hidden. A
+       moving CTA reads as a nag, and moving body copy is just hard to read -
+       the value of ambient motion collapses the moment it competes with
+       something the visitor is trying to use.
+
+       ⚠ COST: both animate `transform`/`opacity` only, so they run on the
+       compositor and never touch layout or the main thread. Nothing here can
+       move LCP, and CLS stays 0 because a transform does not reflow. That is
+       the whole reason neither one animates width, top or margin. */
+
+    /* ── the moored ferry ──
+       A boat at a slip rides the swell. It is the biggest object in the hero
+       and already drawn, so this is the cheapest "alive" on the page.
+
+       It rides .cs-ferry-HULL, the <img>, because the other two elements are
+       spoken for: .cs-ferry carries the berth plus the scroll-driven
+       departure, and .cs-ferry-boat carries the dock-in. Three transforms on
+       three nested elements COMPOSE; three on one element means the last
+       declaration wins and the other two vanish silently.
+
+       ⚠ Vertical only, no rotation. The scene is isometric on a 31.7° axis
+       and the hull is drawn to sit on that projection - tilting it breaks the
+       geometry and the boat reads as sliding off the water rather than
+       floating on it.
+
+       2.6% of its own height (~3.4px), over 7s. Measured against the artwork,
+       not picked: the scene has a DRAWN waterline and a pier, so the hull has a
+       ceiling before it reads as levitating rather than floating. Rendered at
+       both extremes side by side, 2.6% still sits berthed; well past that the
+       boat separates from the water it is drawn into. 1.8% was tried first and
+       sat under the threshold of noticing.
+
+       Big enough to catch if you look at the boat, small enough that you do not
+       while reading the headline eight inches to the left. */
+    @keyframes ferry-moored {
+        50% {
+            transform: translateY(-2.6%);
+        }
+    }
+
+    /* ── the location beacon ──
+       A ring leaving the pin beside "RICHMOND BEACH, WA", the way a marker
+       pings on a chart. It is the one spot on the page where a slow repeat
+       reads as meaning ("this is a place") rather than as decoration.
+
+       Scale, not width/height: a growing box would reflow the topper row on
+       every frame. */
+    @keyframes pin-ping {
+        from {
+            transform: scale(1);
+            opacity: 0.45;
+        }
+        to {
+            transform: scale(2.6);
+            opacity: 0;
+        }
+    }
+
     /* ── the two tuning knobs ──
        On `body`, not #hero: #stats is a SIBLING section, and custom properties
        inherit down the tree rather than sideways, so a hero-scoped variable is
@@ -321,9 +504,7 @@
     }
 
     #hero {
-        .cs-topper,
-        .cs-title,
-        .cs-text,
+        .cs-rise-in,
         .cs-button-group,
         .cs-badge {
             animation-duration: var(--intro-dur);
@@ -332,12 +513,23 @@
             animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
         }
 
-        .cs-topper,
-        .cs-title,
-        .cs-text,
+        /* Type rises, and only type. */
+        .cs-rise-in {
+            animation-name: hero-rise;
+        }
+
+        /* Chrome still fades, because neither of these can live inside a
+           window. The button row's focus ring is an outline 2px OUTSIDE the
+           element plus 2px of offset, and a mask tight enough to hide the
+           buttons would cut it — a keyboard user would lose the indicator.
+           .cs-badge is absolutely positioned at top:-18px/right:-6px so it
+           overhangs the diorama on two sides by design; clipping it to a box
+           is the one thing it must not do.
+
+           This is also the line clarvos.com draws: its headings and body copy
+           are split and masked, its button row and its artwork are a plain
+           opacity + 1.5rem rise. Our 26px is the same move. */
         .cs-button-group,
-        /* the badge rides with the copy: it is small, decorative and not the
-           LCP candidate, so a plain fade is fine for it */
         .cs-badge {
             animation-name: hero-in;
         }
@@ -367,19 +559,65 @@
 
 
 
-        .cs-topper {
+        .cs-topper .cs-rise-in {
             animation-delay: 0s;
         }
+
+        /* The heading is three separate lines now, so it can wave rather than
+           arrive in one slab. A THIRD of a step between them, not a whole one:
+           a full step reads as three events, and pushes the paragraph and the
+           buttons behind it late enough to stretch the whole run past the ~1.5s
+           ceiling the two knobs above are set by. */
         .cs-title {
-            animation-delay: var(--intro-step);
+            .cs-rise:nth-child(1) .cs-rise-in {
+                animation-delay: var(--intro-step);
+            }
+            .cs-rise:nth-child(2) .cs-rise-in {
+                animation-delay: calc(var(--intro-step) * 1.35);
+            }
+            .cs-rise:nth-child(3) .cs-rise-in {
+                animation-delay: calc(var(--intro-step) * 1.7);
+            }
         }
         .cs-image-group {
             /* half a beat behind the headline: the scene is the biggest object
                on screen and leading with it flattens the stagger */
             animation-delay: calc(var(--intro-step) * 1.5);
         }
-        .cs-text {
-            animation-delay: calc(var(--intro-step) * 2);
+        /* ── the paragraph ──
+           Falls in behind the heading's last line rather than beside it.
+
+           TWO treatments, and which one runs depends on whether the splitter
+           got here in time. Where a paragraph breaks depends on the width it
+           is read at, so per-line masking cannot be authored in the markup the
+           way the h1's three lines are - it has to be measured after layout,
+           which means JS, which means it is not guaranteed.
+
+           Unsplit is the floor: the whole paragraph rises as one block behind
+           its own clip. It travels all three lines in a single move where a
+           heading line only travels one, so at the shared 0.9s it reads as a
+           flick - hence the longer duration, which puts it back at roughly
+           everyone else's speed.
+
+           Split is the ceiling, and matches the h1: one window per rendered
+           line, a third of a step apart, each travelling a single line at the
+           normal duration. */
+        .cs-text .cs-rise-in {
+            animation-delay: calc(var(--intro-step) * 2.2);
+            animation-duration: calc(var(--intro-dur) * 1.35);
+        }
+
+        .cs-text.is-split {
+            /* the per-line masks each carry their own clip now; the block-level
+               one would only fight the descender padding inside them */
+            overflow: visible;
+        }
+
+        .cs-text.is-split .cs-rise-in {
+            animation-delay: calc(
+                (var(--intro-step) * 2.2) + (var(--rise-i, 0) * var(--intro-step) * 0.35)
+            );
+            animation-duration: var(--intro-dur);
         }
         .cs-button-group {
             animation-delay: calc(var(--intro-step) * 3);
@@ -389,6 +627,18 @@
            floating over a blank one */
         .cs-badge {
             animation-delay: 0.55s;
+        }
+
+        /* the hull keeps moving once the boat has docked — see AMBIENT MOTION */
+        .cs-ferry-hull {
+            animation-name: ferry-moored;
+            animation-duration: 7s;
+            animation-timing-function: ease-in-out;
+            animation-iteration-count: infinite;
+            animation-direction: alternate;
+            /* starts as the arrival finishes (dock ends ~1.55s), so the boat
+               settles onto the water instead of bobbing through its approach */
+            animation-delay: 1.55s;
         }
 
         /* Longer and later than the rest: a boat crossing water should not move
@@ -413,23 +663,83 @@
        buttons leave off (3 steps) and sweeps left to right a half-step apart,
        landing with the ferry at ~1.55s. Not an LCP candidate — the diorama is —
        so a plain fade is fine here. */
-    #stats .cs-item {
-        animation-name: hero-in;
-        animation-duration: var(--intro-dur);
-        animation-fill-mode: backwards;
-        animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+    /* ── the stat strip's entrance ──
+       Three movements, and which vocabulary each one uses is the point.
 
-        &:nth-of-type(1) {
+         TILE    fades up (hero-in). It is a box, and boxes fade — root.less
+                 draws that line and the hero follows it for its button row and
+                 its badge.
+         FIGURE  RISES (hero-rise), masked by its own .cs-rise. These are the
+                 largest type on the page after the h1, and until 2026-09-22
+                 they simply fell out of the tile's cross-fade, which meant the
+                 biggest numerals on the page spent most of their entrance
+                 sitting washed-out grey over the sand. Type slides and never
+                 fades: same rule, same keyframe, same easing as the headline.
+         RULE    draws left to right under the figure.
+
+       ⚠ The whole run still has to finish inside ~1.5s. That ceiling is set in
+       the --intro-dur / --intro-step comment above and it is not arbitrary:
+       past it the intro stops reading as considered and starts reading as
+       slow, and repeat visitors feel it most. The last tile is the binding
+       constraint, so the figure and the rule are deliberately SHORTER than the
+       0.9s the tiles get — 0.75s and 0.55s. Last tile: 0.65s delay + 0.065
+       offset + 0.75 = 1.465s. Lengthen either and the budget is gone. */
+    #stats {
+        .cs-item {
+            animation-name: hero-in;
+            animation-duration: var(--intro-dur);
+            animation-fill-mode: backwards;
+            animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        /* Half a step behind its own tile, so the figure rises INTO a card that
+           has already arrived rather than travelling inside something still
+           fading. At zero offset the rise happens under the fade and is simply
+           not seen. */
+        .cs-rise-in {
+            animation-name: hero-rise;
+            animation-duration: 0.75s;
+            animation-fill-mode: backwards;
+            animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .cs-number:after {
+            animation-name: stat-rule;
+            animation-duration: 0.55s;
+            animation-fill-mode: backwards;
+            animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .cs-item:nth-of-type(1) {
             animation-delay: calc(var(--intro-step) * 3.5);
+
+            .cs-rise-in { animation-delay: calc(var(--intro-step) * 4); }
+            .cs-number:after { animation-delay: calc(var(--intro-step) * 4.2); }
         }
-        &:nth-of-type(2) {
+        .cs-item:nth-of-type(2) {
             animation-delay: calc(var(--intro-step) * 4);
+
+            .cs-rise-in { animation-delay: calc(var(--intro-step) * 4.5); }
+            .cs-number:after { animation-delay: calc(var(--intro-step) * 4.7); }
         }
-        &:nth-of-type(3) {
+        .cs-item:nth-of-type(3) {
             animation-delay: calc(var(--intro-step) * 4.5);
+
+            .cs-rise-in { animation-delay: calc(var(--intro-step) * 5); }
+            .cs-number:after { animation-delay: calc(var(--intro-step) * 5.2); }
         }
-        &:nth-of-type(4) {
+        .cs-item:nth-of-type(4) {
             animation-delay: calc(var(--intro-step) * 5);
+
+            .cs-rise-in { animation-delay: calc(var(--intro-step) * 5.5); }
+            .cs-number:after { animation-delay: calc(var(--intro-step) * 5.7); }
+        }
+    }
+
+    /* the rule, drawn on from its left end */
+    @keyframes stat-rule {
+        from {
+            transform: scaleX(0);
         }
     }
 
@@ -438,13 +748,20 @@
        needs no script at all. */
     @media (prefers-reduced-motion: reduce) {
         #hero {
-            .cs-topper,
-            .cs-title,
-            .cs-text,
+            .cs-rise-in,
             .cs-button-group,
             .cs-badge,
-            .cs-ferry-boat {
+            .cs-ferry-boat,
+            /* the two ambient ones matter MORE here than the entrances: an
+               entrance is over in a second, these two would run forever */
+            .cs-ferry-hull,
+            .cs-pin:after {
                 animation-name: none;
+            }
+
+            /* nothing should be left mid-ping */
+            .cs-pin:after {
+                display: none;
             }
 
             /* The curtain must not be left sitting over the scene. This has to
@@ -457,7 +774,17 @@
             }
         }
 
-        #stats .cs-item {
+        /* ⚠ All three, not just the tile. The figure's rise leaves it
+           translated 115% down behind its own clip if the animation is
+           cancelled without also cancelling the transform, and the rule would
+           sit at scaleX(0) — i.e. a reduced-motion visitor would get four
+           empty tiles with no figures and no rules. `animation-name: none`
+           drops the whole declaration, so each element renders at its authored
+           state. That is the same reason the hero lists every one of its
+           animated parts here rather than relying on a parent. */
+        #stats .cs-item,
+        #stats .cs-rise-in,
+        #stats .cs-number:after {
             animation-name: none;
         }
     }
@@ -551,15 +878,40 @@
                line everywhere from 1040 to 1310 — the whole laptop range. The
                column has to widen at least as fast as the type inside it. */
             flex: 1 1 auto;
-            max-width: clamp(20rem, 46vw, 36.25rem);
+            /* 320px - 640px, raised from a 580px cap. That cap was what held
+               the h1 at 60px: see the three-line rule in the base block, and
+               --containerWidth in root.less for where the extra room came from.
+               The 46vw term is what protects narrow laptops - below ~1390 the
+               viewport still decides, so the diorama never gets squeezed on the
+               screens that can least afford it. */
+            max-width: clamp(20rem, 46vw, 40rem);
         }
 
         .cs-title {
-            /* 34px - 60px. Was 5vw/64px, which needed 575px of the 580px
-               column — 5px of slack, and only above 1310. 4.7vw against the
-               46vw column above holds ~8% headroom at every width from 1024
-               up, so the heading stays three lines. */
-            font-size: clamp(2.125rem, 4.7vw, 3.75rem);
+            /* 34px - 64px, up from 34px - 60px.
+
+               MEASURED, not guessed. The binding line is "actually deserves."
+               at 8.99em (the other two are 8.55 and 7.39), so the headline needs
+               8.99 x font-size and the rule wants that inside 0.92 x column:
+
+                   64px x 8.99 = 575px  <=  0.92 x 640 = 589px   ✓ 14px slack
+
+               Re-breaking the copy was tried first and does not help: the best
+               alternative break is 8.55em, worth 2px of font-size. With this
+               headline the COLUMN is the only dial, which is why it moved.
+
+               ⚠ 4.8vw, not 5vw, and the reason is the NARROW end rather than
+               the wide one. Both the font (4.8vw) and the column (46vw) track
+               the viewport below ~1333, so their ratio is fixed: the line
+               always lands at 8.99 x 4.8 / 46 = 93.8% of the column, holding
+               6.2% headroom at every width in that range. At 5vw that ratio
+               goes to 97.7% and a 1280 laptop has 14px of slack, which is the
+               kind of margin that survives here and wraps to four lines on a
+               machine whose font rounds differently.
+
+               Recheck that inequality whenever the copy, the column or this
+               clamp changes. */
+            font-size: clamp(2.125rem, 4.8vw, 4rem);
         }
 
         .cs-image-group {
@@ -654,6 +1006,10 @@
 /* Mobile - 360px */
 @media only screen and (min-width: 0rem) {
     #stats {
+        /* ⚠ Literal rgba — LESS emits custom-property values verbatim, so no
+           (n/16rem) math is allowed in here. */
+        --statRule: rgba(27, 42, 56, 0.1);
+
         /* carries the hero's sand through so the strip reads as one surface */
         background-color: var(--warmSand);
         padding: 0 (16/16rem) clamp(1.75rem, 7.82vw, 1.75rem);
@@ -686,7 +1042,10 @@
             list-style: none;
             /* 18px - 26px */
             padding: clamp(1.125rem, 2.6vw, 1.625rem);
-            background-color: #fdfbf4;
+            /* frosted — see --glassCard in root.less for the alpha and for why
+               this reads as almost nothing on a flat tan ground */
+            background-color: var(--glassCard);
+            .glass();
             border: 1px solid rgba(27, 42, 56, 0.08);
             border-radius: (12/16rem);
             box-shadow: 0 (6/16rem) (18/16rem) rgba(27, 42, 56, 0.06);
@@ -764,8 +1123,48 @@
             box-sizing: border-box;
             /* 14px - 18px */
             padding-bottom: clamp(0.875rem, 1.8vw, 1.125rem);
-            /* inset shadow, never a border — house rule */
-            box-shadow: inset 0 -1px 0 rgba(27, 42, 56, 0.1);
+            /* the :after below needs an origin */
+            position: relative;
+        }
+
+        /* ── the spec rule ──
+           ⚠ A pseudo-element, not the inset box-shadow it was. The house rule
+           bans a real BORDER here because a border changes the box and shifts
+           what is measured around it; an absolutely positioned 1px line does
+           neither, and unlike a box-shadow it can be scaled. That is the whole
+           reason for the change: a shadow cannot be drawn on.
+
+           It is also why the colour moved out of the dark-mode block's
+           `.cs-number { box-shadow }` override and into a token here. */
+        .cs-number:after {
+            content: "";
+            height: 1px;
+            background-color: var(--statRule);
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            transform-origin: left center;
+        }
+
+        /* ── the currency mark and the plus ──
+           0.55em and raised, the way a price or a spec figure is actually set.
+           ⚠ The raise is a LENGTH, not `super`. `vertical-align: super` is a
+           font-relative shift the browser picks, so the mark lands at a
+           different height in Sora than it would anywhere else and there is
+           nothing to tune. 0.32em is the arithmetic: Sora's cap is ~0.72em, the
+           mark's own cap is 0.72 x 0.55 = 0.396em, and the difference is how far
+           its baseline has to rise for the two caps to line up.
+
+           This works because .cs-rise-in is a BLOCK, so its contents are in
+           normal inline flow. Inside a flex container vertical-align does
+           nothing at all — which is what the figure used to be. */
+        .cs-sym {
+            font-size: 0.55em;
+            font-weight: 700;
+            vertical-align: 0.32em;
+            /* the mark is not the number; let it sit back a touch */
+            opacity: 0.82;
         }
 
         .cs-label {
@@ -804,7 +1203,9 @@
             background-color: var(--dark);
 
             .cs-item {
-                background-color: var(--medium);
+                /* same token as light mode — it flips with the theme; the rule
+                   stays only because its neighbours in this block do */
+                background-color: var(--glassCard);
                 border-color: rgba(255, 255, 255, 0.08);
                 box-shadow: none;
             }
@@ -814,10 +1215,9 @@
                 color: var(--rainGray);
             }
 
-            /* the spec rule has to flip for the raised --medium tile */
-            .cs-number {
-                box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.12);
-            }
+            /* the spec rule has to flip for the raised --medium tile. One
+               token now, read by the .cs-number:after that draws it. */
+            --statRule: rgba(255, 255, 255, 0.12);
 
         }
     }

@@ -1,7 +1,11 @@
 ---
 title: "Free Homepage Redesign | Shoreline Web Design"
-description: "Send me your website and I'll design a fresh homepage for your business, free. Love it? I'll build the whole thing for $150/month. Don't? Keep the design, no strings."
 permalink: "/free-redesign/"
+# ⚠ description is COMPUTED because it quotes the price — see _data/pricing.js.
+# YAML is not run through Nunjucks, so an interpolated description has to live
+# here rather than as a plain front-matter key.
+eleventyComputed:
+  description: "Send me your website and I'll design a fresh homepage for your business, free. Love it? I'll build the whole thing for {{ pricing.perMonth }}. Don't? Keep the design, no strings."
 faqs:
   - q: >-
       What's the catch?
@@ -74,7 +78,7 @@ faqs:
                     Send me your current website. I'll design a fresh homepage for your business, custom and built from scratch, at no cost.
                 </p>
                 <p class="cs-text">
-                    Love it? I'll build and host the whole site for $150 a month. Don't? Keep the design, no strings attached.
+                    Love it? I'll build and host the whole site for {{ pricing.aMonth }}. Don't? Keep the design, no strings attached.
                 </p>
                 <div class="cs-author">
                     <picture class="cs-profile">
@@ -182,7 +186,7 @@ faqs:
                     <span class="cs-number">03</span>
                     <h3 class="cs-h3">See it, keep it</h3>
                     <p class="cs-item-text">
-                        I send the design over to look at. Want the real, built version? $150 a month, everything included. If not, the design is still yours.
+                        I send the design over to look at. Want the real, built version? {{ pricing.aMonth }}, everything included. If not, the design is still yours.
                     </p>
                 </li>
             </ol>

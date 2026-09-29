@@ -43,6 +43,18 @@ module.exports = {
     //! Include the protocol (https://) and NO trailing slash.
     domain: "https://www.shorelinewebdesign.com",
 
+    // The public source for THIS site. `socials.github` above is the profile;
+    // this is the repository, and the two are not interchangeable - the
+    // "hand-coded, not templated" card on the home page links here, and a
+    // profile link would land someone on a list of repos rather than on the
+    // thing they were invited to check.
+    //
+    // ⚠ Public on purpose. It is the proof behind that claim and the footer
+    // already links the profile. If it is ever made private, the verify link
+    // in #services has to go with it - a 404 where evidence was promised is
+    // worse than never having offered it.
+    repo: "https://github.com/bmoesintelligence/shorelinewebdesign.com",
+
     // Analytics. Same guard discipline as `socials` below: an EMPTY STRING EMITS
     // NOTHING - no gtag script, no consent banner, no cookie. So this file is the
     // single switch, and there is never a placeholder ID sitting in the markup.

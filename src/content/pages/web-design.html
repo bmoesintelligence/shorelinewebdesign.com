@@ -1,5 +1,4 @@
 ---
-description: "Custom, hand-coded websites for small businesses across the North Sound. Fast, mobile-first, built to be found on Google, from $150/month."
 permalink: "/services/web-design/"
 pageHero:
   topper: "Web design"
@@ -15,6 +14,8 @@ pageHero:
       href: "/pricing/"
       style: "secondary"
 eleventyComputed:
+  # ⚠ quotes the price — see _data/pricing.js
+  description: "Custom, hand-coded websites for small businesses across the North Sound. Fast, mobile-first, built to be found on Google, from {{ pricing.perMonth }}."
   title: "{{ page.fileSlug | titleCase }} | {{ client.name }} | {{ client.address.city }}, {{ client.address.state }}"
 faqs:
   - q: >-

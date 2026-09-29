@@ -1,5 +1,4 @@
 ---
-description: "Straightforward pricing for hand-coded small business websites: $150/month all-in, or a one-time custom build. No upsells, no hidden hours."
 pageHero:
   topper: "Pricing"
   title: "Simple, honest pricing"
@@ -14,6 +13,8 @@ pageHero:
       href: "/work/"
       style: "secondary"
 eleventyComputed:
+  # ⚠ quotes the price — see _data/pricing.js
+  description: "Straightforward pricing for hand-coded small business websites: {{ pricing.perMonth }} all-in, or a one-time custom build. No upsells, no hidden hours."
   title: "{{ page.fileSlug | titleCase }} | {{ client.name }} | {{ client.address.city }}, {{ client.address.state }}"
   permalink: "/{{ page.fileSlug | slugify }}/"
 faqs:
@@ -76,9 +77,13 @@ faqs:
         <div class="cs-container">
             <ul class="cs-card-group">
                 <li class="cs-item cs-item-featured">
-                    <span class="cs-badge">Most popular</span>
+{# ⚠ "Recommended", not "Most popular" — see the note on the home
+                       teaser's copy of this badge in index.html. A claim about
+                       what other buyers chose is not one this shop can support
+                       yet. The two pages must stay in step. #}
+                    <span class="cs-badge">Recommended</span>
                     <span class="cs-plan">Monthly</span>
-                    <span class="cs-price">$150<span class="cs-period">/mo</span></span>
+                    <span class="cs-price">{{ pricing.price }}<span class="cs-period">/mo</span></span>
                     <span class="cs-note">everything included, cancel anytime</span>
                     <p class="cs-best">Best if you want the whole thing handled and would rather not find a build fee up front.</p>
                     <ul class="cs-ul">
@@ -102,7 +107,7 @@ faqs:
                         <li class="cs-li">The same build, start to finish</li>
                         <li class="cs-li">Code handed over at launch</li>
                         <li class="cs-li">Yours to host anywhere</li>
-                        <li class="cs-li cs-li-muted">Support and edits billed at $125/hr</li>
+                        <li class="cs-li cs-li-muted">Support and edits billed at {{ pricing.hourlyRate }}</li>
                     </ul>
                     <a href="/contact/" class="cs-button-transparent">Get started<span class="cs-arrow" aria-hidden="true">&rarr;</span></a>
                 </li>
@@ -137,7 +142,7 @@ faqs:
                     <h2 class="cs-title">All in, itemised<span class="cs-accent">.</span></h2>
                 </div>
                 <p class="cs-text">
-                    "Everything included" is an easy thing to say, so here is the actual list. The monthly plan covers all of it for the same $150, whether it is month one or month thirty.
+                    "Everything included" is an easy thing to say, so here is the actual list. The monthly plan covers all of it for the same {{ pricing.price }}, whether it is month one or month thirty.
                 </p>
             </div>
             <!-- Two STACKED full-width groups, not side-by-side columns. Eleven

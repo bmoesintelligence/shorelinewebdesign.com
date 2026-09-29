@@ -4,8 +4,12 @@
 # search carried neither a service term beyond the name nor a location.
 # 59 chars, so it stays clear of the ~60-char SERP truncation.
 title: "Shoreline Web Design | Hand-coded websites in North Seattle"
-description: "Hand-coded websites for small businesses across North Seattle, from $150/month."
 permalink: "/"
+# ⚠ description is COMPUTED, below. It quotes the price, and a meta description
+# that disagrees with the page is a quoted figure a prospect can hold you to.
+# YAML is not run through Nunjucks, so it has to be an eleventyComputed key.
+eleventyComputed:
+  description: "Hand-coded websites for small businesses across North Seattle, from {{ pricing.perMonth }}."
 tags: "sitemap" # content/content.json will make sure that all pages in content/ are marked with a "sitemap" tag, for automatic sitemap generation. As index.html is not in content/, we need to add it here to ensure the root page is included in the sitemap generation
 ---
 
@@ -35,6 +39,16 @@ tags: "sitemap" # content/content.json will make sure that all pages in content/
          comment, which does NOT disable a Nunjucks tag - Eleventy still resolves
          an include inside a comment and fails the build when the file is gone.
          Comment Nunjucks out with a Nunjucks comment, not an HTML one. -->
+
+    {# Counts #speed's four Lighthouse scores up and starts the rings drawing.
+       HERE rather than in base.html's sitewide list, unlike text-rise.js: the
+       scorecard exists on this page and nowhere else, and the other 16 URLs
+       should not fetch a file whose first act is to find no #speed and return.
+
+       Deferred and entirely optional, same contract as text-rise.js — it arms
+       its own hidden state, so if it never runs the scorecard is simply already
+       finished rather than blank. See the header of the file. #}
+    <script defer src="/assets/js/score-count.js"></script>
 {% endblock %}
 
 {% block body %}
@@ -45,11 +59,17 @@ tags: "sitemap" # content/content.json will make sure that all pages in content/
     <section id="hero" class="cs-has-ferry">
         <div class="cs-container">
             <div class="cs-content">
-                <span class="cs-topper"><span class="cs-pin" aria-hidden="true"></span>Richmond Beach, WA</span>
-                <h1 class="cs-title">The website your&#32;<br class="cs-title-break">small business&#32;<br class="cs-title-break"><span class="cs-title-accent">actually deserves.</span></h1>
-                <p class="cs-text">
-                    Fast, custom, and built to be found. Hand-coded by a professional software engineer serving small businesses across North Seattle. $150/month, everything included.
-                </p>
+                <span class="cs-topper"><span class="cs-rise-in"><span class="cs-pin" aria-hidden="true"></span>Richmond Beach, WA</span></span>
+                <!-- The three lines are explicit ELEMENTS now, not <br>-separated text.
+                     Each is its own clipping mask so the line can slide up from
+                     under its own bottom edge (see "the masked rise" in
+                     critical.less). A <br> cannot be masked - there is no box. -->
+                <h1 class="cs-title">
+                    <span class="cs-rise"><span class="cs-rise-in">The website your</span></span>
+                    <span class="cs-rise"><span class="cs-rise-in">small business</span></span>
+                    <span class="cs-rise"><span class="cs-rise-in cs-title-accent">actually deserves.</span></span>
+                </h1>
+                <p class="cs-text cs-rise-lines"><span class="cs-rise-in">Fast, custom, and built to be found. Hand-coded by a professional software engineer serving small businesses across North Seattle. {{ pricing.perMonth }}, everything included.</span></p>
                 <div class="cs-button-group">
                     <a href="/contact/" class="cs-button-solid">Get started</a>
                     <!-- /work/, not the home page's own #work section. The hero's
@@ -163,25 +183,49 @@ tags: "sitemap" # content/content.json will make sure that all pages in content/
             <!-- Terms, not credentials. The hero already claims fast/custom/hand-coded,
                  so repeating those here says nothing new. These answer what the hero
                  leaves open: what it costs, what the catch is, who you deal with. -->
+            {#
+              ── two wrappers per figure, and both earn their place ──
+
+              .cs-rise / .cs-rise-in is the site's masked-type vocabulary, the
+              same one the hero's h1 uses: the figure slides up from behind the
+              bottom edge of its own clip and is at FULL strength in every frame
+              of the entrance. The tile still fades, because a tile is a box and
+              boxes fade — that distinction is set out in root.less and it is
+              the reason this is two mechanisms and not one.
+
+              ⚠ .cs-rise must be a FLEX ITEM. It pads itself 0.12em/0.2em to
+              leave room for ascenders and descenders and then takes the space
+              back with equal negative margins, and those only cancel exactly
+              between flex siblings — as block siblings the margins would
+              collapse into each other and the figures would sit off their
+              baseline. .cs-number is already display:flex, so this is safe
+              here; it would not be inside a plain block.
+
+              .cs-sym is the currency mark and the plus. They are set smaller
+              and raised to cap height, which is how financial and spec figures
+              are actually set, and it is most of the difference between a
+              figure that looks typed and one that looks set. The numerals keep
+              the full size — they are the thing being read.
+            #}
             <ul class="cs-card-group">
                 <li class="cs-item">
                     <span class="cs-kicker">Upfront</span>
-                    <span class="cs-number">$0</span>
+                    <span class="cs-number"><span class="cs-rise"><span class="cs-rise-in"><span class="cs-sym">$</span>0</span></span></span>
                     <span class="cs-label">to start, no contract</span>
                 </li>
                 <li class="cs-item">
                     <span class="cs-kicker">Monthly</span>
-                    <span class="cs-number">$150</span>
+                    <span class="cs-number"><span class="cs-rise"><span class="cs-rise-in"><span class="cs-sym">$</span>150</span></span></span>
                     <span class="cs-label">a month, everything included</span>
                 </li>
                 <li class="cs-item">
                     <span class="cs-kicker">Experience</span>
-                    <span class="cs-number">10+</span>
+                    <span class="cs-number"><span class="cs-rise"><span class="cs-rise-in">10<span class="cs-sym">+</span></span></span></span>
                     <span class="cs-label">years engineering experience</span>
                 </li>
                 <li class="cs-item">
                     <span class="cs-kicker">Team</span>
-                    <span class="cs-number">1</span>
+                    <span class="cs-number"><span class="cs-rise"><span class="cs-rise-in">1</span></span></span>
                     <span class="cs-label">engineer, start to finish</span>
                 </li>
             </ul>
@@ -194,65 +238,199 @@ tags: "sitemap" # content/content.json will make sure that all pages in content/
     <!-- ============================================ -->
 
     <section id="services">
-        <div class="cs-container">
+        <div class="cs-container cs-panel">
             <!-- Left Content Section-->
-            <div class="cs-content">
+            <div class="cs-content cs-fade-in">
                 <span class="cs-topper">The essentials</span>
-                <h2 class="cs-title">Your website stops being your problem</h2>
-                <p class="cs-text">
+                <h2 class="cs-title cs-rise-lines">Your website stops being your problem</h2>
+                <p class="cs-text cs-rise-lines">
                     Built by hand, hosted, maintained, and updated whenever you ask. Your site loads fast and shows up on Google, and you never log into a dashboard or wait days to change a phone number.
                 </p>
             </div>
-            <ul class="cs-card-group">
+            <ul class="cs-card-group cs-fade-in">
+                {# Each card carries a .cs-proof tray: a small CSS-built specimen of
+                   the thing the card is claiming, in a recessed well at the card's
+                   floor. Three depths - panel, raised card, recessed tray - is what
+                   gives the grid structure instead of six flat rectangles.
+
+                   ⚠ REBUILT 2026-09-20. v1 drew every specimen as grey rounded
+                   rectangles of varying width in short rows, which is precisely the
+                   visual language of a LOADING SKELETON - three of the six were
+                   near-indistinguishable from an off-the-shelf skeleton library, so
+                   the grid read as "content hasn't arrived yet". Animating them made
+                   it worse, because a pulsing skeleton is what a loading state IS.
+
+                   The fix is real type. Every tray now contains actual words or
+                   numbers set in the site's own faces, because a miniature built out
+                   of bars is a skeleton no matter how carefully the bars are placed.
+
+                   ⚠ Still no invented figures. Everything here is either the site's
+                   own true copy (its domain, its own markup, its own headline) or a
+                   bare noun with no quantity attached. The one number is the LCP
+                   axis on 02, and it restates a claim #speed already makes and
+                   invites you to verify. No uptime percentage, no turnaround time,
+                   no review count - see the Status notes in CLAUDE.md.
+
+                   They stay aria-hidden for the same reason the /work/ wireframes
+                   are: the sentence above each one already said it, and the text in
+                   here is decorative mock-up type, which is the one category
+                   /accessibility/ names as exempt from the contrast floor. #}
+                {# ── the verify links ──────────────────────────────────────────────
+                   Four of the six cards carry one, and the two that do not are the
+                   point rather than an omission.
+
+                   01 has no link because Google RETIRED the Mobile-Friendly Test
+                   in December 2023; the obvious URL is dead, and there is no
+                   replacement that proves "responsive" from outside. 04 has none
+                   because no public artifact can prove a service promise.
+
+                   ⚠ Do not fill those two in. A link that looks like evidence and
+                   is really navigation is the same failure as a testimonial with a
+                   disclaimer under it - the label does not fix it. Three cards
+                   carrying real proof and two carrying none is MORE credible than
+                   six carrying links, because it shows the site only claims proof
+                   where proof exists. That is the same argument #speed makes when
+                   it says the numbers are not marketing.
+
+                   05's link is deliberately narrow: it says "Verify SSL", not
+                   "verify hosting and backups". SSL Labs proves the certificate
+                   and nothing else on that card; the label has to stop where the
+                   evidence does.
+
+                   URLs are built from _data/client.js, never typed here - the
+                   domain drives canonical, og:url and the sitemap, and a verify
+                   link pointing at a different host than the rest of the site
+                   would be its own small credibility problem. #}
                 <li class="cs-item">
-                    <span class="cs-number">01</span>
+                    <span class="cs-number">
+                        <span class="cs-index">01</span>
+                        <span class="cs-tag">Responsive</span>
+                    </span>
                     <h3 class="cs-h3">Built for phones first</h3>
                     <p class="cs-item-text">
                         Most of your customers will find you on one.
                     </p>
-                    <span class="cs-tag">Responsive</span>
+                    {# ⚠ ONE frame that morphs, not three side by side.
+
+                       Numbers, not a miniature page: a phone frame with the real
+                       headline inside it was drawn first and cut, because at the
+                       ~54px the tray can give it body type lands around 4px and
+                       turns to mush, which is the same "meaningless grey" failure
+                       in a different costume.
+
+                       Three frames in a row came next and was replaced on
+                       2026-09-20: a row reads as three separate devices being
+                       compared, when the claim is that ONE layout carries from
+                       390 to 1280. A single frame stretching through the sizes
+                       says that; a row of three cannot.
+
+                       The chrome cross-fades with the size - notch for the phone,
+                       home bar for phone and tablet, browser bar for the desktop -
+                       and the three width labels are stacked in one slot so only
+                       the current one shows. That is why there is no layout here
+                       for them to push around. #}
+                    <span class="cs-proof cs-p-device" aria-hidden="true">
+                        <span class="cs-stage">
+                            <i class="cs-scr">
+                                <i class="cs-notch"></i>
+                                <i class="cs-home"></i>
+                                <i class="cs-bar"><i></i><i></i><i></i></i>
+                            </i>
+                        </span>
+                        <span class="cs-widths">
+                            <span class="cs-w1">390<em>px</em></span>
+                            <span class="cs-w2">768<em>px</em></span>
+                            <span class="cs-w3">1280<em>px</em></span>
+                        </span>
+                    </span>
                 </li>
                 <li class="cs-item">
-                    <span class="cs-number">02</span>
+                    <span class="cs-number">
+                        <span class="cs-index">02</span>
+                        <span class="cs-tag">Performance</span>
+                    </span>
                     <h3 class="cs-h3">Loads in under a second</h3>
                     <p class="cs-item-text">
                         Slow sites lose people before the page appears.
                     </p>
-                    <span class="cs-tag">Performance</span>
+                    <span class="cs-proof cs-p-speed" aria-hidden="true">
+                        <span class="cs-metric">Largest contentful paint<i class="cs-good">Good</i><em class="cs-cap">&lt;1s</em></span>
+                        <span class="cs-track"><span class="cs-fill"></span></span>
+                        <span class="cs-ticks"><span>0</span><span>0.5s</span><span>1.0s</span></span>
+                    </span>
+                    <a class="cs-verify" href="https://pagespeed.web.dev/analysis?url={{ client.domain | urlencode }}%2F" target="_blank" rel="noopener noreferrer" aria-label="Verify this site's speed on Google PageSpeed Insights (opens in a new tab)">Verify on PageSpeed Insights{% include "components/icon-external.html" %}</a>
                 </li>
                 <li class="cs-item">
-                    <span class="cs-number">03</span>
+                    <span class="cs-number">
+                        <span class="cs-index">03</span>
+                        <span class="cs-tag">Search</span>
+                    </span>
                     <h3 class="cs-h3">Found on Google</h3>
                     <p class="cs-item-text">
                         Structured so search engines can actually read it.
                     </p>
-                    <span class="cs-tag">Search</span>
+                    <span class="cs-proof cs-p-serp" aria-hidden="true">
+                        <span class="cs-serp-head">
+                            <i class="cs-fav"></i>
+                            <span class="cs-serp-who">
+                                <span class="cs-serp-site">Shoreline Web Design</span>
+                                <span class="cs-serp-url">shorelinewebdesign.com &rsaquo; services</span>
+                            </span>
+                        </span>
+                        <span class="cs-serp-title">Web Design in Richmond Beach, WA</span>
+                        <span class="cs-serp-snip">Hand-coded websites for small businesses across the North Sound.</span>
+                    </span>
+                    <a class="cs-verify" href="https://search.google.com/test/rich-results?url={{ client.domain | urlencode }}%2F" target="_blank" rel="noopener noreferrer" aria-label="Verify this site's structured data with Google's Rich Results Test (opens in a new tab)">Verify with Rich Results Test{% include "components/icon-external.html" %}</a>
                 </li>
                 <!-- the standout card, inverted per the comp. This is the one that
                      pays off the section title, so it gets the emphasis. -->
                 <li class="cs-item cs-item-featured">
-                    <span class="cs-number">04</span>
+                    <span class="cs-number">
+                        <span class="cs-index">04</span>
+                        <span class="cs-tag">Support</span>
+                    </span>
                     <h3 class="cs-h3">Edits handled for you</h3>
                     <p class="cs-item-text">
                         Send the change, it goes live. No dashboard, no ticket.
                     </p>
-                    <span class="cs-tag">Support</span>
+                    <span class="cs-proof cs-p-flow" aria-hidden="true">
+                        <span class="cs-msg">Can you change the hours to 9&ndash;5?</span>
+                        <span class="cs-sent"><i class="cs-dbl"></i>Published<span class="cs-live"><i></i>Live</span></span>
+                    </span>
                 </li>
                 <li class="cs-item">
-                    <span class="cs-number">05</span>
+                    <span class="cs-number">
+                        <span class="cs-index">05</span>
+                        <span class="cs-tag">Infrastructure</span>
+                    </span>
                     <h3 class="cs-h3">Hosting and backups</h3>
                     <p class="cs-item-text">
                         Included and monitored. Nothing to set up or renew.
                     </p>
-                    <span class="cs-tag">Infrastructure</span>
+                    <span class="cs-proof cs-p-status" aria-hidden="true">
+                        <span class="cs-status-head">Included</span>
+                        <span class="cs-row"><i class="cs-check"></i>SSL certificate</span>
+                        <span class="cs-row"><i class="cs-check"></i>Offsite backups</span>
+                        <span class="cs-row"><i class="cs-check"></i>Uptime monitoring</span>
+                    </span>
+                    <a class="cs-verify" href="https://www.ssllabs.com/ssltest/analyze.html?d={{ client.domain | replace("https://", "") }}" target="_blank" rel="noopener noreferrer" aria-label="Verify this site's SSL certificate on Qualys SSL Labs (opens in a new tab)">Verify SSL{% include "components/icon-external.html" %}</a>
                 </li>
                 <li class="cs-item">
-                    <span class="cs-number">06</span>
+                    <span class="cs-number">
+                        <span class="cs-index">06</span>
+                        <span class="cs-tag">Build</span>
+                    </span>
                     <h3 class="cs-h3">Hand-coded, not templated</h3>
                     <p class="cs-item-text">
                         No page builder, no theme a hundred others are using.
                     </p>
-                    <span class="cs-tag">Build</span>
+                    <span class="cs-proof cs-p-code" aria-hidden="true">
+                        <span class="cs-file"><i></i>index.html</span>
+                        <span class="cs-code-l"><i class="cs-ln">1</i><span class="cs-c"><i class="cs-t">&lt;section</i> <i class="cs-a">id</i><i class="cs-p">=</i><i class="cs-v">"hero"</i><i class="cs-t">&gt;</i></span></span>
+                        <span class="cs-code-l"><i class="cs-ln">2</i><span class="cs-c cs-in"><i class="cs-t">&lt;h1&gt;</i>The website your<i class="cs-t">&lt;/h1&gt;</i></span></span>
+                        <span class="cs-code-l"><i class="cs-ln">3</i><span class="cs-c"><i class="cs-t">&lt;/section&gt;</i></span></span>
+                    </span>
+                    <a class="cs-verify" href="{{ client.repo }}" target="_blank" rel="noopener noreferrer" aria-label="Read the full source for this site on GitHub (opens in a new tab)">Read the source on GitHub{% include "components/icon-external.html" %}</a>
                 </li>
             </ul>
         </div>
@@ -263,48 +441,139 @@ tags: "sitemap" # content/content.json will make sure that all pages in content/
     <!-- ============================================ -->
 
     <section id="about">
-        <div class="cs-container">
+        {# .cs-panel-glow adds the two soft radial lights from root.less without
+           the panel box — this container already IS the panel, it just had a
+           flat 5% tint and none of the light. The lights are a real part of why
+           #services reads finished beside this one. The section's own CSS note
+           flagged this adoption as pending; this is it. #}
+        <div class="cs-container cs-panel-glow">
             <!-- Single framed portrait. Optimized via getUrl (avif/webp/jpeg),
                  cropped to a portrait 4:5. Fills its column, so rendered ~440px;
                  800px source is retina-safe. -->
-            <div class="cs-image-group">
+            <div class="cs-image-group cs-fade-in">
                 <figure class="cs-card">
                     <picture class="cs-photo">
                         <source srcset="{% getUrl "/assets/images/headshot.jpg" | resize({ width: 800, height: 1000 }) | avif(codec.avif) %}" type="image/avif">
                         <source srcset="{% getUrl "/assets/images/headshot.jpg" | resize({ width: 800, height: 1000 }) | webp %}" type="image/webp">
                         <img src="{% getUrl "/assets/images/headshot.jpg" | resize({ width: 800, height: 1000 }) | jpeg %}" alt="Bryan, founder of Shoreline Web Design" width="800" height="1000" loading="lazy" decoding="async">
                     </picture>
-                    <figcaption class="cs-filename">headshot.jpg</figcaption>
+                    {#
+                      ── the spec strip ──
+                      The caption used to be the filename alone, under a frame
+                      tilted -2deg. Those are two metaphors arguing: the tilt
+                      says pinned snapshot, the mono filename says file in a
+                      repo, and neither committed. The tilt is gone and this
+                      commits to the file, which is the same treatment the code
+                      specimen's `index.html` tab gets over in #services.
+
+                      ⚠ THE FIGURES ARE MEASURED, NOT DECORATIVE, and they will
+                      go stale. 13.6 KB is the 800x1000 AVIF this page actually
+                      ships, measured from public/ after a prod build, against a
+                      197 KB source. The format is named because a browser
+                      without AVIF gets the WebP at 22.2 KB or the JPEG at 56.1
+                      KB, and an unqualified "13.6 KB" would be false for them.
+
+                      Re-measure and edit this line if the photo is replaced, if
+                      the resize width changes, or if codec.js is retuned. A
+                      wrong number here is worse than no number, because the
+                      whole point of putting it on the page is that it is
+                      checkable.
+                    #}
+                    {# ── who this is ──
+                       The portrait was unattributed. Its alt text has always
+                       said "Bryan, founder of Shoreline Web Design", but
+                       nothing VISIBLE joined the face to the Bryan the prose
+                       keeps referring to in the third person, which is the one
+                       job a photograph has in an about section.
+
+                       ⚠ Bryan MOORE. Not Moe — that is the nickname in every
+                       handle (bmoesintelligence, the personal address) and it
+                       has been wrong in the structured data and the Decap
+                       defaults before. Six occurrences were corrected on launch
+                       day; do not reintroduce a seventh here.
+
+                       "Founder" is the alt text's own word, not a new title. No
+                       location line: BASED already says Richmond Beach in the
+                       spec list opposite, and saying it twice in one section is
+                       the thing the two stat figures were removed for. #}
+                    <figcaption class="cs-byline">
+                        <span class="cs-byline-name">Bryan Moore</span>
+                        <span class="cs-byline-role">Founder</span>
+                    </figcaption>
+                    <figcaption class="cs-filename">
+                        <span class="cs-file-name">headshot.jpg</span>
+                        <span class="cs-file-meta">800&times;1000 &middot; 13.6&nbsp;KB avif</span>
+                    </figcaption>
                 </figure>
             </div>
-            <div class="cs-content">
+            <div class="cs-content cs-fade-in">
                 <span class="cs-topper">Our story</span>
-                <h2 class="cs-title">A software engineer, not a template shop.</h2>
-                <p class="cs-text">
-                    Bryan spent over a decade building production software before he ever built a small business website. He holds every site to the same bar he built to professionally: measured, tested, hand-coded, no shortcuts.
+                <h2 class="cs-title cs-rise-lines">A software engineer, not a template shop.</h2>
+                {# Copy edit, 2026-09-22 — CONFIRMED by Bryan 2026-09-22.
+                   The opening sentence was "Bryan spent over a decade building
+                   production software before he ever built a small business
+                   website." It moved into the BACKGROUND row of the spec list
+                   below rather than being cut, because #stats already makes the
+                   decade claim at the top of this page and this made it three
+                   times on one scroll. Every word here is still the approved
+                   copy's own - nothing new has been written. #}
+                <p class="cs-text cs-rise-lines">
+                    Bryan holds every site to the same bar he built to professionally: measured, tested, hand-coded, no shortcuts.
                 </p>
-                <p class="cs-text">
+                <p class="cs-text cs-rise-lines">
                     He started Shoreline Web Design from Richmond Beach because too many local businesses were stuck with slow, bloated sites they couldn't even edit themselves. He takes clients one at a time, so yours gets built properly and stays that way.
                 </p>
                 <!-- This section is a teaser for /about/ and had no route to it.
                      Sits with the prose, ABOVE the stats' divider: below it the
                      link read as a stray line orphaned under the spec row. -->
                 <a href="/about/" class="cs-link">Read the full story<span class="cs-arrow" aria-hidden="true">&rarr;</span></a>
-                <!-- The two halves of the section title: the engineer, and the
-                     not-a-template-shop. Deliberately not the hero's stats. -->
-                <ul class="cs-ul">
-                    <li class="cs-li">
-                        <span class="cs-stat-number">10+ yrs</span>
-                        <span class="cs-stat-label">building software</span>
-                    </li>
-                    <li class="cs-li">
-                        <span class="cs-stat-number">100%</span>
-                        <span class="cs-stat-label">hand-coded, no templates</span>
-                    </li>
-                </ul>
+                {#
+                  ── the spec strip, replacing two figures ──
+                  This closed with "10+ yrs / building software" and "100% /
+                  hand-coded, no templates". Both were already made ON THIS
+                  PAGE: #stats prints 10+ four sections above, #speed prints
+                  100% hand-coded two sections below. The site's own rule is say
+                  it once, and this said both twice.
+
+                  The <dl> idiom is the one /work/ and /about/#glance already
+                  use for dry facts. ⚠ Everything in it is a restatement of copy
+                  approved elsewhere on the site - Richmond Beach from the hero
+                  topper and client.js, one-at-a-time from the paragraph above,
+                  the decade from the sentence this section used to open with.
+                  Nothing here is a new claim, and nothing new may be added
+                  without Bryan - see the "Invent nothing there" warning on
+                  /about/#story, which governs this teaser too.
+
+                  <div> inside <dl> is valid HTML5 and is what lets a term and
+                  its value be one grid row.
+                #}
+                <dl class="cs-spec">
+                    <div class="cs-spec-row">
+                        <dt>Based</dt>
+                        <dd>Richmond Beach, WA</dd>
+                    </div>
+                    <div class="cs-spec-row">
+                        <dt>Background</dt>
+                        <dd>A decade in production software</dd>
+                    </div>
+                    <div class="cs-spec-row">
+                        <dt>Clients</dt>
+                        <dd>One at a time</dd>
+                    </div>
+                </dl>
             </div>
         </div>
     </section>
+
+    {# The wave breaking INTO the ocean. #speed is the water; this is the
+       surf against the near edge of it. Three bands rise, spread into a wave
+       face, then collapse into a flat plane of #speed's own navy — so the
+       divider ends as the section below rather than next to it. See
+       components/wave-divider.html and the Wave Divider block in local.less.
+       It sits BETWEEN the two sections rather than inside either, so neither
+       section's padding or dark-mode block has to know about it. #}
+    {% set up = false %}
+    {% include "components/wave-divider.html" %}
 
     <!-- ============================================ -->
     <!--                   Speed                      -->
@@ -329,28 +598,143 @@ tags: "sitemap" # content/content.json will make sure that all pages in content/
             <picture class="cs-orca-pic"><source type="image/avif" srcset="{% getUrl "/assets/images/orca.png" | resize({ width: 220 }) | avif(codec.avif) %}"><source type="image/webp" srcset="{% getUrl "/assets/images/orca.png" | resize({ width: 220 }) | webp %}"><img class="cs-orca cs-orca6" src="{% getUrl "/assets/images/orca.png" | resize({ width: 220 }) | png %}" alt="" width="540" height="357" loading="lazy" decoding="async"></picture>
         </div>
         <div class="cs-container">
-            <div class="cs-content">
+            <div class="cs-content cs-fade-in">
                 <span class="cs-topper">Performance</span>
-                <h2 class="cs-title">Speed isn't a nice-to-have. It's the product.</h2>
-                <p class="cs-text">Every site is built to the same performance bar as production software, then measured with Google's own tools. The numbers below aren't marketing. You can check them yourself.
+                <h2 class="cs-title cs-rise-lines">Speed isn't a nice-to-have. It's the product.</h2>
+                <p class="cs-text cs-rise-lines">Every site is built to the same performance bar as production software, then measured with Google's own tools. The numbers below aren't marketing. You can check them yourself.
                 </p>
             </div>
-            <ul class="cs-card-group">
-                <li class="cs-item cs-item1">
-                    <span class="cs-number">95+</span>
-                    <span class="cs-label">pagespeed</span>
-                </li>
-                <li class="cs-item cs-item2">
-                    <span class="cs-number">&lt;1s</span>
-                    <span class="cs-label">load time</span>
-                </li>
-                <li class="cs-item cs-item3">
-                    <span class="cs-number">100%</span>
-                    <span class="cs-label">hand-coded</span>
-                </li>
-            </ul>
+            {# ── the scorecard ──
+               Four Lighthouse categories as gauge rings: the same component
+               #services-1282 uses on the three service pages, an SVG circle with
+               pathLength="100" so the dash array is a plain 0-100 number and the
+               arc needs no circumference maths. Home is the SECOND instance,
+               which is where CLAUDE.md's rule puts the line - two copies is a
+               deliberate call, a THIRD page needing this triggers extraction to
+               a shared sheet.
+
+               ⚠ ONE DIFFERENCE FROM THE SERVICE PAGES, and it is the whole point
+               of this section. Over there the arcs are DECORATIVE - 88, 82 and 94
+               drawn against threshold values like "<2.5s" - because that section
+               is about the targets Google sets. Here `--arc` IS the score.
+
+               ⚠ EVERY FIGURE COMES FROM src/_data/lighthouse.js AND IS NEVER
+               TYPED HERE. Read that file's header before touching any of them:
+               it carries how to re-measure, why the live site and not a local
+               build, and why desktop gets one number rather than four.
+
+               The category name sits BELOW the ring rather than inside it next
+               to the value. That is forced, not stylistic: the gauge comment on
+               the service pages measures the usable interior chord and caps
+               labels at ~7 characters, and "Best practices" is fourteen.
+
+               Built as a LIST and looped rather than four hand-written blocks,
+               so each row names its score exactly once and the figure in the
+               ring and the `--arc` that draws it cannot drift apart. #}
+            {% set cats = [
+                { label: "Performance",    score: lighthouse.mobile.performance },
+                { label: "Accessibility",  score: lighthouse.mobile.accessibility },
+                { label: "Best practices", score: lighthouse.mobile.bestPractices },
+                { label: "SEO",            score: lighthouse.mobile.seo }
+            ] %}
+            <div class="cs-scorecard cs-fade-in">
+                <ul class="cs-scores">
+                    {% for c in cats %}
+                    <li class="cs-score">
+                        <span class="cs-gauge">
+                            <svg class="cs-ring" viewBox="0 0 100 100" aria-hidden="true">
+                                <circle class="cs-ring-track" cx="50" cy="50" r="44" pathLength="100"></circle>
+                                <circle class="cs-ring-arc" cx="50" cy="50" r="44" pathLength="100" style="--arc: {{ c.score }}"></circle>
+                            </svg>
+                            <span class="cs-number" data-score="{{ c.score }}">{{ c.score }}</span>
+                        </span>
+                        <span class="cs-unit">{{ c.label }}</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {# ── why it is fast ──
+                   The reasons the scores above exist. The only half of this
+                   section a page-builder shop cannot copy, and every one of
+                   them is checkable in the public repo the footer links to.
+
+                   ⚠ THIS REPLACED THE PROVENANCE LINE (Bryan, 2026-09-25), and
+                   what that line carried is worth knowing before anyone
+                   restores it or fills the slot with something else. It read
+                   "Google Lighthouse, mobile · measured 13 Aug 2026 · desktop
+                   scores 100 for performance", and each of those three facts
+                   was load-bearing: WHICH TOOL, because a bare number could
+                   have come from anywhere; WHICH STRATEGY, because mobile and
+                   desktop are separate runs and quoting the friendlier one
+                   without saying so is exactly the hedge "95+" was; and WHEN,
+                   because a measurement is a claim about a moment. The verify
+                   link below still lets anyone re-run it, which is what makes
+                   this a defensible trade rather than a regression - but the
+                   four scores are now UNDATED on the page. If they ever start
+                   looking stale, that is the first thing to put back.
+
+                   The date itself still lives in _data/lighthouse.js and is
+                   still the thing to update on a re-measure; it just is not
+                   printed any more.
+
+                   ⚠ NO GLOSS UNDER EACH ONE, deliberately. Every item is a
+                   complete thought already, and the home page is the site's
+                   length problem - ~27 screens at 390px wide, with the mobile
+                   pass still paused. Say it once.
+
+                   ⚠ "ZERO THIRD-PARTY REQUESTS" WAS DRAFTED HERE AND CUT. It is
+                   true by default and it is the strongest item on the list, but
+                   it is not true unconditionally: /privacy-policy/ says in as
+                   many words that "Google Analytics, if you allow it, is the
+                   only third party involved", so for any visitor who accepts the
+                   consent banner this line would have contradicted the privacy
+                   policy on the same site. A qualified version ("none by
+                   default") invites the question it is dodging. If analytics
+                   ever goes cookieless or server-side - the option that page
+                   records as considered and not taken - this becomes
+                   unconditionally true and belongs here.
+
+                   Everything remaining is true whatever the visitor consents to.
+                   "Hand-coded" leads because #about deliberately gave up its own
+                   "100% hand-coded" figure on the grounds that #speed prints it:
+                   it has to keep living here, and as a REASON it does more work
+                   than it did as a statistic in a circle.
+
+                   Still a <ul> rather than a sentence — it is a list of
+                   parallel facts, and the middots between them are drawn in CSS
+                   so the separator is presentation and never text a screen
+                   reader has to wade through.
+
+                   "Served from the CDN edge" was a fifth item and was cut
+                   (Bryan, 2026-09-25). #}
+                <ul class="cs-why">
+                    <li class="cs-why-item">Hand-coded, no framework</li>
+                    <li class="cs-why-item">Static HTML, no database</li>
+                    <li class="cs-why-item">Fonts self-hosted</li>
+                    <li class="cs-why-item">Images optimized at build time</li>
+                </ul>
+                {# The section's copy has promised "you can check them yourself"
+                   since it was written, and until now there was nothing to click
+                   - the one section on the site whose entire argument is
+                   verifiability was the one section with no route to the tool.
+
+                   ⚠ #services card 02 links to this same URL. That is not an
+                   oversight to tidy: there the link is one of four small proof
+                   links in a grid of claims, here it is the payoff of a whole
+                   section, and the two are 300-odd pixels of scroll apart in
+                   different arguments. Both stay. #}
+                <a class="cs-verify" href="https://pagespeed.web.dev/analysis?url={{ client.domain | urlencode }}%2F" target="_blank" rel="noopener noreferrer" aria-label="Run PageSpeed Insights on this page yourself (opens in a new tab)">Run it yourself{% include "components/icon-external.html" %}</a>
+            </div>
+
         </div>
     </section>
+
+    {# And back out of it. The same component flipped, and the motion reversed
+       with it: here the ocean is ABOVE, so the wave reaches down onto the sand
+       once and drains away, deep water first and the foam last. `up` costs one
+       scaleY(-1) and no colours of its own — the pair is symmetric, tan at both
+       far ends and navy in the middle. #}
+    {% set up = true %}
+    {% include "components/wave-divider.html" %}
 
     <!-- ============================================ -->
     <!--                  Pricing                     -->
@@ -358,18 +742,30 @@ tags: "sitemap" # content/content.json will make sure that all pages in content/
 
     <section id="pricing">
         <div class="cs-container">
-            <div class="cs-content">
+            <div class="cs-content cs-fade-in">
                 <span class="cs-topper">Pricing</span>
-                <h2 class="cs-title">Simple, honest pricing</h2>
-                <p class="cs-text">
+                <h2 class="cs-title cs-rise-lines">Simple, honest pricing</h2>
+                <p class="cs-text cs-rise-lines">
                     Two ways to work together. No upsells, no hidden hours.
                 </p>
             </div>
-            <ul class="cs-card-group">
+            <ul class="cs-card-group cs-fade-in">
                 <li class="cs-item cs-item-featured">
-                    <span class="cs-badge">Most popular</span>
+{# ⚠ "Recommended", NOT "Most popular" (changed 2026-09-25).
+                       "Most popular" is a claim about what OTHER buyers chose,
+                       and this shop has two live clients and no reviews yet -
+                       there is no sales distribution behind it. That is the same
+                       category as the testimonials cut on launch day, and the
+                       badge being small does not make it a smaller claim.
+
+                       "Recommended" does the identical layout job and is a claim
+                       Bryan can actually make: it is his recommendation, stated
+                       in the first person, which the .cs-best line on /pricing/
+                       already does honestly one row below. Keep the two pages in
+                       step - this badge exists in both. #}
+                    <span class="cs-badge">Recommended</span>
                     <span class="cs-plan">Monthly</span>
-                    <span class="cs-price">$150<span class="cs-period">/mo</span></span>
+                    <span class="cs-price">{{ pricing.price }}<span class="cs-period">/mo</span></span>
                     <span class="cs-note">everything included, cancel anytime</span>
                     <ul class="cs-ul">
                         <li class="cs-li">Hand-coded &amp; secure</li>
@@ -389,11 +785,46 @@ tags: "sitemap" # content/content.json will make sure that all pages in content/
                         <li class="cs-li">Custom design, no templates</li>
                         <li class="cs-li">Fast load times from day one</li>
                         <li class="cs-li">Honest, sustainable SEO</li>
-                        <li class="cs-li cs-li-muted">Support &amp; updates billed at $125/hr</li>
+                        <li class="cs-li cs-li-muted">Support &amp; updates billed at {{ pricing.hourlyRate }}</li>
                     </ul>
                     <a href="/contact/" class="cs-button-transparent">Get started</a>
                 </li>
             </ul>
+            {# ── what "all in" actually means, and the way to the full page ──
+               Two facts and a link, in the mono middot idiom #speed uses under
+               its scorecard.
+
+               ⚠ BOTH FACTS ARE SOURCED, neither is new. "Washington sales tax
+               included" is the literal meaning of the all-in claim: WA has
+               charged retail sales tax on custom website development since
+               1 Oct 2025, and it comes OUT of the price rather than being added
+               at checkout, which costs roughly $14 per client per month. That is
+               the single most concrete thing this section can say and it was not
+               on the home page anywhere. "No setup fee" is /pricing/'s own FAQ
+               answer ("Is there a setup fee? Not on the monthly plan").
+
+               ⚠ Deliberately NOT repeating "cancel anytime" - the featured card
+               says it two rows up, and the house rule is say it once.
+
+               ── why the link, and why this wording ──
+               The teaser had NO route to /pricing/ at all; both cards went
+               straight to /contact/, so the page carrying the "not included"
+               column, the ownership answer and the FAQ was reachable only from
+               the nav. Same gap #speed had before "Run it yourself" and #about
+               had before "Read the full story".
+
+               It names the boundary on purpose. /pricing/#included's not-included
+               column is, in CLAUDE.md's words, the POINT of that section rather
+               than a disclaimer - naming what you do not get is what makes the
+               inclusions credible - so the link advertises that rather than
+               saying "learn more". #}
+            <div class="cs-terms cs-fade-in">
+                <ul class="cs-term-list">
+                    <li class="cs-term">Washington sales tax included, not added at checkout</li>
+                    <li class="cs-term">No setup fee, nothing due upfront</li>
+                </ul>
+                <a href="/pricing/" class="cs-link">What's included, and what isn't<span class="cs-arrow" aria-hidden="true">&rarr;</span></a>
+            </div>
         </div>
     </section>
 
@@ -430,14 +861,106 @@ tags: "sitemap" # content/content.json will make sure that all pages in content/
          ask, and a second outbound click would compete with it. -->
     <section id="free-redesign">
         <div class="cs-container">
-            <div class="cs-content">
+            <div class="cs-content cs-fade-in">
                 <span class="cs-topper">The no-risk start</span>
-                <h2 class="cs-title">We'll redesign your homepage. <span class="cs-accent">Free.</span></h2>
-                <p class="cs-text">
-                    Send me your site and I'll design a fresh homepage for your business, custom, built from scratch. Keep the design either way. Love it? I'll build and host the whole thing for $150 a month.
+                <h2 class="cs-title cs-rise-lines">We'll redesign your homepage. <span class="cs-accent">Free.</span></h2>
+                <p class="cs-text cs-rise-lines">
+                    Send me your site and I'll design a fresh homepage for your business, custom, built from scratch. Keep the design either way. Love it? I'll build and host the whole thing for {{ pricing.aMonth }}.
                 </p>
+                {# ── the two limits, named before the ask ──
+                   The mono middot run #speed and #pricing both use, carrying
+                   the boundary rather than more promise. Sits BETWEEN the offer
+                   and the button on purpose: claim, limit, then act. Naming
+                   what this is not is what makes "free" land as an offer rather
+                   than as bait, which is the same argument /pricing/#included
+                   makes about its not-included column.
+
+                   ⚠ BOTH ARE THIS PAGE'S OWN FAQ, compressed, not new claims:
+                     · "What's the catch?" — "What you get is a homepage DESIGN:
+                       a polished look at what your site could be, not a live
+                       working website."
+                     · "Do you redesign every site that comes in?" — "I take on
+                       what I can actually do properly. If yours isn't a good
+                       fit, I'll say so quickly."
+
+                   ⚠ NO TURNAROUND HERE, and none may be added. /free-redesign/
+                   commits to no date (its own FAQ answer still carries an
+                   unfilled note), and /thanks/redesign/ deliberately states
+                   none for the same reason. A turnaround goes on
+                   /free-redesign/ first, then here — never the other way. #}
+                <ul class="cs-limits">
+                    <li class="cs-limit">A homepage design, not a live site</li>
+                    <li class="cs-limit">If it's not a fit, I'll say so quickly</li>
+                </ul>
                 <a href="/free-redesign/" class="cs-button-solid">Claim a free redesign<span class="cs-arrow" aria-hidden="true">&rarr;</span></a>
             </div>
+            {# ── browser chrome ──
+               The /work/ frame idiom (work.less), so a homepage screenshot
+               reads as a WEBSITE rather than as a photograph of food sitting on
+               a navy card. Same bar, same three dots, same clip.
+
+               ⚠ NO URL IN THE BAR, unlike every frame on /work/. The picture
+               under it rotates through three different sites on a 9s loop, so
+               any domain typed here would be wrong for two thirds of the cycle
+               — and a wrong domain beside a screenshot is a factual error, not
+               a cosmetic one. The dots alone still read as a browser. #}
+            <div class="cs-frame">
+                {# ── the toolbar ──
+                   ONE row, not a tab strip over a toolbar, and that is faithful
+                   rather than a compromise: Safari's window is exactly this -
+                   traffic lights, back/forward, the address field and a menu on
+                   a single unified bar. Two rows of chrome would also have eaten
+                   ~70px off a 440px frame whose entire job is showing the site.
+
+                   The whole bar is aria-hidden: it is a drawing of a browser,
+                   and the alt text on the first shot already says what these
+                   are. That is also why the rotating URL below costs a screen
+                   reader nothing. #}
+                <div class="cs-frame-bar" aria-hidden="true">
+                    <span class="cs-dots">
+                        <span class="cs-dot"></span>
+                        <span class="cs-dot"></span>
+                        <span class="cs-dot"></span>
+                    </span>
+                    <span class="cs-nav">
+                        <svg class="cs-nav-btn" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3.5 5.5 8l4.5 4.5"/></svg>
+                        <svg class="cs-nav-btn cs-nav-fwd" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3.5 10.5 8 6 12.5"/></svg>
+                        <svg class="cs-nav-btn" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M13 8a5 5 0 1 1-1.6-3.7"/><path d="M13.2 3.2v3.1h-3.1"/></svg>
+                    </span>
+                    {# ── the address field ──
+                       ⚠ THE DOMAIN ROTATES WITH THE PICTURE, and that is the
+                       whole reason this bar can carry a URL at all. The earlier
+                       version had none: the shot cycles through three different
+                       sites, so any single domain typed here would have been
+                       wrong for two thirds of the loop, and a wrong domain
+                       beside a screenshot is a factual error rather than a
+                       cosmetic one.
+
+                       All three are the site's own canonical strings, the same
+                       ones /work/ and the #work grid below print. If a demo is
+                       ever rehosted, it changes in all three places.
+
+                       ⚠ These SNAP, they do not crossfade like the pictures.
+                       Two images at 50% are a blend; two strings at 50% are
+                       unreadable mush. Each switch is timed to land INSIDE the
+                       picture's 0.6s crossfade, where the eye is already
+                       occupied - see the keyframes in local.less.
+
+                       The padlock is honest too: all three are served over
+                       https, which is what the monthly plan's "hand-coded and
+                       secure" line and /work/'s SSL verify link both claim. #}
+                    <span class="cs-omnibox">
+                        <svg class="cs-lock" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3.6" y="7.1" width="8.8" height="5.8" rx="1.3"/><path d="M5.7 7.1V5.3a2.3 2.3 0 0 1 4.6 0v1.8"/></svg>
+                        <span class="cs-urls">
+                            <span class="cs-url cs-url-1">demo-teriyaki-website.netlify.app</span>
+                            <span class="cs-url cs-url-2">demo-dog-food-website.netlify.app</span>
+                            <span class="cs-url cs-url-3">bryanvandusen.com</span>
+                        </span>
+                    </span>
+                    <span class="cs-menu">
+                        <i></i><i></i><i></i>
+                    </span>
+                </div>
             <div class="cs-picture">
                 <picture class="cs-shot cs-shot-1">
                     <source srcset="{% getUrl "/assets/images/demo-teriyaki.jpg" | resize({ width: 760, height: 570 }) | avif(codec.avif) %}" type="image/avif">
@@ -455,6 +978,7 @@ tags: "sitemap" # content/content.json will make sure that all pages in content/
                     <img class="cs-graphic" src="{% getUrl "/assets/images/bryan-van-dusen.jpg" | resize({ width: 760, height: 570 }) | jpeg %}" alt="" width="760" height="570" loading="lazy" decoding="async">
                 </picture>
             </div>
+            </div>
         </div>
     </section>
                                     
@@ -465,9 +989,9 @@ tags: "sitemap" # content/content.json will make sure that all pages in content/
 
     <section id="work">
         <div class="cs-container">
-            <div class="cs-content">
+            <div class="cs-content cs-fade-in">
                 <span class="cs-topper">Our work</span>
-                <h2 class="cs-title">Recent work</h2>
+                <h2 class="cs-title cs-rise-lines">Recent work</h2>
             </div>
             <!-- Cards 01-02 are live CLIENT sites. Cards 03-04 are DEMOS - real,
                  live builds for businesses that do not exist. Their one-line texts
@@ -480,22 +1004,32 @@ tags: "sitemap" # content/content.json will make sure that all pages in content/
                  row. The tilt below is per-card, so a fifth needs its own angle.
                  The .cs-placeholder / .cs-ph-* drop-zone styles this card used to
                  use are still in local.less, unused, in case a slot goes empty again. -->
-            <ul class="cs-card-group">
+            <ul class="cs-card-group cs-fade-in">
                 <li class="cs-item">
                     <figure class="cs-card">
                         <a href="https://www.bryanvandusen.com/" target="_blank" rel="noopener" class="cs-thumb-link" aria-label="Visit the Bryan Van Dusen website (opens in a new tab)">
+                            <span class="cs-frame-bar" aria-hidden="true">
+                                <span class="cs-dot"></span>
+                                <span class="cs-dot"></span>
+                                <span class="cs-dot"></span>
+                                <span class="cs-frame-url">
+                                    <svg class="cs-lock" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.6" y="7.1" width="8.8" height="5.8" rx="1.3"/><path d="M5.7 7.1V5.3a2.3 2.3 0 0 1 4.6 0v1.8"/></svg>
+                                    <span class="cs-url-text">bryanvandusen.com</span>
+                                </span>
+                            </span>
                             <picture class="cs-thumb">
                                 <source srcset="{% getUrl "/assets/images/bryan-van-dusen.jpg" | resize({ width: 760, height: 570 }) | avif(codec.avif) %}" type="image/avif">
                                 <source srcset="{% getUrl "/assets/images/bryan-van-dusen.jpg" | resize({ width: 760, height: 570 }) | webp %}" type="image/webp">
                                 <img src="{% getUrl "/assets/images/bryan-van-dusen.jpg" | resize({ width: 760, height: 570 }) | jpeg %}" alt="Bryan Van Dusen children's author website homepage" width="760" height="570" loading="lazy" decoding="async">
                             </picture>
+                            <span class="cs-visit" aria-hidden="true">Visit site{% include "components/icon-external.html" %}</span>
                         </a>
-                        <figcaption class="cs-filename">bryanvandusen.com</figcaption>
                     </figure>
                     <div class="cs-flex">
-                        <h3 class="cs-h3">Bryan Van Dusen</h3>
                         <span class="cs-number">01</span>
+                        <span class="cs-tag">Client</span>
                     </div>
+                    <h3 class="cs-h3">Bryan Van Dusen</h3>
                     <p class="cs-item-text">
                         Brand &amp; book showcase for a children's author.
                     </p>
@@ -503,18 +1037,28 @@ tags: "sitemap" # content/content.json will make sure that all pages in content/
                 <li class="cs-item">
                     <figure class="cs-card">
                         <a href="https://bk2026.com/" target="_blank" rel="noopener" class="cs-thumb-link" aria-label="Visit the Bryan & Katie wedding website (opens in a new tab)">
+                            <span class="cs-frame-bar" aria-hidden="true">
+                                <span class="cs-dot"></span>
+                                <span class="cs-dot"></span>
+                                <span class="cs-dot"></span>
+                                <span class="cs-frame-url">
+                                    <svg class="cs-lock" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.6" y="7.1" width="8.8" height="5.8" rx="1.3"/><path d="M5.7 7.1V5.3a2.3 2.3 0 0 1 4.6 0v1.8"/></svg>
+                                    <span class="cs-url-text">bk2026.com</span>
+                                </span>
+                            </span>
                             <picture class="cs-thumb">
                                 <source srcset="{% getUrl "/assets/images/bk2026.jpg" | resize({ width: 760, height: 570 }) | avif(codec.avif) %}" type="image/avif">
                                 <source srcset="{% getUrl "/assets/images/bk2026.jpg" | resize({ width: 760, height: 570 }) | webp %}" type="image/webp">
                                 <img src="{% getUrl "/assets/images/bk2026.jpg" | resize({ width: 760, height: 570 }) | jpeg %}" alt="Bryan and Katie wedding website homepage" width="760" height="570" loading="lazy" decoding="async">
                             </picture>
+                            <span class="cs-visit" aria-hidden="true">Visit site{% include "components/icon-external.html" %}</span>
                         </a>
-                        <figcaption class="cs-filename">bk2026.com</figcaption>
                     </figure>
                     <div class="cs-flex">
-                        <h3 class="cs-h3">Bryan &amp; Katie</h3>
                         <span class="cs-number">02</span>
+                        <span class="cs-tag">Client</span>
                     </div>
+                    <h3 class="cs-h3">Bryan &amp; Katie</h3>
                     <p class="cs-item-text">
                         Wedding site with itinerary, RSVP &amp; registry.
                     </p>
@@ -522,18 +1066,28 @@ tags: "sitemap" # content/content.json will make sure that all pages in content/
                 <li class="cs-item">
                     <figure class="cs-card">
                         <a href="https://demo-teriyaki-website.netlify.app/" target="_blank" rel="noopener" class="cs-thumb-link" aria-label="Visit the Example Teriyaki demo site (opens in a new tab)">
+                            <span class="cs-frame-bar" aria-hidden="true">
+                                <span class="cs-dot"></span>
+                                <span class="cs-dot"></span>
+                                <span class="cs-dot"></span>
+                                <span class="cs-frame-url">
+                                    <svg class="cs-lock" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.6" y="7.1" width="8.8" height="5.8" rx="1.3"/><path d="M5.7 7.1V5.3a2.3 2.3 0 0 1 4.6 0v1.8"/></svg>
+                                    <span class="cs-url-text">demo-teriyaki-website.netlify.app</span>
+                                </span>
+                            </span>
                             <picture class="cs-thumb">
                                 <source srcset="{% getUrl "/assets/images/demo-teriyaki.jpg" | resize({ width: 760, height: 570 }) | avif(codec.avif) %}" type="image/avif">
                                 <source srcset="{% getUrl "/assets/images/demo-teriyaki.jpg" | resize({ width: 760, height: 570 }) | webp %}" type="image/webp">
                                 <img src="{% getUrl "/assets/images/demo-teriyaki.jpg" | resize({ width: 760, height: 570 }) | jpeg %}" alt="Example Teriyaki demo restaurant website homepage" width="760" height="570" loading="lazy" decoding="async">
                             </picture>
+                            <span class="cs-visit" aria-hidden="true">Visit site{% include "components/icon-external.html" %}</span>
                         </a>
-                        <figcaption class="cs-filename">demo-teriyaki-website.netlify.app</figcaption>
                     </figure>
                     <div class="cs-flex">
-                        <h3 class="cs-h3">Example Teriyaki</h3>
                         <span class="cs-number">03</span>
+                        <span class="cs-tag">Demo</span>
                     </div>
+                    <h3 class="cs-h3">Example Teriyaki</h3>
                     <p class="cs-item-text">
                         Demo build for a restaurant that doesn't exist.
                     </p>
@@ -541,23 +1095,39 @@ tags: "sitemap" # content/content.json will make sure that all pages in content/
                 <li class="cs-item">
                     <figure class="cs-card">
                         <a href="https://demo-dog-food-website.netlify.app/" target="_blank" rel="noopener" class="cs-thumb-link" aria-label="Visit the Moe Balls demo site (opens in a new tab)">
+                            <span class="cs-frame-bar" aria-hidden="true">
+                                <span class="cs-dot"></span>
+                                <span class="cs-dot"></span>
+                                <span class="cs-dot"></span>
+                                <span class="cs-frame-url">
+                                    <svg class="cs-lock" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.6" y="7.1" width="8.8" height="5.8" rx="1.3"/><path d="M5.7 7.1V5.3a2.3 2.3 0 0 1 4.6 0v1.8"/></svg>
+                                    <span class="cs-url-text">demo-dog-food-website.netlify.app</span>
+                                </span>
+                            </span>
                             <picture class="cs-thumb">
                                 <source srcset="{% getUrl "/assets/images/demo-dog-food.jpg" | resize({ width: 760, height: 570 }) | avif(codec.avif) %}" type="image/avif">
                                 <source srcset="{% getUrl "/assets/images/demo-dog-food.jpg" | resize({ width: 760, height: 570 }) | webp %}" type="image/webp">
                                 <img src="{% getUrl "/assets/images/demo-dog-food.jpg" | resize({ width: 760, height: 570 }) | jpeg %}" alt="Moe Balls demo dog treat brand website homepage" width="760" height="570" loading="lazy" decoding="async">
                             </picture>
+                            <span class="cs-visit" aria-hidden="true">Visit site{% include "components/icon-external.html" %}</span>
                         </a>
-                        <figcaption class="cs-filename">demo-dog-food-website.netlify.app</figcaption>
                     </figure>
                     <div class="cs-flex">
-                        <h3 class="cs-h3">Moe Balls</h3>
                         <span class="cs-number">04</span>
+                        <span class="cs-tag">Demo</span>
                     </div>
+                    <h3 class="cs-h3">Moe Balls</h3>
                     <p class="cs-item-text">
                         Demo build for a dog treat brand that doesn't exist.
                     </p>
                 </li>
             </ul>
+            {# The third section in a row that had no way to its own page: all
+               four cards link OUT to the live sites, so /work/ - which carries
+               the spec lists and the framing that labels the demos as demos -
+               was reachable only from the nav. Same pill link #about and
+               #pricing use. #}
+            <a href="/work/" class="cs-link">See the full work<span class="cs-arrow" aria-hidden="true">&rarr;</span></a>
         </div>
     </section>
 
@@ -591,10 +1161,10 @@ tags: "sitemap" # content/content.json will make sure that all pages in content/
 
     <section id="service-area" class="cs-has-ferry">
         <div class="cs-container">
-            <div class="cs-content">
+            <div class="cs-content cs-fade-in">
                 <span class="cs-topper">Service area</span>
-                <h2 class="cs-title">Serving the greater Seattle area</h2>
-                <p class="cs-text">Working directly with small businesses across:</p>
+                <h2 class="cs-title cs-rise-lines">Serving the greater Seattle area</h2>
+                <p class="cs-text cs-rise-lines">Working directly with small businesses across:</p>
                 <!-- Towns come from src/_data/serviceArea.js — the same source the
                      header marquee uses, so the two lists stay in sync. -->
                 <ul class="cs-card-group">
@@ -662,4 +1232,25 @@ tags: "sitemap" # content/content.json will make sure that all pages in content/
             </div>
         </div>
     </section>
+
+    {# The wave breaking into the footer, the same component #speed is bracketed
+       by. Every page ends on a --warmSand section and the footer is navy on
+       every page, so this boundary is the same tan-to-navy the departure
+       divider handles - which is why `up` is false here, as at the top of
+       #speed.
+
+       ⚠ HOME PAGE ONLY, and that is a stylesheet constraint rather than a
+       design choice. The .cs-wave rules live in local.less, which compiles to
+       local.css and is linked by this page alone; the other 16 pages load
+       root.css plus their own sheet. Putting this include in base.html would
+       ship three unstyled SVG bands to every interior page - no height, no
+       positioning, no negative margin. Making it site-wide means moving the
+       whole Wave Divider block from local.less to root.less first.
+
+       ⚠ `up` is a Nunjucks variable and it is still true from the divider that
+       closes #speed, so it has to be set again here. A template variable set
+       once stays set for the rest of the render. #}
+    {% set up = false %}
+    {% set waveClass = "cs-wave-footer" %}
+    {% include "components/wave-divider.html" %}
 {% endblock %}

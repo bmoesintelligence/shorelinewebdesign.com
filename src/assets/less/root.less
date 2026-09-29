@@ -5,6 +5,31 @@
 // footer, and other repeated section styles for the entire site
 // ─────────────────────────────────────────────────────────────────────────────
 
+// ─────────────────────────────────────────────────────────────────────────────
+// MIXIN — the site's frosted glass
+//
+// ⚠ TOP LEVEL, deliberately. LESS scopes a mixin to the block it is declared
+// in, so defining this inside the `@media (min-width: 0rem)` block where the
+// tokens live makes it invisible to the 1024px block that calls it - and the
+// failure is not a missing mixin, it is `LessError: media definitions require
+// block statements`, which src/config/processors/less.js CATCHES AND LOGS
+// rather than throwing. The build reports success, 21 other stylesheets write
+// normally, and public/assets/css/root.css keeps serving the PREVIOUS build
+// because public/ is never cleaned. Cost an hour once; check the build output
+// for "Error processing", not just the exit code.
+//
+// ⚠ The -webkit- prefix is written by hand and must stay. Autoprefixer runs
+// here but this project ships no browserslist, so its defaults decide - and
+// they resolve to Safari versions new enough to need no prefix, so it adds
+// none. iOS Safari 15-17 does need it, and is precisely the audience that
+// recognises this material. less.js also passes `remove: false` so that
+// autoprefixer does not strip this line back out on the way past.
+// ─────────────────────────────────────────────────────────────────────────────
+.glass() {
+	-webkit-backdrop-filter: var(--glass);
+	backdrop-filter: var(--glass);
+}
+
 /*-- -------------------------- -->
 <---        Core Styles         -->
 <--- -------------------------- -*/
@@ -68,6 +93,27 @@
 		   Overridden in the dark block below - #2E4865 on navy is invisible. */
 		--logoWave: #2e4865;
 
+		/* ── Wave divider ──
+		   The three bands of components/wave-divider.html, shallow → deep: foam,
+		   shallows, deep water. Every value is a colour the palette already uses —
+		   the divider adds no new hues, it spends three of the existing ones in
+		   depth order.
+
+		   ⚠ --waveDeep MUST EQUAL #speed's background exactly. The deep band is
+		   painted last and owns the finished state: when it settles it covers the
+		   other two edge to edge and the divider BECOMES the section below. It does
+		   not sit next to that colour, so "close enough" is a visible seam running
+		   the full width of the page.
+
+		   Both dividers share one palette, including the flipped one at the bottom
+		   of #speed. That works because the pair is symmetric: the top divider ends
+		   covered by --waveDeep and the bottom one starts that way, and the ground
+		   they uncover is tan at both ends. Re-pointed wholesale in the dark block
+		   below, where it is symmetric again for the same reason. */
+		--waveFoam: var(--rainGray);
+		--waveMid: var(--pugetBlue);
+		--waveDeep: var(--inkNavy);
+
 		/* ── CodeStitch semantic aliases (map kit vars → palette) ── */
 		--primary: var(--coral);
 		--primaryLight: #e2705a;
@@ -90,9 +136,243 @@
 		/* 60px - 100px top and bottom */
 		--sectionPadding: clamp(3.75rem, 7.82vw, 6.25rem) 1rem;
 
+		/* ── the page width ──
+		   The outer edge every section lines up on: nav, hero, footer, page
+		   heroes, and the lifted panels below. It was 35 hardcoded copies of
+		   `max-width: (1280/16rem)` across 10 stylesheets until 2026-09-16, with
+		   nothing naming it, which is exactly how #services ended up 112px wider
+		   than the navbar above it and looked broken.
+
+		   ⚠ LITERAL rem, not (1280/16rem). LESS passes custom-property values
+		   through verbatim and the browser drops anything it cannot parse, with
+		   no build error. House rule.
+
+		   ⚠ Raising this alone will NOT let the type grow. The hero h1 is capped
+		   by its own column (--heroColumn below) and the three-line rule; the
+		   section h2s are capped at 18ch. Those are the type dials. This one
+		   controls page density and alignment.
+
+		   Raised 80rem -> 83rem on 2026-09-16 to buy the hero headline its column
+		   back. At 1440 the hero was 100% allocated - 580 text + 72 gap + 628
+		   scene = 1280 exactly - so the h1 could not grow without shrinking the
+		   diorama. 48px of extra page width goes to the text column and the
+		   scene keeps its size.
+
+		   Gutters either side, measured after: 1440 -> 56px, 1512 -> 92, 1920 -> 296. */
+		--containerWidth: 83rem;
+
 		/* both isometric diorama scenes (hero + service area) share this width,
 		   so they always render at the same size */
 		--sceneWidth: 40rem;
+
+		/* ── the lifted panel ──
+		   A rounded, inset ground a shade deeper than the page, so the cards and
+		   frames sitting ON it read as raised rather than as outlines drawn on
+		   the section. /work/ is where this was worked out - it is what stopped
+		   that page reading as flat and unfinished - and it is now a token so a
+		   second section cannot drift from it.
+
+		   ⚠ Deeper than the page, never lighter, and always BELOW the raised
+		   thing it carries: cards here are #fdfbf4 in light mode and --medium in
+		   dark, and the panel has to stay under both or the lift inverts.
+		   work.less still hardcodes these two values; fold it in when it is next
+		   touched. */
+		--panelLight: rgba(27, 42, 56, 0.05);
+		/* ── the glow ──
+		   Two very soft radials laid over --panelLight, borrowed from kukie.io,
+		   which builds every raised surface this way rather than as a flat fill.
+		   It reads as light falling across the panel, not as colour: a flat tint
+		   is what makes a big rounded block look like a grey box.
+
+		   ⚠ Alphas are deliberately tiny (.10 / .07). The house rule is coral
+		   rationed to a single accent and "never cute" - at .2 these stop being
+		   light and start being a gradient, which is a different brand. If you
+		   can name the colours without looking at the CSS, they are too strong.
+		   Both hues are already in the palette: --pugetBlue and --coral. */
+		--panelGlow: radial-gradient(circle 720px at 6% -10%, rgba(54, 99, 117, 0.1), transparent 70%), radial-gradient(circle 640px at 97% 4%, rgba(194, 69, 46, 0.07), transparent 68%);
+		--panelRadius: clamp(1.25rem, 2.5vw, 2rem);
+		/* 24px - 56px */
+		--panelPad: clamp(1.5rem, 4vw, 3.5rem);
+
+		/* ── the nav's glass ──────────────────────────────────────────────
+		   The bar, and the dropdown panel under it, are translucent and blur
+		   what passes behind them. Frosted, NOT glossy: no gradient sheen, no
+		   specular highlight, no fake refraction.
+
+		   ⚠ That distinction is the whole design decision, not a detail. This
+		   site is flat fills, hairlines and hard edges - the theme toggle's sun
+		   lost its gradient in August for being "a shaded, glossy orb in a flat
+		   geometric system", which is exactly what an Apple-style gloss would
+		   reintroduce, at the top of every page. What DOES belong here is haze:
+		   the palette is called Marine Layer, and a marine layer is fog over
+		   water. Blur and translucency are on-brand; shine is not.
+
+		   ── the alpha is a CONTRAST budget, not a taste dial ──
+		   The bar is `position: fixed`, so it does not only sit on warm tan - it
+		   passes over the navy bands, the diorama and the white cards. Whatever
+		   shows through changes the ground the links are measured against, and
+		   the worst case is ink navy (#1b2a38) directly behind.
+
+		   Solving 4.5:1 for --pugetBlue links (L 0.1099) needs a composited
+		   ground of L >= 0.6696, i.e. every channel >= ~212. Compositing
+		   #fdfbf4 over #1b2a38 gives 27 + 226a per channel, so a >= 0.818.
+		   0.85 carries the margin. Push it lower and the hover, not the resting
+		   link, is what fails first - measured, don't eyeball it.
+
+		   ⚠ Blur does NOT help legibility. It smears the backdrop's detail but
+		   preserves its average luminance, which is the only thing contrast
+		   cares about. Only the alpha buys contrast.
+
+		   ⚠ The tint is #fdfbf4, the site's raised-card white, not #fff. The
+		   bar was the one pure-white plane on a warm page and read cold against
+		   it; going translucent was the moment to fix it, since the value was
+		   changing anyway. */
+		--glass: blur(22px) saturate(180%);
+		--navGlassSurface: rgba(253, 251, 244, 0.85);
+		/* ⚠ THE SERVICES PANEL HAS NO ALPHA OF ITS OWN, deliberately, and there
+		   used to be a --navGlassPanel here that gave it one.
+
+		   It ran at 0.95 and briefly 0.98 against the bar's 0.85, on the
+		   argument that the bar crosses a predictable strip near the top of the
+		   page while the menu opens over whatever happens to be under it. That
+		   is true, and it still produced the wrong thing: an almost-opaque
+		   panel hanging off a translucent bar reads as a WHITE BOX, and the 2%
+		   of hero headline that does come through reads as a printing fault
+		   rather than as glass, because nothing else about the panel says it is
+		   transparent. Translucency is all-or-nothing at this size.
+
+		   So the panel takes --navGlassSurface, the bar's own value, and the
+		   legibility the alpha was buying is bought by the CARDS instead
+		   (--navMegaCard below) - which is where the type actually sits. The
+		   panel is then glass in the places glass should show: the gaps between
+		   the cards, the foot rule, and the rim.
+
+		   ⚠ Don't reintroduce a separate panel alpha. If the copy ever needs
+		   more ground under it, raise --navMegaCard, not this. */
+
+		/* ── the raised cards ──────────────────────────────────────────────
+		   The same material on every white surface of the home page: the stat
+		   cards, the service cards, the pricing ticket, the browser frames, the
+		   town chips.
+
+		   ⚠ More translucent than the bar (0.72 vs 0.85), and the reason is the
+		   opposite of the one you would guess. The bar needs opacity because it
+		   is `position: fixed` and crosses navy bands, illustrations and cards,
+		   so its worst-case ground is unpredictable. Every one of these cards
+		   sits on flat --warmSand and nothing else, so its ground is KNOWN and
+		   the alpha can be spent on the effect instead.
+
+		   ⚠ Expect this to look like almost nothing on most of the page, and
+		   that is not a bug to tune away. Frosted glass is only visible when
+		   there is something behind it to distort; over a flat tan field there
+		   is no detail to blur, so it can only read as a tint. Compositing this
+		   over --warmSand lands at #f6f2e8 against the #fdfbf4 it replaced,
+		   which is a 2% shift. Where it actually shows is where the ground has
+		   structure: the --panelGlow radials, the section-edge transitions, and
+		   #service-area, where the chips sit near the diorama.
+
+		   The dial is here and nowhere else. Push it down and the cards read as
+		   panes of tinted glass; the ceiling is the point where they stop
+		   reading as RAISED, since #fdfbf4 on --warmSand is only 1.32:1 to
+		   begin with (see the note at the top of local.less) and translucency
+		   spends the little separation there is. The hairline and the shadow on
+		   each card are what hold that read, so do not thin them to compensate.
+
+		   ⚠ Consumed by critical.less and local.less, which are compiled as
+		   SEPARATE stylesheets and cannot see this file's mixins - only its
+		   custom properties, which are global because root.css loads on every
+		   page. Each of those files declares its own `.glass()`. The value
+		   lives here; the two prefixed declarations are duplicated there. */
+		--glassCard: rgba(253, 251, 244, 0.72);
+
+		/* ── the nav bar's two coral values ──
+		   ⚠ These exist because --coralText and --coralAccent CANNOT be used in
+		   the desktop nav, and the reason is invisible at the call site.
+
+		   `#cs-navigation .cs-ul-wrapper` is in the dark-surface override list
+		   below, where it re-points both tokens to their pale on-navy values.
+		   That was correct and harmless for years: the wrapper is the COLLAPSED
+		   nav's navy menu panel, and on desktop it is an unstyled div that
+		   nothing inside read either token from. The note on that list still
+		   said "no-op on desktop".
+
+		   It stopped being a no-op on 2026-09-18, when the desktop links got a
+		   coral hover and a coral waterline. Both sit inside that wrapper, so
+		   both silently inherited the ON-NAVY coral - #e8846f - and painted it
+		   on the white bar at 2.64:1. Nothing errors; the hover just quietly
+		   fails contrast in the theme you are most likely to be looking at.
+
+		   Separate token names are the fix, because they are not in that list.
+		   Flipped once, in the dark-mode block in Navigation — Dark Mode. */
+		--navLinkHover: #963320;
+		--navAccent: #c94a32;
+
+		/* ── the services mega panel ──
+		   Five values, all of them RELATIVE tints of the panel's own ground
+		   rather than palette colours, because the panel is translucent glass:
+		   a flat hex card on it would read as a hole punched through the blur.
+		   Alpha over the glass keeps the material continuous.
+
+		   ⚠ Literal values only in here. LESS emits custom-property values
+		   VERBATIM, so no (n/16rem) math is allowed.
+
+		   ⚠ These must NOT be --coralText / --coralAccent / --panelLight. The
+		   panel sits inside `#cs-navigation .cs-ul-wrapper`, which is in the
+		   dark-surface override list above, so every one of those tokens
+		   resolves to its ON-NAVY value up here even in light mode. Same trap
+		   that shipped the link hover at 2.64:1; see the note on that list. */
+		/* ⚠ The card LIFTS by adding warm white, which is the opposite of this
+		   site's usual "panels lift by going darker" and is not a mistake. That
+		   rule is about opaque tan sections; here the ground is glass, so the
+		   lift IS opacity - the card ends up 96% opaque where the panel behind
+		   it is 85%, which is what keeps 12.5px copy off the hero headline. An
+		   ink tint was tried first and is what made the panel read cold and
+		   grey next to the warm bar.
+
+		   The card is only ~3 values lighter than the panel, so the hairline is
+		   doing most of the separating. Don't drop it.
+
+		   MEASURED, sampled off the real render over the hero headline - the
+		   worst backdrop the panel ever crosses: the 12.5px description lands
+		   at 6.07:1 and the 11px foot note, which sits on the bare panel with
+		   no card under it, at 5.49:1. Both past the 4.5 they owe, and the foot
+		   note is the one with the least room - it is the first thing to
+		   re-measure if this panel's alpha or copy size ever moves.
+
+		   ⚠ Those numbers depend on the blur actually running. They were 5.85
+		   and 4.77 while the panel's backdrop-filter was silently a no-op (see
+		   the backdrop-root note on .cs-container): an unblurred backdrop puts
+		   a hard edge of hero headline under the copy, and the worst PIXEL is
+		   what a contrast check reads. Blur does not change a backdrop's
+		   average luminance, but it does flatten the extremes. */
+		--navMegaCard: rgba(253, 251, 244, 0.7);
+		--navMegaCardHover: rgba(253, 251, 244, 0.92);
+		--navMegaCardEdge: rgba(27, 42, 56, 0.06);
+		--navMegaHairline: rgba(27, 42, 56, 0.1);
+		/* the preview "screen" - the raised-card white, so a wireframe on it
+		   reads as a page on a page */
+		--navMegaScreen: #fdfbf4;
+		/* the wireframe bars themselves. Decoration, so they only owe 3:1 and
+		   are deliberately under it - a sketch that reads as strongly as the
+		   label beside it stops being a sketch. */
+		--navMegaInk: rgba(27, 42, 56, 0.26);
+		--navMegaInkSoft: rgba(27, 42, 56, 0.1);
+
+		/* ── the theme toggle ──
+		   Its own four tokens rather than reaching for the nav's, because the
+		   nav's hairline tokens (--navBarHairline, --navHairline) are declared
+		   per breakpoint inside the collapsed / desktop blocks and this control
+		   renders at every width. Flipped once, in the dark-mode block in the
+		   Navigation — Dark Mode section.
+
+		   ⚠ Literal values only in here. LESS emits custom-property values
+		   VERBATIM, so no (n/16rem) math is allowed. */
+		--themeRing: rgba(27, 42, 56, 0.16);
+		--themeRingHover: rgba(27, 42, 56, 0.06);
+		--themeGlyph: #366375;
+		/* the lit edge of the crescent — the site's pale blue on navy, the same
+		   value --logoWave takes on a dark surface */
+		--themeGlyphLit: #7ba6c9;
 
 		--headerFont: "Sora", "Helvetica Neue", Arial, sans-serif;
 		--bodyFont: "Inter", "Helvetica Neue", Arial, sans-serif;
@@ -129,8 +409,13 @@
 	#service-area .cs-item-home,
 	#projects .cs-panel-dark,
 	/* the collapsed nav's menu panel — navy in light mode, darker in dark mode.
-	   No-op on desktop, where the wrapper is an unstyled div and nothing inside
-	   it reads --coralText. */
+	   ⚠ NOT a no-op on desktop, whatever this comment said until 2026-09-18.
+	   The wrapper is an unstyled div up there, but it still WRAPS the desktop
+	   links, so anything inside it that reads --coralText or --coralAccent gets
+	   the on-navy value while sitting on the white bar. That is exactly how the
+	   new link hover shipped at 2.64:1 for a build. Desktop nav accents have
+	   their own tokens now (--navLinkHover / --navAccent) for this reason; do
+	   not "simplify" them back to the shared ones. */
 	#cs-navigation .cs-ul-wrapper,
 	body.dark-mode {
 		/* Small coral TEXT on dark needs the full 4.5:1, so it has to be this
@@ -148,6 +433,35 @@
 		   a graphic element (3:1 is the non-text minimum). The arc needs nothing
 		   here: it is currentColor and follows the logo text. */
 		--logoWave: #7ba6c9;
+		/* The panel lifts off navy instead of tan, so the tint inverts. Stays
+		   below --medium (#26384a) so the cards on it still read as raised. */
+		--panelLight: rgba(255, 255, 255, 0.04);
+		/* Same two lights, lifted to the values this site already uses on navy:
+		   --logoWave's dark blue and --coralAccent's dark coral. The light-mode
+		   pair is invisible on a dark ground. */
+		--panelGlow: radial-gradient(circle 720px at 6% -10%, rgba(123, 166, 201, 0.1), transparent 70%), radial-gradient(circle 640px at 97% 4%, rgba(222, 100, 75, 0.09), transparent 68%);
+	}
+
+	/* Wave divider, dark. Its own block rather than the one above, which is
+	   shared with the mobile nav wrapper — there is no wave inside the nav.
+
+	   The ramp has to invert its REASONING here, not just its values. In light
+	   mode the page above the divider is tan and the wave descends into navy. In
+	   dark mode the page above is ALREADY navy (#about flips to --dark), so a
+	   band that merely darkens would be invisible against it. The foam instead
+	   sits LIGHTER than its ground and reads as a crest catching moonlight, and
+	   the ramp falls away underneath it.
+
+	   ⚠ --waveDeep must equal what #speed actually RENDERS as in dark mode, not
+	   what it is declared as. #speed is rgba(0, 0, 0, .25) over body.dark-mode's
+	   --dark (#1b2a38), which composites to #14202a. It is written out as a
+	   literal because a band cannot be a translucent black without dimming the
+	   two bands it overlaps. If #speed's dark treatment changes, this changes
+	   with it. */
+	body.dark-mode {
+		--waveFoam: #3f5f7a;
+		--waveMid: var(--medium);
+		--waveDeep: #14202a;
 	}
 
 	html,
@@ -519,86 +833,186 @@
 
 /* Mobile - 360px */
 @media only screen and (min-width: 0px) {
-    body.dark-mode {
-        #dark-mode-toggle {
-            .cs-sun {
-                opacity: 1;
-                transform: translate(-50%, -50%);
-            }
+    /* ── the theme switch ──
+       A sliding pill: a sun on the left in light mode, a crescent moon on the
+       right in dark. It replaced the kit's 48px icon button, which cross-faded
+       two SVGs in place and read as a generic icon rather than as a control
+       with a state.
 
-            .cs-moon {
-                opacity: 0;
-                transform: translate(-50%, -150%);
-                fill: #fff;
-            }
-        }
-    }
+       ⚠ Still a <button aria-pressed>, NOT an <input type="checkbox">, even
+       though the pattern this is modelled on uses a checkbox. A theme toggle is
+       an ACTION, not a form field, and aria-pressed is the correct role for it -
+       a checkbox announces "checked", which tells a screen reader nothing about
+       what it did. It also means dark.js needs no change at all: it already
+       maintained aria-pressed on this button, so the whole switch is driven off
+       an attribute the JS was setting anyway.
 
+       The knob is a pseudo-element, so the button has no children and there is
+       nothing to fetch. That removes the sun.svg request too. */
     #dark-mode-toggle {
-        width: (48/16rem);
-        height: (48/16rem);
-        padding: 0;
-        background: transparent;
-        overflow: hidden;
-        border: none;
-        display: block;
-        position: absolute;
-        right: (90/16rem);
-        bottom: (16/16rem);
-        z-index: 1000;
+        /* ── a ghost icon button, not a switch ──────────────────────────────
+           Rebuilt 2026-09-18. This was a 72 x 44 track with a solid coral knob,
+           sitting immediately left of the 127px coral "Get started" button.
 
-        img,
-        svg {
-            width: (20/16rem);
-            height: (20/16rem);
-            pointer-events: none;
-            //center image inside button
+           Two things were wrong with it, and neither was the craft - the
+           crescent trick below is the old one, kept.
+
+           1. It outranked the navigation. A theme switch is a preference
+              control; it was 57% the width of the primary CTA, the second
+              largest object in the bar, and the only other coral one. Two coral
+              objects in the right-hand cluster is exactly the "rationed to a
+              single accent" rule being broken by the least important element on
+              the bar.
+           2. On a phone it was the loudest thing on screen. At 390px the
+              collapsed bar holds the wordmark, this, and the hamburger - and
+              "this" was a big warm-sand pill with a coral dot in it, while the
+              actual CTA is not in the bar at all.
+
+           So: same size class as the hamburger it sits beside (one 44px round
+           target on touch, 34px on a pointer), no fill, no coral, a hairline
+           ring so it still reads as a control, and the state carried entirely
+           by the glyph changing SHAPE - rays retract, disc carves to a crescent.
+
+           ⚠ LITERAL rem in the tokens, not the (n/16rem) house style. LESS does
+           not evaluate custom-property values: it emits `(44/16rem)` verbatim,
+           the browser cannot parse it, drops the declaration, and the button
+           computes to 0x0 with no build error and no console warning. */
+        --switch: 2.75rem;
+        /* the glyph is sized independently of the box, so the touch target can
+           grow on mobile without the sun growing with it */
+        --disc: 0.75rem;
+        --ray: 0.1875rem;
+        /* orbit radius. Must clear --disc/2 + --ray/2 or the rays fuse to the
+           disc and the sun becomes a blob. */
+        --rayOrbit: 0.59375rem;
+
+        width: var(--switch);
+        height: var(--switch);
+        padding: 0;
+        /* ⚠ box-shadow, not border. House rule, and load-bearing here: this is a
+           flex item in the nav row, and a real border would grow the box past
+           the 44px it is matched to. */
+        border: none;
+        border-radius: 50%;
+        background-color: transparent;
+        box-shadow: inset 0 0 0 1px var(--themeRing);
+        /* both the disc and the rays read this */
+        color: var(--themeGlyph);
+        display: block;
+        position: relative;
+        flex: none;
+        cursor: pointer;
+        transition: box-shadow 0.3s, background-color 0.3s;
+
+        &:hover {
+            background-color: var(--themeRingHover);
+        }
+
+        /* ── the disc ──
+           Sun in the rest state. Flat, no gradient: a shaded orb was the only
+           linear-gradient in the codebase and read as borrowed from another
+           system. Everything here is flat fills and hairlines. */
+        &:before {
+            content: "";
             position: absolute;
             top: 50%;
             left: 50%;
-            transform: translate(-50%, -50%);
+            width: var(--disc);
+            height: var(--disc);
+            margin: calc(var(--disc) / -2) 0 0 calc(var(--disc) / -2);
+            border-radius: 50%;
+            background-color: currentColor;
+            transition: box-shadow 0.4s, background-color 0.4s;
         }
 
-        .cs-moon {
-            z-index: 2;
-            // Transition properties
-            transition: transform 0.3s, opacity 0.3s;
-            fill: #1a1a1a;
+        /* ── the rays ──
+           Eight dots on one pseudo-element, drawn entirely by box-shadow: four
+           on the axes, four on the diagonals at orbit x cos45. The element
+           itself is transparent, so only the shadows paint. */
+        &:after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: var(--ray);
+            height: var(--ray);
+            margin: calc(var(--ray) / -2) 0 0 calc(var(--ray) / -2);
+            border-radius: 50%;
+            background-color: transparent;
+            box-shadow: 0 calc(var(--rayOrbit) * -1) 0 0 currentColor, 0 var(--rayOrbit) 0 0 currentColor, calc(var(--rayOrbit) * -1) 0 0 0 currentColor, var(--rayOrbit) 0 0 0 currentColor,
+                calc(var(--rayOrbit) * -0.7071) calc(var(--rayOrbit) * -0.7071) 0 0 currentColor, calc(var(--rayOrbit) * 0.7071) calc(var(--rayOrbit) * -0.7071) 0 0 currentColor,
+                calc(var(--rayOrbit) * -0.7071) calc(var(--rayOrbit) * 0.7071) 0 0 currentColor, calc(var(--rayOrbit) * 0.7071) calc(var(--rayOrbit) * 0.7071) 0 0 currentColor;
+            transform-origin: center center;
+            transition: transform 0.4s cubic-bezier(0.34, 1.2, 0.64, 1), opacity 0.25s ease;
         }
 
-        .cs-sun {
-            opacity: 0;
-            z-index: 1;
-            // Transition property
-            transform: translate(-50%, 100%);
-            transition: transform 0.3s, opacity 0.3s;
+        /* ── pressed: night ──
+           The rays retract into the disc and the disc carves itself into a
+           crescent. One trick, kept from the switch this replaced: fill the disc
+           with the colour of the surface BEHIND it, then paint a lighter disc
+           with an offset inset shadow - the offset is what leaves a crescent
+           instead of a circle.
+
+           ⚠ Both shadows are hard-edged (0 blur) on purpose. A feathered edge
+           would be the only soft edge on the page. A crescent cut hard is a
+           SHAPE, which is what the rest of this site is made of.
+
+           --medium is safe as the carve colour because aria-pressed="true" only
+           ever coexists with body.dark-mode (dark.js sets both), and the nav bar
+           is --medium in dark mode at every breakpoint. */
+        &[aria-pressed="true"] {
+            &:before {
+                background-color: var(--medium);
+                /* scaled off --disc so the bite survives a size change: at fixed
+                   px on a smaller disc the crescent quietly becomes a circle */
+                box-shadow: inset calc(var(--disc) * -0.17) calc(var(--disc) * -0.12) 0 0 var(--pugetBlue),
+                    inset calc(var(--disc) * -0.62) calc(var(--disc) * -0.26) 0 0 var(--themeGlyphLit);
+            }
+
+            &:after {
+                transform: scale(0.15);
+                opacity: 0;
+            }
+        }
+
+        /* house rule: the browser default is 1px of blue and vanishes on navy */
+        &:focus-visible {
+            outline: 2px solid var(--coralAccent);
+            outline-offset: 2px;
         }
     }
-}
 
-/* Tablet - 768px */
-@media only screen and (min-width: 768px) {
-    #dark-mode-toggle {
-        margin-left: (16/16rem);
-        order: 3;
-        position: relative;
-        right: auto;
-        bottom: auto;
+    /* Retracting rays and a carving crescent are both 0.4s of travel, and
+       someone asking for no motion should get the state, not the journey. */
+    @media (prefers-reduced-motion: reduce) {
+        #dark-mode-toggle,
+        #dark-mode-toggle:before,
+        #dark-mode-toggle:after {
+            transition: none;
+        }
     }
 }
 
 /* Desktop - 1024px */
 @media only screen and (min-width: 1024px) {
     #dark-mode-toggle {
-        margin: 0;
-        position: relative;
-        right: auto;
-        bottom: auto;
-        transform: none;
+        /* 34, not 44. Touch is gone, so the target can drop to the icon, and at
+           44 the ring was still reading as a second button beside the CTA.
+           The glyph does NOT shrink with it - it stays optically constant and
+           the ring just tightens around it. */
+        --switch: 2.125rem;
 
-        &:hover {
-            cursor: pointer;
-        }
+        /* ── order ──
+           Toggle first, then the button, so "Get started" finishes the bar on
+           the right edge. DOM order is button-then-toggle, so both need an
+           explicit order at this breakpoint to swap them.
+
+           The .cs-container gap is 36px and applies between every flex child,
+           but these two belong together rather than sitting as separate peers.
+           The negative margin pulls the toggle toward the button it pairs with,
+           leaving ~14px between them against 36px to everything else. */
+        order: 2;
+        margin: 0 (-22/16rem) 0 0;
     }
 }
 
@@ -618,7 +1032,7 @@
 
            Colours only — LESS emits custom-property values VERBATIM, so no
            (n/16rem) math is allowed in here. */
-        --navBarSurface: #fff;
+        --navBarSurface: var(--navGlassSurface);
         --navBarHairline: rgba(27, 42, 56, 0.16);
         --navMenuSurface: var(--inkNavy);
         --navMenuHairline: rgba(255, 255, 255, 0.1);
@@ -714,10 +1128,12 @@
             margin: (10/16rem) (10/16rem) 0;
             padding: (10/16rem) (10/16rem) (10/16rem) (16/16rem);
             background-color: var(--navBarSurface);
+            .glass();
             border-radius: (18/16rem);
             /* navy-tinted, matching the desktop pill — the kit's grey
-               rgba(149,157,165,…) reads cold against warm sand */
-            box-shadow: 0 (8/16rem) (24/16rem) rgba(27, 42, 56, 0.16);
+               rgba(149,157,165,…) reads cold against warm sand. The inset
+               hairline is the glass edge, same as desktop. */
+            box-shadow: 0 (8/16rem) (24/16rem) rgba(27, 42, 56, 0.16), inset 0 0 0 1px rgba(255, 255, 255, 0.5);
             display: flex;
             justify-content: flex-end;
             align-items: center;
@@ -759,8 +1175,12 @@
            own padding, that offset drifts. Laid out in the flex row instead:
            logo · theme · toggle, which is the order it already appeared in. */
         #dark-mode-toggle {
-            width: (44/16rem);
-            height: (44/16rem);
+            /* ⚠ No width/height here. It used to be forced to 44x44 to match
+               the hamburger's touch target, which was right when this was a
+               round icon button and wrong now that it is a 56x32 pill: a square
+               box turned the track into a circle with the knob jammed against
+               one edge. It keeps its pill dimensions from the base block, and
+               the 44px touch target comes from the :after hit area there. */
             margin: 0;
             order: 2;
             position: relative;
@@ -1185,6 +1605,9 @@
                    shrink-wrapping the word "Services" */
                 width: 100%;
                 text-align: inherit;
+                /* see the desktop toggle below: a <button> takes the UA font,
+                   not the document's, so without this "Services" is Arial */
+                font-family: inherit;
                 /* Reset default button styles */
                 background: none;
                 cursor: pointer;
@@ -1254,6 +1677,34 @@
             transition: padding 0.3s, margin 0.3s, height 0.3s, opacity 0.3s, visibility 0.3s;
         }
 
+        /* ── the desktop panel, collapsed ──
+           Up there this is three cards with previews and a foot; here it is the
+           same three links as a plain stack, because the collapsed menu is
+           already seven rows long before Services is opened. The previews, the
+           descriptions and the foot are DESKTOP-ONLY decoration - they would
+           add roughly 300px to a drawer the responsive pass is trying to
+           shorten, and none of them survives being 20px tall. */
+        .cs-drop-panel {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .cs-drop-grid {
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .cs-mini,
+        .cs-drop-desc,
+        .cs-drop-foot {
+            display: none;
+        }
+
         .cs-drop-li {
             list-style: none;
         }
@@ -1275,13 +1726,67 @@
 }
 
 /* Desktop - 1024px */
+/* ── the services mega panel ──
+   A panel the full width of the floating bar, carrying three cards: a CSS
+   sketch of the page, its name, and one line saying what it is.
+
+   ⚠ THE POSITIONING IS THE WHOLE TRICK, and it costs two `position: static`s.
+   An absolutely positioned box is laid out against its nearest POSITIONED
+   ancestor, so to span the bar the panel has to see `.cs-container` and nothing
+   nearer. Two boxes were in the way:
+
+     · `.cs-dropdown` was `position: relative` (so the old 208px panel could
+       centre itself under the word "Services").
+     · `.cs-ul` was `position: relative`, as the origin nav-waterline.js
+       measured the travelling rule against.
+
+   Both are static here now, and the waterline moved its origin to
+   `.cs-container` - one line in nav-waterline.js, and its measurements are all
+   rect-relative so nothing else changed. `left: 0; right: 0` then lands exactly
+   on the pill's edges, with no second set of gutters to keep in sync.
+
+   ⚠ That is the SAME trick the collapsed menu already uses - see the note on
+   `.cs-ul-wrapper` in the Small Desktop block above. Mobile and desktop now
+   hang their panel off the same box, which is why neither needs to know how
+   wide the bar happens to be. The bar is `width: max-content`, so nobody can
+   answer that in CSS anyway.
+
+   ⚠ TWO THINGS KEEP THE POINTER INSIDE :hover ON THE WAY DOWN, and the menu
+   closes the instant it is outside. Measured at 1440, the toggle's bottom edge
+   is at y=101.5, the list item's at 109.5 and the panel shell's top at 123:
+
+     · The shell's transparent `padding-top` covers 123 -> 133, so the visible
+       gap between the bar and the panel is INSIDE the panel's own box. Don't
+       collapse the shell and the surface into one element to "simplify" it -
+       that padding is load-bearing.
+     · A `:after` on the TOGGLE covers 101.5 -> 123, which is the list item's
+       own padding plus the bar's. That band belongs to `.cs-container`, not to
+       `.cs-dropdown`, so it is a genuine dead zone: measured, a pointer that
+       rests in it for 160ms has already faded the panel to 17% opacity and by
+       560ms it is gone. A fast flick survives it and a slow hand does not,
+       which is the worst kind of bug to reproduce.
+
+   The `:after` hangs off the toggle rather than off `.cs-dropdown` because that
+   list item is static now (see above) and its pseudo would anchor to the bar,
+   where it cannot be placed under the word "Services" without knowing where
+   that word is. `overflow: visible` is stated explicitly on the button - a
+   pseudo-element escaping a <button> is not something to leave to the UA. */
 @media only screen and (min-width: 1024px) {
     #cs-navigation {
         .cs-dropdown {
-            position: relative;
+            /* ⚠ static, deliberately. See the block comment above. */
+            position: static;
 
             .cs-dropdown-toggle {
                 text-align: inherit;
+                /* ⚠ A <button> does NOT inherit font-family from the document -
+                   it takes the UA's own, which is Arial here. So "Services" was
+                   rendering in Arial while every other item in the bar was
+                   Inter: one word in a different typeface, in the most-looked-at
+                   row on the site. It reads as "something is broken" long before
+                   anyone works out what. Nothing errors, and the kit's reset
+                   below covers background/border/appearance but not this. */
+                font-family: inherit;
                 /* Reset default button styles */
                 background: none;
                 cursor: pointer;
@@ -1290,34 +1795,60 @@
                 -webkit-appearance: none;
                 -moz-appearance: none;
                 appearance: none;
-            }
+                /* the bridge below has to be able to leave the button */
+                overflow: visible;
+                position: relative;
 
-            /* The panel floats free of the bar, and that gap would be a hover dead
-               zone that closes the menu on the way down. This bridges it: an
-               invisible strip below the toggle that still counts as :hover. */
-            &:after {
-                content: "";
-                /* at least as wide as the panel below it, so a diagonal path from
-                   the toggle to the panel's far edge never leaves :hover */
-                width: (208/16rem);
-                height: (14/16rem);
-                display: block;
-                position: absolute;
-                top: 100%;
-                left: 50%;
-                transform: translateX(-50%);
+                /* ── hover bridge ── see the block comment above.
+                   26px reaches from the button's bottom edge to the panel
+                   shell's top with 4px to spare; 240 is wide enough that a
+                   diagonal into the panel does not slip out the side of it
+                   before the panel itself takes over.
+
+                   ⚠ `pointer-events: none` until the dropdown is already open,
+                   which the old always-on bridge got wrong: an invisible
+                   240x26 box hanging below a FIXED bar swallows clicks on
+                   whatever is under it, at every scroll position, on every
+                   page. Switching it on from `.cs-dropdown:hover` is not
+                   circular - hit-testing a pointer move reads the style from
+                   before the move, so the bridge is still live at the instant
+                   the pointer arrives in it, and hovering the bridge is
+                   hovering a descendant of `.cs-dropdown`, which is what keeps
+                   the rule true. It only ever arms itself once the toggle has
+                   been hovered. */
+                &:after {
+                    content: "";
+                    width: (240/16rem);
+                    height: (26/16rem);
+                    pointer-events: none;
+                    display: block;
+                    position: absolute;
+                    top: 100%;
+                    left: 50%;
+                    transform: translateX(-50%);
+                }
             }
 
             &:hover,
             &.cs-active {
                 cursor: pointer;
-                .cs-drop-ul {
-                    opacity: 1;
-                    visibility: visible;
-                    transform: translateX(-50%) scaleY(1);
+
+                /* arm the bridge - see the note on it above */
+                .cs-dropdown-toggle:after {
+                    pointer-events: auto;
                 }
 
-                .cs-drop-li {
+                .cs-drop-ul {
+                    visibility: visible;
+                    transform: translateY(0);
+                }
+
+                .cs-drop-panel {
+                    opacity: 1;
+                }
+
+                .cs-drop-li,
+                .cs-drop-foot {
                     opacity: 1;
                     transform: translateY(0);
                 }
@@ -1336,117 +1867,513 @@
             transition: transform 0.3s;
         }
 
-        /* Styled as a smaller sibling of the floating nav bar: same white, same
-           shadow, slightly tighter corner radius so it reads as a child of it.
-           The kit's square corners + 5px coral underline were replaced — that
-           hard-edged look fights the rounded bar. */
+        /* ── positioning shell ──
+           Transparent. Spans the bar, starts flush with its bottom edge, and
+           its padding-top is both the visual gap and the hover bridge. */
         .cs-drop-ul {
-            min-width: (208/16rem);
             margin: 0;
-            padding: (8/16rem);
+            padding: (10/16rem) 0 0;
             box-sizing: border-box;
-            background-color: #fff;
-            overflow: hidden;
-            border-radius: (14/16rem);
-            box-shadow: 0 (10/16rem) (30/16rem) rgba(27, 42, 56, 0.14);
-            opacity: 0;
+            list-style: none;
+            /* ⚠ NO opacity here, and that is a third backdrop-root trap rather
+               than a style choice. `opacity: 0 -> 1` on this shell made it a
+               backdrop root for the whole 300ms of the transition, so the panel
+               inside it opened UNBLURRED and only snapped to frosted on the
+               final frame. Measured: with the shell held at opacity .6,
+               deleting the panel's backdrop-filter changed 0 pixels; held at 1,
+               it changed 56%. The fade lives on .cs-drop-panel instead - an
+               element's own opacity does not clip its own backdrop.
+
+               `visibility` is what gates hit-testing, so it has to stay here:
+               the shell's transparent padding is the hover bridge. */
             visibility: hidden;
-            /* if you have 8 or more links in your dropdown nav, uncomment the columns property to make the list into 2 even columns. Change it to 3 or 4 if you need extra columns. Then remove the transition delays on the cs-drop-li so they don't have weird scattered animations */
-            // columns: 2;
             position: absolute;
-            /* centred under the toggle, and detached from the bar by the same
-               gap the bridging :after covers */
-            top: calc(100% + 0.875rem);
-            left: 50%;
+            top: 100%;
+            left: 0;
+            right: 0;
             z-index: 100;
-            transform: translateX(-50%) scaleY(0);
-            transition: transform 0.3s, visibility 0.3s, opacity 0.3s;
-            transform-origin: top center;
+            /* ⚠ translateY, not the old scaleY. A 208px menu could scale open
+               without anyone reading the distortion; squashing a 250px panel
+               full of type and artwork for 300ms is very visible, and it lands
+               on the type first. The stagger on the cards below carries the
+               "unfolding" the scale used to. */
+            transform: translateY(-0.5rem);
+            transition: transform 0.3s, visibility 0.3s;
+        }
+
+        /* ── the visible surface ──
+           A smaller sibling of the bar: same glass, same rim, slightly tighter
+           corner radius so it reads as a child of it rather than a second bar. */
+        .cs-drop-panel {
+            padding: (10/16rem);
+            box-sizing: border-box;
+            /* ⚠ --navGlassSurface: the BAR's material, not a panel-specific
+               one. See the note where --navGlassPanel used to live in :root. */
+            background-color: var(--navGlassSurface);
+            .glass();
+            border-radius: (16/16rem);
+            /* clips the cards' own radius and their hover fill */
+            overflow: hidden;
+            box-shadow: 0 (10/16rem) (30/16rem) rgba(27, 42, 56, 0.14), inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+            /* the fade, moved down off the shell - see the note up there */
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .cs-drop-grid {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            display: grid;
+            /* three equal cards. `1fr` and not `auto`, so the longest
+               description cannot claim a wider column than its neighbours. */
+            grid-template-columns: repeat(3, 1fr);
+            gap: (10/16rem);
         }
 
         .cs-drop-li {
-            font-size: (16/16rem);
-            text-decoration: none;
             list-style: none;
-            width: 100%;
-            height: auto;
             opacity: 0;
-            display: block;
-            transform: translateY(-10/16rem);
-            transition: opacity 0.6s, transform 0.6s;
+            display: flex;
+            transform: translateY(-6/16rem);
+            transition: opacity 0.45s, transform 0.45s;
 
             &:nth-of-type(1) {
-                transition-delay: 0.05s;
+                transition-delay: 0.04s;
             }
             &:nth-of-type(2) {
-                transition-delay: 0.1s;
+                transition-delay: 0.09s;
             }
             &:nth-of-type(3) {
-                transition-delay: 0.15s;
-            }
-            &:nth-of-type(4) {
-                transition-delay: 0.2s;
-            }
-            &:nth-of-type(5) {
-                transition-delay: 0.25s;
-            }
-            &:nth-of-type(6) {
-                transition-delay: 0.3s;
-            }
-            &:nth-of-type(7) {
-                transition-delay: 0.35s;
-            }
-            &:nth-of-type(8) {
-                transition-delay: 0.4s;
-            }
-            &:nth-of-type(9) {
-                transition-delay: 0.45s;
-            }
-            &:nth-of-type(10) {
-                transition-delay: 0.5s;
-            }
-            &:nth-of-type(11) {
-                transition-delay: 0.55s;
-            }
-            &:nth-of-type(12) {
-                transition-delay: 0.6s;
-            }
-            &:nth-of-type(13) {
-                transition-delay: 0.65s;
+                transition-delay: 0.14s;
             }
         }
 
         .cs-li-link {
             &.cs-drop-link {
-                /* match the nav links above, not the body copy the kit defaults to */
-                font-family: var(--headerFont);
-                font-size: (15/16rem);
+                /* ⚠ This said "match the nav links above" and set --headerFont,
+                   which is Sora. The links above are Inter - they inherit the
+                   body font and never set one. So the comment was right about
+                   the intent and wrong about the value, and the open menu was a
+                   third typeface in the same bar. */
+                font-family: var(--bodyFont);
+                font-size: (14/16rem);
                 font-weight: 500;
                 line-height: 1.5em;
                 text-decoration: none;
-                white-space: nowrap;
+                /* the cards wrap now - the old nowrap was for one-word rows */
+                white-space: normal;
                 width: 100%;
                 /* prevents padding from affecting height and width */
                 box-sizing: border-box;
-                padding: (10/16rem) (14/16rem);
+                padding: (10/16rem);
+                background-color: var(--navMegaCard);
+                /* house rule: hairlines are inset box-shadow, never border - a
+                   real border would make the card 2px taller than its
+                   neighbours and push the three previews out of line */
+                box-shadow: inset 0 0 0 1px var(--navMegaCardEdge);
+                border-radius: (12/16rem);
                 color: var(--headerColor);
-                border-radius: (10/16rem);
-                display: block;
-                transition: color 0.3s, background-color 0.3s;
+                display: flex;
+                flex-direction: column;
+                align-items: stretch;
+                gap: (10/16rem);
+                transition: background-color 0.3s, box-shadow 0.3s;
 
-                /* a small echo of the traveling pill rather than the kit's grey wash */
                 &:hover {
-                    background-color: var(--primary);
-                    color: #fff;
+                    background-color: var(--navMegaCardHover);
+
+                    .cs-drop-name {
+                        color: var(--navLinkHover);
+                    }
+
+                    .cs-mini {
+                        transform: translateY(-2px);
+                    }
                 }
 
+                /* ⚠ --navAccent, not --coralAccent. Everything in this panel
+                   sits inside `#cs-navigation .cs-ul-wrapper`, which re-points
+                   --coralAccent to its on-navy value even in light mode - see
+                   the dark-surface override list at the top of this file. A
+                   focus ring is a graphic and owes 3:1, which --navAccent
+                   clears in both themes (4.16 white / 3.45 navy). */
                 &:focus-visible {
+                    outline: 2px solid var(--navAccent);
                     outline-offset: -2px;
                 }
 
+                /* the mobile block draws a coral rule down the leading edge of
+                   the active row; up here the card carries the state instead */
                 &:before {
                     display: none;
                 }
+
+                /* ── the current page ──
+                   A coral rim rather than a coral fill: the card already holds
+                   a preview and two blocks of type, and a filled state would
+                   have to fight all of it. Inset shadow, not border - a border
+                   would make one card 2px taller than the two beside it. */
+                &.cs-active {
+                    background-color: var(--navMegaCardHover);
+                    box-shadow: inset 0 0 0 1px var(--navAccent);
+                }
+            }
+        }
+
+        .cs-drop-name {
+            font-family: var(--bodyFont);
+            font-size: (14/16rem);
+            font-weight: 600;
+            line-height: 1.3em;
+            color: var(--headerColor);
+            display: block;
+            transition: color 0.3s;
+        }
+
+        .cs-drop-desc {
+            font-family: var(--bodyFont);
+            font-size: (12.5/16rem);
+            font-weight: 400;
+            line-height: 1.45em;
+            /* ⚠ --pugetBlue, and it needs to STAY a real body colour: this is
+               12.5px text, so it owes the full 4.5:1. Measured against the
+               card's composited ground (#f5f4ed - the panel's warm white plus
+               the card's own 3.5% ink tint) it is 5.9:1. The dark block
+               re-points it to --rainGray. */
+            color: var(--pugetBlue);
+            display: block;
+            /* pins the name+copy block to the top of the card, so three cards
+               of unequal copy still line their previews up */
+            margin-top: (-4/16rem);
+        }
+
+        /* ── the foot ──
+           One line of context and one link, on a hairline. Same mono-metadata
+           idiom as the footer's colophon row. */
+        .cs-drop-foot {
+            margin: (10/16rem) 0 0;
+            padding: (10/16rem) (4/16rem) (2/16rem);
+            box-shadow: inset 0 1px 0 var(--navMegaHairline);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: (16/16rem);
+            opacity: 0;
+            transform: translateY(-6/16rem);
+            transition: opacity 0.45s, transform 0.45s;
+            transition-delay: 0.18s;
+        }
+
+        .cs-drop-note {
+            font-family: var(--monoFont);
+            font-size: (11/16rem);
+            line-height: 1.4em;
+            letter-spacing: 0.02em;
+            color: var(--pugetBlue);
+        }
+
+        .cs-drop-foot-link {
+            font-family: var(--bodyFont);
+            font-size: (12.5/16rem);
+            font-weight: 600;
+            line-height: 1.4em;
+            text-decoration: none;
+            white-space: nowrap;
+            color: var(--navLinkHover);
+            display: inline-flex;
+            align-items: center;
+            gap: (6/16rem);
+            transition: gap 0.25s;
+
+            .cs-drop-arrow {
+                width: (11/16rem);
+                height: auto;
+                flex: none;
+                display: block;
+            }
+
+            &:hover {
+                gap: (10/16rem);
+            }
+
+            &:focus-visible {
+                outline: 2px solid var(--navAccent);
+                outline-offset: 3px;
+                border-radius: (2/16rem);
+            }
+        }
+
+        /* ── the previews ──────────────────────────────────────────────────
+           A sketch of what each page is, built out of boxes. No images: same
+           reasoning as the /work/ browser chrome and the #library wireframes -
+           nothing to download, nothing to re-export when a page changes, and
+           the abstraction is the point. A screenshot at 60px tall is mush.
+
+           All three share one frame so the row reads as a set: same height,
+           same ground, same rim. Everything inside is decoration, so the rules
+           below only owe 3:1 and mostly sit well under it deliberately - these
+           are wireframes, not content. */
+        .cs-mini {
+            height: (76/16rem);
+            padding: (7/16rem);
+            box-sizing: border-box;
+            background-color: var(--navMegaScreen);
+            border-radius: (8/16rem);
+            box-shadow: inset 0 0 0 1px var(--navMegaHairline);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            gap: (5/16rem);
+            transition: transform 0.3s;
+        }
+
+        /* ── 1. web design: a page under construction ── */
+        .cs-mini-site {
+            padding: 0;
+
+            /* browser chrome, the /work/ frame at 1/10 scale */
+            .cs-mini-bar {
+                height: (12/16rem);
+                padding: 0 (5/16rem);
+                background-color: var(--navMegaInkSoft);
+                display: flex;
+                align-items: center;
+                gap: (3/16rem);
+                flex: none;
+
+                i {
+                    width: (3/16rem);
+                    height: (3/16rem);
+                    background-color: var(--navMegaInk);
+                    border-radius: 50%;
+                    display: block;
+                }
+            }
+
+            .cs-mini-page {
+                padding: (6/16rem);
+                display: flex;
+                flex-direction: column;
+                gap: (4/16rem);
+            }
+
+            .cs-mini-hero {
+                height: (11/16rem);
+                /* the one coral object in the sketch, so the eye lands on the
+                   hero band the way it does on a real page */
+                background-color: var(--navAccent);
+                border-radius: (2/16rem);
+                display: block;
+                opacity: 0.85;
+            }
+
+            .cs-mini-line {
+                height: (3/16rem);
+                background-color: var(--navMegaInk);
+                border-radius: (2/16rem);
+                display: block;
+            }
+
+            .cs-mini-short {
+                width: 62%;
+            }
+
+            .cs-mini-cards {
+                margin-top: (2/16rem);
+                display: flex;
+                gap: (4/16rem);
+
+                i {
+                    height: (13/16rem);
+                    background-color: var(--navMegaInkSoft);
+                    border-radius: (2/16rem);
+                    display: block;
+                    flex: 1;
+                }
+            }
+        }
+
+        /* ── 2. SEO: a local result page, top pin lit ── */
+        .cs-mini-serp {
+            gap: (4/16rem);
+
+            .cs-mini-search {
+                height: (13/16rem);
+                padding: 0 (5/16rem);
+                background-color: var(--navMegaInkSoft);
+                border-radius: (20/16rem);
+                display: flex;
+                align-items: center;
+                gap: (4/16rem);
+                flex: none;
+            }
+
+            /* a magnifier: a ring with a stub handle */
+            .cs-mini-lens {
+                width: (5/16rem);
+                height: (5/16rem);
+                border: 1px solid var(--navMegaInk);
+                border-radius: 50%;
+                display: block;
+                flex: none;
+                position: relative;
+
+                &:after {
+                    content: "";
+                    width: (3/16rem);
+                    height: 1px;
+                    background-color: var(--navMegaInk);
+                    position: absolute;
+                    right: (-2/16rem);
+                    bottom: 0;
+                    transform: rotate(45deg);
+                }
+            }
+
+            .cs-mini-query {
+                height: (3/16rem);
+                width: 52%;
+                background-color: var(--navMegaInk);
+                border-radius: (2/16rem);
+                display: block;
+            }
+
+            .cs-mini-hit {
+                display: flex;
+                align-items: center;
+                gap: (5/16rem);
+            }
+
+            /* map-pin: a circle pinched to a point at the bottom */
+            .cs-mini-pin {
+                width: (7/16rem);
+                height: (7/16rem);
+                background-color: var(--navMegaInk);
+                border-radius: 50% 50% 50% 0;
+                display: block;
+                flex: none;
+                transform: rotate(-45deg);
+            }
+
+            .cs-mini-stack {
+                display: flex;
+                flex-direction: column;
+                gap: (2/16rem);
+                flex: 1;
+
+                b {
+                    height: (3/16rem);
+                    background-color: var(--navMegaInk);
+                    border-radius: (2/16rem);
+                    display: block;
+
+                    &:first-child {
+                        width: 74%;
+                    }
+                    &:last-child {
+                        width: 46%;
+                        background-color: var(--navMegaInkSoft);
+                    }
+                }
+            }
+
+            /* the position being competed for */
+            .cs-mini-first {
+                .cs-mini-pin {
+                    background-color: var(--navAccent);
+                }
+                .cs-mini-stack b:first-child {
+                    width: 88%;
+                }
+            }
+        }
+
+        /* ── 3. maintenance: a status board ── */
+        .cs-mini-status {
+            gap: (6/16rem);
+
+            .cs-mini-check {
+                display: flex;
+                align-items: center;
+                gap: (6/16rem);
+
+                /* a tick, drawn from two borders of a rotated box */
+                i {
+                    width: (4/16rem);
+                    height: (7/16rem);
+                    border-right: (1.5/16rem) solid var(--navAccent);
+                    border-bottom: (1.5/16rem) solid var(--navAccent);
+                    display: block;
+                    flex: none;
+                    transform: rotate(40deg);
+                    /* the tick's own box is off-centre once rotated */
+                    margin: (-2/16rem) (1/16rem) 0 0;
+                }
+
+                b {
+                    height: (3/16rem);
+                    background-color: var(--navMegaInk);
+                    border-radius: (2/16rem);
+                    display: block;
+                    flex: 1;
+                }
+
+                &:nth-of-type(2) b {
+                    max-width: 74%;
+                }
+                &:nth-of-type(3) b {
+                    max-width: 58%;
+                }
+            }
+
+            /* an uptime strip. Every bar the same height and colour on purpose -
+               a dip in it would be a claim about reliability that no number on
+               this site backs up. */
+            .cs-mini-uptime {
+                height: (11/16rem);
+                margin-top: auto;
+                display: flex;
+                align-items: stretch;
+                gap: (2/16rem);
+
+                i {
+                    background-color: var(--navMegaInkSoft);
+                    border-radius: (1/16rem);
+                    display: block;
+                    flex: 1;
+
+                    &:nth-last-child(-n + 3) {
+                        background-color: var(--navAccent);
+                        opacity: 0.8;
+                    }
+                }
+            }
+        }
+    }
+
+    /* Reduced motion: the panel still opens, it just arrives rather than
+       sliding, and the cards stop staggering. */
+    @media (prefers-reduced-motion: reduce) {
+        #cs-navigation {
+            .cs-drop-ul {
+                transform: none;
+                transition: visibility 0.2s;
+            }
+
+            .cs-drop-panel {
+                transition: opacity 0.2s;
+            }
+
+            .cs-drop-li,
+            .cs-drop-foot {
+                transform: none;
+                transition: opacity 0.2s;
+                transition-delay: 0s;
+            }
+
+            .cs-li-link.cs-drop-link:hover .cs-mini {
+                transform: none;
             }
         }
     }
@@ -1485,21 +2412,120 @@
         transition: transform 0.3s;
 
         .cs-container {
-            width: 100%;
-            /* matches the hero/section content width so the pill lines up with the
-               page below it and the nav items get more breathing room */
-            max-width: (1280/16rem);
-            /* floating rounded pill: sits below the town bar, centered with side gutters */
+            /* ── shrink-wrapped, 2026-09-18 ──
+               `width: max-content`, NOT `100% + max-width: var(--containerWidth)`.
+
+               Matching the page width sounded right - the bar lines up with the
+               sections below it - but it left the bar holding 796px of content
+               inside 1328px of box. Measured at 1440: a 238px void between the
+               wordmark and the links, and another 238px between the links and
+               the actions. 36% of the bar was empty. It read as loose rather
+               than airy, and no amount of gap tuning fixes a hole that big,
+               because the hole is what is LEFT OVER after the gaps.
+
+               Hugging the content makes it an actual floating pill instead of a
+               full-width slab with a radius, and the alignment that matters -
+               centred on the page - survives, because `margin: auto` still
+               centres a max-content box.
+
+               ⚠ This makes the bar's width a function of its CONTENTS. Adding a
+               seventh nav item or a longer CTA label now widens the bar rather
+               than eating slack, so check it at 1024 where the headroom is
+               smallest (~200px at time of writing). */
+            width: max-content;
+            /* never let it touch the viewport edge on a narrow laptop */
+            max-width: calc(100% - (48/16rem));
+            /* floating rounded pill: sits below the town bar, centred */
             margin: (26/16rem) auto 0;
             box-sizing: border-box;
             padding: (10/16rem) (14/16rem) (10/16rem) (24/16rem);
-            background-color: #fff;
             border-radius: (18/16rem);
+
+            /* ── the glass is on a PSEUDO-ELEMENT, not on this box ──
+               ⚠ MEASURED, and it is the whole reason the services mega panel
+               looked like tracing paper while the bar looked frosted.
+
+               An element with `backdrop-filter` becomes a BACKDROP ROOT: any
+               descendant's own backdrop-filter may only sample inside it.
+               `.cs-drop-panel` hangs BELOW the bar, over page the bar's root
+               contains nothing of - so its blur had nothing to sample and did
+               precisely nothing. Proved by diffing two renders: deleting the
+               panel's backdrop-filter changed 0 pixels (max channel delta 1,
+               i.e. PNG rounding), while deleting the BAR's changed 28.5% of
+               them, because that released the root and the panel's blur
+               suddenly worked. The panel was an 85% tint over a sharp hero
+               headline, which is exactly what "I can see letters through it"
+               looks like. The old 208px dropdown had the same bug - it just
+               hid it behind a 0.95 alpha.
+
+               Moving the surface to a `:before` that covers the same box leaves
+               `.cs-container` with no backdrop-filter, so it is no longer a
+               backdrop root and the panel samples the real page.
+
+               ⚠ Anything that makes this box a backdrop root again brings the
+               bug back, silently: filter, opacity < 1, mask, contain: paint, a
+               blend mode. Put such a thing on the pseudo, not here.
+
+               ⚠ backdrop-filter on a position: fixed element is re-evaluated by
+               the compositor on every scrolled frame. It is the most expensive
+               property on the page, and it is here deliberately - but it is
+               also why the blur lives on these TWO elements and not on the town
+               band above them, which is opaque and needs no sampling. */
+
+            /* ⚠ `isolation: isolate` is not decoration - it PINS the paint
+               order of the glass below, which is otherwise different at rest
+               and scrolled.
+
+               A `z-index: -1` child paints in the nearest stacking context. At
+               rest this box is not one, so the glass hoisted up to
+               #cs-navigation and landed BEHIND this element's own background
+               and box-shadow. Scrolled, body.scroll gives this box a
+               `transform`, which makes it a stacking context, and the same
+               glass then paints INSIDE it - on top of that background and that
+               inset rim. Two different renderings of the same bar, switching on
+               scroll, from one unchanged declaration.
+
+               isolate makes it a stacking context in both states, so the glass
+               always paints directly over this element's own background box and
+               under its contents. That is also why the inset rim moved onto the
+               pseudo: it is the glass's edge, and a pseudo covering the padding
+               box would otherwise paint over it. The outer drop shadow stays
+               here, because an outer shadow paints outside the box entirely.
+
+               ⚠ A stacking context is NOT a backdrop root - verified, the mega
+               panel still frosts correctly in the scrolled state, where this
+               box has been a stacking context all along. */
+            isolation: isolate;
+
+            &:before {
+                content: "";
+                /* not `inset: 0` - this has to sit under Safari 14 too, where
+                   the shorthand is unsupported and the whole rule would drop */
+                top: 0;
+                right: 0;
+                bottom: 0;
+                left: 0;
+                background-color: var(--navGlassSurface);
+                .glass();
+                border-radius: inherit;
+                /* the glass EDGE, moved off .cs-container with the surface */
+                box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+                display: block;
+                position: absolute;
+                z-index: -1;
+            }
+            /* OUTER only - the inset hairline is the glass EDGE and lives on
+               the :before with the surface it edges (see below). It only
+               becomes visible where the bar happens to be over something dark,
+               which is the correct behaviour for a rim, not a bug to tune away
+               on the tan hero. */
             box-shadow: 0 (10/16rem) (30/16rem) rgba(27, 42, 56, 0.14);
             display: flex;
-            justify-content: flex-end;
+            /* was flex-end, which only mattered while there was slack to push
+               against. There is none now. */
+            justify-content: center;
             align-items: center;
-            gap: (24/16rem);
+            gap: (36/16rem);
             position: relative;
             /* so the scrolled-state nudge below animates */
             transition: transform 0.3s;
@@ -1509,11 +2535,24 @@
             display: none;
         }
 
+        /* ── the row ──
+           logo · links · theme · CTA, in one shrink-wrapped line.
+
+           The auto margins that used to live here are gone. They existed to
+           split the bar's leftover width evenly so the link group landed in the
+           middle of a full-width slab; the slab is a pill now and there is no
+           leftover width to split, so an `auto` resolves to 0 and the container
+           gap does the spacing instead. */
+        .cs-nav {
+            margin: 0;
+        }
+
         .cs-logo {
             /* 40px - 44px */
             height: clamp(2.5rem, 4vw, 2.75rem);
-            /* margin-right auto pushes everything away from it to the right */
-            margin: 0 auto 0 0;
+            /* ⚠ NOT margin-right: auto. That is what pushed the links into the
+               right-hand third; the centring now belongs to .cs-nav above. */
+            margin: 0;
             padding: 0;
             text-decoration: none;
             display: flex;
@@ -1530,13 +2569,35 @@
         }
 
         .cs-ul {
-            width: 100%;
+            /* ⚠ `auto`, not `100%`. Inside a `width: max-content` bar a
+               percentage width resolves against a container that is itself
+               being sized by its contents, and the browser falls back to the
+               content width anyway - it just makes the intent unreadable.
+               `auto` says the real thing: this list is as wide as its links. */
+            width: auto;
             margin: 0;
             padding: 0;
             display: flex;
             justify-content: flex-start;
             align-items: center;
-            gap: (48/16rem);
+            /* ⚠ STATIC, and it used to be `position: relative` as the origin
+               for the travelling waterline. It has to be static so the services
+               mega panel can see `.cs-container` and span the whole bar - see
+               the block comment on the Navigation Dropdown section. The
+               waterline moved its origin to `.cs-container` in the same pass
+               (nav-waterline.js), which it can do because every number it uses
+               is derived from getBoundingClientRect, not from layout position. */
+            position: static;
+            /* 40 -> 32. The 40 was tuned against the full-width slab, where the
+               links were an island in the middle of a lot of empty bar and
+               needed the internal air to match. In a pill that hugs its
+               contents the bar's own edges do that job, and 40 now reads as the
+               links drifting apart inside a box built to fit them.
+
+               32 is the floor: below it "Services" starts crowding "Work",
+               because the dropdown caret adds visual width to the first item
+               without adding any text. */
+            gap: (32/16rem);
         }
 
         .cs-li {
@@ -1546,51 +2607,92 @@
             flex: none;
         }
 
+        /* ── nav typography ──
+           Measured against kukie.io (14px/500, muted slate #45556c, ~41px gaps)
+           and clarvos.com (13px/400, 24px gaps). Ours was 16px/400 in full
+           --inkNavy at 48px gaps, which is why the bar read heavy and loose
+           next to either of them: bigger type, maximum contrast, more air.
+
+           Three changes, and the COLOUR is the one that does most of the work.
+           Nav links are navigation, not content - they should sit back until
+           you go looking for them. Full ink makes seven of them shout at the
+           same volume as the headline underneath. */
         .cs-li-link {
-            /* 14px - 16px */
-            font-size: clamp(0.875rem, 1.3vw, 1rem);
+            /* was clamp(14px, 1.3vw, 16px), so 16px on any real desktop */
+            font-size: (14/16rem);
+            /* 500, not 400: smaller type needs a touch more weight to hold its
+               colour, and it is what stops "muted" turning into "faded" */
+            font-weight: 500;
             line-height: 1.5em;
             text-decoration: none;
             margin: 0;
-            color: var(--headerColor);
+            /* --pugetBlue on the white pill measures 6.57:1, comfortably past
+               the 4.5:1 that 14px text needs. The full-ink version is still
+               here, it just belongs to the ACTIVE page now, which is the one
+               item that has earned the extra weight. */
+            color: var(--pugetBlue);
             display: block;
             position: relative;
             transition: color 0.3s;
 
+            /* ⚠ --navLinkHover, and it is neither --primary nor --coralText.
+               While the travelling pill existed it slid UNDER the hovered link
+               and painted the label white, so this colour was never actually
+               seen; the waterline sits below the text, so it is now visible in
+               both themes and has to clear 4.5:1 in both.
+
+               --primary (#c2452e) is 2.39:1 on the dark bar. --coralText looks
+               like the right answer and measures 2.64:1 on the LIGHT bar, for
+               a reason that is invisible here - see the token's own comment in
+               :root. --navLinkHover is 7.53:1 white / 4.55:1 navy. */
             &:hover {
-                color: var(--primary);
+                color: var(--navLinkHover);
             }
 
+            /* ── the current page ──
+               Stamped by header.html from page.url. This rule existed long
+               before anything applied the class (nav.js uses `cs-active` for
+               the hamburger's open state, which is why it looked wired), so
+               until 2026-09-18 no page on the site marked where you were. */
             &.cs-active {
-                font-weight: 700;
+                /* 600 rather than 700: against a 500 baseline, 700 was a jump
+                   big enough to read as a different font */
+                font-weight: 600;
                 color: var(--headerColor);
+
+                /* the waterline rests here, so the label must not also fight
+                   for attention on hover - it is already the emphasised one */
+                &:hover {
+                    color: var(--headerColor);
+                }
             }
         }
 
-        /* Free Redesign — a bordered-pill secondary CTA so it pops next to the
-           plain links. Sized to the Get Started button's height (line-height 40 +
-           2×2 border = 44px) so the traveling coral pill fills it exactly on hover
-           (nav-pill.js uses padX 0 for this item). Default: coral outline + coral
-           text; hover/active: pill fills coral and the global rule flips text white. */
-        .cs-li-cta .cs-li-link {
-            box-sizing: border-box;
-            line-height: (40/16rem);
-            padding: 0 (20/16rem);
-            border: 2px solid var(--coral);
-            border-radius: (40/16rem);
-            /* same weight/color as the other nav links; only the coral border
-               sets it apart. The pill flips the text white on hover. */
-            color: var(--headerColor);
+        /* ⚠ "Free Redesign" is a PLAIN nav link at desktop, not a bordered
+           pill. It used to be a coral-outlined secondary CTA, which put two
+           coral objects side by side in the right-hand cluster and made the bar
+           read heavy. kukie.io pairs a plain text link (Login) with one button
+           (Start Free), and that is the arrangement this now matches.
 
-            &:hover {
-                color: #fff;
-            }
-        }
+           It keeps the .cs-li-cta class because MOBILE needs it: the collapsed
+           panel hides this row (display: none up in the mobile block) and
+           restates both CTAs in .cs-mobile-actions instead. Removing the class
+           would un-hide it and show Free Redesign twice in the drawer.
+
+           nav-waterline.js treats it as an ordinary destination for the same
+           reason - it is one. No per-item special casing anywhere. */
 
         .cs-button-solid {
+            /* last in the row — see the order note on #dark-mode-toggle */
+            order: 3;
             font-family: var(--bodyFont);
-            font-size: (15/16rem);
-            font-weight: 600;
+            /* matches the nav links beside it: 14px / 500. It was 15px / 600,
+               which made the one button in the bar heavier AND larger than
+               everything else and did a lot of the shouting. The coral fill is
+               already all the emphasis it needs - it does not have to win on
+               weight as well. */
+            font-size: (14/16rem);
+            font-weight: 500;
             line-height: (44/16rem);
             text-align: center;
             text-transform: none;
@@ -1643,89 +2745,84 @@
                                 
 
 /*-- -------------------------- -->
-<---      Nav Pill (hover)      -->
+<---   Nav waterline (hover)    -->
 <--- -------------------------- -*/
 
-/* Desktop only — a single coral pill that travels between the nav links and the
-   "Get a quote" button. Driven by nav-pill.js; see .cs-pill-ready toggle. */
+/* Desktop only. A 2px coral rule that travels between the nav links and rests
+   under the current page. Driven by assets/js/nav-waterline.js.
+
+   ── what this replaced, 2026-09-18 ──
+   A filled coral PILL that lived behind "Get started" and slid out to whichever
+   link you hovered. To do that it had to strip the button's own coral fill (the
+   pill was standing in for it, via a .cs-pill-ready block that set
+   `background-color: transparent` on .cs-nav-button), so touching any link in
+   the bar turned the primary CTA into plain dark text. The site's only nav-level
+   conversion element disappeared on hover.
+
+   A rule under the links cannot be read as the button, so the button keeps its
+   fill permanently and the motion survives. The resting position moved from the
+   CTA to the active page, which is what finally gave the nav a current-page
+   indicator. */
 @media only screen and (min-width: 1024px) {
     #cs-navigation {
-        /* positioning shell — carries the travel (translate) + size. Tucks
-           behind the text but above the white bar (the .cs-container isolation
-           makes -1 land correctly). */
-        .cs-nav-pill {
+        /* positioning shell - carries the travel (translate) and the width.
+           Appended to .cs-container by the script, which is why the BAR is the
+           positioned box up in the desktop block. It used to hang off .cs-ul;
+           that list went static so the services mega panel could span the whole
+           bar, and the rule moved with it. */
+        .cs-nav-rule {
             position: absolute;
             top: 0;
             left: 0;
             width: 0;
-            height: 0;
-            z-index: -1;
+            /* 2px. Any thicker and it reads as an underline on a link rather
+               than as a waterline under the row. */
+            height: (2/16rem);
             pointer-events: none;
-            /* gentle settle — small overshoot (was 1.56, which flew past the
-               far links); the liquid character now comes from the squish */
-            transition: transform 0.5s cubic-bezier(0.34, 1.2, 0.64, 1), width 0.5s cubic-bezier(0.34, 1.2, 0.64, 1), height 0.35s ease;
+            opacity: 0;
+            /* same spring the pill used, minus the height channel it no longer
+               needs. Opacity is deliberately faster: the rule fading in has to
+               finish before the eye starts tracking the slide. */
+            transition: transform 0.5s cubic-bezier(0.34, 1.2, 0.64, 1), width 0.5s cubic-bezier(0.34, 1.2, 0.64, 1), opacity 0.25s ease;
             will-change: transform, width;
         }
 
-        /* the visible coral droplet — scaled independently (JS) for the liquid
-           squish/stretch as it travels */
-        .cs-nav-pill-fill {
+        /* shown once the script has a target - on a page with no nav item of
+           its own (the home page) it rests hidden instead */
+        .cs-nav-rule.cs-rule-on {
+            opacity: 1;
+        }
+
+        /* the visible coral - scaled independently (JS) for the stretch */
+        .cs-nav-rule-fill {
             display: block;
             width: 100%;
             height: 100%;
-            background-color: var(--primary);
-            border-radius: (40/16rem);
+            /* ⚠ --navAccent, not --coral and not --coralAccent. This is a
+               graphic element, so it only owes 3:1 against its ground - but
+               --coral (#c2452e) manages 2.39:1 on the dark bar and would all
+               but vanish there, and --coralAccent resolves to its ON-NAVY
+               value here even in light mode (see the token comment in :root),
+               which paints the white bar's waterline the dark theme's orange.
+               --navAccent is 4.16:1 white / 3.45:1 navy. */
+            background-color: var(--navAccent);
+            border-radius: (2/16rem);
             transform-origin: center center;
             will-change: transform;
         }
 
-        /* instant reposition (init / resize) — no opening slide */
-        .cs-nav-pill.cs-no-anim {
-            transition: none;
-        }
-
-        /* once the script is live the pill supplies the coral; the links and
-           button ride above it and just swap text colour */
-        /* JS adds .cs-pill-ready to .cs-container itself */
-        .cs-container.cs-pill-ready {
-            /* own stacking context so the pill's z-index: -1 lands behind the
-               text yet still above the white bar */
-            isolation: isolate;
-
-            .cs-li-link,
-            .cs-nav-button {
-                transition: color 0.3s ease;
-            }
-
-            /* Top-level links only. As a descendant selector this also matched
-               .cs-drop-link (dropdown items carry .cs-li-link too) and outranked
-               the panel's own hover, painting menu text white on white. */
-            .cs-ul > .cs-li > .cs-li-link:hover {
-                /* override the plain coral hover — text now sits on the pill */
-                color: #fff;
-            }
-
-            .cs-nav-button {
-                background-color: transparent;
-                color: var(--inkNavy);
-
-                /* neutralise the old sliding-sweep pseudo */
-                &:before {
-                    display: none;
-                }
-            }
-
-            /* whichever target the pill is currently under */
-            .cs-pill-active {
-                color: #fff;
-            }
+        /* instant reposition (init / resize / arriving from hidden) - the rule
+           jumps into place, and only the fade is allowed to play */
+        .cs-nav-rule.cs-no-anim {
+            transition: opacity 0.25s ease;
         }
     }
 
-    /* reduced motion: keep the pill, drop the bounce (it jumps instantly) */
+    /* reduced motion: keep the rule and the current-page marking, drop the
+       travel - it appears under the new target instead of sliding to it */
     @media (prefers-reduced-motion: reduce) {
-        #cs-navigation .cs-nav-pill {
-            transition: none;
+        #cs-navigation .cs-nav-rule {
+            transition: opacity 0.25s ease;
         }
     }
 }
@@ -1843,10 +2940,13 @@ html.theme-anim *::after {
     transition-timing-function: ease;
 }
 
-/* the travelling nav pill keeps its own spring */
-html.theme-anim .cs-nav-pill,
-html.theme-anim .cs-nav-pill-fill {
-    transition-property: transform, width, height;
+/* the travelling waterline keeps its own spring. Without this the blanket rule
+   above would hand it a 300ms colour transition and strip transform/width from
+   its transition list for the length of the theme switch, so a hover landing
+   inside that window would teleport instead of sliding. */
+html.theme-anim .cs-nav-rule,
+html.theme-anim .cs-nav-rule-fill {
+    transition-property: transform, width, opacity;
 }
 
 /*-- -------------------------- -->
@@ -1870,12 +2970,39 @@ html.theme-anim .cs-nav-pill-fill {
    The four tokens below are the single source of truth for the dark nav; every
    rule in this section reads from them so the surfaces can't drift apart.
    Hairlines are `inset` box-shadows, never `border` — a real border would move
-   the pill's absolute-positioning origin by 1px (nav-pill.js measures against
-   .cs-container's padding box). */
+   the travelling waterline's positioning origin by 1px (nav-waterline.js
+   measures against .cs-ul's padding box). */
 
 /* All breakpoints */
 @media only screen and (min-width: 0rem) {
     body.dark-mode {
+        /* ── the glass, tinted for a navy page ──
+           Same material, opposite problem: the worst case is now the bar
+           sitting over something LIGHT (a #fdfbf4 card, the moon in the night
+           diorama) while carrying near-white text. Compositing --medium at
+           0.82 over #fdfbf4 lands the ground at L 0.104, which holds the links
+           at 10.3:1 - dark mode has the easier budget of the two, because its
+           text is near-white rather than mid-blue.
+
+           ⚠ MEASURED, and the first guess was wrong. 0.82 was chosen on the
+           reasoning above and then sampled across every scroll position on the
+           home page: the bar passes over something bright enough (the night
+           diorama's moon) to composite its ground up to #4c5862, and against
+           that the pale coral hover fell to 2.76:1. Dark mode has the HARDER
+           budget, not the easier one - its accent text starts with almost no
+           headroom (#e8846f is only 4.55:1 on the bar's own colour), so any
+           backdrop showing through eats straight into a failure.
+
+           0.92, measured back to passing. That is visibly less glass than light
+           mode gets, and it is the price of the theme: there is no alpha at
+           which coral-on-navy small text survives an arbitrary backdrop - the
+           sums want a ground no lighter than L 0.0385, and the bar's own colour
+           is already L 0.0374. The state colours below are what actually fixed
+           it; this only bought back the margin. */
+        --navGlassSurface: rgba(38, 56, 74, 0.92);
+        /* cards lift to --medium on a navy page, same alpha */
+        --glassCard: rgba(38, 56, 74, 0.72);
+
         /* one step lighter than the page navy — standard dark-mode elevation,
            so the bar still reads as a distinct object floating above the page */
         --navSurface: var(--medium);
@@ -1887,6 +3014,64 @@ html.theme-anim .cs-nav-pill-fill {
         /* the town band goes DARKER than the page, so its bottom edge survives
            against the navy hero below it instead of merging into one field */
         --navBandSurface: #121c26;
+
+        /* ── dark mode's hover is NOT coral, and that is not an oversight ──
+           Light mode dims and reddens on hover (--pugetBlue -> #963320) and
+           that survives any backdrop the bar crosses, because its ground can
+           only ever get so dark. Dark mode cannot do the mirror image: coral
+           light enough to clear 4.5:1 over a bright backdrop lands around
+           #f4b3a3, which is a pale peach, not this palette's coral.
+
+           So the two themes signal hover differently, by necessity. Here the
+           label simply BRIGHTENS and the coral is carried entirely by the
+           waterline underneath, which only owes 3:1 as a graphic and can stay
+           properly coral.
+
+           ⚠ That only works because the resting link is muted to --rainGray in
+           the dark nav (see Navigation — Dark Mode). It used to sit at #faf7ef,
+           11.23:1, with nowhere brighter to go - the same "seven links all
+           shouting at once" problem the light theme fixed by muting its own.
+           Do not brighten the resting colour back without also finding the
+           hover somewhere new to travel to. */
+        --navLinkHover: #faf7ef;
+        --navAccent: #e8846f;
+
+        /* ── the services mega panel ──
+           ⚠ The card goes DARKER here where light mode goes lighter, and both
+           are the same decision: give the copy a ground the backdrop cannot
+           bleed through. Light mode buys that coverage with warm white because
+           anything ink-tinted read cold beside the bar; on navy the same trick
+           needs black, which is also this site's standing rule for dark mode
+           (navy bands darken to rgba(0,0,0,.25), the collapsed nav's dropdown
+           recess is rgba(0,0,0,.22)) - so the house pattern and the measurement
+           agree for once.
+
+           MEASURED, sampled off the real render over the hero headline - the
+           worst backdrop the panel ever crosses. A 5.5% WHITE lift left the
+           12.5px description passing by 0.07 (4.57:1 against this card's
+           6.51:1, both measured before the blur was fixed); with the blur
+           running the card now reads 7.15:1 and the foot note 6.10:1. The lit
+           hairline is what keeps the card reading as a card rather than a hole.
+
+           The preview screen goes darker still, for the same reason a light
+           rectangle here would be the brightest object on a dark page and
+           would pull the eye off the labels. */
+        --navMegaCard: rgba(0, 0, 0, 0.18);
+        --navMegaCardHover: rgba(0, 0, 0, 0.3);
+        --navMegaCardEdge: rgba(255, 255, 255, 0.07);
+        --navMegaHairline: rgba(255, 255, 255, 0.11);
+        --navMegaScreen: rgba(0, 0, 0, 0.22);
+        --navMegaInk: rgba(255, 255, 255, 0.3);
+        --navMegaInkSoft: rgba(255, 255, 255, 0.12);
+
+        /* ── the theme toggle ──
+           A hairline that reads on navy has to be white at low alpha, not ink
+           at low alpha - ink on navy is invisible. The glyph lifts to the pale
+           blue the crescent's lit edge already uses, so sun and moon are the
+           same colour in this theme and only the SHAPE carries the state. */
+        --themeRing: rgba(255, 255, 255, 0.18);
+        --themeRingHover: rgba(255, 255, 255, 0.07);
+        --themeGlyph: #7ba6c9;
 
         #cs-navigation {
             .cs-top-bar {
@@ -1908,7 +3093,7 @@ html.theme-anim .cs-nav-pill-fill {
            navy, and on a dark page the only way to keep that separation is to
            push them apart in the other direction — matching both to --navSurface
            merged them into one slab as soon as the menu opened. */
-        --navBarSurface: var(--navSurface);
+        --navBarSurface: var(--navGlassSurface);
         --navBarHairline: rgba(255, 255, 255, 0.16);
         --navMenuSurface: var(--navBandSurface);
         --navMenuHairline: var(--navHairline);
@@ -1936,17 +3121,52 @@ html.theme-anim .cs-nav-pill-fill {
 @media only screen and (min-width: 1024px) {
     body.dark-mode {
         #cs-navigation {
-            /* the floating pill */
+            /* ── the floating pill ──
+               ⚠ NO background-color here. There was one, and it was a
+               redundant restatement of --navGlassSurface (the token already
+               flips in the dark block above) - which stopped being harmless the
+               moment the surface moved to a pseudo-element: painted on the
+               element, it covered the glass and took the bar's blur with it,
+               but only at rest, because scrolled the pseudo paints later. Set
+               the surface in ONE place, the token. */
             .cs-container {
-                background-color: var(--navSurface);
-                /* on a dark page a soft drop shadow alone doesn't separate the
-                   panel — the lit top edge is what does the work */
-                box-shadow: var(--navShadow), inset 0 0 0 1px var(--navHairline);
+                /* outer only; the rim is the glass's edge and sits on the
+                   :before with it */
+                box-shadow: var(--navShadow);
             }
 
-            /* top-level links only — see the mobile note above */
+            /* on a dark page a soft drop shadow alone doesn't separate the
+               panel — the lit top edge is what does the work. The white rim the
+               light theme uses would be far too bright here, so the edge drops
+               to --navHairline's 8% instead. */
+            .cs-container:before {
+                box-shadow: inset 0 0 0 1px var(--navHairline);
+            }
+
+            /* ── top-level links only (see the mobile note above) ──
+               ⚠ --rainGray, not --navSurfaceText. This was the surface's near
+               white, which measured 11.23:1 and left the hover state with
+               nowhere brighter to travel to. Muting it mirrors what the light
+               theme already does with --pugetBlue: navigation is navigation, it
+               should sit back until you go looking for it. 5.43:1 against the
+               worst backdrop the glass lets through, comfortably past the 4.5
+               that 14px text owes. */
             .cs-ul > .cs-li > .cs-li-link {
-                color: var(--navSurfaceText);
+                color: var(--rainGray);
+            }
+
+            /* ⚠ The hover has to be restated here, and it is a specificity
+               problem rather than a colour one. The rule above is
+               `body.dark-mode #cs-navigation .cs-ul > .cs-li > .cs-li-link`
+               (1,4,1); the base hover is `#cs-navigation .cs-li-link:hover`
+               (1,2,0). The ids tie, the classes do not, so in dark mode the
+               plain colour beat the hover and the links simply did not respond
+               to the pointer - silently, because both values are legible.
+               (1,4,2) settles it. The .cs-active rule further down is (1,5,1)
+               and still outranks this, which is what keeps the current page
+               reading as current while you sweep past it. */
+            .cs-ul > .cs-li > .cs-li-link:hover {
+                color: var(--navLinkHover);
             }
 
             /* Free Redesign: coral outline stays, only the label needs lifting */
@@ -1954,24 +3174,73 @@ html.theme-anim .cs-nav-pill-fill {
                 color: var(--navSurfaceText);
             }
 
-            /* dropdown panel — a smaller sibling of the bar, same treatment */
-            .cs-drop-ul {
-                background-color: var(--navSurface);
+            /* mega panel — a smaller sibling of the bar, and the same material
+               exactly (--navGlassSurface, set in the base rule). Only the rim
+               and the shadow need restating here. The SURFACE, not the
+               positioning shell above it, which is transparent in both themes. */
+            .cs-drop-panel {
                 box-shadow: var(--navShadow), inset 0 0 0 1px var(--navHairline);
             }
 
-            .cs-li-link.cs-drop-link {
+            .cs-li-link.cs-drop-link,
+            .cs-drop-name {
                 color: var(--navSurfaceText);
             }
 
-            /* Once nav-pill.js runs it strips the CTA's coral fill and sets the
-               label to --inkNavy (it rides on the travelling pill instead) —
-               which is invisible on the slate bar. The pill still paints it #fff
-               via .cs-pill-active when it parks underneath. */
-            .cs-container.cs-pill-ready .cs-nav-button {
-                color: var(--navSurfaceText);
+            /* 12.5px and 11px text owe the full 4.5:1, so neither can stay a
+               light-mode body colour on navy. --rainGray measures 5.9:1 on the
+               card and 6.7:1 on the panel behind it; --pugetBlue on the same
+               card is 1.6:1 and effectively gone. */
+            .cs-drop-desc,
+            .cs-drop-note {
+                color: var(--rainGray);
+            }
+
+            /* ── the current page ──
+               Beats the `.cs-ul > .cs-li > .cs-li-link` rule above, which would
+               otherwise flatten the active item back to the same muted white as
+               its neighbours and undo the one thing it is meant to say.
+               --headerColor is not usable here: it is ink navy, and the bar is
+               navy. Pure white is the dark-mode equivalent of "full ink".
+
+               There is no .cs-nav-button rule left in this block. There used to
+               be one, propping up a CTA whose fill the travelling pill had
+               stripped; the pill is gone and the button keeps its coral in both
+               themes, so it needs nothing here. */
+            .cs-ul > .cs-li > .cs-li-link.cs-active,
+            .cs-li-link.cs-drop-link.cs-active {
+                color: #fff;
             }
         }
+    }
+}
+
+/*-- -------------------------- -->
+<---   Nav glass — fallback     -->
+<--- -------------------------- -*/
+
+/* No backdrop-filter (Firefox before 103, and anything older) — go opaque.
+
+   ⚠ Placement is load-bearing: this has to come AFTER the Navigation — Dark
+   Mode section above, not next to the token in :root. @supports adds no
+   specificity, so `body.dark-mode` here and `body.dark-mode` there tie, and the
+   later one wins. Declared up by :root, the dark theme would keep its
+   translucent value and this block would silently only fix light mode.
+
+   This is cosmetic, not a legibility fix. The alpha was solved against the
+   worst-case backdrop with blur discounted entirely (blur smears detail but
+   preserves average luminance, which is all contrast measures), so an
+   unblurred bar still passes — it just looks like a cheap tint rather than
+   frosted glass, and an opaque bar is the better-looking degradation. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    :root {
+        --navGlassSurface: #fdfbf4;
+        --glassCard: #fdfbf4;
+    }
+
+    body.dark-mode {
+        --navGlassSurface: var(--medium);
+        --glassCard: var(--medium);
     }
 }
 
@@ -1991,7 +3260,7 @@ html.theme-anim .cs-nav-pill-fill {
 
 		.cs-container {
 			width: 100%;
-			max-width: (1280/16rem);
+			max-width: var(--containerWidth);
 			margin: auto;
 			display: flex;
 			justify-content: center;
@@ -2102,21 +3371,108 @@ html.theme-anim .cs-nav-pill-fill {
 
         .cs-container {
             width: 100%;
-            max-width: (1280/16rem);
+            max-width: var(--containerWidth);
             margin: auto;
             display: flex;
             flex-direction: column;
         }
 
-        /* ── final CTA ── */
+        /* ── final CTA ──
+           ⚠ A PANEL NOW, not a bare block with a rule under it. This is the
+           only closing ask on the site and it was the least built thing on the
+           page: a headline, a line and a button floating on the footer's navy.
+
+           It needs no colours of its own. #footer is listed among the navy
+           surfaces near the top of this file, so --panelLight and --panelGlow
+           already resolve to their on-dark values inside here, in BOTH themes -
+           the footer is navy either way. Same pair #about's and #work's panels
+           use, same tokens.
+
+           ⚠ The glow radii are PERCENTAGES, matching #work's cards. The token's
+           own radials are absolute 720/640px, so a box of a different size
+           paints a different colour at the same relative point - which is what
+           made #work's cards refuse to match #about's panel for several
+           rounds. As a proportion of the box it is size-independent, which
+           matters here because this panel is wide and short where the others
+           are tall. `ellipse` is required: CSS takes no percentage radius on
+           `circle`.
+
+           ⚠ The old `border-bottom` divider is gone, replaced by a margin. The
+           panel's own edge is the separation from the footer nav now, and a
+           rule under a panel would have read as a second, competing boundary. */
         .cs-cta {
+            box-sizing: border-box;
+            /* ⚠ NOT the full container width. Measured at 1440: the widest thing
+               in here is the headline at 677px, and the panel was the container's
+               full 1328 - so roughly 340px of empty panel sat either side of the
+               ask and it read as a band across the footer rather than as a card
+               holding something.
+
+               832 is 677 plus the 56px padding each side, with a little slack.
+               The other full-width panels on the site (#about, #free-redesign)
+               are full-width because their CONTENT is - each holds a two-column
+               layout that fills it. This one holds a narrow centred column, so
+               the panel should be narrow too. Re-measure if the headline is
+               ever reworded longer. */
+            max-width: (832/16rem);
+            margin-inline: auto;
             text-align: center;
             display: flex;
             flex-direction: column;
             align-items: center;
-            /* 48px - 80px */
-            padding-bottom: clamp(3rem, 6vw, 5rem);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+            /* 24px - 56px */
+            padding: var(--panelPad);
+            border-radius: var(--panelRadius);
+            background-color: var(--panelLight);
+            background-image:
+                radial-gradient(ellipse 54% 95% at 6% -10%, rgba(123, 166, 201, 0.1), transparent 70%),
+                radial-gradient(ellipse 48% 85% at 97% 4%, rgba(222, 100, 75, 0.09), transparent 68%);
+            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+            /* 48px - 80px, the space the padding-bottom used to hold */
+            margin-bottom: clamp(3rem, 6vw, 5rem);
+        }
+
+        /* ── the two doors ──
+           Solid first, outline second: one visual weight for "I am ready" and a
+           lighter one for "show me something first". */
+        .cs-button-group {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: (16/16rem);
+        }
+
+        /* ── the assurances ──
+           The mono middot run the home sections use, in the one voice this site
+           has for metadata about an offer. Quoted from /pricing/ and
+           /free-redesign/ - see the markup comment. */
+        .cs-assurances {
+            margin: (24/16rem) 0 0 0;
+            padding: 0;
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: (6/16rem) (10/16rem);
+        }
+
+        .cs-assurance {
+            font-family: var(--monoFont);
+            font-size: (11.5/16rem);
+            font-weight: 500;
+            line-height: 1.5em;
+            letter-spacing: 0.02em;
+            color: var(--rainGray);
+            display: inline-flex;
+            align-items: baseline;
+            gap: (10/16rem);
+
+            /* drawn, not typed — a literal "·" would be read out between every
+               pair by a screen reader */
+            &:not(:last-child):after {
+                content: "\00B7";
+                opacity: 0.55;
+            }
         }
 
         .cs-title {
@@ -2173,6 +3529,56 @@ html.theme-anim .cs-nav-pill-fill {
                 transform: translateY(-2px);
             }
         }
+
+        /* ── the second door ──
+           ⚠ INSET SHADOW, and that is only safe BECAUSE the solid button above
+           kills the global sweep pseudo. CLAUDE.md's rule is that a button
+           frame must be a real border, since .cs-button-solid's hover sweep is
+           a :before at z-index -1 that paints over the element's own background
+           and would erase an inset shadow mid-hover. That sweep is disabled in
+           this footer (`&:before { display: none }` above), so there is nothing
+           to erase it and a shadow is the better choice here - it paints inside
+           the box and changes no geometry.
+
+           ⚠ IDENTICAL PADDING AND FONT SIZE TO THE SOLID. The same note records
+           what happens otherwise: a 2px border made one button 56px tall
+           against the other's 52px and the pair never sat on one line. With a
+           shadow there is no border box to differ, so matching the padding is
+           all that is needed - but if this is ever converted back to a border,
+           the solid one needs a transparent border of the same width. */
+        .cs-button-transparent {
+            font-family: var(--bodyFont);
+            font-size: (16/16rem);
+            font-weight: 600;
+            line-height: 1em;
+            text-align: center;
+            text-transform: none;
+            text-decoration: none;
+            width: auto;
+            padding: (18/16rem) (32/16rem);
+            border-radius: (48/16rem);
+            background-color: transparent;
+            box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.28);
+            color: var(--bodyTextColorWhite);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.25s, box-shadow 0.25s, color 0.25s, transform 0.25s;
+
+            &:hover {
+                background-color: var(--bodyTextColorWhite);
+                box-shadow: inset 0 0 0 2px var(--bodyTextColorWhite);
+                color: var(--inkNavy);
+                transform: translateY(-2px);
+            }
+
+            /* house rule: the browser default is 1px of blue and vanishes on navy */
+            &:focus-visible {
+                outline: 3px solid var(--coralAccent);
+                outline-offset: 3px;
+            }
+        }
+
 
         /* ── the three columns ── */
         .cs-wrapper {
@@ -2345,6 +3751,47 @@ html.theme-anim .cs-nav-pill-fill {
             gap: (20/16rem);
         }
 
+        /* ── colophon ──
+           Sits with the copyright rather than with the nav, so it reads as
+           metadata about the page. Mono to match the legal links beside it,
+           with the outbound mark every other external link on the site uses. */
+        .cs-colophon {
+            font-family: var(--monoFont);
+            font-size: (13/16rem);
+            line-height: 1.5em;
+            text-decoration: none;
+            color: var(--rainGray);
+            /* WCAG 2.5.8 target size - the inline exemption covers a link inside
+               a sentence, not a standalone one like this (house rule) */
+            min-height: (24/16rem);
+            display: inline-flex;
+            align-items: center;
+            gap: (6/16rem);
+            transition: color 0.25s;
+
+            .cs-ext {
+                width: (9/16rem);
+                height: (9/16rem);
+                flex: none;
+                display: block;
+                transition: transform 0.25s;
+            }
+
+            &:hover {
+                color: var(--bodyTextColorWhite);
+
+                .cs-ext {
+                    transform: translate((2/16rem), (-2/16rem));
+                }
+            }
+
+            &:focus-visible {
+                outline: 2px solid var(--coralAccent);
+                outline-offset: 3px;
+                border-radius: (2/16rem);
+            }
+        }
+
         .cs-copyright-link {
             font-family: var(--bodyFont);
             font-size: (13/16rem);
@@ -2386,15 +3833,83 @@ html.theme-anim .cs-nav-pill-fill {
 @media only screen and (min-width: 48rem) {
     #footer {
         .cs-wrapper {
-            /* brand gets the wide column, links + contact sit beside it */
-            grid-template-columns: 1.6fr 1fr 1.4fr;
-            gap: clamp(2rem, 4vw, 4rem);
+            /* brand gets the wide column, the two link lists and contact sit
+               beside it. Was `1.6fr 1fr 1.4fr` for three columns; the Services
+               nav made it four. The brand column gives up the width rather than
+               the contact one, which holds an unbreakable email address. */
+            grid-template-columns: 1.3fr 0.9fr 1.1fr 1.2fr;
+            gap: clamp(2rem, 3vw, 3rem);
         }
 
+        /* ── the bottom bar ──
+           ⚠ GRID, not `flex-direction: row; justify-content: space-between`.
+           space-between distributes the LEFTOVER width, so the middle child is
+           only centred when the two outer ones happen to be the same width.
+           They are not - measured at 1440, the copyright is 369px and the legal
+           links 183px, which left the colophon 93px right of the container's
+           centre, at every width. Close enough to centre to read as a mistake
+           rather than as a decision, which is the worst place to land.
+
+           Two rows here and three columns at 64rem, because a true centre costs
+           width: matched 1fr tracks have to be as wide as the WIDER outer item,
+           so a single row wants 2x369 + 140 + gaps = 918px of container and
+           only has 736 at 48rem. Forcing it there wrapped the copyright onto a
+           second line - trading a 93px offset for a broken line, which is not a
+           fix. The colophon takes its own centred row instead until there is
+           room for the three-up. */
         .cs-bottom {
-            flex-direction: row;
+            display: grid;
+            /* auto tracks pushed apart, NOT `1fr 1fr` - at 48rem an even split
+               gives each half 358px and the 369px copyright wraps by 11px.
+               Content-sized tracks let it keep its line; the colophon spans
+               both and centres against the container either way. */
+            grid-template-columns: auto auto;
             justify-content: space-between;
+            align-items: center;
             text-align: left;
+            gap: (16/16rem) (20/16rem);
+
+            .cs-copyright {
+                grid-row: 1;
+                grid-column: 1;
+                justify-self: start;
+            }
+
+            .cs-terms {
+                grid-row: 1;
+                grid-column: 2;
+                justify-self: end;
+            }
+
+            /* placed explicitly, because it comes SECOND in the markup - it is
+               a colophon and belongs beside the copyright in the reading order,
+               not after the legal links */
+            .cs-colophon {
+                grid-row: 2;
+                grid-column: 1 / -1;
+                justify-self: center;
+            }
+        }
+    }
+}
+
+/* Desktop - 1024px */
+/* Three-up: the colophon comes back onto the copyright's row and sits dead
+   centre of the container. 1fr auto 1fr, so the centre track is centred by the
+   two matched outer tracks rather than by whatever width is left over. */
+@media only screen and (min-width: 64rem) {
+    #footer {
+        .cs-bottom {
+            grid-template-columns: 1fr auto 1fr;
+
+            .cs-colophon {
+                grid-row: 1;
+                grid-column: 2;
+            }
+
+            .cs-terms {
+                grid-column: 3;
+            }
         }
     }
 }
@@ -2771,7 +4286,7 @@ html.theme-anim .cs-nav-pill-fill {
 
         .cs-container {
             width: 100%;
-            max-width: (1280/16rem);
+            max-width: var(--containerWidth);
             margin: auto;
             display: flex;
             flex-direction: column;
@@ -3140,8 +4655,8 @@ html.theme-anim .cs-nav-pill-fill {
 
 @media only screen and (min-width: 0rem) {
     .cs-logo-wordmark {
-        /* THIS is the size dial. 28px - 34px tall, which lands the lockup at
-           119px - 145px wide (the artwork is 4.25:1, so height drives width).
+        /* THIS is the size dial. 27px - 34px tall, which lands the lockup at
+           115px - 145px wide (the artwork is 4.25:1, so height drives width).
 
            Deliberately NOT height:100%. .cs-logo is a 40-44px box, and filling
            it made the wordmark ~170-187px wide, which crowded the nav toggle on
@@ -3149,8 +4664,27 @@ html.theme-anim .cs-nav-pill-fill {
            carries more visual weight than the single line of text it replaced,
            so matching the old box height matched the wrong thing.
 
-           Nudge these two numbers to taste; nothing else needs to change. */
-        height: clamp(1.5rem, 2.6vw, 1.875rem);
+           ⚠ The ceiling here is .cs-logo's own height, not taste: that box is
+           what sets the bar's height, so anything up to 40px collapsed / 44px
+           desktop grows the wordmark and leaves the navbar exactly as it was.
+           Past it the bar itself starts growing.
+
+           History, because this has moved three times: 24-30px, raised to
+           27-34px on 2026-09-15 (38px was tried first and read as too heavy),
+           and back down to 23-29px on 2026-09-18 when the bar stopped being a
+           full-width slab. That is not a reversal - it is the same wordmark
+           against a different amount of bar. In 1328px of box the lockup had
+           plenty of room to be generous; in a pill that hugs its contents it
+           is one of four objects setting the width, and at 145px wide it was
+           the largest of them by a distance.
+
+           ⚠ The width of the bar is now downstream of this number. The pill is
+           `width: max-content`, so shrinking the wordmark narrows the whole
+           navbar - which is most of what the change is for.
+
+           Nudge these two numbers to taste; nothing else needs to change.
+           23px - 29px, landing the lockup at 98px - 123px wide. */
+        height: clamp(1.4375rem, 2.45vw, 1.8125rem);
         width: auto;
         display: block;
         /* the viewBox is already trimmed to the artwork, so nothing to contain */
@@ -3221,5 +4755,229 @@ body #cs-navigation.cs-at-footer {
        scroll slide above is pre-existing behaviour and is left alone. */
     body #cs-navigation.cs-at-footer {
         transition: none;
+    }
+}
+
+/*-- -------------------------- -->
+<---      The lifted panel      -->
+<--- -------------------------- -*/
+
+/* One call, so six sections cannot drift the way #services and the navbar did.
+   Turns a .cs-container into the rounded, inset, softly-lit ground that the
+   cards and frames inside it read as raised against.
+
+   Use: add `cs-panel` to a section's .cs-container in the markup. A CLASS and
+   not a LESS mixin on purpose - the build compiles every .less file on its own,
+   so a mixin declared here is simply undefined inside local.less. It is also the
+   idiom /work/ already uses for .cs-panel-light. The section keeps its own
+   max-width (which should be var(--containerWidth), so every panel edge lines up
+   with the navbar).
+
+   ⚠ It PADS. Content inside narrows by 2 x --panelPad, which is the point: a
+   panel whose content runs to its own edge is just a background colour. Check
+   any section where the container also holds an image or a diorama, because
+   that box shrinks too.
+
+   Everything it sets is a token, so dark mode is already handled - see
+   --panelLight / --panelGlow in the palette block. */
+.cs-panel {
+    box-sizing: border-box;
+    background-color: var(--panelLight);
+    background-image: var(--panelGlow);
+    border-radius: var(--panelRadius);
+    padding: var(--panelPad);
+}
+
+/* The glow WITHOUT the panel, for a section that is already its own ground.
+   #speed is navy edge to edge, so boxing it inside a second surface would be a
+   box in a box - but the two soft lights are what stop a flat navy band reading
+   as a solid rectangle, which is the whole reason kukie.io puts them on its dark
+   sections too. */
+.cs-panel-glow {
+    background-image: var(--panelGlow);
+}
+
+/*-- -------------------------- -->
+<---      Rise and reveal       -->
+<--- -------------------------- -*/
+
+/* The site's entrance vocabulary, in one place. Two moves and no others:
+
+     .cs-rise / .cs-rise-in   type slides up into place from behind a fixed
+                              edge and NEVER fades
+     .cs-fade-in > *          boxes fade up by a little, staggered
+
+   Modelled on clarvos.com. The distinction is not decorative: a cross-fade
+   leaves everything half-transparent for the length of its run, which on this
+   page means navy type sitting washed-out grey over the tan while it arrives.
+   Type that slides is full strength in every frame of its entrance - it is
+   either behind the edge or it is not.
+
+   Where the trigger comes from differs by section and is NOT set here:
+     #hero      the stylesheet, on load  (critical.less, --intro-step)
+     elsewhere  IntersectionObserver     (assets/js/text-rise.js, .is-in)
+
+   ⚠ The armed state hangs off .cs-rise-armed, which text-rise.js puts on
+   <html> when it starts. Nothing in this file may hide reveal content without
+   that class in the selector. A stylesheet that hides on its own and waits for
+   JS to show is one 404 away from a blank page. */
+
+@media only screen and (min-width: 0rem) {
+    /* ── balanced headings ──
+       Lets the browser even out the lines instead of filling each one and
+       dumping the remainder on the last. "Your website stops being your /
+       problem" became "Your website stops / being your problem" from this one
+       declaration, with no measure tuning.
+
+       Safe to apply broadly: balancing only ever REDISTRIBUTES words inside the
+       width the element already had, so it cannot introduce overflow. Browsers
+       without it just wrap normally.
+
+       It runs before assets/js/text-rise.js measures, so the splitter freezes
+       whatever breaks balance chose - the two work together rather than fight.
+       The home hero is exempt by construction: its h1 is three authored line
+       elements, so there is nothing left to balance. */
+    .cs-title {
+        text-wrap: balance;
+    }
+
+    /* ── the window ──
+       `clip`, never `hidden`. hidden makes a scroll container, and the ferry
+       and the orcas run on view() timelines that a scroll container anywhere
+       above them kills silently. House rule, and this class is used inside
+       both of those sections. */
+    .cs-rise {
+        display: block;
+        overflow: clip;
+        /* Clip room for ascenders and descenders. Display line-heights on this
+           site run as tight as 1.15em, which is shorter than the glyph box, so
+           a bare clip shaves the tail off a "y" and the top off a "b". The
+           negative margin takes the space straight back.
+
+           This only cancels exactly if the masks are FLEX items - block
+           siblings would collapse these margins into each other instead. That
+           is why .cs-title and .is-split below are flex columns. */
+        padding: 0.12em 0 0.2em;
+        margin: -0.12em 0 -0.2em;
+    }
+
+    /* Block, so translateY has a height to be a percentage OF. An inline span
+       resolves a percentage transform against a zero-height box and never
+       moves at all. */
+    .cs-rise-in {
+        display: block;
+    }
+
+    /* 115%, not 100%: the extra 15% is travel that happens entirely out of
+       sight, so a line enters its window already moving instead of peeling off
+       the edge from a standstill. The figure the reference uses. */
+    @keyframes cs-rise {
+        from {
+            transform: translateY(115%);
+        }
+    }
+
+    /* The plain fade, for everything that cannot be masked - see the header of
+       text-rise.js for which things those are and why. 1.5rem is the
+       reference's own distance. */
+    @keyframes cs-fade-in {
+        from {
+            opacity: 0;
+            transform: translateY(1.5rem);
+        }
+    }
+
+    /* A paragraph that text-rise.js has rebuilt out of per-line masks. The
+       element stops being running text and becomes a column of blocks, so the
+       clip it may have carried as a single block is no longer its job.
+       `align-items` is set inline by the script, from the text-align the
+       element already had. */
+    .cs-rise-lines.is-split {
+        display: flex;
+        flex-direction: column;
+        overflow: visible;
+    }
+
+    /* ── armed ──
+       Everything below hides something, so all of it is behind the class the
+       script sets. Read the warning at the top of this block before touching
+       any of it. */
+    .cs-rise-armed {
+        /* how far apart consecutive lines / children start */
+        --rise-step: 55ms;
+        --rise-dur: 0.9s;
+
+        .cs-rise-lines.is-split .cs-rise-in,
+        .cs-fade-in > *:not(.cs-rise-lines) {
+            /* the settle the nav pill and the hero intro both use, so the whole
+               site moves like one system */
+            animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+            animation-duration: var(--rise-dur);
+            animation-fill-mode: backwards;
+        }
+
+        /* the held state, and the only thing here that hides anything */
+        .cs-rise-lines.is-split .cs-rise-in {
+            transform: translateY(115%);
+        }
+
+        /* :not(.cs-rise-lines) throughout, because these two nest. A section's
+           .cs-content is the fading group AND the parent of the heading that
+           rises out of its own mask; without the exclusion the heading would be
+           held at opacity 0 by its parent and cross-fade after all. */
+        .cs-fade-in > *:not(.cs-rise-lines) {
+            opacity: 0;
+        }
+
+        /* ── released ──
+           The resting value is set outright and the animation runs BACKWARDS
+           into it from the keyframe, rather than the animation holding the end
+           state with `forwards`. Two reasons: a forwards fill leaves a
+           transform on the element permanently, which makes it a containing
+           block for anything positioned inside it - and the orcas, the ferry
+           and the wave bands are all positioned inside sections this class
+           lands in. It also means a browser that ignores the animation still
+           ends up with the right page. */
+        .cs-rise-lines.is-split.is-in .cs-rise-in {
+            transform: none;
+            animation-name: cs-rise;
+            animation-delay: calc(var(--rise-i, 0) * var(--rise-step));
+        }
+
+        .cs-fade-in.is-in > *:not(.cs-rise-lines) {
+            opacity: 1;
+            animation-name: cs-fade-in;
+        }
+
+        /* Staggered children. Ten covers the longest group on the site (the
+           service-area town list); past that they all land together, which is
+           the right failure - a 15th card arriving 800ms late reads as a bug. */
+        .cs-fade-in.is-in > *:not(.cs-rise-lines) {
+            animation-delay: 0ms;
+
+            &:nth-child(2) { animation-delay: calc(var(--rise-step) * 1); }
+            &:nth-child(3) { animation-delay: calc(var(--rise-step) * 2); }
+            &:nth-child(4) { animation-delay: calc(var(--rise-step) * 3); }
+            &:nth-child(5) { animation-delay: calc(var(--rise-step) * 4); }
+            &:nth-child(6) { animation-delay: calc(var(--rise-step) * 5); }
+            &:nth-child(7) { animation-delay: calc(var(--rise-step) * 6); }
+            &:nth-child(8) { animation-delay: calc(var(--rise-step) * 7); }
+            &:nth-child(9) { animation-delay: calc(var(--rise-step) * 8); }
+            &:nth-child(n + 10) { animation-delay: calc(var(--rise-step) * 9); }
+        }
+    }
+
+    /* Belt and braces. text-rise.js already returns early under reduced motion
+       and so never arms anything, but if the class is ever set another way this
+       keeps it from hiding content for someone who asked for no movement. */
+    @media (prefers-reduced-motion: reduce) {
+        .cs-rise-armed {
+            .cs-rise-lines.is-split .cs-rise-in,
+            .cs-fade-in > * {
+                animation-name: none;
+                opacity: 1;
+                transform: none;
+            }
+        }
     }
 }

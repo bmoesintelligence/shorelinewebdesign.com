@@ -4,11 +4,35 @@
 
 <footer id="footer">
     <div class="cs-container">
-        <!-- Final call to action -->
+        {# ── the site's only closing CTA ──
+           Page-level CTA bands were built and removed twice as duplication, so
+           this is the single closing ask on every page. That is also why it is
+           worth more than a headline and a button.
+
+           ⚠ TWO DOORS, NOT ONE. It offered only /contact/, which is the
+           higher-commitment path - you are asking a stranger to start a
+           conversation about money. The free homepage redesign is, in
+           CLAUDE.md's words, "the zero-risk lead magnet and the strongest
+           differentiator for a shop with no reputation yet", and it was absent
+           from the last thing anyone reads. The label matches the home
+           section's button exactly so the two read as the same offer.
+
+           ⚠ THE TWO ASSURANCES ARE QUOTED, NOT WRITTEN. "No contract" is
+           /pricing/#ownership's own line ("No contract, no notice period, no
+           cancellation fee"); "yours either way" is /free-redesign/'s ("Keep
+           the design either way"). Nothing new is claimed here, and nothing new
+           may be - a promise made in a footer appears on all 17 pages. #}
         <div class="cs-cta">
             <h2 class="cs-title">Let's build the site your business deserves.</h2>
             <p class="cs-text">You'll hear back from Bryan himself, usually within a day.</p>
-            <a href="/contact/" class="cs-button-solid">Get started today</a>
+            <div class="cs-button-group">
+                <a href="/contact/" class="cs-button-solid">Get started today</a>
+                <a href="/free-redesign/" class="cs-button-transparent">Claim a free redesign</a>
+            </div>
+            <ul class="cs-assurances">
+                <li class="cs-assurance">No contract, cancel anytime</li>
+                <li class="cs-assurance">The redesign is yours either way</li>
+            </ul>
         </div>
 
         <div class="cs-wrapper">
@@ -49,9 +73,36 @@
                     <li class="cs-nav-li"><a href="/about/" class="cs-nav-link">About</a></li>
                     <li class="cs-nav-li"><a href="/work/" class="cs-nav-link">Work</a></li>
                     <li class="cs-nav-li"><a href="/pricing/" class="cs-nav-link">Pricing</a></li>
+                    {# Free Redesign is a top-level item in the header nav and was
+                       missing from this directory. The CTA above does link it, but
+                       a footer nav that omits a main nav item reads as an oversight
+                       rather than a decision. #}
+                    <li class="cs-nav-li"><a href="/free-redesign/" class="cs-nav-link">Free redesign</a></li>
                     <li class="cs-nav-li"><a href="/#service-area" class="cs-nav-link">Service area</a></li>
                     <li class="cs-nav-li"><a href="/blog/" class="cs-nav-link">Blog</a></li>
                     <li class="cs-nav-li"><a href="/contact/" class="cs-nav-link">Contact</a></li>
+                </ul>
+            </nav>
+
+            {# ── Services ──
+               ⚠ These three were the ONLY URLs in sitemap.xml with no footer
+               link anywhere. They lived in the header dropdown alone, which
+               means they were reachable in one place on the site, behind a
+               hover or a tap, and they are the pages that sell the work.
+
+               The footer is the secondary nav and the site's main internal
+               linking surface, so this is a search consideration as much as a
+               usability one: every page now links all three.
+
+               Same markup contract as the Site column above - a <nav> with its
+               own aria-label, because two navs in one footer need telling
+               apart by anyone listing landmarks. #}
+            <nav class="cs-nav" aria-label="Services">
+                <span class="cs-header">Services</span>
+                <ul class="cs-nav-ul">
+                    <li class="cs-nav-li"><a href="/services/web-design/" class="cs-nav-link">Web design</a></li>
+                    <li class="cs-nav-li"><a href="/services/seo/" class="cs-nav-link">SEO</a></li>
+                    <li class="cs-nav-li"><a href="/services/website-maintenance/" class="cs-nav-link">Website maintenance</a></li>
                 </ul>
             </nav>
 
@@ -74,6 +125,21 @@
 
         <div class="cs-bottom">
             <span class="cs-copyright">© {{ currentYear }} Shoreline Web Design &middot; Richmond Beach, WA</span>
+            {# ── colophon ──
+               The source for this site, as the proof behind "hand-coded".
+
+               ⚠ client.repo, NOT client.socials.github. The data file draws that
+               distinction in as many words: the profile is a list of repos, this
+               is the thing someone was invited to read. The socials icon above
+               is the profile and stays that.
+
+               ⚠ It IS a second link to the repo on the home page - #services'
+               "hand-coded" card carries the same URL. Kept because that card is
+               home-only and this reaches all 17 pages, and because down here it
+               reads as a colophon rather than as a second proof CTA. If the two
+               ever feel redundant, this is the one to cut, not the card: the
+               card sits beside the claim it evidences. #}
+            <a href="{{ client.repo }}" target="_blank" rel="noopener noreferrer" class="cs-colophon" aria-label="Read this site's source on GitHub (opens in a new tab)">Source on GitHub{% include "components/icon-external.html" %}</a>
             <div class="cs-terms">
                 <!-- Terms is DELIBERATELY NOT LINKED until the attorney delivers.
                      The page still exists at /terms/ and still builds - it is a

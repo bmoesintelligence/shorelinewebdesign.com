@@ -4,7 +4,19 @@
 
 <header id="cs-navigation">
     <!-- Locations marquee: an infinite scrolling strip of service-area towns.
-         The list is repeated so the track loops seamlessly; duplicates are aria-hidden. -->
+         The list is repeated so the track loops seamlessly; duplicates are aria-hidden.
+
+         ⚠ DO NOT REMOVE. Tried 2026-09-16 and reverted the same day. The
+         argument for cutting it was that a scrolling strip above the nav reads
+         as an e-commerce announcement bar - and that misses what it is actually
+         doing here. This navy band is the COUNTERWEIGHT to the tan page: it caps
+         the composition at the top and gives the warm ground something dark to
+         sit against. Without it the whole page floats and the tan reads washed
+         out, which is exactly how it looked with this gone.
+
+         It is load-bearing for the palette, not decoration. If it is ever
+         restyled, the thing to preserve is a dark full-bleed band at the very
+         top, not this specific content. -->
     <div class="cs-top-bar">
         <div class="cs-marquee">
             {%- set locations = serviceArea.towns -%}
@@ -38,6 +50,22 @@
         </a>
         <!--Navigation List-->
         <nav class="cs-nav" aria-label="main navigation">
+            {#
+              ── current page ──
+              Computed here, at build time, rather than in JS. Until 2026-09-18
+              nothing on the site marked the page you were on: `.cs-active` was
+              styled in root.less but never applied by anything (nav.js uses that
+              same class name for the hamburger's OPEN state, which is what made
+              it look wired), so the rule was dead CSS on all 17 pages.
+
+              Two consumers, and they need different things:
+                · `.cs-active` is the visual state (weight + full ink) AND the
+                  resting position nav-waterline.js parks the coral rule on.
+                · `aria-current="page"` is the one a screen reader announces.
+              The dropdown TOGGLE is a <button>, not a destination, so it takes
+              the class only - the real page underneath it carries aria-current.
+            #}
+            {%- set svcActive = page.url.indexOf("/services/") == 0 -%}
             <!--Mobile Nav Toggle-->
             <button class="cs-toggle" aria-label="mobile menu toggle" aria-expanded="false" aria-controls="cs-ul-wrapper" aria-haspopup="menu">
                 <span class="cs-box" aria-hidden="true">
@@ -52,51 +80,129 @@
                     <!-- Services is a toggle, not a link — there is no /services/ hub page
                          by design; the home page's services section is the hub. -->
                     <li class="cs-li cs-dropdown">
-                        <button class="cs-li-link cs-dropdown-toggle" aria-expanded="false" aria-controls="services-drop-ul">
+                        <button class="cs-li-link cs-dropdown-toggle{% if svcActive %} cs-active{% endif %}" aria-expanded="false" aria-controls="services-drop-ul">
                             Services
-                            <!-- Inline (not a CDN img) so the chevron inherits currentColor and
-                                 turns white with the text when the nav pill parks under it. -->
+                            <!-- Inline (not a CDN img) so the chevron inherits currentColor,
+                                 which is what makes it follow the label through hover,
+                                 the active-page ink and dark mode with no rules of its own. -->
                             <svg class="cs-drop-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 1.75 6 6.25 11 1.75" /></svg>
                         </button>
-                        <ul class="cs-drop-ul" id="services-drop-ul">
-                            <li class="cs-drop-li">
-                                <a href="/services/web-design/" class="cs-li-link cs-drop-link">
-                                    Web Design
-                                </a>
-                            </li>
-                            <li class="cs-drop-li">
-                                <a href="/services/seo/" class="cs-li-link cs-drop-link">
-                                    SEO
-                                </a>
-                            </li>
-                            <li class="cs-drop-li">
-                                <a href="/services/website-maintenance/" class="cs-li-link cs-drop-link">
-                                    Website Maintenance
-                                </a>
-                            </li>
-                        </ul>
+                        {# ── the services mega panel ──
+                           ⚠ STILL `.cs-drop-ul`, and it is no longer a <ul>.
+                           assets/js/nav.js addresses the panel by that class
+                           (CONFIG.SELECTORS.dropdownMenu) to drive `inert` and
+                           `aria-expanded`, so renaming it would silently unhook
+                           the keyboard and mobile behaviour while leaving the
+                           hover working - the worst kind of break to notice.
+
+                           ── why a panel and not a list of three words ──
+                           The three service pages are the pages that sell the
+                           work, and behind a 208px dropdown they were three
+                           bare nouns. A name alone asks the visitor to guess
+                           what is behind it; a line of copy and a sketch of the
+                           page answers it before the click.
+
+                           THE STRUCTURE IS LOAD-BEARING, in this order:
+                             .cs-drop-ul     positioning shell. TRANSPARENT, and
+                                             its top padding is the visual gap
+                                             between the bar and the panel. That
+                                             padding is also the hover bridge:
+                                             it belongs to .cs-dropdown, so the
+                                             pointer never leaves :hover on the
+                                             way down.
+                             .cs-drop-panel  the visible glass surface.
+                             .cs-drop-grid   the three cards.
+                             .cs-drop-foot   one line of context + one link.
+
+                           ⚠ The previews are decoration and carry
+                           aria-hidden="true". They are CSS boxes, not images -
+                           same reasoning as the /work/ browser chrome and the
+                           #library wireframes: nothing to download, nothing to
+                           re-export when a page changes, and it is the house
+                           idiom for "a sketch of a page". #}
+                        <div class="cs-drop-ul" id="services-drop-ul">
+                            <div class="cs-drop-panel">
+                                <ul class="cs-drop-grid">
+                                    <li class="cs-drop-li">
+                                        <a href="/services/web-design/" class="cs-li-link cs-drop-link{% if page.url == "/services/web-design/" %} cs-active{% endif %}"{% if page.url == "/services/web-design/" %} aria-current="page"{% endif %}>
+                                            {# a page under construction: chrome, hero band, two lines, a row of cards #}
+                                            <span class="cs-mini cs-mini-site" aria-hidden="true">
+                                                <span class="cs-mini-bar"><i></i><i></i><i></i></span>
+                                                <span class="cs-mini-page">
+                                                    <span class="cs-mini-hero"></span>
+                                                    <span class="cs-mini-line"></span>
+                                                    <span class="cs-mini-line cs-mini-short"></span>
+                                                    <span class="cs-mini-cards"><i></i><i></i><i></i></span>
+                                                </span>
+                                            </span>
+                                            <span class="cs-drop-name">Web Design</span>
+                                            <span class="cs-drop-desc">Coded from scratch. No templates, no page builders, nothing to log into.</span>
+                                        </a>
+                                    </li>
+                                    <li class="cs-drop-li">
+                                        <a href="/services/seo/" class="cs-li-link cs-drop-link{% if page.url == "/services/seo/" %} cs-active{% endif %}"{% if page.url == "/services/seo/" %} aria-current="page"{% endif %}>
+                                            {# a local result page: search field, then the map pack with the top pin lit #}
+                                            <span class="cs-mini cs-mini-serp" aria-hidden="true">
+                                                <span class="cs-mini-search"><i class="cs-mini-lens"></i><i class="cs-mini-query"></i></span>
+                                                <span class="cs-mini-hit cs-mini-first"><i class="cs-mini-pin"></i><span class="cs-mini-stack"><b></b><b></b></span></span>
+                                                <span class="cs-mini-hit"><i class="cs-mini-pin"></i><span class="cs-mini-stack"><b></b><b></b></span></span>
+                                                <span class="cs-mini-hit"><i class="cs-mini-pin"></i><span class="cs-mini-stack"><b></b><b></b></span></span>
+                                            </span>
+                                            <span class="cs-drop-name">SEO</span>
+                                            <span class="cs-drop-desc">Google Business Profile, on-page structure and the map pack, so nearby searches find you.</span>
+                                        </a>
+                                    </li>
+                                    <li class="cs-drop-li">
+                                        <a href="/services/website-maintenance/" class="cs-li-link cs-drop-link{% if page.url == "/services/website-maintenance/" %} cs-active{% endif %}"{% if page.url == "/services/website-maintenance/" %} aria-current="page"{% endif %}>
+                                            {# a status board: three checks cleared, then an uptime strip #}
+                                            <span class="cs-mini cs-mini-status" aria-hidden="true">
+                                                <span class="cs-mini-check"><i></i><b></b></span>
+                                                <span class="cs-mini-check"><i></i><b></b></span>
+                                                <span class="cs-mini-check"><i></i><b></b></span>
+                                                <span class="cs-mini-uptime">{%- for i in range(0, 22) -%}<i></i>{%- endfor -%}</span>
+                                            </span>
+                                            <span class="cs-drop-name">Website Maintenance</span>
+                                            <span class="cs-drop-desc">Hosting, updates, backups and edits. Send a change and it goes live, usually the same day.</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                                {# One line of context and one link. The line is the
+                                   footer blurb's own claim, not a new one, and the
+                                   link goes where "what does all this cost" is
+                                   actually answered. No second CTA: the bar already
+                                   carries Get started two items to the right. #}
+                                <p class="cs-drop-foot">
+                                    <span class="cs-drop-note">Built, hosted and looked after by one engineer.</span>
+                                    <a href="/pricing/" class="cs-drop-foot-link">
+                                        See pricing
+                                        <svg class="cs-drop-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 10" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 5h9.2M6.6 1.4 10.4 5l-3.8 3.6" /></svg>
+                                    </a>
+                                </p>
+                            </div>
+                        </div>
                     </li>
                     <li class="cs-li">
-                        <a href="/work/" class="cs-li-link">
+                        <a href="/work/" class="cs-li-link{% if page.url == "/work/" %} cs-active{% endif %}"{% if page.url == "/work/" %} aria-current="page"{% endif %}>
                             Work
                         </a>
                     </li>
                     <li class="cs-li">
-                        <a href="/pricing/" class="cs-li-link">
+                        <a href="/pricing/" class="cs-li-link{% if page.url == "/pricing/" %} cs-active{% endif %}"{% if page.url == "/pricing/" %} aria-current="page"{% endif %}>
                             Pricing
                         </a>
                     </li>
                     <li class="cs-li">
-                        <a href="/about/" class="cs-li-link">
+                        <a href="/about/" class="cs-li-link{% if page.url == "/about/" %} cs-active{% endif %}"{% if page.url == "/about/" %} aria-current="page"{% endif %}>
                             About
                         </a>
                     </li>
                     <!-- Free Redesign: the low-commitment top-of-funnel entry. Swapped
                          in for Blog (empty for now; Blog lives in the footer). cs-li-cta
                          gives it a bordered-pill "secondary CTA" look (see root.less);
-                         nav-pill.js treats it like the button so the pill fills it exactly. -->
+                         at desktop it renders as a plain link, and the travelling
+                         waterline treats it like any other destination. -->
                     <li class="cs-li cs-li-cta">
-                        <a href="/free-redesign/" class="cs-li-link">
+                        <a href="/free-redesign/" class="cs-li-link{% if page.url == "/free-redesign/" %} cs-active{% endif %}"{% if page.url == "/free-redesign/" %} aria-current="page"{% endif %}>
                             Free Redesign
                         </a>
                     </li>
@@ -110,12 +216,11 @@
                      is hidden at 1024px and up, so only ever one pair renders.
 
                      Deliberately OUTSIDE .cs-ul, and deliberately NOT carrying
-                     .cs-li-link or .cs-nav-button: nav-pill.js collects its targets
-                     with `.cs-ul > .cs-li > .cs-li-link` and grabs the button with
-                     `querySelector(".cs-nav-button")`. Either class here would hand
-                     the desktop pill a display:none element to measure, or steal the
-                     button reference outright. Sitting outside .cs-ul also keeps the
-                     pair clear of the list's max-height overflow scroll. -->
+                     .cs-li-link: nav-waterline.js collects its targets with
+                     `.cs-ul > .cs-li > .cs-li-link`, so that class here would hand the
+                     desktop rule a display:none element to measure and park on.
+                     Sitting outside .cs-ul also keeps the pair clear of the list's
+                     max-height overflow scroll. -->
                 <div class="cs-mobile-actions">
                     <div class="cs-mobile-buttons">
                         <!-- Capitalisation matches the desktop nav item verbatim; see
@@ -133,18 +238,16 @@
                 </div>
             </div>
         </nav>
-        <a href="/contact/" class="cs-button-solid cs-nav-button">Get Started</a>
+        <a href="/contact/" class="cs-button-solid cs-nav-button">Get started</a>
         <!--Dark Mode toggle, uncomment button code if you want to enable a dark mode toggle-->
-        <button id="dark-mode-toggle" aria-label="dark mode toggle" aria-pressed="false">
-            <svg class="cs-moon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 480" style="enable-background:new 0 0 480 480" xml:space="preserve" aria-hidden="true"><path d="M459.782 347.328c-4.288-5.28-11.488-7.232-17.824-4.96-17.76 6.368-37.024 9.632-57.312 9.632-97.056 0-176-78.976-176-176 0-58.4 28.832-112.768 77.12-145.472 5.472-3.712 8.096-10.4 6.624-16.832S285.638 2.4 279.078 1.44C271.59.352 264.134 0 256.646 0c-132.352 0-240 107.648-240 240s107.648 240 240 240c84 0 160.416-42.688 204.352-114.176 3.552-5.792 3.04-13.184-1.216-18.496z" /></svg>
-            <!-- Self-hosted. This pointed at CodeStitch's DigitalOcean CDN,
-                 which was the ONLY third-party request the site made: every
-                 visitor's browser handed their IP to another network to fetch a
-                 15px icon that has always been sitting in /assets/svgs/. The
-                 privacy policy states there are no third-party calls, so this
-                 had to match. -->
-            <img class="cs-sun" aria-hidden="true" src="/assets/svgs/sun.svg" decoding="async" alt="" width="15" height="15">
-        </button>
+        {# The knob is a CSS pseudo-element on the button, so there is no icon
+           markup here any more and nothing to fetch. It used to hold an inline
+           moon SVG plus an <img> for the sun, cross-faded on opacity - which is
+           also one fewer request now that sun.svg has gone.
+
+           aria-pressed is what drives the whole switch in root.less, and
+           dark.js already maintained it. #}
+        <button id="dark-mode-toggle" aria-label="Toggle dark mode" aria-pressed="false"></button>
     </div>
 </header>
                                 

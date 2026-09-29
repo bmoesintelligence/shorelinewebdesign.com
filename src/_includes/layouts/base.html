@@ -121,13 +121,18 @@
         <link rel="stylesheet" href="/assets/css/root.css">
         <script defer src="/assets/js/dark.js"></script>
         <script defer src="/assets/js/nav.js"></script>
-        <script defer src="/assets/js/nav-pill.js"></script>
+        <script defer src="/assets/js/nav-waterline.js"></script>
         <script defer src="/assets/js/faq.js"></script>
         {# consent.js is what LOADS Google Analytics, and only after Accept. There
            is deliberately no gtag snippet in this head: putting it here and
            "gating" it afterwards is how consent banners end up decorative. With
            client.analytics.ga4 empty this script finds no banner and no-ops. #}
         <script defer src="/assets/js/consent.js"></script>
+        {# Splits headings and body copy into their rendered LINES and reveals
+           them on scroll. Deferred and entirely optional: it arms its own
+           hidden state, so if it never runs nothing is ever hidden. See the
+           header of the file, and "Rise and reveal" in root.less. #}
+        <script defer src="/assets/js/text-rise.js"></script>
 
         {% block head %}{% endblock %}
 

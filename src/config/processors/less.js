@@ -11,7 +11,17 @@ const cssnano = require("cssnano");
 const isProduction = process.env.ELEVENTY_ENV === "PROD";
 
 // PostCSS processor - add more plugins here as you see fit. cssnano won't run in development.
-const processor = postcss([autoprefixer(), ...(isProduction ? [cssnano({ preset: "default" })] : [])]);
+//
+// ⚠ `remove: false`. Autoprefixer's default is to STRIP prefixes its browserslist
+// says are unnecessary, and this project ships no browserslist, so that judgement
+// comes from autoprefixer's own defaults - which resolve to browsers new enough
+// that it deleted the hand-written `-webkit-backdrop-filter` off the nav glass on
+// its way past. iOS Safari 15-17 still needs that prefix and is exactly the
+// audience the material is aimed at. Verified before/after: 0 prefixed -> 3.
+//
+// This only disables REMOVAL. Everything autoprefixer chooses to ADD is
+// unchanged, so no other rule in the build moves.
+const processor = postcss([autoprefixer({ remove: false }), ...(isProduction ? [cssnano({ preset: "default" })] : [])]);
 
 module.exports = async function () {
     // Make the public CSS directory

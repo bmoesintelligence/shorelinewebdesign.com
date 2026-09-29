@@ -1,3 +1,30 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// MIXIN — frosted glass
+//
+// ⚠ Declared here as well as in root.less, deliberately. Every .less file in
+// src/assets/less/ is compiled as its own stylesheet (there are no @imports and
+// no partials convention), so a mixin in root.less is invisible from this file.
+// The VALUES are shared - --glass and --glassCard are custom properties on
+// :root in root.css, which loads on every page - so there is still exactly one
+// place to change the blur or the alpha. Only these two prefixed declarations
+// are duplicated.
+//
+// ⚠ TOP LEVEL. LESS scopes a mixin to the block it is declared in, so one
+// inside an @media block is invisible to every other @media block, and the
+// failure mode is not "undefined mixin" - it is a parse error that
+// src/config/processors/less.js CATCHES AND LOGS rather than throwing. The
+// build reports success and public/ keeps serving the previous stylesheet.
+//
+// ⚠ The -webkit- prefix must stay. Autoprefixer adds none (no browserslist in
+// this project, and its defaults assume Safari is new enough); less.js passes
+// `remove: false` so it does not strip this one either. iOS Safari 15-17 needs
+// it.
+// ─────────────────────────────────────────────────────────────────────────────
+.glass() {
+	-webkit-backdrop-filter: var(--glass);
+	backdrop-filter: var(--glass);
+}
+
 /*-- -------------------------- -->
 <---       What You Get         -->
 <--- -------------------------- -*/
@@ -8,10 +35,28 @@
         background-color: var(--warmSand);
         padding: var(--sectionPadding);
 
+        /* ── the lifted panel ──
+           The container IS the panel - no extra wrapper, because .cs-container
+           was already the thing carrying the max-width and the centring.
+
+           Why: #fdfbf4 cards on --warmSand measure 1.32:1, so the tiles were
+           held together entirely by an 8%-alpha hairline and a 6%-alpha shadow,
+           and read as ghosts on a flat band. Dropping a deeper ground behind
+           them puts each card ABOVE a surface instead of drawn onto one, which
+           is the same fix /work/ needed. See --panelLight in root.less.
+
+           ⚠ The panel's OUTER edge is the page width, not the page width plus
+           its own padding. It was briefly 1392 (1280 + 2 x panelPad) to keep the
+           card grid at its old 1280, and that was wrong twice over: it left only
+           24px of gutter at a 1440 viewport where every other section has 80,
+           and it put the panel edge 112px outside the navbar directly above it.
+           Misaligned edges read as broken far louder than a slightly narrower
+           card grid does. Inset content is what a panel is FOR. */
         .cs-container {
             width: 100%;
-            max-width: (1280/16rem);
+            max-width: var(--containerWidth);
             margin: auto;
+            /* the panel itself is the shared .cs-panel class in root.less */
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -19,10 +64,23 @@
             gap: clamp(2.5rem, 5vw, 4rem);
         }
 
+        /* ── the heading's real measure ──
+           640 -> 1040. This is the cap that was actually holding the h2, not
+           the `max-width: 26ch` on .cs-title: a child cannot outgrow its
+           parent, so the title's own measure computed to 1360px and then got
+           clamped to 640 by this box and never used a pixel of it.
+
+           1040 is measured, not chosen: "Your website stops being your" sets at
+           1008px in Sora 800 at 68px, so anything under that leaves "problem"
+           stranded alone on a third line. 32px of slack on top.
+
+           Only the HEADING wants this width. .cs-text keeps its own 48ch and
+           .cs-topper is a pill, and both stay centred in the wider box because
+           this is still align-items: center. */
         .cs-content {
             text-align: center;
             width: 100%;
-            max-width: (640/16rem);
+            max-width: (1040/16rem);
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -43,15 +101,40 @@
             margin-bottom: (20/16rem);
         }
 
+        /* ── display scale ──
+           34px - 60px, up from 30px - 44px. Both reference sites run their
+           section headings at roughly twice ours, and at 44px across a 1280
+           column this read as a large paragraph rather than as the thing the
+           section is about.
+
+           ⚠ line-height 1.0, down from 1.15, is the half that does the work.
+           Sora 800 set tight reads as engineered; the same size at 1.15 just
+           reads big. Deliberately not below 1.0 - aardvarkbookclub.com runs
+           0.8, which suits a display face chosen for it and would collide "y"
+           into the line beneath here.
+
+           The tighter leading is exactly why .cs-rise carries descender
+           padding: at 1.0 the line box sits well inside the glyph box, so the
+           per-line masks would clip without it. Already handled in root.less. */
         .cs-title {
             font-family: var(--headerFont);
-            /* 30px - 44px */
-            font-size: clamp(1.875rem, 4vw, 2.75rem);
+            /* 36px - 68px. Unlike the h1 this one has room to spare: it is
+               centred in a 1216px panel and capped by its own measure, not by a
+               column it shares with a diorama. 20ch at 68px is ~816px, well
+               inside the panel. */
+            font-size: clamp(2.25rem, 5.6vw, 4.25rem);
             font-weight: 800;
-            line-height: 1.15em;
-            letter-spacing: -0.02em;
-            max-width: 18ch;
-            margin: 0 0 (16/16rem);
+            line-height: 1em;
+            letter-spacing: -0.03em;
+            /* 18ch -> 26ch. 20ch was tried and still broke "Your website stops
+               being your problem" across three lines, with "problem" alone on
+               the last one. The measure has to grow FASTER than the type: ch
+               scales with font-size, so holding the old character count while
+               the size goes up leaves the same words on more lines. */
+            max-width: 26ch;
+            /* tighter leading pulls the paragraph up under the heading, so the
+               gap below has to be given back */
+            margin: 0 0 (22/16rem);
             color: var(--inkNavy);
         }
 
@@ -75,12 +158,40 @@
 
         .cs-item {
             list-style: none;
-            /* 24px - 32px */
-            padding: clamp(1.5rem, 3vw, 2rem);
-            background-color: #fdfbf4;
-            border: 1px solid rgba(27, 42, 56, 0.08);
+            /* ⚠ LITERAL values in these two. LESS emits custom-property values
+               VERBATIM, so no (n/16rem) math is allowed in here — it would be
+               passed through unevaluated and the browser would drop it. */
+            --cardPad: clamp(1.5rem, 3vw, 2rem);
+            /* the reserved strip: the verify link's 24px target plus its gap */
+            --verifyStrip: 2.25rem;
+
+            /* ── why the bottom padding is different ──
+               Only four of the six cards carry a verify link, and while it sat
+               in normal flow those four had 36px more content than the other
+               two. Every tray is pinned to its card's floor by `margin-top:
+               auto`, so the result was six trays landing on two different
+               lines: 01 and 04 sat lower than their neighbours and the grid
+               stopped reading as a grid.
+
+               Reserving the strip on ALL six and taking the link out of flow
+               fixes it at the cause. Every card now has the same floor, the
+               trays line up again, and the two cards with nothing to prove have
+               a consistent empty margin rather than a taller specimen. */
+            padding: var(--cardPad);
+            padding-bottom: calc(var(--cardPad) + var(--verifyStrip));
+            /* the positioning origin for .cs-verify */
+            position: relative;
+            /* frosted — see --glassCard in root.less for the alpha and for why
+               this reads as almost nothing on a flat tan ground */
+            background-color: var(--glassCard);
+            .glass();
+            /* Hairline and shadow both up (8% -> 12%, 6% -> 9%) now there is a
+               deeper ground to define against. The panel does most of the
+               separating; these keep the card edge from dissolving into it at
+               the corners, where the radius leaves the least tone difference. */
+            border: 1px solid rgba(27, 42, 56, 0.12);
             border-radius: (12/16rem);
-            box-shadow: 0 (6/16rem) (18/16rem) rgba(27, 42, 56, 0.06);
+            box-shadow: 0 (6/16rem) (18/16rem) rgba(27, 42, 56, 0.09);
             display: flex;
             flex-direction: column;
             align-items: flex-start;
@@ -113,16 +224,6 @@
             gap: (10/16rem);
             /* 18px - 24px */
             margin-bottom: clamp(1.125rem, 2.2vw, 1.5rem);
-
-            /* the one spot of coral on a plain card */
-            &:before {
-                content: "";
-                width: (6/16rem);
-                height: (6/16rem);
-                background-color: var(--coral);
-                border-radius: (1/16rem);
-                flex: none;
-            }
 
             /* hairline filling whatever's left of the row */
             &:after {
@@ -161,6 +262,34 @@
            `margin-top: auto` pins it to the card's floor, which also closes the
            dead space these cards carried — the body is one short sentence and
            the tiles were running ~40% empty at desktop. */
+        /* ── the index tile ──
+           The numeral in a filled block rather than loose in the row. Borrowed
+           from kukie.io, whose every card opens with a filled tile beside a caps
+           label - it is what makes a card read as a component with a header
+           instead of as a paragraph with a number above it.
+
+           Deliberately NOT an icon. Six new glyphs would be six chances to look
+           generic, and the index is already content. Geometry over decoration,
+           which is the house line on the illustration too. */
+        .cs-index {
+            font-family: var(--monoFont);
+            font-size: (11/16rem);
+            font-weight: 600;
+            line-height: 1em;
+            letter-spacing: 0.08em;
+            color: var(--warmSand);
+            background-color: var(--inkNavy);
+            padding: (7/16rem) (8/16rem);
+            border-radius: (6/16rem);
+            flex: none;
+        }
+
+        /* ── the category ──
+           A taxonomy label, not a claim: it names the discipline the card sits
+           under, so it adds a dimension rather than restating the heading. It
+           used to sit on the card's floor over a hairline; the floor now belongs
+           to .cs-proof, and a caps label beside the tile is the stronger header
+           anyway. */
         .cs-tag {
             font-family: var(--monoFont);
             font-size: (11/16rem);
@@ -169,14 +298,668 @@
             text-transform: uppercase;
             letter-spacing: 0.12em;
             color: var(--pugetBlue);
-            opacity: 0.7;
+            opacity: 0.75;
+            flex: none;
+        }
+
+        /* ── the proof tray ──
+           A recessed well at the card's floor holding a small CSS-built
+           specimen of what the card is about. Three depths on the page now -
+           panel, raised card, recessed tray - and that stack is what stops six
+           identical rectangles reading as a placeholder grid. kukie.io does the
+           same thing by nesting a white panel inside each card and putting a
+           real fragment of the product in it.
+
+           ⚠ NO FIGURES, EVER. A tray showing "0.8s" or "99.9%" would be an
+           invented claim, and not inventing proof is the site's entire
+           argument. Everything here is geometry: proportions, positions,
+           counts. If a number ever needs to appear in one of these it has to be
+           a measured fact that the visible copy already states.
+
+           `margin-top: auto` pins the tray to the floor so all six line up
+           regardless of how long the sentence above ran. Every piece is an <i>,
+           so a new tray is markup plus one rule - no images, nothing to fetch. */
+        /* ── the specimen tray ──────────────────────────────────────────
+           A small, real interface fragment at the card's floor, in a recessed
+           well. Three depths - panel, raised card, recessed tray - is what
+           gives the grid structure instead of six flat rectangles.
+
+           ⚠ REBUILT 2026-09-20, and the rebuild is about TYPE. v1 drew each
+           specimen as grey rounded rectangles of varying width in short rows,
+           which is the visual language of a loading skeleton; three of the six
+           were near-identical to what a skeleton library emits, so the grid
+           read as "content hasn't arrived". Bars cannot be arranged their way
+           out of that. Every tray now carries real words or real numbers, and
+           where the tray was too small to render type legibly (01), the
+           specimen was changed rather than the type shrunk.
+
+           ── colour comes from FIVE tokens, set three times ──
+           The tray renders on three different grounds: the light card, the
+           navy .cs-item-featured, and every card under body.dark-mode. v1
+           handled that by listing each tray's coloured part in each override
+           block - `.cs-p-speed .cs-fill, .cs-p-serp .cs-serp-title, ...` - in
+           two places, which is a list that silently goes stale the moment a
+           seventh card is added. Custom properties inherit, so the specimens
+           read tokens and each ground re-points them once.
+
+           ⚠ --proofAccent reads --coralText on purpose, NOT --coral. That
+           token is already flipped per navy surface in root.less (both
+           `#services .cs-item-featured` and `body.dark-mode` are in its
+           override list), so the accent follows the ground for free. */
+        /* ⚠ The link's two colours live on .cs-item, not on .cs-proof. The link
+           is a SIBLING of the tray, so tokens declared on the tray would not
+           reach it - custom properties inherit down, not sideways. Declaring
+           them here means the same three ground overrides that re-point the
+           specimen also re-point its caption. */
+        .cs-item {
+            --proofLinkRest: rgba(27, 42, 56, 0.5);
+            --proofLinkHover: var(--coralText);
+        }
+
+        .cs-proof {
+            --proofInk: rgba(27, 42, 56, 0.82);
+            --proofMuted: rgba(27, 42, 56, 0.46);
+            --proofRule: rgba(27, 42, 56, 0.14);
+            --proofAccent: var(--coralText);
+            --proofSurface: rgba(255, 255, 255, 0.5);
+
             width: 100%;
             box-sizing: border-box;
-            /* 16px - 20px */
+            /* pins the tray to the floor so all six line up regardless of how
+               long the sentence above ran */
             margin-top: auto;
-            padding-top: clamp(1rem, 2vw, 1.25rem);
+            /* 74 -> 104 -> 118. Real type needs the room, and the second
+               rise paid for the detail: a filename tab, a status header, a
+               favicon-and-breadcrumb head row. Every specimen is centred, so
+               the extra height is shared rather than pooling at one edge. */
+            height: (118/16rem);
+            padding: (12/16rem);
+            background-color: rgba(27, 42, 56, 0.05);
             /* hairline as an inset shadow, never a border — house rule */
-            box-shadow: inset 0 1px 0 rgba(27, 42, 56, 0.1);
+            box-shadow: inset 0 0 0 1px rgba(27, 42, 56, 0.07);
+            border-radius: (9/16rem);
+            /* clip, never hidden — house rule, this page runs view() timelines */
+            overflow: clip;
+            display: flex;
+            /* ⚠ every specimen sets its own font. The tray inherits Inter from
+               the card, and a mono specimen that forgets to say so renders in
+               the body face and stops reading as an instrument. */
+            font-family: var(--monoFont);
+        }
+
+        /* ── 01 · Responsive — one frame, stretched through the widths ──
+           The phone grows into the tablet and the tablet into the desktop, in
+           the middle of the tray, with the device chrome cross-fading as it
+           goes and one width label at a time underneath.
+
+           ⚠ Why one frame and not three. A row of three reads as three devices
+           being COMPARED. The claim on the card is that a single layout carries
+           from 390 to 1280, which is a statement about one thing changing
+           shape, and only a morph can say it.
+
+           ⚠ Sizes are real proportions, not invented boxes: 22x40 is a phone,
+           36x46 a tablet, 64x42 a laptop. The frame keeps a 1.5px stroke at
+           every size because it is an inset box-shadow, which does not scale
+           with the box - that is the whole reason this can animate its
+           dimensions rather than its transform. See the note on the keyframes.
+
+           ⚠ The stage and the label slot are both FIXED height. The frame is
+           40px tall as a phone and 46 as a tablet, and the labels are three
+           different strings; without fixed boxes for each, the tray's contents
+           would shuffle vertically every time the frame changed shape. */
+        .cs-p-device {
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: (12/16rem);
+
+            .cs-stage {
+                height: (48/16rem);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            /* the resting state is the PHONE — it is what the card claims, and
+               it is what anyone with reduced motion sees, since the animation
+               block never matches for them */
+            .cs-scr {
+                width: (22/16rem);
+                height: (40/16rem);
+                box-shadow: inset 0 0 0 (1.5/16rem) var(--proofRule);
+                border-radius: (4/16rem);
+                display: block;
+                position: relative;
+            }
+
+            /* ── phone notch ──
+               The one coral detail in this tray, and it earns its place rather
+               than being decoration: the notch exists ONLY in the phone state
+               (it fades at 28% and does not return until 98%), so colouring it
+               marks the width the card is actually about without animating a
+               single colour. The frame stroke stays neutral at every size.
+
+               This replaced a coral FRAME on the phone. Once there was one
+               morphing frame instead of three, a coral stroke would have had to
+               fade to neutral as it stretched, which is a paint animation on
+               the one element already doing a layout animation. */
+            .cs-notch {
+                width: (8/16rem);
+                height: (2/16rem);
+                border-radius: (2/16rem);
+                background-color: var(--proofAccent);
+                position: absolute;
+                top: (3/16rem);
+                left: 50%;
+                transform: translateX(-50%);
+            }
+
+            /* home indicator — phone and tablet both have one */
+            .cs-home {
+                width: (10/16rem);
+                height: (1.5/16rem);
+                border-radius: (2/16rem);
+                background-color: var(--proofRule);
+                position: absolute;
+                bottom: (3/16rem);
+                left: 50%;
+                transform: translateX(-50%);
+            }
+
+            /* desktop browser bar — the /work/ chrome, miniaturised. Hidden at
+               rest and faded in only once the frame is laptop-shaped. */
+            .cs-bar {
+                height: (8/16rem);
+                border-bottom: (1/16rem) solid var(--proofRule);
+                display: flex;
+                align-items: center;
+                gap: (2/16rem);
+                padding-left: (3/16rem);
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                opacity: 0;
+
+                i {
+                    width: (2/16rem);
+                    height: (2/16rem);
+                    border-radius: 50%;
+                    background-color: var(--proofRule);
+                    display: block;
+                }
+            }
+
+            /* ── the width labels ──
+               All three occupy the same slot, absolutely, so swapping them
+               moves nothing. Only 390 is visible at rest. */
+            .cs-widths {
+                width: 100%;
+                height: (10/16rem);
+                position: relative;
+
+                span {
+                    font-size: (9/16rem);
+                    font-weight: 600;
+                    letter-spacing: 0.04em;
+                    line-height: 1;
+                    color: var(--proofMuted);
+                    white-space: nowrap;
+                    position: absolute;
+                    top: 0;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    opacity: 0;
+                }
+
+                /* the unit sits back so the NUMBER is what you read */
+                em {
+                    font-style: normal;
+                    font-size: (7/16rem);
+                    font-weight: 500;
+                    opacity: 0.7;
+                    margin-left: (1/16rem);
+                }
+
+                /* 390 is the one the card is about, so it carries the accent
+                   and it is the resting label. No colour is animated anywhere
+                   in this tray — the accent simply appears and leaves with its
+                   own label. */
+                .cs-w1 {
+                    color: var(--proofAccent);
+                    opacity: 1;
+                }
+            }
+        }
+
+        /* ── 02 · Performance — a real Core Web Vitals readout ──
+           ⚠ The only figures in the whole set, and neither is new: #speed
+           already prints "<1s load time" and "pagespeed 100", and says in as
+           many words that the numbers are not marketing and you can check them
+           yourself. "Good" is Google's own bucket label for an LCP under 2.5s,
+           not a grade this site is awarding itself.
+           ⚠ The cap rides at 62% of the track, which is the fill's resting
+           length. Both are the same number on purpose: if the fill's scaleX
+           moves, this has to move with it or the label detaches from the bar. */
+        .cs-p-speed {
+            flex-direction: column;
+            justify-content: center;
+            gap: (9/16rem);
+
+            .cs-metric {
+                display: flex;
+                align-items: center;
+                gap: (6/16rem);
+                font-size: (8.5/16rem);
+                font-weight: 500;
+                letter-spacing: 0.04em;
+                line-height: 1;
+                color: var(--proofMuted);
+            }
+
+            .cs-good {
+                font-style: normal;
+                font-size: (7.5/16rem);
+                font-weight: 600;
+                letter-spacing: 0.1em;
+                text-transform: uppercase;
+                padding: (2.5/16rem) (5/16rem);
+                border-radius: (3/16rem);
+                background-color: var(--proofAccent);
+                color: var(--bodyTextColorWhite);
+            }
+
+            .cs-track {
+                width: 100%;
+                height: (7/16rem);
+                border-radius: (4/16rem);
+                background-color: var(--proofRule);
+                display: block;
+                overflow: clip;
+            }
+
+            .cs-fill {
+                /* ⚠ 100% + scaleX, never an animated width — see the live-tray
+                   block at the foot of this file. 0.62 is the resting length. */
+                width: 100%;
+                height: 100%;
+                display: block;
+                border-radius: (4/16rem);
+                background-color: var(--proofAccent);
+                transform: scaleX(0.62);
+                transform-origin: left center;
+            }
+
+            /* ⚠ The value sits in the readout row, right-aligned, NOT floating
+               at the end of the bar. Riding the bar was tried and abandoned: it
+               needs an opaque plate behind it to stay legible where it crosses
+               the fill, and that plate has to match the tray's own composited
+               background, which differs on all four grounds this tray renders
+               on (light card, navy featured, dark card, and the featured card
+               in dark mode, which is coral). Name left, value right is the
+               conventional instrument layout anyway. */
+            .cs-cap {
+                font-style: normal;
+                font-size: (9/16rem);
+                font-weight: 600;
+                line-height: 1;
+                color: var(--proofAccent);
+                margin-left: auto;
+            }
+
+            .cs-ticks {
+                display: flex;
+                justify-content: space-between;
+                font-size: (8/16rem);
+                font-weight: 500;
+                line-height: 1;
+                color: var(--proofMuted);
+            }
+        }
+
+        /* ── 03 · Search — the site's own listing, as one is actually laid out ──
+           Favicon, site name, breadcrumb url, title, description. Deliberately
+           NOT a pastiche of Google's chrome: no logo, no borrowed blues, no
+           result count. Everything in it is this site's own true text. */
+        .cs-p-serp {
+            flex-direction: column;
+            justify-content: center;
+            gap: (5/16rem);
+            overflow: clip;
+
+            .cs-serp-head {
+                display: flex;
+                align-items: center;
+                gap: (6/16rem);
+            }
+
+            /* the favicon, standing in as the brand tile the real one is */
+            .cs-fav {
+                width: (13/16rem);
+                height: (13/16rem);
+                border-radius: 50%;
+                background-color: var(--proofAccent);
+                flex: none;
+            }
+
+            .cs-serp-who {
+                display: flex;
+                flex-direction: column;
+                gap: (1.5/16rem);
+                min-width: 0;
+            }
+
+            .cs-serp-site {
+                font-family: var(--bodyFont);
+                font-size: (8/16rem);
+                font-weight: 600;
+                line-height: 1.2;
+                color: var(--proofInk);
+            }
+
+            .cs-serp-url {
+                font-size: (7.5/16rem);
+                line-height: 1.2;
+                color: var(--proofMuted);
+            }
+
+            .cs-serp-title {
+                font-family: var(--bodyFont);
+                font-size: (11/16rem);
+                font-weight: 600;
+                line-height: 1.25;
+                color: var(--proofAccent);
+                margin-top: (2/16rem);
+            }
+
+            .cs-serp-snip {
+                font-family: var(--bodyFont);
+                font-size: (8.5/16rem);
+                line-height: 1.4;
+                color: var(--proofMuted);
+            }
+        }
+
+        /* ── 04 · Support — the request, delivered, then published ──
+           ⚠ No turnaround figure anywhere, and the delivery ticks are the
+           reason to be careful here: they are the messaging-app convention for
+           "this arrived", which is true, and NOT for "this was fast". Adding a
+           timestamp beside them would quietly commit the business to a
+           response time that /free-redesign/ deliberately does not promise. */
+        .cs-p-flow {
+            flex-direction: column;
+            justify-content: center;
+            gap: (10/16rem);
+
+            .cs-msg {
+                font-family: var(--bodyFont);
+                font-size: (9/16rem);
+                line-height: 1.35;
+                color: var(--proofInk);
+                background-color: var(--proofSurface);
+                box-shadow: inset 0 0 0 1px var(--proofRule);
+                /* the one square corner is what makes it a message and not a
+                   box — it is the tail, without the cost of drawing one */
+                border-radius: (9/16rem) (9/16rem) (9/16rem) (2/16rem);
+                padding: (6/16rem) (9/16rem);
+                align-self: flex-start;
+                max-width: 94%;
+            }
+
+            .cs-sent {
+                display: flex;
+                align-items: center;
+                gap: (6/16rem);
+                font-size: (8/16rem);
+                font-weight: 600;
+                letter-spacing: 0.12em;
+                text-transform: uppercase;
+                line-height: 1;
+                color: var(--proofMuted);
+                align-self: flex-end;
+            }
+
+            /* the double check — two strokes offset, drawn not typed */
+            .cs-dbl {
+                width: (12/16rem);
+                height: (7/16rem);
+                position: relative;
+                flex: none;
+
+                &:before,
+                &:after {
+                    content: "";
+                    width: (3/16rem);
+                    height: (6/16rem);
+                    border-right: (1.5/16rem) solid var(--proofMuted);
+                    border-bottom: (1.5/16rem) solid var(--proofMuted);
+                    position: absolute;
+                    top: 0;
+                    transform: rotate(45deg);
+                }
+                &:before { left: 0; }
+                &:after { left: (4/16rem); }
+            }
+
+            .cs-live {
+                display: flex;
+                align-items: center;
+                gap: (4/16rem);
+                padding: (3/16rem) (7/16rem) (3/16rem) (6/16rem);
+                border-radius: (20/16rem);
+                background-color: var(--proofAccent);
+                color: var(--bodyTextColorWhite);
+                letter-spacing: 0.1em;
+
+                i {
+                    width: (4/16rem);
+                    height: (4/16rem);
+                    border-radius: 50%;
+                    background-color: var(--bodyTextColorWhite);
+                    display: block;
+                }
+            }
+        }
+
+        /* ── 05 · Infrastructure — what the fee actually covers ──
+           ⚠ Bare nouns, no quantities, and the rows are IDENTICAL. The tray
+           this replaced was a run of monitoring ticks and carried a warning
+           that is still live: on a card headed "Hosting and backups", anything
+           that varies between rows reads as an outage, and coral is the alarm
+           colour everywhere else on the web. Three checks that are always
+           present and always the same cannot be read that way, and none of
+           them claims a percentage or a frequency. */
+        .cs-p-status {
+            flex-direction: column;
+            justify-content: center;
+            gap: (6/16rem);
+
+            .cs-status-head {
+                font-size: (7.5/16rem);
+                font-weight: 600;
+                letter-spacing: 0.16em;
+                text-transform: uppercase;
+                line-height: 1;
+                color: var(--proofMuted);
+                padding-bottom: (6/16rem);
+                border-bottom: 1px solid var(--proofRule);
+            }
+
+            .cs-row {
+                display: flex;
+                align-items: center;
+                gap: (8/16rem);
+                font-size: (9/16rem);
+                font-weight: 500;
+                letter-spacing: 0.02em;
+                line-height: 1;
+                color: var(--proofInk);
+            }
+
+            /* a drawn check, not a glyph: a font's tick varies wildly by
+               fallback and would be the one place on the page using a system
+               face for something that reads as an icon */
+            .cs-check {
+                width: (11/16rem);
+                height: (11/16rem);
+                border-radius: 50%;
+                background-color: var(--proofAccent);
+                flex: none;
+                position: relative;
+
+                &:after {
+                    content: "";
+                    width: (2.5/16rem);
+                    height: (5/16rem);
+                    border-right: (1.5/16rem) solid var(--bodyTextColorWhite);
+                    border-bottom: (1.5/16rem) solid var(--bodyTextColorWhite);
+                    position: absolute;
+                    top: (2/16rem);
+                    left: (4/16rem);
+                    transform: rotate(45deg);
+                }
+            }
+        }
+
+        /* ── 06 · Build — the site's own markup, in an editor ──
+           Filename tab, line-number gutter, three tones of syntax. This really
+           is what #hero is; the repo is public and footer-linked, so it can be
+           checked, which is the same argument #speed makes about its numbers.
+           ⚠ The gutter is an <i> inside each line rather than a column beside
+           them, so a clip-path wipe reveals the number WITH its line instead of
+           uncovering a stack of orphaned digits. */
+        .cs-p-code {
+            flex-direction: column;
+            justify-content: center;
+            gap: (6/16rem);
+
+            .cs-file {
+                display: flex;
+                align-items: center;
+                gap: (5/16rem);
+                font-size: (7.5/16rem);
+                font-weight: 600;
+                letter-spacing: 0.08em;
+                line-height: 1;
+                color: var(--proofMuted);
+                padding-bottom: (6/16rem);
+                border-bottom: 1px solid var(--proofRule);
+
+                i {
+                    width: (5/16rem);
+                    height: (5/16rem);
+                    border-radius: (1/16rem);
+                    background-color: var(--proofAccent);
+                    display: block;
+                }
+            }
+
+            .cs-code-l {
+                display: flex;
+                align-items: baseline;
+                gap: (7/16rem);
+                font-size: (9/16rem);
+                line-height: 1.2;
+                white-space: nowrap;
+                color: var(--proofInk);
+            }
+
+            .cs-ln {
+                font-style: normal;
+                font-size: (7.5/16rem);
+                color: var(--proofMuted);
+                opacity: 0.7;
+                width: (5/16rem);
+                text-align: right;
+                flex: none;
+            }
+
+            .cs-in { padding-left: (12/16rem); }
+
+            i {
+                font-style: normal;
+            }
+            /* tag · attribute · punctuation · value */
+            .cs-t { color: var(--proofAccent); }
+            .cs-a { color: var(--proofInk); }
+            .cs-p { color: var(--proofMuted); }
+            .cs-v { color: var(--proofMuted); }
+        }
+
+        /* ── the verify link ─────────────────────────────────────────────
+           Four of the six cards carry one. See the note above the card list in
+           index.html for why 01 and 04 deliberately do not, and why that is the
+           credible arrangement rather than an unfinished one.
+
+           Sits BELOW the tray, as a caption to it: the specimen makes the claim
+           and this is where it is checked. Two placements were tried and
+           rejected first:
+
+             · INSIDE the tray. .cs-proof is aria-hidden, so a link in there is
+               invisible to a screen reader while staying in the tab order,
+               which is the worst of both.
+             · In the card's header row, at the end of the hairline. It is the
+               tidiest idea and it does not fit: "INFRASTRUCTURE" plus a label
+               plus the rule overruns a 216px inner width at the 3-column
+               breakpoint, and shortening the tags to make room would cost more
+               than the placement is worth.
+
+           ⚠ The 24px min-height is WCAG 2.5.8, not padding taste. House rule
+           from CLAUDE.md: the "inline" exemption covers a link inside a
+           sentence, NOT a standalone one like this. The negative margin gives
+           the target its height back without adding a visible gap. */
+        .cs-verify {
+            font-family: var(--monoFont);
+            font-size: (9.5/16rem);
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            text-decoration: none;
+            line-height: 1;
+            color: var(--proofLinkRest);
+            /* out of flow, in the strip .cs-item reserves for it — see the note
+               on that padding for why it cannot sit in the normal flow */
+            position: absolute;
+            left: var(--cardPad);
+            bottom: var(--cardPad);
+            margin: 0;
+            /* WCAG 2.5.8 target size — see note above */
+            min-height: (24/16rem);
+            display: inline-flex;
+            align-items: center;
+            gap: (6/16rem);
+            transition: color 0.25s;
+
+            /* ── the outbound mark ──
+               components/icon-external.html. Its own comment carries why this
+               is an SVG rather than a border trick or a typed ↗; the short
+               version is that a CSS corner has no shaft, so it reads as a
+               bracket or as "›", and ↗ is not reliably in Plex Mono. */
+            .cs-ext {
+                width: (9/16rem);
+                height: (9/16rem);
+                flex: none;
+                display: block;
+                transition: transform 0.25s;
+            }
+
+            &:hover {
+                color: var(--proofLinkHover);
+
+                /* leaves along its own diagonal, which is the whole reason the
+                   mark points that way */
+                .cs-ext {
+                    transform: translate((2/16rem), (-2/16rem));
+                }
+            }
+
+            /* house rule: the browser default is 1px of blue and vanishes on
+               both the tan card and the navy one */
+            &:focus-visible {
+                outline: 2px solid var(--proofLinkHover);
+                outline-offset: 3px;
+                border-radius: (2/16rem);
+            }
         }
 
         /* the standout card — inverted */
@@ -200,7 +983,35 @@
 
             .cs-tag {
                 color: var(--rainGray);
-                box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16);
+            }
+
+            /* the tile inverts: navy-on-navy would vanish */
+            .cs-index {
+                background-color: var(--coral);
+                color: #fff;
+            }
+
+            /* ── the tray on navy ──
+               Five token values and nothing else. v1 listed each specimen's
+               coloured part by name here (`.cs-fill, .cs-node-live,
+               .cs-serp-title`), which is a list that goes stale the moment a
+               tray changes - and it had already gone stale, since .cs-indent
+               was in the dark-mode copy of the same list but not this one.
+
+               --proofAccent is NOT set: it reads --coralText, and
+               `#services .cs-item-featured` is already in that token's
+               navy-surface override list in root.less. */
+            --proofLinkRest: rgba(255, 255, 255, 0.6);
+            --proofLinkHover: #fff;
+
+            .cs-proof {
+                --proofInk: rgba(255, 255, 255, 0.88);
+                --proofMuted: rgba(255, 255, 255, 0.52);
+                --proofRule: rgba(255, 255, 255, 0.2);
+                --proofSurface: rgba(255, 255, 255, 0.07);
+
+                background-color: rgba(0, 0, 0, 0.22);
+                border-color: rgba(255, 255, 255, 0.1);
             }
         }
     }
@@ -263,9 +1074,38 @@
             }
 
             .cs-item {
-                background-color: var(--medium);
+                /* same token as light mode — it flips with the theme; the rule
+                   stays only because its neighbours in this block do */
+                background-color: var(--glassCard);
                 border-color: rgba(255, 255, 255, 0.08);
                 box-shadow: none;
+            }
+
+            /* Navy on a navy card vanishes, so the tile lifts to the raised
+               surface above it and the numeral goes light. */
+            .cs-index {
+                background-color: var(--accent);
+                color: var(--bodyTextColorWhite);
+            }
+
+            /* The tray has to RECESS, and a 5% navy wash over --medium does
+               nothing at all. Black at 22% reads as a well on every navy
+               surface these cards use. */
+            .cs-item {
+                --proofLinkRest: rgba(255, 255, 255, 0.55);
+                --proofLinkHover: var(--coralText);
+            }
+
+            .cs-proof {
+                /* same five values as the navy featured card above — every
+                   card is on navy in this theme, so they are one ground */
+                --proofInk: rgba(255, 255, 255, 0.88);
+                --proofMuted: rgba(255, 255, 255, 0.52);
+                --proofRule: rgba(255, 255, 255, 0.2);
+                --proofSurface: rgba(255, 255, 255, 0.07);
+
+                background-color: rgba(0, 0, 0, 0.22);
+                box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.07);
             }
 
             .cs-h3 {
@@ -337,9 +1177,14 @@
            read as raised. */
         .cs-container {
             width: 100%;
-            max-width: (1280/16rem);
+            max-width: var(--containerWidth);
             margin: auto;
             box-sizing: border-box;
+            /* ⚠ This section invented the panel before there was a token for it.
+               These are the same three numbers /work/ uses, copied. The shared
+               .cs-panel class in root.less now carries them (plus a glow) and
+               this could adopt it - but .cs-panel is opt-in per section, and
+               only #services has opted in so far. */
             background-color: rgba(27, 42, 56, 0.05);
             border-radius: clamp(1.25rem, 2.5vw, 2rem);
             /* 24px - 64px */
@@ -399,42 +1244,77 @@
             }
         }
 
-        /* ── the two proof stats ── */
-        .cs-ul {
+        /* ── the spec strip ──
+           Replaced two figures that were both already printed elsewhere on this
+           page (see the note in index.html). The <dl> idiom is the one /work/
+           and /about/#glance use for dry facts: mono term, body value, hairline
+           between rows.
+
+           ⚠ ONE grid with SUBGRID rows, not a grid per row. The terms have to
+           share a column width or the values staircase — which is exactly what
+           the first attempt did: each row sized its own `max-content` column,
+           so "Based", "Background" and "Clients" are three different widths and
+           the three values each started at a different x.
+
+           The column lives on .cs-spec and the rows adopt it. `max-content`
+           still sizes it to the longest term, so adding a fourth row cannot
+           break the alignment the way a hardcoded width would.
+
+           The rows stay real boxes rather than `display: contents`, because
+           each one carries its own hairline and contents would throw that box
+           away. The plain two-column declaration below is the fallback: a
+           browser without subgrid drops the second line and gets the staircase,
+           which is untidy but readable. */
+        .cs-spec {
             width: 100%;
             /* 28px - 36px */
             margin: clamp(1.75rem, 3.5vw, 2.25rem) 0 0;
             padding: clamp(1.75rem, 3.5vw, 2.25rem) 0 0;
             border-top: 1px solid rgba(27, 42, 56, 0.12);
-            display: flex;
-            flex-wrap: wrap;
-            /* 32px - 56px */
-            gap: clamp(2rem, 5vw, 3.5rem);
+            display: grid;
+            grid-template-columns: max-content 1fr;
+            gap: (14/16rem);
         }
 
-        .cs-li {
-            list-style: none;
-            display: flex;
-            flex-direction: column;
-            gap: (6/16rem);
-        }
+        .cs-spec-row {
+            display: grid;
+            grid-column: 1 / -1;
+            grid-template-columns: max-content 1fr;
+            grid-template-columns: subgrid;
+            /* 16px - 28px */
+            gap: clamp(1rem, 2.5vw, 1.75rem);
+            align-items: baseline;
+            padding-bottom: (14/16rem);
+            /* hairline as an inset shadow, never a border — house rule */
+            box-shadow: inset 0 -1px 0 rgba(27, 42, 56, 0.08);
 
-        .cs-stat-number {
-            font-family: var(--headerFont);
-            /* 28px - 36px */
-            font-size: clamp(1.75rem, 3vw, 2.25rem);
-            font-weight: 800;
-            line-height: 1em;
-            letter-spacing: -0.02em;
-            color: var(--inkNavy);
-        }
+            /* the last row closes the list; a rule under it would read as the
+               start of something that never arrives */
+            &:last-child {
+                padding-bottom: 0;
+                box-shadow: none;
+            }
 
-        .cs-stat-label {
-            font-family: var(--bodyFont);
-            font-size: (13/16rem);
-            font-weight: 500;
-            line-height: 1.35em;
-            color: var(--pugetBlue);
+            dt {
+                font-family: var(--monoFont);
+                font-size: (11/16rem);
+                font-weight: 600;
+                line-height: 1.4em;
+                letter-spacing: 0.12em;
+                text-transform: uppercase;
+                color: var(--pugetBlue);
+                opacity: 0.75;
+                margin: 0;
+            }
+
+            dd {
+                font-family: var(--bodyFont);
+                font-size: (15/16rem);
+                font-weight: 500;
+                line-height: 1.4em;
+                color: var(--inkNavy);
+                margin: 0;
+            }
         }
 
         /* ── Single framed portrait ── */
@@ -448,17 +1328,39 @@
             width: 100%;
             box-sizing: border-box;
             padding: (12/16rem);
-            background-color: #fdfbf4;
+            /* frosted — see --glassCard in root.less for the alpha and for why
+               this reads as almost nothing on a flat tan ground */
+            background-color: var(--glassCard);
+            .glass();
             border: 1px solid rgba(27, 42, 56, 0.08);
             border-radius: (10/16rem);
             box-shadow: 0 (18/16rem) (40/16rem) rgba(27, 42, 56, 0.16);
             display: flex;
             flex-direction: column;
             gap: (10/16rem);
-            /* a slight tilt keeps the pinned-photo character of the old stack */
-            transform: rotate(-2deg);
+            /* ⚠ The -2deg tilt is gone, deliberately. It was there to keep "the
+               pinned-photo character of the old stack", and it fought the
+               caption: a tilt says physical snapshot, a mono filename says file
+               in a repo, and the card was making both arguments at once. The
+               caption won, because it is the one that matches the rest of the
+               page - see the spec strip below. A tilted spec panel reads as a
+               mistake rather than a choice. */
         }
 
+        /* ── the reveal ──
+           The type in this section has always risen and the portrait has always
+           just been there, which is most of why the column read as arriving and
+           the picture did not.
+
+           ⚠ clip-path on the IMAGE, not a curtain over it. A curtain has to be
+           painted the colour of whatever is behind it, and behind it here is a
+           translucent --glassCard sitting on a tinted panel on the sand - three
+           layers, two of which change in dark mode. There is no one colour that
+           is correct, so there is nothing to paint the curtain. Clipping the
+           image needs no colour at all.
+
+           ⚠ `round` in the inset, or the wipe squares off the 6px radius the
+           image carries and leaves it squared at the end. */
         .cs-photo {
             display: block;
 
@@ -475,12 +1377,82 @@
             }
         }
 
+        /* ── the byline ──
+           Name and role, above the file strip and separated from it, so the
+           card reads as a person first and an asset second. It is the same
+           two-tier shape the spec rows use: value in the body face, qualifier
+           in mono. */
+        .cs-byline {
+            display: flex;
+            flex-direction: column;
+            gap: (3/16rem);
+            padding-top: (4/16rem);
+        }
+
+        .cs-byline-name {
+            font-family: var(--headerFont);
+            font-size: (17/16rem);
+            font-weight: 700;
+            line-height: 1.2em;
+            letter-spacing: -0.01em;
+            color: var(--inkNavy);
+        }
+
+        .cs-byline-role {
+            font-family: var(--monoFont);
+            font-size: (10.5/16rem);
+            font-weight: 500;
+            line-height: 1.2em;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--coralText);
+        }
+
+        /* ── the file strip ──
+           Name on the left, measured figures on the right, hairline above. The
+           numbers are real and they are in index.html with a warning attached;
+           they are the same argument #speed makes about its own scores, applied
+           to the one image on this page. */
+        /* Gated on .is-in, the class text-rise.js adds when .cs-fade-in first
+           enters the viewport. If that script never runs the photo is simply
+           there, unclipped — withholding an animation is a safe JS dependency,
+           withholding content is not. */
+        .cs-image-group.is-in .cs-photo img {
+            animation: about-photo 0.9s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+            /* a beat behind the frame's own fade, so it uncovers INSIDE a card
+               that has already landed */
+            animation-delay: 0.18s;
+        }
+
         .cs-filename {
             font-family: var(--monoFont);
-            font-size: (11/16rem);
+            font-size: (10.5/16rem);
             line-height: 1.2em;
             color: var(--pugetBlue);
-            padding-left: (2/16rem);
+            padding-top: (10/16rem);
+            /* hairline as an inset shadow, never a border — house rule */
+            box-shadow: inset 0 1px 0 rgba(27, 42, 56, 0.1);
+            display: flex;
+            align-items: baseline;
+            /* ⚠ wrap, not nowrap. The card is 340px at most and narrows with
+               the column; at the small end the two halves would collide and the
+               figures would be clipped by the card's own padding. Wrapping puts
+               them on a second line instead, which is why the strip has no
+               fixed height. */
+            flex-wrap: wrap;
+            gap: (4/16rem) (10/16rem);
+        }
+
+        .cs-file-name {
+            font-weight: 600;
+            color: var(--inkNavy);
+        }
+
+        .cs-file-meta {
+            /* pushed to the far edge, so the strip reads as a row of fields
+               rather than as a sentence */
+            margin-left: auto;
+            opacity: 0.8;
         }
     }
 }
@@ -489,11 +1461,27 @@
 /* the teaser's route to /about/ — mirrors #hero .cs-button-transparent */
 @media only screen and (min-width: 0rem) {
     #about {
-        /* A bordered pill, not a bare text link. As plain text with an arrow
-           it had no affordance and read as a stray sentence; this is the same
-           secondary-button idiom as the nav's Free Redesign item.
+        /* ── the route to /about/ ──
+           A bordered pill. As plain text with an arrow it had no affordance and
+           read as a stray sentence, and a bare-text version was tried again on
+           2026-09-22 and reverted the same day — the pill is what gives this a
+           shape to be at the foot of a column of prose.
+
+           ⚠ The HOVER is the part that changed, and the fill is what went. It
+           used to flood with --inkNavy and flip the label to warm sand, which
+           made it the only hover on this page that resolves in navy: the hero's
+           primary button, the hero's secondary link, the nav links, the
+           travelling waterline and the four verify links in #services all end
+           in coral. The pill stays an outline at every state and the coral
+           arrives in the hairline and the label instead.
+
+           ⚠ NOT a coral FILL. That is the nav's primary-CTA treatment, and
+           /about/ is the lowest-priority destination in this section — filling
+           it would put this at the same weight as "Get started" and out-shout
+           "Claim a free redesign" further down the page.
+
            Hairline via inset shadow, never a border — house rule, and it also
-           keeps the pill's height identical on hover when it fills. */
+           keeps the pill's height identical across states. */
         .cs-link {
             font-family: var(--bodyFont);
             font-size: (15/16rem);
@@ -506,27 +1494,42 @@
             padding: 0 (24/16rem);
             border-radius: (40/16rem);
             box-shadow: inset 0 0 0 1px rgba(27, 42, 56, 0.25);
-            /* 24px - 32px below the copy; the stats' own divider provides the
-               separation underneath */
+            /* 24px - 32px below the copy; the spec list's own divider provides
+               the separation underneath */
             margin-top: clamp(1.5rem, 2.6vw, 2rem);
             display: inline-flex;
             align-items: center;
             gap: (10/16rem);
-            transition: color 0.25s, background-color 0.25s, box-shadow 0.25s;
+            transition: color 0.25s, box-shadow 0.25s;
 
             .cs-arrow {
                 display: inline-block;
                 transition: transform 0.25s;
             }
 
-            &:hover {
-                color: var(--warmSand);
-                background-color: var(--inkNavy);
-                box-shadow: inset 0 0 0 1px var(--inkNavy);
+            /* focus gets the same treatment as hover — a keyboard user should
+               see the affordance, not only the ring */
+            &:hover,
+            &:focus-visible {
+                color: var(--coralText);
+                box-shadow: inset 0 0 0 1px var(--coralText);
 
                 .cs-arrow {
                     transform: translateX(4px);
                 }
+            }
+
+            /* house rule: the browser default is 1px of blue and nearly
+               invisible on warm sand */
+            &:focus-visible {
+                outline: 2px solid var(--coralAccent);
+                outline-offset: 3px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .cs-link .cs-arrow {
+                transition: none;
             }
         }
     }
@@ -580,7 +1583,7 @@
                difference, and the content cap below was raised to close the
                rest. `gap` is a real gap, so space-between can only spread what
                is left AFTER it; the columns fill, so nothing spreads. */
-            max-width: (1280/16rem);
+            max-width: var(--containerWidth);
         }
 
         .cs-image-group {
@@ -620,25 +1623,726 @@
                 }
             }
 
+            /* ⚠ THIS BLOCK WENT STALE WHEN THE SECTION WAS REBUILT, and the
+               failure is the one dark mode always has: nothing errors, the
+               words are simply still ink-navy on a navy panel.
+
+               It used to list `.cs-stat-number` / `.cs-stat-label` / `.cs-ul`,
+               from the version that closed with two stat figures. Those were
+               replaced by the byline, the file strip and the spec list, and
+               none of the three arrived here - so five colours and three
+               hairlines kept their light-mode values. The old selectors matched
+               nothing and are gone.
+
+               ⚠ A NEW ELEMENT IN #about NEEDS A LINE HERE. The tiers below are
+               the whole contract: value-weight type goes white, supporting and
+               mono type goes --rainGray, and every hairline is ink at low alpha
+               in light mode and therefore invisible until it is restated. */
+
+            /* the value tier: headline, the name under the portrait, the
+               filename, and each spec row's answer */
             .cs-title,
-            .cs-stat-number {
+            .cs-byline-name,
+            .cs-file-name,
+            .cs-spec-row dd {
                 color: var(--bodyTextColorWhite);
             }
 
+            /* the supporting tier. --rainGray on .cs-filename rather than on
+               .cs-file-meta, because the meta half inherits it and only sets
+               its own opacity. */
             .cs-text,
-            .cs-stat-label {
+            .cs-filename,
+            .cs-spec-row dt {
                 color: var(--rainGray);
             }
 
-            .cs-ul {
+            /* ── the hairlines ──
+               All three are `rgba(27, 42, 56, …)` in light mode - ink at 8-12%,
+               which is nothing at all on navy. White at a matched alpha is the
+               same rule the panel and the card above already use. */
+            .cs-spec {
                 border-top-color: rgba(255, 255, 255, 0.15);
             }
 
+            /* `:not(:last-child)` rather than restating the last row's
+               `box-shadow: none`: this selector would otherwise outrank it
+               (one more type selector, everything else tied) and draw a rule
+               under the final row, which reads as a list that got cut off. */
+            .cs-spec-row:not(:last-child) {
+                box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.1);
+            }
+
+            .cs-filename {
+                box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            }
+
             .cs-card {
-                background-color: var(--medium);
+                /* same token as light mode — it flips with the theme; the rule
+                   stays only because its neighbours in this block do */
+                background-color: var(--glassCard);
                 border-color: rgba(255, 255, 255, 0.08);
             }
         }
+    }
+}
+
+/*-- -------------------------- -->
+<---        Wave Divider        -->
+<--- -------------------------- -*/
+
+/* A BREAKING WAVE between the tan sections and the navy one, at the top and
+   bottom of #speed. Markup: components/wave-divider.html. Colour: --waveFoam /
+   --waveMid / --waveDeep in root.less.
+
+   #speed is the ocean. Three layers of water — foam, shallows, deep — surge up
+   out of it, spread apart into a layered wave face at their peak, and collapse
+   into a single flat plane of the destination colour.
+
+   THE COMPONENT HAS NO RESTING APPEARANCE, and that is the whole design. Before
+   its pass the divider is pure origin colour and cannot be told apart from the
+   section above; after it, the deep band covers edge to edge and it cannot be
+   told apart from the section below. The wave exists only in between. Earlier
+   versions kept bands permanently visible and moved water between them; every
+   one read as stripes at rest, correctly, because at rest that is what it was.
+
+   THE ORDER IS THE EFFECT, AND IT IS DELIBERATELY NOT SYMMETRIC:
+
+     BUILD     foam leads, then the shallows, then the deep water. A wave's
+               crest reaches you before its body does.
+     PEAK      all three sit at DIFFERENT heights (--peakFoam/Mid/Deep), which
+               is what makes you read three stacked bands rather than one shape
+               with a wavy edge. Both dividers reach the identical peak.
+     COLLAPSE  the DEEP water goes first and the foam lingers longest. Deep
+               settles to exactly fill the divider while foam is still up in the
+               section above, so for about a sixth of the pass a thin foam crest
+               rides on a finished navy line and then sinks into it. That is
+               water draining off a beach, and it is the payoff for letting the
+               crests break past the divider's edge at all.
+
+   All of that asymmetry is bought with ONE mechanism and no extra keyframes:
+   the bands get NESTED animation ranges, widest for foam. A range that starts
+   earlier and ends later IS "leads the build, lags the collapse".
+
+   Lives here rather than root.less because it is used twice, below the fold, on
+   the home page — root.less loads on all 17 URLs. Promote it when an interior
+   page takes it. */
+
+/* Mobile - 360px */
+@media only screen and (min-width: 0rem) {
+    .cs-wave {
+        /* 32px - 38px on phones, 56px - 64px from 64rem up. The crest and every
+           peak below are PROPORTIONS of this, so a shorter divider gets a
+           shallower wave rather than a cropped one, and this is the only number
+           that has to change to resize the whole component.
+
+           ⚠ IT IS NOT A FREE NUMBER, and it is the FLIPPED divider that sets
+           the ceiling. The divider costs zero page height (see the negative
+           margin below), which it pays for by living inside the next section's
+           top padding. On the arrival divider the break then bleeds the other
+           way, into the previous section, and the two never compete. On the
+           departure divider the flip puts both on the same side, so the strip
+           AND the break come out of one budget.
+
+           Measured, every boundary on this page has exactly --sectionPadding of
+           clear space either side: 100px from 64rem, 60px on phones, with the
+           next section's first ink (#pricing's topper pill) sitting right on
+           that edge. The wave's true maximum excursion is
+           |--peakFoam| + --crestH = 0.74 x --waveH, so the whole face is
+           1.74 x --waveH and THAT is what has to fit. At 52px that is 90px,
+           clearing the pill by 10px. Raise this without redoing that arithmetic
+           and the foam lands on the word PRICING. */
+        --waveH: clamp(2.5rem, 5vh, 3rem);
+        --crestH: calc(var(--waveH) * 0.44);
+
+        /* Where each band's top edge sits AT THE PEAK, as a proportion of the
+           divider. Negative is above the divider's own top edge, i.e. broken
+           out into the section above. The three gaps between these are the
+           three visible bands of the wave face, so they are the numbers to
+           touch if it reads thin or crowded — NOT --waveH.
+
+           Two of the three are negative on purpose. The wave face is deliberately
+           taller than the divider that carries it — at full size it stands 90px
+           against a 52px strip — and everything above 0 here is bleed into the
+           neighbouring section rather than page. That is the whole trick: the
+           strip is sized by what the page can spare, the WAVE is bigger than it,
+           and the face is about 1.7x the strip. It also buys the drain a second
+           stage, since a band has to peak above 0 to still be visible once the
+           deep water has settled. */
+        --peakFoam: calc(var(--waveH) * -0.38);
+        --peakMid: calc(var(--waveH) * -0.1);
+        --peakDeep: calc(var(--waveH) * 0.26);
+        /* ⚠ True max excursion is |--peakFoam| + --crestH, 0.82 x --waveH, and
+           --reach below must stay above it or the clip shears the crests flat.
+           Trading between these two keeps the face the same size: this pair was
+           once 0.5 + 0.32 and is now 0.38 + 0.44, a taller wave on a shorter
+           throw. The amplitude in the generator is NOT the third option — see
+           the warning there. */
+
+        /* far enough down that both a body AND the crest riding above it are
+           clear of the frame, which is what makes the start state pure colour */
+        --park: calc(var(--waveH) + var(--crestH));
+
+        /* The clip allowance for the break: the foam's peak plus the crest
+           standing on top of it (0.5 + 0.24), rounded up so the clip is never
+           the thing that cuts a crest. Free in page terms — bleed is not
+           layout — but see the budget note on --waveH for where it lands. */
+        --reach: calc(var(--waveH) * 0.88);
+
+        /* the origin colour. Downward that is the tan above; flipped it is the
+           tan below, revealed as the water withdraws. Same value both ways,
+           which is why the reverse divider needs no palette of its own. */
+        background-color: var(--warmSand);
+        position: relative;
+        /* paints over BOTH neighbours, which the break past the edge needs: the
+           section above would otherwise win on nothing but source order, and
+           #pricing below would cover the flipped one with its own background. */
+        z-index: 2;
+        /* decorative and it overlaps its neighbours' padding — it must never
+           eat a click meant for either of them */
+        pointer-events: none;
+        height: var(--waveH);
+
+        /* clip-path, NOT `overflow`, and this is the load-bearing choice in the
+           whole component. It has to clip three edges while letting the crest
+           break past the fourth, which `overflow` cannot express at all — and
+           `overflow: hidden` would additionally make this a scroll container,
+           which the bands' view() timeline then resolves against instead of the
+           page. Same trap as the ferry and the orca pod. clip-path creates no
+           scroller, so it is free. */
+        clip-path: inset(calc(var(--reach) * -1) 0 0 0);
+
+        /* ⚠ THE DIVIDER COSTS ZERO PAGE HEIGHT, and this one line is why.
+           In normal flow it would ADD --waveH to the page twice over, and all of
+           it would be extra navy — the boundary would stay put and #speed would
+           simply get taller. A transition between two sections has to be paid
+           for out of space that already exists.
+
+           So it is laid out, then pulled back by exactly its own height, and it
+           overlays the top of the section that FOLLOWS it. That section is the
+           one whose colour the divider finishes as (navy below the top divider,
+           tan below the flipped one), so once the wave has passed, the overlay
+           is that colour painted on itself and the page is pixel-identical to
+           having no divider at all. Both dividers want this, so .cs-wave-up
+           does not override it.
+
+           The consequence is the budget noted on --waveH: the strip is sitting
+           in the next section's top padding, so --waveH has to fit there. The
+           break is measured the other way, into the previous section's bottom
+           padding, and the two never compete. */
+        margin-bottom: calc(var(--waveH) * -1);
+
+        .cs-wave-band {
+            position: absolute;
+            /* Every band is stacked in the same place and put where it belongs
+               by transform alone. There is no per-band `top` — a wave has one
+               waterline, and four hard-coded offsets is how the striped
+               versions happened. The 1px is upward overlap, so a band settling
+               on the divider's top edge at a fractional layout height cannot
+               leave a hairline of the old colour behind it. */
+            top: -1px;
+            left: 0;
+            right: 0;
+            /* tall enough that a band sitting at its LOWEST peak (--peakDeep)
+               still reaches the bottom of the frame */
+            height: calc(var(--waveH) + var(--crestH) + 2px);
+            background-color: currentColor;
+        }
+
+        .cs-wave-crest {
+            position: absolute;
+            /* welded to the top edge of its own body, overlapping by a pixel */
+            bottom: 100%;
+            margin-bottom: -1px;
+            /* The crest path deliberately closes BELOW its own viewBox, and this
+               lets that overhang paint. Without it the SVG clips at the viewBox
+               edge, and the antialiased row along that clip is partly
+               transparent — which shows the band stacked behind this one
+               through it, as a hairline running the full width. The 1px margin
+               above is not enough on its own; the seam is inside the join, not a
+               gap in it. The divider's own clip-path still contains everything. */
+            overflow: visible;
+            /* twice the divider's width, centred, so the sideways drift can
+               never pull an end of the path into view */
+            left: -50%;
+            width: 200%;
+            height: var(--crestH);
+            display: block;
+            /* scaling happens about the join with the body, so the crest stays
+               welded to it at every scale */
+            transform-origin: bottom;
+            fill: currentColor;
+        }
+
+        /* THE STILL FRAME — no scroll-timeline support, or reduced motion.
+           A transition's honest static state is the page AFTER it, so the top
+           divider holds "covered" (a flat block of --waveDeep) and the flipped
+           one holds "parked" (flat tan). Both are exactly the plain section
+           boundary the page had before this component existed. */
+        .cs-wave-band {
+            transform: translateY(0);
+        }
+
+        .cs-wave-crest {
+            transform: scaleY(0);
+        }
+
+        /* The reverse divider, at the bottom of #speed. Two differences from the
+           one above and no others: it is MIRRORED, and it runs wave-recede
+           instead of wave-break so it starts covered and drains rather than
+           starting empty and filling. No palette of its own, no geometry.
+
+           ⚠ THE FLIP IS NOT OPTIONAL — it is the whole reason this reads as the
+           reverse. It points the crests at the tan, which is below here instead
+           of above, so the wave reaches DOWN onto the sand and pulls back. A
+           version without it was built and immediately looked wrong: the bottom
+           wave broke upward like the top one, which reads as a swell inside the
+           ocean rather than as the edge of it.
+
+           It costs size, and that is the trade. Flipped, the strip and the break
+           are on the SAME side of the boundary — the strip sits in #pricing's
+           top padding and the break bleeds further into it — so both come out of
+           one 100px budget instead of two. That is what caps --waveH below; see
+           the note there. */
+        &.cs-wave-up {
+            transform: scaleY(-1);
+            /* ⚠ The ONLY place the component spends page height, and it is
+               spent on purpose. Flipped, this divider's strip and its break are
+               both below the boundary, sharing #pricing's 100px — which capped
+               the whole wave at a face of ~90px and read as too subtle. Pulling
+               back 0.4 rather than a full 1 lets it keep 0.6 x --waveH of real
+               page, which buys the break enough room to land clear of
+               #pricing's topper. The arrival divider still costs nothing: its
+               break bleeds the other way, into padding it does not occupy. */
+            margin-bottom: calc(var(--waveH) * -0.4);
+
+            .cs-wave-band {
+                transform: translateY(var(--park));
+            }
+        }
+    }
+}
+
+/* Desktop - 1024px. A 48px - 52px strip carrying a ~90px wave face, against
+   the 100px budget explained on --waveH. Three earlier versions got the height
+   wrong: 55vh and then 117px, both on the reasoning that a component with no
+   resting appearance costs nothing to make tall (it is never free — every pixel
+   is page, and all of it lands on one side of the boundary, so the only visible
+   result was a taller navy band), and then 88px, which fit only because the
+   departure divider had been unflipped to dodge the shared budget. The flip is
+   worth more than the pixels. */
+@media only screen and (min-width: 64rem) {
+    .cs-wave {
+        --waveH: clamp(4.25rem, 7.2vh, 4.75rem);
+    }
+}
+
+/* Dark Mode */
+@media only screen and (min-width: 0rem) {
+    body.dark-mode {
+        .cs-wave {
+            background-color: var(--dark);
+        }
+    }
+}
+
+/* The break.
+
+   Ranges are given in `cover`, not `entry`/`exit`: cover 0% is the moment the
+   divider's top edge meets the bottom of the viewport and cover 100% the moment
+   its bottom edge leaves the top, so a percentage here is a percentage of the
+   whole pass. `entry` cannot express this — the drain finishes long after the
+   entry phase ends.
+
+   ── THE SHAPE OF ONE BAND ──
+   Four stops, not three: park, CLIMB, hold, drain. The hold is the whole
+   difference between this reading as water and reading as a slider. A wave runs
+   up the sand, stops, stands there for a beat, and only then slides back.
+
+   Every band climbs over 30% OF THE PASS — about 290px of scroll — and no band
+   climbs faster than another. That figure is independent of the stagger: the
+   starts set who arrives when, the 30 sets how unhurried each arrival is. An earlier cut gave each band a quarter of its own
+   range, which sounds even but isn't: the ranges differ in width, so the deep
+   band got 12% of the pass to travel its whole 124px and snapped.
+
+   ── WHY EVERY BAND HAS ITS OWN KEYFRAMES ──
+   Three things are wanted at once and one shared keyframe cannot give them:
+
+     1. the bands CREST in turn, foam first, ~12% of the pass apart
+     2. they all climb at the SAME unhurried rate
+     3. they DRAIN in the opposite order, deep first, foam last
+
+   With one keyframe the peak always lands at a fixed fraction of a band's own
+   range, so (1) and (2) together force the ranges to differ only by offset —
+   and then the band that crests first also drains first, which kills (3). Two
+   earlier versions each dropped one of the three and were wrong in a different
+   way. Splitting the keyframes is what buys all three, and it is worth the
+   repetition: the percentages below ARE the design, laid out in cover terms.
+
+     band    range      climb      crest at   holds to   drained by
+     foam    4 -> 100   4  -> 34      34         58         100
+     mid     13 -> 92   13 -> 43      43         65          92
+     deep    22 -> 84   22 -> 52      52         69          84
+
+   The crests are 9 apart, which is the setting that reads. They were 12 first
+   and that was a beat too long — each colour had visibly finished arriving
+   before the next started, so it read as three events rather than one wave
+   layering up. Tighten it further and they merge back into a single edge.
+   Note what does NOT move with it: every climb is still 30, and the drained-by
+   column still runs deep -> mid -> foam.
+
+   Each keyframe's stops are those numbers re-expressed against that band's own
+   range, which is what animation-range makes them relative to. Change a number
+   in the table and both of that band's keyframe stops move with it.
+
+   Behind @supports because only the scroll-linked version is worth having.
+   Without it every band holds the still frame above, which is a clean flat
+   section boundary, not a broken one. */
+@supports (animation-timeline: view()) {
+    @media only screen and (min-width: 0rem) {
+        /* ONE shared clock: the divider's own pass through the viewport, named
+           the way #speed names --speed-lane for the orcas.
+
+           A bare `view()` on each band would be WRONG here, and was an earlier
+           bug. view() builds its timeline from the element it is set on, and
+           these bands are taller than the divider and overhang it, so each one
+           got its own clock and none of them was the divider's. Naming the
+           divider's pass and having every band scrub off THAT is the fix, and it
+           is the same note already written against the orca pod. */
+        .cs-wave {
+            view-timeline-name: --wave-lane;
+            view-timeline-axis: block;
+        }
+
+        .cs-wave-band,
+        .cs-wave-crest {
+            /* Longhand only. The `animation` shorthand resets animation-timeline
+               to `auto` and kills this silently — the house trap that has bitten
+               the ferry and the orca pod. */
+            animation-duration: auto;
+            animation-fill-mode: both;
+            /* resolved against the nearest ancestor that names it, so each of
+               the two dividers drives its own bands and they never share */
+            animation-timeline: --wave-lane;
+        }
+
+        .cs-wave-crest {
+            /* only the crests are promoted. The bands are full-width and tall,
+               and six more composited layers costs more memory than the repaint
+               it would save. */
+            will-change: transform;
+        }
+
+        /* --peak and --drift are set on the band and INHERIT to its crest.
+           animation-range does not inherit, so it is listed on both. */
+        .cs-wave-foam,
+        .cs-wave-foam .cs-wave-crest {
+            --peak: var(--peakFoam);
+            --drift: 7%;
+            animation-range: cover 4% cover 100%;
+        }
+
+        .cs-wave-mid,
+        .cs-wave-mid .cs-wave-crest {
+            --peak: var(--peakMid);
+            --drift: -9%;
+            animation-range: cover 13% cover 92%;
+        }
+
+        .cs-wave-deep,
+        .cs-wave-deep .cs-wave-crest {
+            --peak: var(--peakDeep);
+            --drift: 5%;
+            animation-range: cover 22% cover 84%;
+        }
+
+        /* Arrival: park -> climb -> hold -> settled. */
+        .cs-wave .cs-wave-foam {
+            animation-name: wave-break-foam;
+        }
+
+        .cs-wave .cs-wave-mid {
+            animation-name: wave-break-mid;
+        }
+
+        .cs-wave .cs-wave-deep {
+            animation-name: wave-break-deep;
+        }
+
+        /* Departure: covered -> climb -> hold -> parked. (0,3,0) beats the
+           rules above on specificity rather than on source order. */
+        .cs-wave.cs-wave-up .cs-wave-foam {
+            animation-name: wave-recede-foam;
+        }
+
+        .cs-wave.cs-wave-up .cs-wave-mid {
+            animation-name: wave-recede-mid;
+        }
+
+        .cs-wave.cs-wave-up .cs-wave-deep {
+            animation-name: wave-recede-deep;
+        }
+
+        /* The crest follows its own band's clock, so its stops match that
+           band's exactly — a crest still swelling after its band has stopped is
+           the kind of half-beat that reads as a glitch rather than as water. */
+        .cs-wave-foam .cs-wave-crest {
+            animation-name: wave-crest-foam;
+        }
+
+        .cs-wave-mid .cs-wave-crest {
+            animation-name: wave-crest-mid;
+        }
+
+        .cs-wave-deep .cs-wave-crest {
+            animation-name: wave-crest-deep;
+        }
+    }
+}
+
+/* --park, --peak and --drift are substituted, not interpolated: all three are
+   plain values by the time the transform is computed, so none of this needs
+   @property registration.
+
+   Two curves do all the work, and they are not mirror images:
+
+     .wave-climb  quick off the mark and then a long, long deceleration into the
+                  peak. That is water: it arrives with momentum and spends it.
+     .wave-drain  the opposite hesitation — slow to let go, then away, then eased
+                  out. Water leaves reluctantly and all at once.
+
+   An earlier version used one near-symmetric ease for both and the wave read as
+   a panel sliding up and down. */
+@keyframes wave-break-foam {
+    0% {
+        animation-timing-function: cubic-bezier(0.18, 0.66, 0.29, 1);
+        transform: translateY(var(--park));
+    }
+
+    31% {
+        animation-timing-function: linear;
+        transform: translateY(var(--peak));
+    }
+
+    56% {
+        animation-timing-function: cubic-bezier(0.5, 0, 0.35, 1);
+        transform: translateY(var(--peak));
+    }
+
+    100% {
+        transform: translateY(0);
+    }
+}
+
+@keyframes wave-break-mid {
+    0% {
+        animation-timing-function: cubic-bezier(0.18, 0.66, 0.29, 1);
+        transform: translateY(var(--park));
+    }
+
+    38% {
+        animation-timing-function: linear;
+        transform: translateY(var(--peak));
+    }
+
+    66% {
+        animation-timing-function: cubic-bezier(0.5, 0, 0.35, 1);
+        transform: translateY(var(--peak));
+    }
+
+    100% {
+        transform: translateY(0);
+    }
+}
+
+@keyframes wave-break-deep {
+    0% {
+        animation-timing-function: cubic-bezier(0.18, 0.66, 0.29, 1);
+        transform: translateY(var(--park));
+    }
+
+    48% {
+        animation-timing-function: linear;
+        transform: translateY(var(--peak));
+    }
+
+    76% {
+        animation-timing-function: cubic-bezier(0.5, 0, 0.35, 1);
+        transform: translateY(var(--peak));
+    }
+
+    100% {
+        transform: translateY(0);
+    }
+}
+
+/* The same shapes run the other way: the band starts COVERING, climbs once, and
+   withdraws below the frame instead of settling into it. That is the tide going
+   out. Flipped by .cs-wave-up's scaleY(-1), it reaches down onto the sand and
+   pulls back, deep water first and the foam last off the beach. */
+@keyframes wave-recede-foam {
+    0% {
+        animation-timing-function: cubic-bezier(0.18, 0.66, 0.29, 1);
+        transform: translateY(0);
+    }
+
+    31% {
+        animation-timing-function: linear;
+        transform: translateY(var(--peak));
+    }
+
+    56% {
+        animation-timing-function: cubic-bezier(0.5, 0, 0.35, 1);
+        transform: translateY(var(--peak));
+    }
+
+    100% {
+        transform: translateY(var(--park));
+    }
+}
+
+@keyframes wave-recede-mid {
+    0% {
+        animation-timing-function: cubic-bezier(0.18, 0.66, 0.29, 1);
+        transform: translateY(0);
+    }
+
+    38% {
+        animation-timing-function: linear;
+        transform: translateY(var(--peak));
+    }
+
+    66% {
+        animation-timing-function: cubic-bezier(0.5, 0, 0.35, 1);
+        transform: translateY(var(--peak));
+    }
+
+    100% {
+        transform: translateY(var(--park));
+    }
+}
+
+@keyframes wave-recede-deep {
+    0% {
+        animation-timing-function: cubic-bezier(0.18, 0.66, 0.29, 1);
+        transform: translateY(0);
+    }
+
+    48% {
+        animation-timing-function: linear;
+        transform: translateY(var(--peak));
+    }
+
+    76% {
+        animation-timing-function: cubic-bezier(0.5, 0, 0.35, 1);
+        transform: translateY(var(--peak));
+    }
+
+    100% {
+        transform: translateY(var(--park));
+    }
+}
+
+/* The crests: flat when the band is parked, full while it stands at its peak,
+   flat again when it lands. The two zeroes are what let both end states be flat
+   blocks of colour instead of shapes with wavy edges, and they are why this
+   version cannot produce the stripes the earliest ones did.
+
+   The sideways drift runs straight through the hold, which is the only thing
+   moving while a band stands at its peak — without it the wave freezes solid
+   for a quarter of the pass and the hold reads as a stall. */
+@keyframes wave-crest-foam {
+    0% {
+        animation-timing-function: cubic-bezier(0.18, 0.66, 0.29, 1);
+        transform: translateX(0) scaleY(0);
+    }
+
+    31% {
+        animation-timing-function: linear;
+        transform: translateX(calc(var(--drift) * 0.31)) scaleY(1);
+    }
+
+    56% {
+        animation-timing-function: cubic-bezier(0.5, 0, 0.35, 1);
+        transform: translateX(calc(var(--drift) * 0.56)) scaleY(1);
+    }
+
+    100% {
+        transform: translateX(var(--drift)) scaleY(0);
+    }
+}
+
+@keyframes wave-crest-mid {
+    0% {
+        animation-timing-function: cubic-bezier(0.18, 0.66, 0.29, 1);
+        transform: translateX(0) scaleY(0);
+    }
+
+    38% {
+        animation-timing-function: linear;
+        transform: translateX(calc(var(--drift) * 0.38)) scaleY(1);
+    }
+
+    66% {
+        animation-timing-function: cubic-bezier(0.5, 0, 0.35, 1);
+        transform: translateX(calc(var(--drift) * 0.66)) scaleY(1);
+    }
+
+    100% {
+        transform: translateX(var(--drift)) scaleY(0);
+    }
+}
+
+@keyframes wave-crest-deep {
+    0% {
+        animation-timing-function: cubic-bezier(0.18, 0.66, 0.29, 1);
+        transform: translateX(0) scaleY(0);
+    }
+
+    48% {
+        animation-timing-function: linear;
+        transform: translateX(calc(var(--drift) * 0.48)) scaleY(1);
+    }
+
+    76% {
+        animation-timing-function: cubic-bezier(0.5, 0, 0.35, 1);
+        transform: translateX(calc(var(--drift) * 0.76)) scaleY(1);
+    }
+
+    100% {
+        transform: translateX(var(--drift)) scaleY(0);
+    }
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+    /* 0,2,0 and 0,3,0 to match the still-frame rules exactly, so both dividers
+       stop. A bare `.cs-wave-band` here would lose to `.cs-wave.cs-wave-up
+       .cs-wave-band` and leave the departure divider animating for someone who
+       asked for no motion. */
+    .cs-wave .cs-wave-band,
+    .cs-wave .cs-wave-crest,
+    .cs-wave.cs-wave-up .cs-wave-band {
+        animation-name: none;
+    }
+}
+
+/* ── the divider into the footer ──
+   ⚠ --waveDeep MUST EQUAL THE SURFACE THE WAVE LANDS ON, and for this one that
+   is not #speed's navy. root.less sets --waveDeep to #14202a in dark mode
+   because that is what #speed composites to (rgba(0,0,0,.25) over --dark). The
+   footer composites differently - rgba(0,0,0,.35) over the same ground - and
+   measures rgb(18,27,36). Left on the shared value the deep band would land
+   two shades light of the footer and draw a seam across the full width of the
+   page, in dark mode only.
+
+   Light mode needs no override: the footer is --inkNavy there, which is exactly
+   what --waveDeep already is.
+
+   ⚠ If #footer's dark background changes, this changes with it. */
+@media only screen and (min-width: 0rem) {
+    body.dark-mode .cs-wave-footer {
+        --waveDeep: #121b24;
     }
 }
 
@@ -666,13 +2370,16 @@
 
         .cs-container {
             width: 100%;
-            max-width: (1280/16rem);
+            max-width: var(--containerWidth);
             margin: auto;
             display: flex;
             flex-direction: column;
             align-items: center;
-            /* 40px - 64px */
-            gap: clamp(2.5rem, 5vw, 4rem);
+            /* 32px - 48px. Was 40-64: that was tuned when the section held three
+               bare circles and needed the air to look composed. Each score is a
+               card now and the why strip has its own rule above it, so the same
+               gap reads as the section drifting apart rather than breathing. */
+            gap: clamp(2rem, 3.5vw, 3rem);
             /* above the orca */
             position: relative;
             z-index: 1;
@@ -722,72 +2429,404 @@
             color: var(--rainGray);
         }
 
-        /* ── the three stat circles ── */
-        .cs-card-group {
-            margin: 0;
-            padding: 0;
+        /* ── the Lighthouse scorecard ──
+           Replaced three flat coloured circles ("95+ / <1s / 100%") on
+           2026-09-24. The circles were the section's whole payload and the
+           weakest numbers on the page: "95+" hedged a real score of 94, "<1s"
+           was already printed two sections above by #services card 02 with a
+           better specimen AND a verify link, and "100% hand-coded" is not a
+           performance measurement at all. See the markup comment in index.html
+           for what each one became.
+
+           The gauge below is #services-1282's component, second instance. Kept
+           deliberately in step with it: same r="44", same stroke-width: 5, same
+           rotate(-90deg), same pathLength trick. ⚠ If that one is retuned, look
+           here too - a THIRD instance is the trigger to extract both to a
+           shared sheet, per the rule the service pages set. */
+        .cs-scorecard {
+            width: 100%;
+            /* ⚠ THE CAP IS NOT HERE, it is on .cs-scores below. It used to be,
+               and it had to move when the facts line replaced the provenance
+               line inside this block: the cards want ~900 and the five facts
+               want ~1100 to make one line, and a single cap on the wrapper
+               cannot give them different answers. This is a centred flex
+               column, so each child sets its own width and they stay centred on
+               the same axis regardless. */
+            max-width: var(--containerWidth);
             display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
-            /* 20px - 40px */
-            gap: clamp(1.25rem, 3vw, 2.5rem);
+            /* 16px - 24px */
+            gap: clamp(1rem, 2vw, 1.5rem);
+            /* the verify link and the provenance line are centred on the same
+               axis as the rest of the section */
+            text-align: center;
         }
 
-        .cs-item {
+        .cs-scores {
+            width: 100%;
+            /* ⚠ NOT the full --containerWidth. Left to fill 1280 the four tracks
+               come out 320px wide with a 108px ring floating in the middle of
+               each, and the row stops reading as one scorecard and starts
+               reading as four unrelated circles that happen to share a line.
+               900 rather than the 680 this started at because each score is a
+               card with its own padding now: at 680 the cards were 160px wide
+               and the rings nearly touched their own edges. */
+            max-width: (900/16rem);
+            margin: 0;
+            padding: 0;
+            display: grid;
+            /* 2x2 on a phone. minmax(0, 1fr) rather than 1fr so a long category
+               name cannot push a track wider than its share. */
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            /* Tightened when the rings became cards. Naked rings needed a
+               generous row gap to keep one ring's label off the next ring; a
+               card draws its own edge and says where it stops, so the same air
+               now just reads as the grid falling apart. Even on both axes. */
+            gap: clamp(0.75rem, 1.6vw, 1rem);
+        }
+
+        /* ── each score is a raised card ──
+           The rings used to sit naked on the navy, which is the same note /work/
+           records about its v1: frames on a flat ground read as unfinished. A
+           card gives each score an object to be.
+
+           ⚠ THE GLOW IS SCALED DOWN, NOT var(--panelGlow). The shared token is
+           two radials of 720px and 640px, sized for a full-width .cs-panel — on
+           a ~200px card both circles are far larger than the box, so only their
+           flat centres land and the "light falling across it" reads as a plain
+           tint. These are the SAME TWO HUES at the SAME ALPHAS the dark-mode
+           token uses (--logoWave blue and --coralAccent coral, .10 / .09),
+           re-aimed at card scale so the fall-off is actually inside the box.
+           Keep the alphas where they are: the token's own comment is the rule —
+           if you can name the colours without reading the CSS they are too
+           strong, and this site does not do gradients for fun.
+
+           ⚠ OPAQUE, and it has to stay that way. The fill was --panelLight
+           (white at .04) to begin with, and the orca pod swims BEHIND
+           .cs-container at z-index 0 — so at 4% the whole pod showed straight
+           through the cards, which read as a transparency bug rather than as
+           depth. --medium is the token CLAUDE.md's palette table already
+           designates for raised cards on navy, it is defined once and never
+           overridden for dark mode, and it is the value root.less's own
+           --panelLight comment measures itself against ("stays below --medium
+           so the cards on it still read as raised").
+
+           The glow sits on top of it, so the gradient is untouched by this — an
+           opaque base only changes what is behind the light, not the light.
+           Do not swap this back to a translucent fill without moving the pod. */
+        .cs-score {
             list-style: none;
-            /* 120px - 160px */
-            width: clamp(7.5rem, 15vw, 10rem);
-            height: clamp(7.5rem, 15vw, 10rem);
             box-sizing: border-box;
-            padding: (12/16rem);
-            border-radius: 50%;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: (4/16rem);
-            text-align: center;
-            transition: transform 0.3s;
+            gap: (10/16rem);
+            /* 18px - 26px */
+            padding: clamp(1.125rem, 2vw, 1.625rem) (12/16rem);
+            width: 100%;
+            border-radius: (16/16rem);
+            background-color: var(--medium);
+            background-image:
+                radial-gradient(circle 150px at 10% -12%, rgba(123, 166, 201, 0.1), transparent 70%),
+                radial-gradient(circle 130px at 96% 6%, rgba(222, 100, 75, 0.09), transparent 68%);
+            /* hairline per house style: inset shadow, never a border — a real
+               border would change the grid track sizing the rings centre in */
+            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
 
+            /* the lift the original stat circles had, kept */
             &:hover {
-                transform: translateY(-0.375rem);
+                transform: translateY((-6/16rem));
+                box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16);
             }
         }
 
-        /* outlined, then the two palette accents */
-        .cs-item1 {
-            background-color: transparent;
-            border: 2px solid rgba(255, 255, 255, 0.25);
+        /* Sized a little larger than the service pages' 88-100px, because the
+           value inside is at most three digits with no "<" or unit to clear -
+           the constraint their comment describes doesn't apply, so the interior
+           can be spent on the number instead. */
+        .cs-gauge {
+            /* 88px - 108px */
+            width: clamp(5.5rem, 11vw, 6.75rem);
+            height: clamp(5.5rem, 11vw, 6.75rem);
+            /* keeps flex/grid from squishing the circle into an ellipse */
+            flex: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
         }
 
-        .cs-item2 {
-            background-color: var(--pugetBlue);
+        .cs-ring {
+            width: 100%;
+            height: 100%;
+            /* start the arc at 12 o'clock instead of 3 */
+            transform: rotate(-90deg);
+            position: absolute;
+            top: 0;
+            left: 0;
         }
 
-        .cs-item3 {
-            background-color: var(--coral);
+        .cs-ring-track,
+        .cs-ring-arc {
+            fill: none;
+            /* viewBox units, so it scales with the gauge */
+            stroke-width: 5;
         }
 
+        .cs-ring-track {
+            stroke: rgba(255, 255, 255, 0.12);
+        }
+
+        /* ⚠ --arc is set inline in the markup and IS the score itself, not a
+           tuned decorative length. pathLength="100" on the circle rescales its
+           geometry to 100 user units, which is what lets a raw 0-100 number work
+           as a dash array with no circumference maths - and what guarantees the
+           arc and the printed figure can never disagree, since both read the
+           same key out of _data/lighthouse.js.
+
+           ⚠ --coralAccent, NOT --coral, and this is the one place this component
+           deliberately diverges from #services-1282. Measured in the browser:
+           --coral (#c2452e) on this band is 2.92:1, under the 3:1 WCAG 1.4.11
+           asks of a meaningful non-text graphic; CLAUDE.md independently records
+           the same pair at 2.8:1, which is why coral is a fills-and-borders
+           token and large coral MARKS get --coralAccent. Strictly the arc is
+           exempt - the score is printed inside it as text - but it is the
+           biggest thing in the section and clearing the bar costs one token.
+           #speed is already in root.less's navy-surface list, so --coralAccent
+           resolves to #de644b inside here in both modes with no new rule. */
+        .cs-ring-arc {
+            stroke: var(--coralAccent);
+            stroke-linecap: round;
+            stroke-dasharray: var(--arc, 100) 100;
+            /* the RESTING state is the finished ring. Everything about the draw
+               below is added on top of this by script, so no script, a parse
+               error or reduced motion all land here — on a complete scorecard,
+               never on four empty circles. */
+            stroke-dashoffset: 0;
+        }
+
+        /* rides above the absolutely-positioned ring */
         .cs-number {
             font-family: var(--headerFont);
-            /* 26px - 34px */
-            font-size: clamp(1.625rem, 3vw, 2.125rem);
+            /* 28px - 36px */
+            font-size: clamp(1.75rem, 3.4vw, 2.25rem);
             font-weight: 800;
             line-height: 1em;
             letter-spacing: -0.02em;
             color: var(--bodyTextColorWhite);
+            position: relative;
         }
 
-        .cs-label {
+        .cs-unit {
             font-family: var(--monoFont);
             font-size: (11/16rem);
             font-weight: 500;
             line-height: 1.2em;
             text-transform: uppercase;
             letter-spacing: 0.08em;
+            text-align: center;
             color: rgba(255, 255, 255, 0.75);
         }
+
+        /* ── the verify link ──
+           Same visual idiom as #services' proof links (mono, uppercase, the
+           icon-external.html mark leaving along its own diagonal on hover), with
+           two deliberate differences. It is in NORMAL FLOW, not absolutely
+           positioned into a reserved strip at a card's floor — there is no card
+           here. And it is 11px rather than 9.5px, because over there it is one
+           of four footnotes in a grid and here it is the payoff of an entire
+           section, the thing "you can check them yourself" has been promising.
+
+           ⚠ display AND an explicit .cs-ext size are both load-bearing, not
+           tidiness. icon-external.html is an inline <svg> with a viewBox and no
+           width/height, so with no rule it sizes to the available space — when
+           these rules were briefly lost the mark rendered at 113px and drove the
+           link to 143px tall, silently, with nothing else looking wrong.
+
+           ⚠ The 24px min-height is WCAG 2.5.8, not padding taste: the "inline"
+           exemption covers a link inside a sentence, and this is standalone. */
+        .cs-verify {
+            /* navy-surface values for the shared tokens — measured 6.2:1 on
+               --inkNavy at rest, which an 11px label needs (4.5:1 floor) */
+            --proofLinkRest: rgba(255, 255, 255, 0.6);
+            --proofLinkHover: #fff;
+
+            font-family: var(--monoFont);
+            font-size: (11/16rem);
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            text-decoration: none;
+            line-height: 1;
+            color: var(--proofLinkRest);
+            min-height: (24/16rem);
+            display: inline-flex;
+            align-items: center;
+            gap: (6/16rem);
+            transition: color 0.25s;
+
+            .cs-ext {
+                width: (10/16rem);
+                height: (10/16rem);
+                flex: none;
+                display: block;
+                transition: transform 0.25s;
+            }
+
+            &:hover {
+                color: var(--proofLinkHover);
+
+                /* leaves along its own diagonal, which is the whole reason the
+                   mark points that way */
+                .cs-ext {
+                    transform: translate((2/16rem), (-2/16rem));
+                }
+            }
+
+            /* house rule: the browser's 1px of blue vanishes on navy */
+            &:focus-visible {
+                outline: 2px solid var(--proofLinkHover);
+                outline-offset: 3px;
+                border-radius: (2/16rem);
+            }
+        }
+
+        /* ── the ring draw ──
+           assets/js/score-count.js primes, then arms on entry. Split in two on
+           purpose, and it is the same contract text-rise.js sets out: THE
+           SCRIPT ARMS THE HIDDEN STATE ITSELF. The stylesheet never hides a
+           ring on its own, so a broken bundle cannot leave four empty circles
+           on the page — it just leaves the finished scorecard.
+
+           Why dashoffset rather than animating the dasharray: offset is a
+           single number and interpolates cleanly, where a two-value dasharray
+           has to interpolate as a list. With pathLength="100" and a dasharray
+           of `--arc 100`, an offset equal to --arc slides the whole dash off
+           the front of the path (empty ring) and an offset of 0 is the full
+           arc, so the draw is one number moving to zero.
+
+           ⚠ Time-based, NOT a view() scroll-timeline, unlike the ferry and the
+           orcas. The numbers count up on a rAF clock in script, and a
+           scroll-driven ring would run on a completely different one — the two
+           would visibly disagree, the ring landing wherever the scroll stopped
+           while the digits had already settled. One clock for both. */
+        &.cs-scores-primed .cs-ring-arc {
+            stroke-dashoffset: var(--arc);
+        }
+
+        &.cs-scores-armed .cs-ring-arc {
+            animation-name: ring-draw;
+            animation-duration: 1.15s;
+            /* decelerating: fast off the mark, settling into the final value,
+               which is how a needle behaves and how PSI draws its own */
+            animation-timing-function: cubic-bezier(0.22, 0.61, 0.36, 1);
+            animation-fill-mode: both;
+        }
+
+        /* left-to-right stagger. Matches the delays in score-count.js — change
+           one and change the other, or the digits stop landing with the arc. */
+        &.cs-scores-armed .cs-score:nth-child(2) .cs-ring-arc {
+            animation-delay: 0.1s;
+        }
+
+        &.cs-scores-armed .cs-score:nth-child(3) .cs-ring-arc {
+            animation-delay: 0.2s;
+        }
+
+        &.cs-scores-armed .cs-score:nth-child(4) .cs-ring-arc {
+            animation-delay: 0.3s;
+        }
+
+        /* ── why it is fast ──
+           Closes the copy block, under the paragraph. See the markup comment for
+           why it sits with the CLAIM rather than under the cards, and what it
+           cost when it was its own row at the foot of the section.
+
+           A wrapping inline run with drawn middots, not a bulleted strip. The
+           coral dots and the full-width hairline it used to carry are both gone:
+           coral is rationed to a single accent and five dots competed with the
+           four coral arcs above, and the rule was dividing this from a scorecard
+           that now draws its own card edges.
+
+           ⚠ This SITS WHERE THE PROVENANCE LINE USED TO (Bryan, 2026-09-25) and
+           inherited its middot treatment from it — that line set its three facts
+           the same way. It is the only thing in this slot now, so the scores it
+           sits under are undated; the markup comment carries what was lost and
+           why that was an acceptable trade. */
+        .cs-why {
+            /* ⚠ WIDER THAN THE CARDS ABOVE IT, deliberately. The run has to
+               fit one line, and at the scorecard's own 900 cap the last item
+               wrapped alone onto a second row. This is a ceiling, not a width —
+               the row is content-sized and centred, so it only ever uses what
+               the items need (~780px at four items, ~957 at the five it
+               carried until 2026-09-25). It stays inside --containerWidth, so
+               it can never widen the section.
+
+               ⚠ The one-line fit is a property of these particular strings, not
+               of this rule. Add or reword an item and re-measure. */
+            max-width: (1120/16rem);
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            /* tight — the middots carry the separation, so the gap only has to
+               keep them off the words either side */
+            gap: (6/16rem) (10/16rem);
+        }
+
+        .cs-why-item {
+            font-family: var(--monoFont);
+            font-size: (11.5/16rem);
+            font-weight: 500;
+            line-height: 1.5em;
+            letter-spacing: 0.02em;
+            color: var(--rainGray);
+            opacity: 0.82;
+            display: inline-flex;
+            align-items: baseline;
+            gap: (10/16rem);
+
+            /* ⚠ DRAWN, NOT TYPED, and not on the last item. A literal "·" in the
+               markup would be read out by a screen reader between every pair,
+               and would still be sitting there if this ever went back to a
+               stacked list. As generated content it is presentation only.
+
+               On the item rather than between items because a flex-wrap row has
+               no way to know which item starts a line — the same reason the
+               bullets could not be vertical rules. A trailing middot at a line
+               break is invisible; a leading one would be an orphan. */
+            &:not(:last-child):after {
+                content: "\00B7";
+                color: var(--rainGray);
+                opacity: 0.5;
+            }
+        }
+
+        /* Tablet up — the four rings go to one row. Nested @media omits
+           `only screen`; nesting it compiles to invalid `and only screen and`. */
+        @media (min-width: 48rem) {
+            .cs-scores {
+                grid-template-columns: repeat(4, minmax(0, 1fr));
+            }
+
+        }
+    }
+}
+
+/* The scorecard ring draw. Top level rather than nested, beside orca-swim, so
+   both of the section's animations are declared in the same place. */
+@keyframes ring-draw {
+    from {
+        stroke-dashoffset: var(--arc);
+    }
+
+    to {
+        stroke-dashoffset: 0;
     }
 }
 
@@ -945,14 +2984,33 @@
     }
 }
 
-/* Dark Mode — already a dark band, just soften the outline */
+/* Dark Mode — already a dark band, so it only darkens (never lightens, per the
+   house rule) and the two white-alpha lines are lifted to hold their own against
+   the deeper ground.
+
+   ⚠ #speed composites to #14202a here (rgba(0,0,0,.25) over --dark), and that
+   value is written out as --waveDeep in root.less because the wave dividers
+   above and below have to MATCH this band exactly. If this background changes,
+   change it there too — root.less carries the warning.
+
+   Nothing needs doing to the coral arcs: #speed is already in root.less's
+   navy-surface token list, so --coral and --coralText are correct inside it in
+   both modes. */
 @media only screen and (min-width: 0rem) {
     body.dark-mode {
         #speed {
             background-color: rgba(0, 0, 0, 0.25);
 
-            .cs-item1 {
-                border-color: rgba(255, 255, 255, 0.2);
+            /* the unfilled part of each gauge. .12 was tuned against --inkNavy;
+               on the darker composite it reads as almost nothing.
+
+               The why strip had a matching lift here for its hairline. That
+               rule is gone (see the .cs-why comment above) and so is this.
+               --medium needs nothing either: it is a fixed value in both modes,
+               and on dark mode's deeper ground it simply reads as MORE raised,
+               which is the right direction. */
+            .cs-ring-track {
+                stroke: rgba(255, 255, 255, 0.16);
             }
         }
     }
@@ -970,13 +3028,16 @@
 
         .cs-container {
             width: 100%;
-            max-width: (1280/16rem);
+            max-width: var(--containerWidth);
             margin: auto;
             display: flex;
             flex-direction: column;
             align-items: center;
-            /* 40px - 64px */
-            gap: clamp(2.5rem, 5vw, 4rem);
+            /* 32px - 48px, matching #speed. Was 40-64: tuned when this section
+               ended at the two cards. It now carries a terms line and a link
+               underneath, and at the old gap the tail floated ~120px clear of
+               the cards it qualifies, reading as a separate section. */
+            gap: clamp(2rem, 3.5vw, 3rem);
         }
 
         .cs-content {
@@ -1041,7 +3102,26 @@
             box-sizing: border-box;
             /* 32px - 44px */
             padding: clamp(2rem, 4vw, 2.75rem);
-            background-color: #fdfbf4;
+            /* frosted — see --glassCard in root.less for the alpha and for why
+               this reads as almost nothing on a flat tan ground */
+            background-color: var(--glassCard);
+            .glass();
+            /* ⚠ Card-scale glow, matching #speed's scorecard cards. NOT
+               var(--panelGlow): the shared token is two radials of 720px and
+               640px, sized for a full-width .cs-panel, and on a ~416px card
+               both circles are wider than the box, so only their flat centres
+               land and the light reads as a plain tint.
+
+               ⚠ LIGHT-MODE HUES, hard-coded rather than tokenised, because
+               #pricing is a TAN section: it is not in root.less's navy-surface
+               list, so var(--panelGlow) here would be the on-navy pair and is
+               close to invisible on sand. Same two hues and the same tiny
+               alphas as the light token (--pugetBlue .10, --coral .07),
+               re-aimed so the fall-off lands inside the card. The featured
+               card overrides them for the opposite reason - see below. */
+            background-image:
+                radial-gradient(circle 280px at 8% -14%, rgba(54, 99, 117, 0.1), transparent 70%),
+                radial-gradient(circle 240px at 97% 4%, rgba(194, 69, 46, 0.07), transparent 68%);
             border: 2px dashed rgba(27, 42, 56, 0.25);
             border-radius: (16/16rem);
             display: flex;
@@ -1059,6 +3139,14 @@
             border-style: solid;
             border-color: var(--inkNavy);
             box-shadow: 0 (20/16rem) (48/16rem) rgba(27, 42, 56, 0.28);
+            /* ⚠ THE ON-NAVY PAIR, overriding the tan card's above. This card
+               is --inkNavy, so it is the one place in this tan section where
+               the dark-surface lights are correct - the same two #speed's
+               cards use (--logoWave blue, --coralAccent coral). Without this
+               it inherits the light-ground gradient and shows nothing. */
+            background-image:
+                radial-gradient(circle 280px at 8% -14%, rgba(123, 166, 201, 0.1), transparent 70%),
+                radial-gradient(circle 240px at 97% 4%, rgba(222, 100, 75, 0.09), transparent 68%);
 
             .cs-plan,
             .cs-period {
@@ -1261,6 +3349,100 @@
                 color: #fff;
             }
         }
+
+        /* ── the all-in terms, and the way to the full page ──
+           The mono middot run #speed established under its scorecard, reused
+           here for the two facts that qualify the price. Same treatment on
+           purpose: both are metadata ABOUT the thing above them rather than
+           part of the pitch, and the site should have one way of saying that.
+
+           ⚠ The colours differ from #speed's copy of this and have to. That one
+           sits on a navy band and uses white-alpha; #pricing is warm sand, so
+           this is --pugetBlue, the token for body copy on light grounds. */
+        .cs-terms {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: (14/16rem);
+            text-align: center;
+        }
+
+        .cs-term-list {
+            /* only two items, so this never needs the wide cap #speed's run
+               does — it fits one line from ~620px up */
+            max-width: (760/16rem);
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: (6/16rem) (10/16rem);
+        }
+
+        .cs-term {
+            font-family: var(--monoFont);
+            font-size: (11.5/16rem);
+            font-weight: 500;
+            line-height: 1.5em;
+            letter-spacing: 0.02em;
+            color: var(--pugetBlue);
+            display: inline-flex;
+            align-items: baseline;
+            gap: (10/16rem);
+
+            /* drawn, not typed — a literal "·" in the markup would be read out
+               by a screen reader between every pair. Same reasoning as #speed. */
+            &:not(:last-child):after {
+                content: "\00B7";
+                opacity: 0.55;
+            }
+        }
+
+        /* the route to /pricing/. The #about teaser's pill link, same idiom:
+           hairline pill, arrow that leaves on hover, focus treated like hover
+           so a keyboard user sees the affordance and not only the ring. */
+        .cs-link {
+            font-family: var(--bodyFont);
+            font-size: (15/16rem);
+            font-weight: 600;
+            line-height: (44/16rem);
+            text-decoration: none;
+            text-transform: none;
+            color: var(--inkNavy);
+            box-sizing: border-box;
+            padding: 0 (24/16rem);
+            border-radius: (40/16rem);
+            box-shadow: inset 0 0 0 1px rgba(27, 42, 56, 0.25);
+            display: inline-flex;
+            align-items: center;
+            gap: (10/16rem);
+            transition: color 0.25s, box-shadow 0.25s;
+
+            .cs-arrow {
+                display: inline-block;
+                transition: transform 0.25s;
+            }
+
+            &:hover,
+            &:focus-visible {
+                color: var(--coralText);
+                box-shadow: inset 0 0 0 1px var(--coralText);
+
+                .cs-arrow {
+                    transform: translateX(4px);
+                }
+            }
+
+            /* house rule: the browser default is 1px of blue and nearly
+               invisible on warm sand */
+            &:focus-visible {
+                outline: 2px solid var(--coralAccent);
+                outline-offset: 3px;
+            }
+        }
+
     }
 }
 
@@ -1310,8 +3492,18 @@
             }
 
             .cs-item {
-                background-color: var(--medium);
+                /* same token as light mode — it flips with the theme; the rule
+                   stays only because its neighbours in this block do */
+                background-color: var(--glassCard);
                 border-color: rgba(255, 255, 255, 0.25);
+
+                /* ⚠ the ON-DARK glow pair. The light-mode gradient on this card
+                   is --pugetBlue/--coral, tuned for warm sand, and on the dark
+                   glass fill it is close to invisible. Same two lights the
+                   featured card and #speed's cards use. */
+                background-image:
+                    radial-gradient(circle 280px at 8% -14%, rgba(123, 166, 201, 0.1), transparent 70%),
+                    radial-gradient(circle 240px at 97% 4%, rgba(222, 100, 75, 0.09), transparent 68%);
             }
 
             .cs-item-featured {
@@ -1321,6 +3513,22 @@
                 background-color: var(--medium);
                 border-color: var(--coral);
                 box-shadow: 0 (10/16rem) (34/16rem) rgba(214, 85, 61, 0.22);
+            }
+
+            /* ⚠ MEASURED FAILURES IN DARK MODE, both of them. The terms line
+               was --pugetBlue (2.23:1 here) and the link was --inkNavy on a
+               navy band, which measured 1:1 — literally invisible, not merely
+               low contrast. Both tokens are correct on warm sand and wrong the
+               moment the section flips, which is exactly what this block is
+               for. Re-measure if either is restyled. */
+            .cs-term {
+                color: var(--rainGray);
+            }
+
+            /* mirrors the #about teaser's dark treatment of the same pill */
+            .cs-link {
+                color: var(--bodyTextColorWhite);
+                box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.25);
             }
 
             .cs-ul {
@@ -1357,11 +3565,22 @@
     #free-redesign .cs-container {
         width: 100%;
         /* matches the navbar / hero content width */
-        max-width: (1280/16rem);
+        max-width: var(--containerWidth);
         margin: auto;
         /* 32px - 64px */
         padding: clamp(2rem, 6vw, 4rem);
         background-color: var(--inkNavy);
+        /* ⚠ var(--panelGlow) UNMODIFIED, unlike #speed's and #pricing's cards.
+           Those had to rescale it: the token is two radials of 720px and 640px,
+           sized for a full-width .cs-panel, and on a 200-400px card only the
+           flat centres land. This card IS panel-sized (~1400px), so the token's
+           own radii are finally at the scale they were drawn for.
+
+           And it needs no values of its own either: root.less lists
+           `#free-redesign .cs-container` among the navy surfaces, so --panelGlow
+           already resolves to the on-navy pair inside here, in both themes. That
+           list is why this is one line instead of six. */
+        background-image: var(--panelGlow);
         border-radius: (20/16rem);
         box-shadow: 0 (24/16rem) (60/16rem) rgba(27, 42, 56, 0.28);
         display: flex;
@@ -1378,6 +3597,47 @@
         flex-direction: column;
         align-items: flex-start;
         text-align: left;
+    }
+
+    /* ── the two limits ──
+       The mono middot run from #speed and #pricing, left-aligned here because
+       this section's .cs-content is (align-items: flex-start), where both of
+       those are centred columns. Same idiom, same job: metadata about the
+       offer above it, in the one voice the site uses for that.
+
+       On navy, so white-alpha rather than #pricing's --pugetBlue. */
+    #free-redesign .cs-limits {
+        /* ⚠ The BOTTOM margin is the load-bearing one. .cs-content is a flex
+           column and .cs-button-solid carries no margin of its own, so with
+           nothing here the button sat flush against this line - measured 0px -
+           while the paragraph's own margin left 50px above it. The run read as
+           a label stuck to the button rather than as a note under the copy.
+           Nothing here collapses (flex), so both numbers are literal. */
+        margin: 0 0 (26/16rem) 0;
+        padding: 0;
+        list-style: none;
+        display: flex;
+        flex-wrap: wrap;
+        gap: (6/16rem) (10/16rem);
+    }
+
+    #free-redesign .cs-limit {
+        font-family: var(--monoFont);
+        font-size: (11.5/16rem);
+        font-weight: 500;
+        line-height: 1.5em;
+        letter-spacing: 0.02em;
+        color: rgba(255, 255, 255, 0.72);
+        display: inline-flex;
+        align-items: baseline;
+        gap: (10/16rem);
+
+        /* drawn, not typed — a literal "·" would be read out between every
+           pair by a screen reader. Same reasoning as #speed's run. */
+        &:not(:last-child):after {
+            content: "\00B7";
+            opacity: 0.55;
+        }
     }
 
     /* pill-badge topper */
@@ -1471,6 +3731,174 @@
        <picture> it silently does nothing: the img inside resolves its height
        against an indefinite box, falls back to its own natural ratio, and the
        picture then grows to fit its content rather than to the ratio. */
+    /* ── browser chrome ──
+       The /work/ frame, rebuilt here rather than shared: work.less is only
+       loaded by /work/, and this is the home page. Same values, so the two
+       read as the same object - if one is retuned, retune both.
+
+       ⚠ THE ON-DARK VALUES IN BOTH THEMES, deliberately. #free-redesign's card
+       is --inkNavy in light mode and --medium in dark, so it is a dark surface
+       either way and /work/'s light chrome (#fdfbf4 on --warmSand) would be the
+       wrong object on it. --accent is lighter than both card fills, so the bar
+       reads as chrome against the card in both themes and needs no dark block.
+
+       The frame fill is barely visible - the picture covers it - so what is
+       actually doing the work here is the BAR plus the inset hairline. */
+    #free-redesign .cs-frame {
+        /* ⚠ Explicit, because this is the flex ITEM now and .cs-picture inside
+           it sizes at width:100%. In the mobile column layout the container's
+           align-items leaves a block child shrink-to-fit, so without this the
+           frame collapsed to its content and the example rendered 64px wide. */
+        width: 100%;
+        background-color: var(--medium);
+        border-radius: (12/16rem);
+        /* hairline as inset shadow, never border - a real border would change
+           the frame's box and the chrome bar's alignment (work.less's note) */
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08), 0 (18/16rem) (40/16rem) rgba(0, 0, 0, 0.45);
+        /* clip, NOT hidden - hidden forms a scroll container and kills the
+           view() timelines the ferry and the orcas run on. House rule. */
+        overflow: clip;
+    }
+
+    #free-redesign .cs-frame-bar {
+        display: flex;
+        align-items: center;
+        /* 8px - 12px between the toolbar's groups */
+        gap: clamp(0.5rem, 1vw, 0.75rem);
+        padding: (9/16rem) (12/16rem);
+        background-color: var(--accent);
+        box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.08);
+    }
+
+    #free-redesign .cs-dots {
+        display: flex;
+        align-items: center;
+        gap: (6/16rem);
+        flex: none;
+    }
+
+    #free-redesign .cs-dot {
+        width: (8/16rem);
+        height: (8/16rem);
+        border-radius: 50%;
+        background-color: rgba(255, 255, 255, 0.2);
+        flex: none;
+    }
+
+    /* ── back / forward / reload ──
+       ⚠ Grey, and the forward one greyer still. A real browser dims the
+       control it cannot use, and on a freshly opened page that is FORWARD -
+       there is nothing ahead to go to. Drawing all three at equal weight is
+       the tell that gives away a fake browser, and it costs one extra rule to
+       get right. */
+    #free-redesign .cs-nav {
+        display: flex;
+        align-items: center;
+        gap: (4/16rem);
+        flex: none;
+        color: rgba(255, 255, 255, 0.45);
+    }
+
+    #free-redesign .cs-nav-btn {
+        width: (14/16rem);
+        height: (14/16rem);
+        display: block;
+        flex: none;
+    }
+
+    #free-redesign .cs-nav-fwd {
+        opacity: 0.45;
+    }
+
+    /* ── the address field ──
+       A recessed pill, darker than the bar it sits in, which is how every
+       browser draws it. min-width: 0 is load-bearing: without it the flex item
+       refuses to shrink below its content and a 33-character netlify domain
+       pushes the menu button off the end of the bar on a phone. */
+    #free-redesign .cs-omnibox {
+        flex: 1 1 auto;
+        min-width: 0;
+        display: flex;
+        align-items: center;
+        gap: (6/16rem);
+        padding: (4/16rem) (10/16rem);
+        border-radius: (20/16rem);
+        background-color: rgba(0, 0, 0, 0.22);
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.07);
+    }
+
+    #free-redesign .cs-lock {
+        width: (10/16rem);
+        height: (10/16rem);
+        flex: none;
+        display: block;
+        color: rgba(255, 255, 255, 0.5);
+    }
+
+    /* the three domains are stacked, so this needs a height of its own -
+       absolutely positioned children give it none */
+    #free-redesign .cs-urls {
+        position: relative;
+        flex: 1 1 auto;
+        min-width: 0;
+        height: (14/16rem);
+    }
+
+    #free-redesign .cs-url {
+        position: absolute;
+        inset: 0;
+        font-family: var(--monoFont);
+        font-size: (10/16rem);
+        font-weight: 500;
+        line-height: (14/16rem);
+        letter-spacing: 0.01em;
+        color: rgba(255, 255, 255, 0.62);
+        /* a 33-character domain in a 180px field on a phone */
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        /* the resting state is "only the first domain", matching .cs-shot. The
+           animation is what reveals 2 and 3, so reduced motion needs no second
+           rule - it lands on the teriyaki shot AND the teriyaki domain. */
+        opacity: 0;
+        animation-duration: var(--redesignCycle, 9s);
+        /* steps, not ease - see the keyframes */
+        animation-timing-function: step-end;
+        animation-iteration-count: infinite;
+        /* longhand, never the `animation` shorthand - house rule */
+    }
+
+    #free-redesign .cs-url-1 {
+        opacity: 1;
+        animation-name: cs-url-fade-1;
+    }
+
+    #free-redesign .cs-url-2 {
+        animation-name: cs-url-fade-2;
+    }
+
+    #free-redesign .cs-url-3 {
+        animation-name: cs-url-fade-3;
+    }
+
+    /* the overflow menu */
+    #free-redesign .cs-menu {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: (2/16rem);
+        flex: none;
+
+        i {
+            width: (3/16rem);
+            height: (3/16rem);
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.35);
+            display: block;
+        }
+    }
+
+
     #free-redesign .cs-picture {
         /* one number retimes the whole loop - the keyframes are proportional,
            and the two delays below are calc()d off it. 9s = 2.4s a shot with
@@ -1481,11 +3909,15 @@
         width: 100%;
         aspect-ratio: 4 / 3;
         display: block;
-        border-radius: (10/16rem);
+        /* ⚠ radius and shadow moved to .cs-frame (2026-09-28). They have to
+           live on the OUTER box now or the chrome bar sits outside the rounded
+           corner and the shadow draws a second edge inside the frame. This
+           keeps the inner clip so the crossfade cannot bleed past the corners. */
+        border-radius: 0 0 (10/16rem) (10/16rem);
         /* clip, NOT hidden: hidden forms a scroll container and kills the
            view() timelines the ferry and the orcas run on - house rule */
         overflow: clip;
-        box-shadow: 0 (18/16rem) (40/16rem) rgba(0, 0, 0, 0.45);
+
     }
 
     #free-redesign .cs-shot {
@@ -1558,7 +3990,12 @@
         flex: 1 1 48%;
     }
 
-    #free-redesign .cs-picture {
+    /* ⚠ THE FLEX ITEM IS .cs-frame, NOT .cs-picture (2026-09-28). The chrome
+       wrapper went in between them, so .cs-picture stopped being a child of
+       .cs-container and its width:100% started resolving against an
+       auto-width parent - the whole example collapsed to 64px wide. If the
+       frame is ever removed, these two rules move back. */
+    #free-redesign .cs-frame {
         flex: 1 1 52%;
     }
 }
@@ -1573,7 +4010,7 @@
         flex: 1 1 54%;
     }
 
-    #free-redesign .cs-picture {
+    #free-redesign .cs-frame {
         flex: 1 1 46%;
     }
 
@@ -1653,11 +4090,64 @@
     }
 }
 
+/* ── the address bar, switching with the picture ──
+   ⚠ THESE SNAP. Two photographs at 50% opacity are a crossfade; two strings at
+   50% opacity are unreadable mush, so step-end timing holds each domain solid
+   and swaps it in one frame.
+
+   ⚠ THE SWITCH POINTS ARE CHOSEN, NOT ROUNDED. The picture's crossfades run
+   33.33-40% and 66.67-73.33% of the cycle, and each swap is placed INSIDE one
+   of those windows (36% and 70%), where the image is already dissolving and the
+   eye has nothing stable to compare against. Move a switch outside its window
+   and the domain visibly changes under a still picture, which reads as a bug.
+   If --redesignCycle or the picture keyframes are retimed, retime these too. */
+@keyframes cs-url-fade-1 {
+    0%,
+    36% {
+        opacity: 1;
+    }
+
+    36.01%,
+    100% {
+        opacity: 0;
+    }
+}
+
+@keyframes cs-url-fade-2 {
+    0%,
+    36% {
+        opacity: 0;
+    }
+
+    36.01%,
+    70% {
+        opacity: 1;
+    }
+
+    70.01%,
+    100% {
+        opacity: 0;
+    }
+}
+
+@keyframes cs-url-fade-3 {
+    0%,
+    70% {
+        opacity: 0;
+    }
+
+    70.01%,
+    100% {
+        opacity: 1;
+    }
+}
+
 /* Reduced motion - hold the first shot.
    Killing the animation drops every layer back to its declared opacity, which
    is 0 on .cs-shot and 1 on .cs-shot-1, so this needs no second rule. */
 @media (prefers-reduced-motion: reduce) {
-    #free-redesign .cs-shot {
+    #free-redesign .cs-shot,
+    #free-redesign .cs-url {
         animation-name: none;
     }
 }
@@ -1676,7 +4166,7 @@
 
         .cs-container {
             width: 100%;
-            max-width: (1280/16rem);
+            max-width: var(--containerWidth);
             margin: auto;
             display: flex;
             flex-direction: column;
@@ -1725,30 +4215,129 @@
             margin: 0;
             padding: 0;
             display: grid;
-            grid-template-columns: 1fr;
+            /* ⚠ minmax(0, 1fr), not a bare 1fr — the single-column case needs
+               it just as much as the multi-column ones. A bare 1fr is
+               minmax(AUTO, 1fr), so the track is floored at the item's
+               min-content, and at a 320px viewport that floor is wider than the
+               column: measured 42 elements hanging past the viewport edge with
+               the card itself 39px over. It only showed up at 320 because that
+               is the first width narrow enough for the floor to bite. */
+            grid-template-columns: minmax(0, 1fr);
             /* 32px - 44px */
             gap: clamp(2rem, 4vw, 2.75rem);
         }
 
+        /* ── each card IS a raised panel ──
+           ⚠ PER CARD, NOT ONE PANEL BEHIND THE GRID. That was built and cut
+           (Bryan, 2026-09-29): wrapping the whole section in a single
+           --panelLight panel makes four cards on one tray, and what he wants is
+           four raised objects. #about is one panel because it holds ONE
+           portrait; a four-up grid is the other case.
+
+           The surface itself is #about's, though: --panelLight is the same
+           rgba(27,42,56,.05) its container uses, and it flips itself for dark
+           mode, which is why the dark block barely mentions these.
+
+           ⚠ .glass() stays because --panelLight is a TINT, not a fill: 5% navy
+           over the sand with a 22px backdrop blur behind it is the glassy
+           surface. The translucency is the mechanism.
+
+           ⚠ Safe here, unsafe in #speed: that section has the orca pod swimming
+           behind its cards, so anything see-through showed the animals through
+           the scores. Nothing moves behind these. */
         .cs-item {
             list-style: none;
+            box-sizing: border-box;
             display: flex;
             flex-direction: column;
+            /* 16px - 22px */
+            padding: clamp(1rem, 1.8vw, 1.375rem);
+            border-radius: (16/16rem);
+            /* ⚠ EXACTLY #about's two declarations, nothing re-derived.
+               background-color + background-image and NOTHING ELSE, because
+               every time I "adapted" this it stopped matching:
+
+                 · .glass() was on here. Its backdrop-filter carries
+                   saturate(180%), which saturates the sand showing THROUGH the
+                   card - so the card picked up a warmer, more golden cast than
+                   #about's panel, which has no backdrop-filter at all. That
+                   alone made the two read as different colours even though the
+                   fill was the same token.
+                 · The glow was re-scaled to 210/180px circles "so it would read
+                   on a small card". Moving the light changes where it lands and
+                   how strong it is at any given point: sampled at the top-left,
+                   #about's panel paints rgb(204,202,188) because the blue
+                   radial is near its hot spot there. A different radius puts a
+                   different colour in the same place.
+
+               So: the token, verbatim, both of them. If the glow looks faint on
+               a 300px card, that is what #about's panel looks like too, and
+               matching it was the requirement. */
+            background-color: var(--panelLight);
+            /* ⚠ --panelGlow's OWN COLOURS AND ALPHAS, WITH THE RADII IN PERCENT.
+               This is the whole reason these kept coming out a different colour
+               from #about's panel despite identical declarations.
+
+               The token's radials are absolute - `circle 720px` and
+               `circle 640px`. #about's panel is 1328px wide, so the light falls
+               off across it; a 299px card sits ENTIRELY inside a 720px circle,
+               so the same gradient applies at nearly full strength everywhere on
+               it. Measured from element screenshots at the left edge: panel
+               215,210,193 against card 207,202,186 - the card 8 points darker in
+               light mode, and 6 points LIGHTER in dark, because the on-dark pair
+               lifts rather than deepens.
+
+               720/1328 = 54% of width and 720/755 = 95% of height; 640 gives
+               48% / 85%. Expressed that way the light is a proportion of the box
+               instead of a fixed size, so a card and a full-width panel paint
+               the same colour at the same relative point. `ellipse` is required
+               for this - CSS does not accept a percentage radius on `circle`. */
+            background-image:
+                radial-gradient(ellipse 54% 95% at 6% -10%, rgba(54, 99, 117, 0.1), transparent 70%),
+                radial-gradient(ellipse 48% 85% at 97% 4%, rgba(194, 69, 46, 0.07), transparent 68%);
+            /* hairline as inset shadow, never border - house rule */
+            box-shadow: inset 0 0 0 1px rgba(27, 42, 56, 0.08);
+            transition: transform 0.35s, box-shadow 0.35s;
+
+            /* the lift moved up here from the window: the card is the object
+               that comes forward now, and lifting a window inside a card that
+               stayed put read as the picture peeling off it */
+            &:hover {
+                transform: translateY(-0.375rem);
+                box-shadow: inset 0 0 0 1px rgba(27, 42, 56, 0.16), 0 (18/16rem) (38/16rem) rgba(27, 42, 56, 0.14);
+            }
         }
 
-        /* the polaroid frame */
+        /* ── the browser window ──
+           Was a polaroid: 12px of cream mount around the shot with the domain
+           set as a caption beneath it. Rebuilt 2026-09-28 as the frame idiom
+           /work/ and #free-redesign both use, so the page stopped having three
+           different ways of saying "this is a website" - and so the domain
+           could move into an address bar, which is where a domain lives.
+
+           ⚠ NO PADDING NOW. The mount was the polaroid; a browser window has
+           chrome at the top and the page runs to the other three edges. The
+           12px is what paid for the bar, so the card's height barely moved.
+
+           ⚠ `clip`, not `hidden` - house rule. `hidden` forms a scroll
+           container, which kills the view() timelines the ferry and the orcas
+           run on elsewhere on this page. */
         .cs-card {
             box-sizing: border-box;
-            padding: (12/16rem);
-            margin: 0 0 (20/16rem);
-            background-color: #fdfbf4;
-            border: 1px solid rgba(27, 42, 56, 0.08);
-            border-radius: (10/16rem);
-            box-shadow: 0 (14/16rem) (32/16rem) rgba(27, 42, 56, 0.12);
+            overflow: clip;
+            /* 14px - 18px down to the project title */
+            margin: 0 0 clamp(0.875rem, 1.6vw, 1.125rem);
+            /* opaque: it sits ON the card above, and every pixel of it is
+               covered by the chrome bar or the screenshot anyway. The frosted
+               fill and its backdrop-filter went with the polaroid. */
+            background-color: var(--warmSand);
+            border-radius: (8/16rem);
+            /* a window resting on a card, not floating over a page - the deep
+               drop shadow belonged to the polaroid and now reads as the picture
+               hovering off its own card */
+            box-shadow: inset 0 0 0 1px rgba(27, 42, 56, 0.1);
             display: flex;
             flex-direction: column;
-            gap: (10/16rem);
-            transition: transform 0.35s, box-shadow 0.35s;
         }
 
         .cs-placeholder {
@@ -1765,11 +4354,99 @@
             color: var(--pugetBlue);
         }
 
-        /* real project thumbnail, occupying the same 4:3 slot as .cs-placeholder */
+        /* real project thumbnail, occupying the same 4:3 slot as .cs-placeholder.
+           The radius and clip moved up to .cs-card when it became a window -
+           rounding here as well would round the shot's top corners INSIDE the
+           chrome bar, which no browser does. */
         .cs-thumb-link {
             display: block;
-            border-radius: (6/16rem);
+            /* the positioning origin for .cs-visit */
+            position: relative;
+            /* ⚠ The whole window is one <a>, so the address bar inside it
+               inherited the link underline and the domain shipped underlined -
+               which no browser does, and which read as the giveaway that the
+               chrome was a drawing. */
+            text-decoration: none;
+        }
+
+        /* ── the chrome bar ──
+           The same object as #free-redesign's and /work/'s, at the size four
+           cards in a row can carry: dots and the domain, and no back/forward/
+           reload. At ~300px wide the controls would have taken a third of the
+           bar from the one thing on it that carries information.
+
+           ⚠ LIGHT-MODE VALUES here, where #free-redesign's are the on-dark
+           pair. That card is navy in both themes; these sit on a cream glass
+           card on warm sand, so this is /work/'s own light chrome. The
+           dark-mode block below flips them. */
+        .cs-frame-bar {
+            display: flex;
+            align-items: center;
+            gap: (5/16rem);
+            padding: (8/16rem) (10/16rem);
+            background-color: var(--warmSand);
+            box-shadow: inset 0 -1px 0 rgba(27, 42, 56, 0.1);
+        }
+
+        .cs-dot {
+            width: (6/16rem);
+            height: (6/16rem);
+            border-radius: 50%;
+            background-color: rgba(27, 42, 56, 0.18);
+            flex: none;
+        }
+
+        /* the recessed address field, same as #free-redesign's omnibox at the
+           size these cards can carry. Bare text on the bar read as a caption
+           that had wandered upwards; the pill is what says "address bar". */
+        .cs-frame-url {
+            margin-left: (4/16rem);
+            flex: 1 1 auto;
+            min-width: 0;
+            display: flex;
+            align-items: center;
+            gap: (4/16rem);
+            padding: (3/16rem) (8/16rem);
+            border-radius: (20/16rem);
+            background-color: rgba(27, 42, 56, 0.06);
+            box-shadow: inset 0 0 0 1px rgba(27, 42, 56, 0.05);
+        }
+
+        /* ⚠ Honest, not decoration: all four of these are served over https,
+           which is the same thing the monthly plan's "hand-coded & secure" line
+           and /work/'s SSL verify link claim. If a site here ever stopped being
+           https, this comes off that card rather than staying as a prop. */
+        .cs-lock {
+            width: (9/16rem);
+            height: (9/16rem);
+            flex: none;
+            display: block;
+            /* ⚠ NO opacity knock-back, and the same composited colour as the
+               domain beside it. At opacity .6 this measured 2.25:1 on the pill,
+               under the 3:1 WCAG 1.4.11 asks of a meaningful non-text graphic -
+               and this one IS meaningful: the padlock is the only thing on the
+               card that says https. Muting an icon is the easiest way to fail
+               that floor without noticing. */
+            color: rgba(27, 42, 56, 0.78);
+        }
+
+        .cs-url-text {
+            font-family: var(--monoFont);
+            font-size: (10/16rem);
+            line-height: 1.2em;
+            letter-spacing: 0.01em;
+            /* ⚠ NOT --pugetBlue, and the reason is the pill it sits in rather
+               than the bar. Measured against the BAR, --pugetBlue is 4.8:1 and
+               looks fine; measured against the real ground - the pill's own
+               rgba(27,42,56,.06) tint composited over the bar - it is 4.31:1,
+               under the 4.5 a 10px label needs. Measure the composite, not the
+               nearest named colour. */
+            color: rgba(27, 42, 56, 0.78);
+            /* a 33-character netlify domain in a ~300px card */
+            min-width: 0;
+            white-space: nowrap;
             overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .cs-thumb img {
@@ -1781,6 +4458,86 @@
             object-fit: cover;
             object-position: top; /* show the hero, anchored to the top */
             display: block;
+        }
+
+        /* ── the hover affordance ──
+           ⚠ The ENTIRE window is one link to a site that opens in a new tab,
+           and nothing said so. The screenshot looked like a picture, the card
+           had no button, and the only clue was the cursor. This is the one
+           addition here that is a usability fix rather than detail.
+
+           It rides on :focus-visible as well as :hover, so a keyboard user
+           gets the same affordance rather than only a ring - the same pairing
+           the .cs-link pills use. aria-hidden, because the <a>'s own label
+           already says "Visit the X website (opens in a new tab)"; without
+           that it would be read twice. */
+        .cs-visit {
+            position: absolute;
+            /* sits over the shot, low, clear of whatever the homepage's own
+               header is doing at the top of the image */
+            left: 50%;
+            bottom: (14/16rem);
+            transform: translate(-50%, (6/16rem));
+            display: inline-flex;
+            align-items: center;
+            gap: (7/16rem);
+            padding: (7/16rem) (14/16rem);
+            border-radius: (40/16rem);
+            background-color: var(--inkNavy);
+            color: #fff;
+            font-family: var(--bodyFont);
+            font-size: (13/16rem);
+            font-weight: 600;
+            line-height: 1;
+            white-space: nowrap;
+            box-shadow: 0 (8/16rem) (20/16rem) rgba(27, 42, 56, 0.35);
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.25s ease, transform 0.25s ease;
+
+            .cs-ext {
+                width: (10/16rem);
+                height: (10/16rem);
+                flex: none;
+                display: block;
+            }
+        }
+
+        .cs-thumb-link:hover .cs-visit,
+        .cs-thumb-link:focus-visible .cs-visit {
+            opacity: 1;
+            transform: translate(-50%, 0);
+        }
+
+        /* the browser default is 1px of blue and vanishes on a cream card */
+        .cs-thumb-link:focus-visible {
+            outline: 2px solid var(--coralAccent);
+            outline-offset: 3px;
+            border-radius: (4/16rem);
+        }
+
+        /* ── Client / Demo ──
+           ⚠ THIS IS A CREDIBILITY RULE, NOT A LABEL STYLE. Two of these four
+           are demos for businesses that do not exist, and CLAUDE.md's standing
+           instruction is that nothing on the site may read as a client project
+           that isn't one. That was carried entirely by the sentence under each
+           card ("Demo build for a restaurant that doesn't exist"), which is
+           honest but only works on someone who reads it - and a grid of four
+           screenshots is skimmed, not read. The tag makes it scannable.
+
+           Never relabel a demo as Client. If a fifth card lands, it gets one of
+           these two words and no third word. */
+        .cs-tag {
+            font-family: var(--monoFont);
+            font-size: (9.5/16rem);
+            font-weight: 600;
+            line-height: 1;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #31596a;
+            padding: (4/16rem) (7/16rem);
+            border-radius: (20/16rem);
+            box-shadow: inset 0 0 0 1px rgba(27, 42, 56, 0.2);
         }
 
         .cs-ph-icon {
@@ -1805,20 +4562,21 @@
             color: var(--pugetBlue);
         }
 
-        .cs-filename {
-            font-family: var(--monoFont);
-            font-size: (11/16rem);
-            line-height: 1.2em;
-            color: var(--pugetBlue);
-            padding-left: (2/16rem);
-        }
+        /* ── the eyebrow row ──
+           ⚠ Number and tag ABOVE the title, not beside it. They shared the
+           line with the <h3> until the cards gained padding: at 267px inner
+           width "Bryan Van Dusen" and "Bryan & Katie" broke to two lines while
+           "Moe Balls" stayed on one, so the descriptions started at four
+           different heights across a row meant to be read across.
 
+           It is also the idiom #services already uses four sections up - an
+           index and a tag on their own row, then the heading at full width -
+           so this stopped being a second way of labelling a card. */
         .cs-flex {
             display: flex;
-            justify-content: space-between;
-            align-items: baseline;
-            gap: (12/16rem);
-            margin-bottom: (6/16rem);
+            align-items: center;
+            gap: (10/16rem);
+            margin-bottom: (8/16rem);
         }
 
         .cs-h3 {
@@ -1835,38 +4593,83 @@
             font-family: var(--monoFont);
             font-size: (12/16rem);
             font-weight: 500;
+            line-height: 1;
             letter-spacing: 0.1em;
-            color: var(--pugetBlue);
+            color: #31596a;
             flex: none;
         }
 
+            /* ⚠ #31596a, NOT --pugetBlue, and the reason is the card under it.
+               --pugetBlue is tuned for --warmSand, where it measures 4.80:1.
+               These cards are --panelLight OVER that sand - rgb(217,211,194),
+               a shade deeper - and the same token drops to 4.39:1 there, under
+               the 4.5 body copy needs. This is one step darker on the same hue
+               and measures 5.08:1 on the card.
+
+               ⚠ THE SAME PAIR FAILS ELSEWHERE ON THE SITE, and it is not mine
+               to fix from here: #about's .cs-text and #services' both sit
+               directly on their own --panelLight panels in --pugetBlue, and
+               both measure 4.39:1. Flagged to Bryan 2026-09-29. If a
+               --pugetBlueOnPanel token is ever added, these three adopt it. */
         .cs-item-text {
             font-size: (15/16rem);
             line-height: 1.55em;
             margin: 0;
-            color: var(--pugetBlue);
+            color: #31596a;
         }
 
-        /* scattered-photo tilt, straightens as you approach it */
-        .cs-item:nth-of-type(1) .cs-card {
-            transform: rotate(-1.5deg);
-        }
+        /* ⚠ THE SCATTERED-PHOTO TILT IS GONE (2026-09-28), four per-card
+           rotations of -1.5deg to 1deg that straightened on hover. It was
+           right for a polaroid and wrong for a browser: a tilted window is
+           not a thing, and the frame and the tilt were two metaphors arguing
+           about what the card is. Exactly the note recorded on #about's
+           portrait, where the tilt came off for the same reason.
 
-        .cs-item:nth-of-type(2) .cs-card {
-            transform: rotate(1.25deg);
-        }
+           The hover lift stays - that reads as the card coming forward, which
+           a window can do. It keeps the rotate(0deg) OFF the transform now,
+           since there is no rotation to cancel. */
 
-        .cs-item:nth-of-type(3) .cs-card {
-            transform: rotate(-0.75deg);
-        }
+        /* the route to /work/. Same pill as #about and #pricing - hairline,
+           arrow that leaves on hover, focus treated like hover so a keyboard
+           user sees the affordance and not only the ring. */
+        .cs-link {
+            font-family: var(--bodyFont);
+            font-size: (15/16rem);
+            font-weight: 600;
+            line-height: (44/16rem);
+            text-decoration: none;
+            text-transform: none;
+            color: var(--inkNavy);
+            box-sizing: border-box;
+            padding: 0 (24/16rem);
+            border-radius: (40/16rem);
+            box-shadow: inset 0 0 0 1px rgba(27, 42, 56, 0.25);
+            display: inline-flex;
+            align-items: center;
+            gap: (10/16rem);
+            transition: color 0.25s, box-shadow 0.25s;
 
-        .cs-item:nth-of-type(4) .cs-card {
-            transform: rotate(1deg);
-        }
+            .cs-arrow {
+                display: inline-block;
+                transition: transform 0.25s;
+            }
 
-        .cs-item:hover .cs-card {
-            transform: rotate(0deg) translateY(-0.375rem);
-            box-shadow: 0 (22/16rem) (44/16rem) rgba(27, 42, 56, 0.18);
+            &:hover,
+            &:focus-visible {
+                color: var(--coralText);
+                box-shadow: inset 0 0 0 1px var(--coralText);
+
+                .cs-arrow {
+                    transform: translateX(4px);
+                }
+            }
+
+            /* house rule: the browser default is 1px of blue and nearly
+               invisible on warm sand */
+            &:focus-visible {
+                outline: 2px solid var(--coralAccent);
+                outline-offset: 3px;
+            }
         }
     }
 }
@@ -1875,7 +4678,15 @@
 @media only screen and (min-width: 48rem) {
     #work {
         .cs-card-group {
-            grid-template-columns: repeat(2, 1fr);
+            /* ⚠ minmax(0, 1fr), NOT 1fr. A bare 1fr is minmax(AUTO, 1fr), so
+               every track is floored at its own min-content - and card 3 and 4
+               carry 33-character netlify domains. Measured at 1440 the row came
+               out 267 / 267 / 331 / 331px: two cards visibly wider than the
+               other two, their screenshots taller with them, and the
+               descriptions starting 48px lower down the row. The ellipsis on
+               the address bar cannot help while the track is sized to the text
+               it is meant to be truncating. */
+            grid-template-columns: repeat(2, minmax(0, 1fr));
         }
     }
 }
@@ -1887,15 +4698,18 @@
 @media only screen and (min-width: 80rem) {
     #work {
         .cs-card-group {
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: repeat(4, minmax(0, 1fr));
         }
     }
 }
 
-/* Reduced motion — hold the cards straight */
+/* Reduced motion — hold the cards still.
+   ⚠ Targets .cs-item, not .cs-card. It used to hold the scattered-photo tilt on
+   the window; the tilt is gone and the lift moved up to the card, so pointing
+   this at .cs-card now cancels nothing and the card still moves. */
 @media (prefers-reduced-motion: reduce) {
-    #work .cs-item .cs-card,
-    #work .cs-item:hover .cs-card {
+    #work .cs-item,
+    #work .cs-item:hover {
         transform: none;
         transition: none;
     }
@@ -1919,10 +4733,97 @@
                 color: var(--rainGray);
             }
 
-            .cs-card {
-                background-color: var(--medium);
-                border-color: rgba(255, 255, 255, 0.08);
+            /* ⚠ THE CARD IS .cs-item NOW, and only its GLOW is stated here.
+               The fill is var(--glassCard), which root.less already flips to
+               rgba(38,56,74,.72) for dark mode - restating it would be a second
+               source of truth for the same surface. The gradient hues are
+               hardcoded light values though, so those do have to flip. */
+            /* the on-dark pair, at the same proportional radii - see the
+               light-mode note for why these are percentages. --panelLight
+               itself flips on its own and is not restated. */
+            .cs-item {
+                background-image:
+                    radial-gradient(ellipse 54% 95% at 6% -10%, rgba(123, 166, 201, 0.1), transparent 70%),
+                    radial-gradient(ellipse 48% 85% at 97% 4%, rgba(222, 100, 75, 0.09), transparent 68%);
+                box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+
+                &:hover {
+                    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.18), 0 (18/16rem) (38/16rem) rgba(0, 0, 0, 0.4);
+                }
             }
+
+            /* the window on it: --warmSand is a page colour and reads as a
+               bright slab on navy */
+            .cs-card {
+                background-color: var(--accent);
+                box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+            }
+
+            /* ── the chrome, on dark ──
+               The bar's light values (--warmSand on a cream card) are correct
+               on the tan section and wrong the moment it flips: --warmSand is
+               a page colour, and on navy it reads as a bright slab rather than
+               as chrome. --accent is the same lift /work/ gives its frames on
+               dark panels. */
+            .cs-frame-bar {
+                background-color: var(--accent);
+                box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.08);
+            }
+
+            .cs-dot {
+                background-color: rgba(255, 255, 255, 0.2);
+            }
+
+            .cs-frame-url {
+                /* the light pill is a navy tint; on a dark card that is
+                   invisible, so it inverts to a light one */
+                background-color: rgba(255, 255, 255, 0.07);
+                box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+            }
+
+            /* ⚠ ON .cs-url-text, NOT on the .cs-frame-url pill around it.
+               This override sat on the wrapper, and when the padlock went in
+               the domain moved into its own child that declares --pugetBlue -
+               which beats an inherited colour. Result: #366375 text on a
+               rgb(65,98,116) pill, measured 1.01:1. The address bars in dark
+               mode were EMPTY, and they looked like a design choice.
+
+               ⚠ Also not --rainGray, which is what light mode and /work/ use
+               here: on this pill #b8c4c9 comes out 4.39:1, under the 4.5 a
+               10px label needs. */
+            .cs-url-text {
+                color: rgba(255, 255, 255, 0.88);
+            }
+
+            /* the padlock and the Client/Demo tag are both --pugetBlue, a
+               body-copy-on-light token. On the dark card it is close to
+               invisible; both lift to the on-dark greys. */
+            /* matches the domain beside it — see the light-mode note on why
+               this carries no opacity */
+            .cs-lock {
+                color: rgba(255, 255, 255, 0.88);
+            }
+
+            .cs-tag {
+                color: var(--rainGray);
+                box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.22);
+            }
+
+            /* ⚠ the hover pill is --inkNavy, which IS the dark page. Left alone
+               it would be a navy chip on a navy-ish card with only its shadow
+               to find it by. --medium is the raised surface this section
+               already uses in dark mode. */
+            .cs-visit {
+                background-color: var(--medium);
+                box-shadow: 0 (8/16rem) (20/16rem) rgba(0, 0, 0, 0.5), inset 0 0 0 1px rgba(255, 255, 255, 0.14);
+            }
+
+            /* mirrors the #about and #pricing teasers' dark pill */
+            .cs-link {
+                color: var(--bodyTextColorWhite);
+                box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.25);
+            }
+
 
             .cs-placeholder {
                 background-color: var(--accent);
@@ -1945,7 +4846,7 @@
 
         .cs-container {
             width: 100%;
-            max-width: (1280/16rem);
+            max-width: var(--containerWidth);
             margin: auto;
             display: flex;
             flex-direction: column;
@@ -1982,7 +4883,10 @@
             list-style: none;
             /* 24px - 32px */
             padding: clamp(1.5rem, 3vw, 2rem);
-            background-color: #fdfbf4;
+            /* frosted — see --glassCard in root.less for the alpha and for why
+               this reads as almost nothing on a flat tan ground */
+            background-color: var(--glassCard);
+            .glass();
             border: 1px solid rgba(27, 42, 56, 0.08);
             border-radius: (12/16rem);
             box-shadow: 0 (6/16rem) (18/16rem) rgba(27, 42, 56, 0.06);
@@ -2047,7 +4951,9 @@
             }
 
             .cs-item {
-                background-color: var(--medium);
+                /* same token as light mode — it flips with the theme; the rule
+                   stays only because its neighbours in this block do */
+                background-color: var(--glassCard);
                 border-color: rgba(255, 255, 255, 0.08);
                 box-shadow: none;
             }
@@ -2067,7 +4973,7 @@
 
         .cs-container {
             width: 100%;
-            max-width: (1280/16rem);
+            max-width: var(--containerWidth);
             margin: auto;
             display: flex;
             flex-direction: column;
@@ -2145,22 +5051,41 @@
             font-weight: 600;
             line-height: 1em;
             color: var(--inkNavy);
-            background-color: #fdfbf4;
-            border: 1px solid rgba(27, 42, 56, 0.12);
+            /* frosted — see --glassCard in root.less for the alpha and for why
+               this reads as almost nothing on a flat tan ground */
+            background-color: var(--glassCard);
+            .glass();
+            /* ⚠ INSET SHADOW, NOT A BORDER (changed 2026-09-29). These were the
+               last cards on the home page still edged with a real `border`,
+               which the house rule reserves for buttons only - everything else
+               on the page hairlines with an inset shadow, and #speed's and
+               #work's cards all do.
+
+               It is not only tidiness here. A border is part of the box, so
+               these pills were 2px wider and taller than their padding implied
+               and the flex-wrap rows broke a hair earlier than they needed to;
+               an inset shadow paints inside and changes no geometry.
+
+               Lifted .12 -> .16 at the same time. The pill surface measures
+               1.22:1 against the sand it sits on, so the edge is doing nearly
+               all of the work of saying where the pill stops. */
+            box-shadow: inset 0 0 0 1px rgba(27, 42, 56, 0.16);
             border-radius: (40/16rem);
             padding: (12/16rem) (20/16rem);
-            transition: transform 0.25s, border-color 0.25s;
+            transition: transform 0.25s, box-shadow 0.25s;
 
             &:hover {
                 transform: translateY(-2px);
-                border-color: var(--coral);
+                box-shadow: inset 0 0 0 1px var(--coral);
             }
         }
 
         /* home base */
         .cs-item-home {
             background-color: var(--inkNavy);
-            border-color: var(--inkNavy);
+            /* matches the fill so the pill reads as one solid object, the way
+               the border-colour used to */
+            box-shadow: inset 0 0 0 1px var(--inkNavy);
             color: var(--warmSand);
         }
 
@@ -2251,17 +5176,288 @@
                re-break the consistency. */
 
             .cs-item {
-                background-color: var(--medium);
-                border-color: rgba(255, 255, 255, 0.12);
+                /* same token as light mode — it flips with the theme; the rule
+                   stays only because its neighbours in this block do */
+                background-color: var(--glassCard);
+                /* ⚠ box-shadow, not border-color. The pills hairline with an
+                   inset shadow now (house rule); this was still overriding
+                   `border-color`, which after that change did nothing at all -
+                   so dark mode was painting the LIGHT mode's navy hairline on a
+                   dark card, where it is invisible. Exactly the kind of override
+                   that silently stops applying when the property underneath it
+                   is swapped. */
+                box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16);
                 color: var(--bodyTextColorWhite);
             }
 
             .cs-item-home {
                 background-color: var(--coral);
-                border-color: var(--coral);
+                box-shadow: inset 0 0 0 1px var(--coral);
                 color: #fff;
             }
 
         }
+    }
+}
+
+/*-- -------------------------- -->
+<---   #services — live trays   -->
+<--- -------------------------- -*/
+
+/* The six .cs-proof specimens, animated. Each plays the claim printed above
+   it: the widths light in turn, the LCP bar draws, the search listing builds,
+   the message sends and publishes, the checks land, the markup reveals itself.
+
+   ── five rules this block follows ──
+
+   1. GATED ON .is-in. Every selector requires `.cs-card-group.is-in`, the class
+      assets/js/text-rise.js adds when the group first enters the viewport.
+      Nothing animates before the section has been reached, and if that script
+      never runs the specimens simply stay as they are. Withholding an animation
+      is a safe JS dependency; withholding CONTENT is not, which is the rule in
+      root.less about .cs-rise-armed.
+
+   2. MOSTLY REST. Each cycle is a short action and a long hold. Six specimens
+      in continuous motion behind six sentences would be a section you cannot
+      read; the brief was "loops quietly", and quiet is bought with the hold.
+
+   3. NO TWO PERIODS MATCH. 5.5 / 6.5 / 7 / 7.5 / 8 / 9 seconds, sharing no
+      common factor, so the grid never drifts into phase and starts beating.
+
+   4. TRANSFORM, OPACITY AND CLIP-PATH ONLY. No width, height or colour is
+      animated. ⚠ 06 reveals with clip-path rather than scaleX specifically
+      because it now contains REAL TEXT - scaling a line of type horizontally
+      squashes the glyphs, which is exactly the cheap look the rebuild was
+      meant to get rid of. clip-path wipes without touching the letterforms.
+
+   5. THE WHOLE BLOCK IS INSIDE prefers-reduced-motion: no-preference, so there
+      are no "put it back" rules to go stale: anyone with reduced motion set
+      matches nothing in here and gets the static specimens unchanged. Adding a
+      `reduce` block to undo this one would be the bug.
+
+   ⚠ Specificity: (1,4,0) against the base specimens' (1,2,0), so these win
+   without !important - but only while they sit BELOW those rules in the file. */
+
+@media (prefers-reduced-motion: no-preference) {
+    /* ── 01 · the phone stretches into the tablet, then into the laptop ──
+       One frame changing shape, with its chrome and its label cross-fading to
+       match. The cycle ends by morphing back down to the phone rather than
+       cutting, so the loop has no seam.
+
+       ⚠ THIS IS THE ONE PLACE IN THIS FILE THAT ANIMATES WIDTH AND HEIGHT, and
+       it is deliberate. Rule 4 at the top of this block says transform and
+       opacity only, because those run on the compositor. A transform cannot do
+       this job: going from 22x40 to 64x42 is scaleX 2.9 against scaleY 1.05,
+       and a scaled box takes its stroke with it — the 1.5px frame would render
+       at 4.4px on the vertical edges and 1.6px on the horizontal ones, and the
+       notch and the browser dots would smear with it.
+
+       Animating the box instead keeps the stroke honest at every size, because
+       it is an inset box-shadow and box-shadows do not scale with the element.
+       The cost is a layout pass on ONE absolutely-sized element inside a
+       fixed-height stage, so nothing outside it is measured again. That is a
+       fair trade for the only specimen on the page whose subject IS its
+       dimensions.
+
+       ⚠ The stage and the label slot are fixed-height for the same reason. If
+       either could grow, this would stop being a contained layout and start
+       reflowing the tray on every frame. */
+    #services .cs-card-group.is-in .cs-p-device .cs-scr {
+        animation: cs-dev-morph 7s ease-in-out infinite;
+    }
+    #services .cs-card-group.is-in .cs-p-device .cs-notch {
+        animation: cs-dev-notch 7s ease-in-out infinite;
+    }
+    #services .cs-card-group.is-in .cs-p-device .cs-home {
+        animation: cs-dev-home 7s ease-in-out infinite;
+    }
+    #services .cs-card-group.is-in .cs-p-device .cs-bar {
+        animation: cs-dev-bar 7s ease-in-out infinite;
+    }
+    #services .cs-card-group.is-in .cs-p-device .cs-w1 {
+        animation: cs-dev-w1 7s ease-in-out infinite;
+    }
+    #services .cs-card-group.is-in .cs-p-device .cs-w2 {
+        animation: cs-dev-w2 7s ease-in-out infinite;
+    }
+    #services .cs-card-group.is-in .cs-p-device .cs-w3 {
+        animation: cs-dev-w3 7s ease-in-out infinite;
+    }
+
+    /* ── 02 · the bar draws to its resting length ──
+       Ends at scaleX(0.62), which is where the static version sits, so the
+       hold is the design rather than a pose the animation happens to stop in. */
+    #services .cs-card-group.is-in .cs-p-speed .cs-fill {
+        animation: cs-proof-fill 5.5s ease-in-out infinite;
+    }
+    /* the value lands as the bar finishes drawing, not before it */
+    #services .cs-card-group.is-in .cs-p-speed .cs-cap {
+        animation: cs-proof-in 5.5s ease-in-out infinite;
+        animation-delay: 0.3s;
+    }
+
+    /* ── 03 · the listing builds, url then title then description ── */
+    #services .cs-card-group.is-in .cs-p-serp > span {
+        animation: cs-proof-in 9s ease-in-out infinite;
+    }
+    #services .cs-card-group.is-in .cs-p-serp .cs-serp-title { animation-delay: 0.2s; }
+    #services .cs-card-group.is-in .cs-p-serp .cs-serp-snip { animation-delay: 0.4s; }
+
+    /* ── 04 · the request arrives, then it is published ── */
+    #services .cs-card-group.is-in .cs-p-flow .cs-msg {
+        animation: cs-proof-in 6.5s ease-in-out infinite;
+    }
+    #services .cs-card-group.is-in .cs-p-flow .cs-sent {
+        animation: cs-proof-in 6.5s ease-in-out infinite;
+        animation-delay: 0.55s;
+    }
+
+    /* ── 05 · the checks land in sequence ──
+       ⚠ They land and then STAY for the rest of the cycle. Read the note on
+       .cs-p-status: on a card headed "Hosting and backups", a check that comes
+       and goes reads as a service flapping. The exit at the end of the loop is
+       the whole row fading together, never one at a time. */
+    #services .cs-card-group.is-in .cs-p-status .cs-row {
+        animation: cs-proof-in 8s ease-in-out infinite;
+    }
+    /* ⚠ 3 and 4, not 2 and 3. nth-child counts ALL siblings, and .cs-status-head
+       is now the first of them, so the three rows are children 2, 3 and 4. The
+       old numbers still matched two of the rows, which is the dangerous kind of
+       wrong: the sequence just quietly ran out of order. */
+    #services .cs-card-group.is-in .cs-p-status .cs-row:nth-child(3) { animation-delay: 0.16s; }
+    #services .cs-card-group.is-in .cs-p-status .cs-row:nth-child(4) { animation-delay: 0.32s; }
+
+    /* ── 06 · the markup reveals itself, line by line ── */
+    #services .cs-card-group.is-in .cs-p-code .cs-code-l {
+        animation: cs-proof-wipe 7.5s ease-in-out infinite;
+    }
+    /* same shift — .cs-file is child 1, so the code lines are 2, 3 and 4 */
+    #services .cs-card-group.is-in .cs-p-code .cs-code-l:nth-child(3) { animation-delay: 0.24s; }
+    #services .cs-card-group.is-in .cs-p-code .cs-code-l:nth-child(4) { animation-delay: 0.48s; }
+}
+
+/* ── the keyframes ──
+   Top level rather than inside the block above: @keyframes declared inside a
+   media query only exist for that query, and keeping them together is how the
+   "short action, long hold" shape gets checked - read the percentages down the
+   page and the action should always be over inside the first fifth. */
+
+/* ── the morph, and the six fades timed against it ──
+   Read the percentages as one storyboard. The frame holds a shape for roughly
+   1.5s and changes over roughly 0.7s, three times in a 7s cycle: phone to 22%,
+   tablet 32-54%, laptop 64-86%, back to phone by 96%. Every other keyframe set
+   below hangs off those four numbers, so if the morph timing moves they all
+   move with it - the chrome would otherwise still be a notch while the frame is
+   a laptop. */
+@keyframes cs-dev-morph {
+    0% { width: (22/16rem); height: (40/16rem); border-radius: (4/16rem); }
+    22% { width: (22/16rem); height: (40/16rem); border-radius: (4/16rem); }
+    32% { width: (36/16rem); height: (46/16rem); border-radius: (3/16rem); }
+    54% { width: (36/16rem); height: (46/16rem); border-radius: (3/16rem); }
+    64% { width: (76/16rem); height: (44/16rem); border-radius: (3/16rem); }
+    86% { width: (76/16rem); height: (44/16rem); border-radius: (3/16rem); }
+    96% { width: (22/16rem); height: (40/16rem); border-radius: (4/16rem); }
+    100% { width: (22/16rem); height: (40/16rem); border-radius: (4/16rem); }
+}
+
+/* notch — phone only */
+@keyframes cs-dev-notch {
+    0% { opacity: 1; }
+    22% { opacity: 1; }
+    28% { opacity: 0; }
+    92% { opacity: 0; }
+    98% { opacity: 1; }
+    100% { opacity: 1; }
+}
+
+/* home indicator — phone and tablet, gone by the laptop */
+@keyframes cs-dev-home {
+    0% { opacity: 1; }
+    54% { opacity: 1; }
+    60% { opacity: 0; }
+    92% { opacity: 0; }
+    98% { opacity: 1; }
+    100% { opacity: 1; }
+}
+
+/* browser bar — laptop only */
+@keyframes cs-dev-bar {
+    0% { opacity: 0; }
+    60% { opacity: 0; }
+    68% { opacity: 1; }
+    88% { opacity: 1; }
+    94% { opacity: 0; }
+    100% { opacity: 0; }
+}
+
+@keyframes cs-dev-w1 {
+    0% { opacity: 1; }
+    24% { opacity: 1; }
+    30% { opacity: 0; }
+    92% { opacity: 0; }
+    98% { opacity: 1; }
+    100% { opacity: 1; }
+}
+
+@keyframes cs-dev-w2 {
+    0% { opacity: 0; }
+    26% { opacity: 0; }
+    34% { opacity: 1; }
+    56% { opacity: 1; }
+    62% { opacity: 0; }
+    100% { opacity: 0; }
+}
+
+@keyframes cs-dev-w3 {
+    0% { opacity: 0; }
+    58% { opacity: 0; }
+    66% { opacity: 1; }
+    88% { opacity: 1; }
+    94% { opacity: 0; }
+    100% { opacity: 0; }
+}
+
+@keyframes cs-proof-fill {
+    0% { transform: scaleX(0); opacity: 1; }
+    /* 0.62 is the static design's length, so the hold IS the design */
+    17% { transform: scaleX(0.62); opacity: 1; }
+    74% { transform: scaleX(0.62); opacity: 1; }
+    82% { transform: scaleX(0.62); opacity: 0; }
+    /* the rewind happens at zero opacity, so it is never seen */
+    83% { transform: scaleX(0); opacity: 0; }
+    100% { transform: scaleX(0); opacity: 0; }
+}
+
+@keyframes cs-proof-in {
+    0% { opacity: 0; transform: translateY((5/16rem)); }
+    9% { opacity: 1; transform: translateY(0); }
+    80% { opacity: 1; transform: translateY(0); }
+    90% { opacity: 0; transform: translateY((-3/16rem)); }
+    100% { opacity: 0; transform: translateY((5/16rem)); }
+}
+
+@keyframes cs-proof-wipe {
+    0% { clip-path: inset(0 100% 0 0); }
+    10% { clip-path: inset(0 0 0 0); }
+    82% { clip-path: inset(0 0 0 0); }
+    90% { clip-path: inset(0 100% 0 0); }
+    100% { clip-path: inset(0 100% 0 0); }
+}
+
+/* The portrait uncovering from its own bottom edge. `round` matches the 6px
+   radius on the image, without which the wipe leaves square corners. */
+@keyframes about-photo {
+    from {
+        clip-path: inset(100% 0 0 0 round (6/16rem));
+    }
+    to {
+        clip-path: inset(0 0 0 0 round (6/16rem));
+    }
+}
+
+/* Reduced motion: the photo must not be left clipped to nothing. */
+@media (prefers-reduced-motion: reduce) {
+    #about .cs-image-group.is-in .cs-photo img {
+        animation-name: none;
     }
 }

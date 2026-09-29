@@ -1,0 +1,23 @@
+{#
+	The outbound arrow on a link that opens in a new tab.
+
+	⚠ Inline SVG, not a CSS-drawn mark and not a typed glyph, and both of those
+	were tried first:
+
+	  · A box with border-top + border-right draws a CORNER, and a corner is not
+	    an arrow. Unrotated it reads as a bracket "⌐"; rotated 45deg the vertex
+	    swings round to due right and it reads as "›", which says internal
+	    navigation on a link that leaves the site. There is no rotation of a
+	    corner that produces "↗", because the shaft is the missing part.
+	  · The character ↗ (U+2197) is not reliably in IBM Plex Mono, so it
+	    resolves from a system fallback at a different weight and width — the
+	    one glyph on the card not set in the site's own faces.
+
+	Shaft plus head, stroked in currentColor so it follows the link through
+	hover, the navy card and dark mode with no rules of its own. Same reasoning
+	that keeps the logo, the nav chevron and the social icons inline.
+
+	Decorative: the link's own text says where it goes, and its aria-label says
+	that it opens in a new tab.
+#}
+<svg class="cs-ext" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M2.4 7.6 7.4 2.6"/><path d="M3.7 2.6h3.7v3.7"/></svg>
