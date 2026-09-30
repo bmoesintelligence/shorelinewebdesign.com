@@ -185,13 +185,19 @@
                this reads as almost nothing on a flat tan ground */
             background-color: var(--glassCard);
             .glass();
-            /* Hairline and shadow both up (8% -> 12%, 6% -> 9%) now there is a
-               deeper ground to define against. The panel does most of the
-               separating; these keep the card edge from dissolving into it at
-               the corners, where the radius leaves the least tone difference. */
-            border: 1px solid rgba(27, 42, 56, 0.12);
-            border-radius: (12/16rem);
-            box-shadow: 0 (6/16rem) (18/16rem) rgba(27, 42, 56, 0.09);
+            /* RAISED, per root.less's two-step card scale: --edge carries the
+               hairline and --lift the float. The border is gone with it — the
+               edge is the inset shadow now, which is the house rule anyway and
+               which this card was breaking with a real 1px border.
+
+               ⚠ The note this replaces said the hairline and shadow had been
+               pushed UP (8->12%, 6->9%) so the card would not dissolve into
+               the panel at its corners. That reasoning still holds and the
+               tokens are set where it is satisfied; what it cannot justify is
+               being a private pair of alphas. Six cards on this page each
+               tuned their own and the grid stopped looking chosen. */
+            border-radius: var(--radiusCard);
+            box-shadow: var(--edge), var(--lift);
             display: flex;
             flex-direction: column;
             align-items: flex-start;
@@ -199,7 +205,7 @@
 
             &:hover {
                 transform: translateY(-0.25rem);
-                box-shadow: 0 (14/16rem) (30/16rem) rgba(27, 42, 56, 0.12);
+                box-shadow: var(--edge), var(--liftHover);
             }
         }
 
@@ -375,9 +381,12 @@
             height: (118/16rem);
             padding: (12/16rem);
             background-color: rgba(27, 42, 56, 0.05);
-            /* hairline as an inset shadow, never a border — house rule */
-            box-shadow: inset 0 0 0 1px rgba(27, 42, 56, 0.07);
-            border-radius: (9/16rem);
+            /* hairline as an inset shadow, never a border — house rule.
+               --edge rather than a private .07: this tray is the recessed
+               step of the card scale, so it takes the same hairline as
+               everything else and only its radius marks it as nested. */
+            box-shadow: var(--edge);
+            border-radius: var(--radiusInner);
             /* clip, never hidden — house rule, this page runs view() timelines */
             overflow: clip;
             display: flex;
@@ -741,6 +750,23 @@
                 &:after { left: (4/16rem); }
             }
 
+            /* ── the LIVE chip ──
+               ⚠ ITS LABEL WAS WARM WHITE AND MEASURED 2.46:1, in BOTH themes,
+               against 4.5 for text this size. Not a dark-mode-only bug: this
+               card is in root.less's navy-surface list in light mode too, so
+               --proofAccent resolves to #e8846f (the pale on-navy coral) on
+               both, and bone on pale coral has never cleared AA. Dark mode was
+               only where it became obvious, because the card behind it was
+               also coral and the chip stopped reading as a chip at all.
+
+               Ink on the same pale coral measures 5.59:1. That is the house
+               rule from CLAUDE.md applied where it was missed:
+               DARK-ON-ACCENT IS THE SAFER DEFAULT — light labels on an accent
+               fill usually fail, and this one did.
+
+               The dot follows the label rather than staying white; a bone dot
+               on pale coral is the same 2.46:1 and it is the element carrying
+               the "live" signal. */
             .cs-live {
                 display: flex;
                 align-items: center;
@@ -748,14 +774,14 @@
                 padding: (3/16rem) (7/16rem) (3/16rem) (6/16rem);
                 border-radius: (20/16rem);
                 background-color: var(--proofAccent);
-                color: var(--bodyTextColorWhite);
+                color: var(--inkNavy);
                 letter-spacing: 0.1em;
 
                 i {
                     width: (4/16rem);
                     height: (4/16rem);
                     border-radius: 50%;
-                    background-color: var(--bodyTextColorWhite);
+                    background-color: var(--inkNavy);
                     display: block;
                 }
             }
@@ -962,10 +988,14 @@
             }
         }
 
-        /* the standout card — inverted */
+        /* the standout card — inverted.
+           ⚠ No border-color line any more: .cs-item dropped its real 1px
+           border when it moved onto --edge (house rule, hairlines are inset
+           shadows). A navy card on tan needs no edge of its own — the fill is
+           21:1 against the ground — so the inherited --edge is simply left to
+           do nothing visible here. */
         .cs-item-featured {
             background-color: var(--inkNavy);
-            border-color: var(--inkNavy);
 
             .cs-number,
             .cs-h3 {
@@ -1010,8 +1040,11 @@
                 --proofRule: rgba(255, 255, 255, 0.2);
                 --proofSurface: rgba(255, 255, 255, 0.07);
 
+                /* ⚠ No hairline override. --edge already flips to its
+                   white-alpha value in root.less's dark block, and the
+                   border-color line that used to sit here painted nothing at
+                   all — .cs-proof has never had a real border. */
                 background-color: rgba(0, 0, 0, 0.22);
-                border-color: rgba(255, 255, 255, 0.1);
             }
         }
     }
@@ -1077,8 +1110,14 @@
                 /* same token as light mode — it flips with the theme; the rule
                    stays only because its neighbours in this block do */
                 background-color: var(--glassCard);
-                border-color: rgba(255, 255, 255, 0.08);
-                box-shadow: none;
+
+                /* ⚠ This was `border-color: rgba(255,255,255,.08)` plus
+                   `box-shadow: none`. Both are wrong now and the second was
+                   actively destructive: --edge and --lift live in the shadow
+                   stack, so `none` would have erased the card's hairline AND
+                   its float in dark mode only. The tokens already re-point
+                   themselves in root.less's dark block, so the correct rule
+                   here is no rule at all. */
             }
 
             /* Navy on a navy card vanishes, so the tile lifts to the raised
@@ -1104,8 +1143,9 @@
                 --proofRule: rgba(255, 255, 255, 0.2);
                 --proofSurface: rgba(255, 255, 255, 0.07);
 
+                /* the hairline comes from --edge, which root.less already
+                   re-points for this theme */
                 background-color: rgba(0, 0, 0, 0.22);
-                box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.07);
             }
 
             .cs-h3 {
@@ -1126,33 +1166,50 @@
                 box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
             }
 
+            /* ── card 04, and why it is no longer a coral field ──
+               ⚠ THIS WAS A SOLID --coral FILL IN DARK MODE and it was a bug
+               with three parts, all measured 2026-09-30:
+
+                 · It made the largest coral surface on the site appear in the
+                   theme where coral is supposed to be RATIONED. Light mode
+                   gives this card a navy fill and a coral heading; dark mode
+                   inverted it into a coral panel. Two different decisions for
+                   one card reads as an accident, because it was one.
+                 · The .cs-live pill inside it paints from --proofAccent, which
+                   on this card resolves to #e8846f. On a #c2452e ground that
+                   is 1.90:1 — the pill was not low contrast, it was gone.
+                 · Its label then sat at 2.46:1 on the pill. Unreadable twice
+                   over.
+
+               The fix is the idiom #pricing's featured card already uses in
+               this exact situation (see .cs-item-featured in the Pricing dark
+               block): the section is already dark, so a navy fill would vanish
+               — keep the raised card surface and make it pop with a coral EDGE
+               and a coral glow instead. Coral stays an accent, the tray goes
+               back onto a navy ground, and every inherited dark-mode rule in
+               this block applies to it like any other card.
+
+               That is also why the white-on-coral overrides that used to live
+               here are gone: .cs-number, .cs-h3, .cs-tag and .cs-item-text
+               were all being forced to white to survive the coral fill, and
+               the surrounding block already sets each of them correctly for a
+               navy card. */
             .cs-item-featured {
-                background-color: var(--coral);
-                border-color: var(--coral);
+                background-color: var(--medium);
+                /* ⚠ The coral edge is a RING IN THE SHADOW STACK, not
+                   border-color. .cs-item has no real border any more (it moved
+                   onto --edge), so a border-color declaration here would
+                   silently paint nothing. Replacing --edge rather than adding
+                   to it: this card wants the coral rim instead of the neutral
+                   hairline, not both. */
+                box-shadow: inset 0 0 0 1px var(--coral), 0 (10/16rem) (34/16rem) rgba(214, 85, 61, 0.22);
 
-                /* This card is a SOLID CORAL fill in dark mode, so the coral
-                   tick would vanish into it and the muted rules would barely
-                   register. Everything on this one surface goes white. */
-                .cs-number:before {
-                    background-color: #fff;
-                }
-
-                .cs-number:after {
-                    background-color: rgba(255, 255, 255, 0.4);
-                }
-
-                .cs-tag {
-                    color: rgba(255, 255, 255, 0.85);
-                    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35);
-                }
-
-                .cs-number,
+                /* the heading keeps its coral, the way it does in light mode —
+                   --coralAccent, not --coralText, because at 19px/700 this is
+                   large text and the accent value is closer to brand. Measured
+                   4.01:1 on --medium. */
                 .cs-h3 {
-                    color: #fff;
-                }
-
-                .cs-item-text {
-                    color: rgba(255, 255, 255, 0.85);
+                    color: var(--coralAccent);
                 }
             }
         }
@@ -1186,7 +1243,9 @@
                this could adopt it - but .cs-panel is opt-in per section, and
                only #services has opted in so far. */
             background-color: rgba(27, 42, 56, 0.05);
-            border-radius: clamp(1.25rem, 2.5vw, 2rem);
+            /* the panel token, not a second copy of its value — this WAS
+               the literal clamp --panelRadius already holds */
+            border-radius: var(--panelRadius);
             /* 24px - 64px */
             padding: clamp(1.5rem, 4.5vw, 4rem);
             display: flex;
@@ -1332,9 +1391,14 @@
                this reads as almost nothing on a flat tan ground */
             background-color: var(--glassCard);
             .glass();
-            border: 1px solid rgba(27, 42, 56, 0.08);
-            border-radius: (10/16rem);
-            box-shadow: 0 (18/16rem) (40/16rem) rgba(27, 42, 56, 0.16);
+            /* RAISED, on the shared card scale. ⚠ This was the heaviest
+               drop shadow on the page — 18/40 at 16% — which made the one
+               photograph on the site read as the most physical object in the
+               layout rather than as a card among cards. --lift is the same
+               float every other raised card gets. The real border is gone for
+               the house rule (hairlines are inset shadows). */
+            border-radius: var(--radiusCard);
+            box-shadow: var(--edge), var(--lift);
             display: flex;
             flex-direction: column;
             gap: (10/16rem);
@@ -2353,8 +2417,13 @@
 /* Mobile - 360px */
 @media only screen and (min-width: 0rem) {
     #speed {
-        /* the one dark band in the middle of the page */
-        background-color: var(--inkNavy);
+        /* ── the one dark band in the middle of the page ──
+           ⚠ --speedDeep, NOT --inkNavy directly. The wave dividers above and
+           below paint their deep band from the same token, and that band has
+           to land on this colour exactly or it draws a seam the full width of
+           the page. root.less carries the full note. In light mode the token
+           resolves to --inkNavy, so nothing moves here. */
+        background-color: var(--speedDeep);
         padding: var(--sectionPadding);
         /* anchors the orca pod. NOTE: deliberately no `overflow: hidden` — it
            would silently kill the pod's view() scroll-timeline. The pod hides
@@ -2526,13 +2595,20 @@
             /* 18px - 26px */
             padding: clamp(1.125rem, 2vw, 1.625rem) (12/16rem);
             width: 100%;
-            border-radius: (16/16rem);
+            border-radius: var(--radiusCard);
             background-color: var(--medium);
             background-image:
                 radial-gradient(circle 150px at 10% -12%, rgba(123, 166, 201, 0.1), transparent 70%),
                 radial-gradient(circle 130px at 96% 6%, rgba(222, 100, 75, 0.09), transparent 68%);
-            /* hairline per house style: inset shadow, never a border — a real
-               border would change the grid track sizing the rings centre in */
+            /* FLAT step of the card scale: hairline only, no float. Inset
+               shadow, never a border — a real border would change the grid
+               track sizing the rings centre in.
+
+               ⚠ --edge is the LIGHT-mode value even here, because #speed is a
+               navy band inside a light page. It resolves to a dark hairline,
+               which on --medium is not what this tile wants, so the white-alpha
+               is kept explicitly. This is the one place on the page where the
+               token's theme and the surface's theme disagree. */
             box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
 
@@ -2988,10 +3064,19 @@
    house rule) and the two white-alpha lines are lifted to hold their own against
    the deeper ground.
 
-   ⚠ #speed composites to #14202a here (rgba(0,0,0,.25) over --dark), and that
-   value is written out as --waveDeep in root.less because the wave dividers
-   above and below have to MATCH this band exactly. If this background changes,
-   change it there too — root.less carries the warning.
+   ⚠ THE BACKGROUND IS NOT DECLARED HERE ANY MORE, and that is the fix rather
+   than an omission. It used to be rgba(0,0,0,.25) over --dark, and root.less
+   then had to write the composited result (#14202a) out by hand as --waveDeep
+   so the dividers could land on it — two values kept in step by a warning on
+   each. Both now read --speedDeep, which the base rule above already paints
+   from, so this block has nothing left to say about colour.
+
+   ── and it was far too shallow ──
+   Measured 2026-09-30: that band came out 1.13:1 against the page ground it
+   sat on. The one dark section on the page was doing no work at all in this
+   theme, while the identical band in light mode separates at 21.6:1, and the
+   result was ~8,600px of unbroken navy. --speedDeep is deeper in dark mode for
+   exactly that reason; the number and the arithmetic are in root.less.
 
    Nothing needs doing to the coral arcs: #speed is already in root.less's
    navy-surface token list, so --coral and --coralText are correct inside it in
@@ -2999,8 +3084,6 @@
 @media only screen and (min-width: 0rem) {
     body.dark-mode {
         #speed {
-            background-color: rgba(0, 0, 0, 0.25);
-
             /* the unfilled part of each gauge. .12 was tuned against --inkNavy;
                on the darker composite it reads as almost nothing.
 
@@ -3122,8 +3205,10 @@
             background-image:
                 radial-gradient(circle 280px at 8% -14%, rgba(54, 99, 117, 0.1), transparent 70%),
                 radial-gradient(circle 240px at 97% 4%, rgba(194, 69, 46, 0.07), transparent 68%);
+            /* the dashed edge is a SHAPE decision (a ticket), not a hairline,
+               so it stays a real border and is not folded into --edge */
             border: 2px dashed rgba(27, 42, 56, 0.25);
-            border-radius: (16/16rem);
+            border-radius: var(--radiusCard);
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -3138,7 +3223,11 @@
             background-color: var(--inkNavy);
             border-style: solid;
             border-color: var(--inkNavy);
-            box-shadow: 0 (20/16rem) (48/16rem) rgba(27, 42, 56, 0.28);
+            /* RAISED step of the card scale. Was a private 20/48 at 28%, the
+               second-heaviest shadow on the page; it stands proud of the
+               dashed ticket beside it on FILL (navy on sand), which does that
+               job far harder than any shadow was. */
+            box-shadow: var(--lift);
             /* ⚠ THE ON-NAVY PAIR, overriding the tan card's above. This card
                is --inkNavy, so it is the one place in this tan section where
                the dark-surface lights are correct - the same two #speed's
@@ -3581,8 +3670,12 @@
            already resolves to the on-navy pair inside here, in both themes. That
            list is why this is one line instead of six. */
         background-image: var(--panelGlow);
-        border-radius: (20/16rem);
-        box-shadow: 0 (24/16rem) (60/16rem) rgba(27, 42, 56, 0.28);
+        /* PANEL scale, not card scale: this is a ~1400px section-width object
+           and it takes the panel family's own radius and elevation. See the
+           --panelLift note in root.less for why a panel is outside the
+           two-step card scale rather than an exception to it. */
+        border-radius: var(--panelRadius);
+        box-shadow: var(--panelLift);
         display: flex;
         flex-direction: column;
         align-items: flex-start;
@@ -3751,10 +3844,15 @@
            frame collapsed to its content and the example rendered 64px wide. */
         width: 100%;
         background-color: var(--medium);
-        border-radius: (12/16rem);
+        border-radius: var(--radiusCard);
         /* hairline as inset shadow, never border - a real border would change
-           the frame's box and the chrome bar's alignment (work.less's note) */
-        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08), 0 (18/16rem) (40/16rem) rgba(0, 0, 0, 0.45);
+           the frame's box and the chrome bar's alignment (work.less's note).
+
+           ⚠ White-alpha hairline, not --edge, for the same reason #speed's
+           score tiles keep theirs: this frame sits on the navy panel inside a
+           LIGHT page, so the token resolves to the dark hairline and would
+           disappear. The float is the card scale's --lift, which does flip. */
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08), var(--lift);
         /* clip, NOT hidden - hidden forms a scroll container and kills the
            view() timelines the ferry and the orcas run on. House rule. */
         overflow: clip;
@@ -3913,7 +4011,7 @@
            live on the OUTER box now or the chrome bar sits outside the rounded
            corner and the shadow draws a second edge inside the frame. This
            keeps the inner clip so the crossfade cannot bleed past the corners. */
-        border-radius: 0 0 (10/16rem) (10/16rem);
+        border-radius: 0 0 var(--radiusInner) var(--radiusInner);
         /* clip, NOT hidden: hidden forms a scroll container and kills the
            view() timelines the ferry and the orcas run on - house rule */
         overflow: clip;
@@ -4040,7 +4138,11 @@
            changes no geometry. */
         .cs-container {
             background-color: var(--medium);
-            box-shadow: inset 0 0 0 1px rgba(214, 85, 61, 0.35);
+            /* ⚠ The rim must be listed WITH the panel's float, not instead
+               of it: box-shadow does not cascade per-layer, so a bare inset
+               here would have erased --panelLift and dropped the panel flat
+               onto the page in dark mode only. */
+            box-shadow: inset 0 0 0 1px rgba(214, 85, 61, 0.35), var(--panelLift);
         }
     }
 }
@@ -4170,33 +4272,35 @@
             margin: auto;
             display: flex;
             flex-direction: column;
-            align-items: center;
+            /* ⚠ flex-start, not center. This section's opener is LEFT
+               aligned — see .cs-content below. With `center` the content
+               block stayed pinned to the middle of the container and only
+               its text moved, which reads as a mistake rather than as a
+               decision. */
+            align-items: flex-start;
             /* 40px - 64px */
             gap: clamp(2.5rem, 5vw, 4rem);
         }
 
+        /* ── the one section opener that is NOT a centred column ──
+           Four of this page's sections opened with an identical centred
+           stack: coral pill, 44px headline, 17px subhead. #work has the
+           least to announce of the four — the projects below it are the
+           argument, and "Recent work" over a grid of websites needs no
+           run-up — so it is the one that breaks the pattern. Left aligned,
+           no topper pill (the markup carries why), and the heading sits on
+           the same edge the first card starts on.
+
+           ⚠ Its .cs-topper rule is gone with the pill. Putting one back
+           means putting the centred treatment back too, or the pill will
+           sit left while every other section's sits centred. */
         .cs-content {
-            text-align: center;
+            text-align: left;
             width: 100%;
             max-width: (640/16rem);
             display: flex;
             flex-direction: column;
-            align-items: center;
-        }
-
-        /* pill-badge topper — same as every interior page */
-        .cs-topper {
-            font-family: var(--monoFont);
-            font-size: (12/16rem);
-            font-weight: 500;
-            line-height: 1em;
-            text-transform: uppercase;
-            letter-spacing: 0.12em;
-            color: var(--coralText);
-            background-color: rgba(214, 85, 61, 0.14);
-            padding: (8/16rem) (14/16rem);
-            border-radius: (40/16rem);
-            margin-bottom: (20/16rem);
+            align-items: flex-start;
         }
 
         .cs-title {
@@ -4252,7 +4356,7 @@
             flex-direction: column;
             /* 16px - 22px */
             padding: clamp(1rem, 1.8vw, 1.375rem);
-            border-radius: (16/16rem);
+            border-radius: var(--radiusCard);
             /* ⚠ EXACTLY #about's two declarations, nothing re-derived.
                background-color + background-image and NOTHING ELSE, because
                every time I "adapted" this it stopped matching:
@@ -4295,8 +4399,9 @@
             background-image:
                 radial-gradient(ellipse 54% 95% at 6% -10%, rgba(54, 99, 117, 0.1), transparent 70%),
                 radial-gradient(ellipse 48% 85% at 97% 4%, rgba(194, 69, 46, 0.07), transparent 68%);
-            /* hairline as inset shadow, never border - house rule */
-            box-shadow: inset 0 0 0 1px rgba(27, 42, 56, 0.08);
+            /* FLAT at rest: hairline only, no float. Hairline as inset
+               shadow, never border - house rule. */
+            box-shadow: var(--edge);
             transition: transform 0.35s, box-shadow 0.35s;
 
             /* the lift moved up here from the window: the card is the object
@@ -4304,7 +4409,7 @@
                stayed put read as the picture peeling off it */
             &:hover {
                 transform: translateY(-0.375rem);
-                box-shadow: inset 0 0 0 1px rgba(27, 42, 56, 0.16), 0 (18/16rem) (38/16rem) rgba(27, 42, 56, 0.14);
+                box-shadow: var(--edge), var(--liftHover);
             }
         }
 
@@ -4331,11 +4436,11 @@
                covered by the chrome bar or the screenshot anyway. The frosted
                fill and its backdrop-filter went with the polaroid. */
             background-color: var(--warmSand);
-            border-radius: (8/16rem);
+            border-radius: var(--radiusInner);
             /* a window resting on a card, not floating over a page - the deep
                drop shadow belonged to the polaroid and now reads as the picture
                hovering off its own card */
-            box-shadow: inset 0 0 0 1px rgba(27, 42, 56, 0.1);
+            box-shadow: var(--edge);
             display: flex;
             flex-direction: column;
         }
@@ -4741,22 +4846,22 @@
             /* the on-dark pair, at the same proportional radii - see the
                light-mode note for why these are percentages. --panelLight
                itself flips on its own and is not restated. */
+            /* ⚠ The two box-shadow overrides that used to sit here are gone.
+               --edge, --lift and --liftHover re-point themselves in root.less's
+               dark block, so restating a white-alpha twin per card is exactly
+               the duplication the scale was introduced to remove. Only the
+               gradient hues still need flipping, because those are hardcoded
+               light values. */
             .cs-item {
                 background-image:
                     radial-gradient(ellipse 54% 95% at 6% -10%, rgba(123, 166, 201, 0.1), transparent 70%),
                     radial-gradient(ellipse 48% 85% at 97% 4%, rgba(222, 100, 75, 0.09), transparent 68%);
-                box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
-
-                &:hover {
-                    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.18), 0 (18/16rem) (38/16rem) rgba(0, 0, 0, 0.4);
-                }
             }
 
             /* the window on it: --warmSand is a page colour and reads as a
                bright slab on navy */
             .cs-card {
                 background-color: var(--accent);
-                box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
             }
 
             /* ── the chrome, on dark ──
@@ -5459,5 +5564,109 @@
 @media (prefers-reduced-motion: reduce) {
     #about .cs-image-group.is-in .cs-photo img {
         animation-name: none;
+    }
+}
+
+
+/*-- -------------------------- -->
+<---       Vertical Rhythm      -->
+<--- -------------------------- -*/
+
+/* ⚠ THE WHOLE PAGE'S SECTION SPACING, IN ONE PLACE, AND IT IS LAST IN THE FILE
+   ON PURPOSE. Every section above declares `padding: var(--sectionPadding)` in
+   its own block; these override one edge at a time, and they win on source
+   order rather than on specificity. Moving this block up the file silently
+   reverts it.
+
+   ── what this is for ──
+   Audited 2026-09-30: all eight body sections measured 100px top and 100px
+   bottom, so every boundary on the home page was an identical 200px gap. That
+   is the clearest machine signature a layout has. A page laid out by a person
+   groups: sections that make one argument sit close, and a new argument gets
+   air before it.
+
+   The page is four acts, and the gaps now say so:
+
+     hero      → services        56   the hero's padding is the whole gap;
+                                       #services contributes none, because
+                                       its panel's own 56px inset already is
+                                       the breathing room. See its note below.
+     services  → about          112   what you get, and who builds it: one act
+     about     → speed          200   ⚠ PINNED — wave divider
+     speed     → pricing        200   ⚠ PINNED — wave divider
+     pricing   → free-redesign  112   the offer, and the no-risk way in: one act
+     free-red. → work           244   the act break into the evidence
+     work      → service-area   112   what has been built, and where: one act
+     service-a.→ footer         200   ⚠ PINNED — wave divider
+
+   ⚠ The hero's own bottom padding is --padTight and lives in critical.less,
+   not here, because #hero is an above-the-fold section and this file is
+   deferred. Its note carries the 1440x900 measurement behind the value.
+
+   ── the three PINNED boundaries are not style choices ──
+   A wave divider costs zero page height by living inside the next section's
+   top padding and breaking back into the previous one. Its true maximum
+   excursion is |--peakFoam| + --crestH = 1.74 x --waveH, and the Wave Divider
+   block above does that arithmetic against --padNormal specifically. Tighten
+   either side of a divider and the foam breaks over the next section's first
+   line of type. #speed top/bottom and #footer top stay --padNormal, and so do
+   the bottoms they break back into: #about and #service-area.
+
+   Net effect, desktop: about 300px off the page height, before #stats was
+   removed. Mobile scales with the clamps. */
+@media only screen and (min-width: 0rem) {
+    /* ── act 1: the argument ── */
+    #services {
+        /* ⚠ ZERO, and it is the panel that makes it correct rather than
+           reckless. #services opens with a .cs-panel carrying its own
+           --panelPad inset — 56px at 1440 — before its first ink. Any padding
+           declared here is therefore a SECOND gap stacked on a gap that is
+           already there, and the section's visible top edge is the panel's
+           rounded corner either way, not this box.
+
+           Measured at 1512x829, which is where this was caught: hero bottom
+           56 + section top 56 + panel inset 56 put 168px of empty sand between
+           the buttons and THE ESSENTIALS, and landed the pill at y=812 in an
+           829px viewport — sliced through its x-height by the fold. A label
+           cut in half at the viewport edge reads as a rendering fault, not as
+           an invitation to scroll. Now the hero's own --padTight is the whole
+           gap, the panel's inset is the whole breathing room inside it, and
+           the pill clears the fold with the top of the h2 behind it.
+
+           ⚠ This is NOT a licence to zero other sections' padding. It is
+           specific to a section whose first child is a full-width panel;
+           #about and #free-redesign are the same shape and could follow, but
+           every other section on this page puts type straight onto the ground
+           and needs its own space. */
+        padding-top: 0;
+        padding-bottom: var(--padTight);
+    }
+
+    #about {
+        padding-top: var(--padTight);
+        /* bottom stays --padNormal: the wave into #speed breaks up into it */
+    }
+
+    /* ── act 3: the offer ──
+       #pricing's TOP stays --padNormal — the arrival divider out of #speed
+       lands in it. */
+    #pricing {
+        padding-bottom: var(--padTight);
+    }
+
+    #free-redesign {
+        padding-top: var(--padTight);
+        /* bottom stays --padNormal; #work's own top carries the act break */
+    }
+
+    /* ── act 4: the evidence ── */
+    #work {
+        padding-top: var(--padWide);
+        padding-bottom: var(--padTight);
+    }
+
+    #service-area {
+        padding-top: var(--padTight);
+        /* bottom stays --padNormal: the wave into #footer breaks up into it */
     }
 }

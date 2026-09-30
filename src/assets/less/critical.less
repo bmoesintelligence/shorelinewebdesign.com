@@ -40,8 +40,33 @@
 @media only screen and (min-width: 0rem) {
     #hero {
         /* clears the fixed nav + top bar */
-        padding: clamp(9rem, 16vw, 12rem) (16/16rem) var(--sectionPadding);
-        padding-bottom: clamp(3.75rem, 7.82vw, 6.25rem);
+        /* ⚠ THREE values, and the third is deliberately not --sectionPadding.
+           That token is a SHORTHAND (`var(--padNormal) 1rem`), so dropping it
+           in the bottom slot silently expanded to a four-value padding whose
+           fourth term became the left gutter. It happened to be the same 1rem
+           and so was harmless, but the declaration only worked by coincidence.
+           Spelled out here instead.
+
+           ── the bottom is --padTight, not --padNormal ──
+           Measured at 1440x900 with #stats removed: the hero ran 789px and
+           #services' first ink (the panel's top edge) landed at 889 — 11px
+           above the fold, so the opening screen ended in ~200px of empty sand
+           and nothing said the page continued.
+
+           ── the TOP was cut too, 12rem -> 11rem ──
+           The target is not the panel's edge but THE ESSENTIALS pill, which is
+           the first thing that reads as content. Its position is the sum of
+           six numbers, and the nav owns the first (it ends at 123) and the
+           copy owns the largest (the text column is 485). That leaves the four
+           paddings, and this is the only one of them the hero can give up
+           without crowding anything: at 12rem the gap from the nav's bottom
+           edge to the topper was 69px, at 11rem it is 53px, which is still
+           clear air.
+
+           ⚠ Desktop-only in effect, which is why it is safe. 16vw only reaches
+           11rem at ~1100px wide, so every phone and tablet is on the 9rem
+           floor and nothing below 1100 moves at all. */
+        padding: clamp(9rem, 16vw, 11rem) (16/16rem) var(--padTight);
         background-color: var(--warmSand);
         position: relative;
         /* `clip` not `hidden` — hidden makes this a scroll container, which
@@ -486,10 +511,12 @@
     }
 
     /* ── the two tuning knobs ──
-       On `body`, not #hero: #stats is a SIBLING section, and custom properties
-       inherit down the tree rather than sideways, so a hero-scoped variable is
-       invisible to it. critical.css only loads on the home page, which is the
-       only place either section exists.
+       On `body` rather than #hero. That was originally because #stats was a
+       SIBLING section and custom properties inherit down the tree rather than
+       sideways, so a hero-scoped variable was invisible to it. #stats is gone
+       and nothing outside #hero reads these today; they stay on body because
+       moving them buys nothing and the next sibling that needs them would hit
+       the same wall. critical.css only loads on the home page.
 
        Literal values, no (n/16rem) math: LESS passes custom-property values
        through verbatim and the browser drops anything it can't parse — silently.
@@ -658,90 +685,16 @@
         }
     }
 
-    /* The stats strip sits in the opening viewport, so it belongs to the same
-       entrance rather than waiting for a scroll. It picks up where the hero's
-       buttons leave off (3 steps) and sweeps left to right a half-step apart,
-       landing with the ferry at ~1.55s. Not an LCP candidate — the diorama is —
-       so a plain fade is fine here. */
-    /* ── the stat strip's entrance ──
-       Three movements, and which vocabulary each one uses is the point.
+    /* ⚠ #stats AND ITS ENTRANCE WERE DELETED 2026-09-30, and roughly 220
+       lines of this file went with them: the tile fade, the masked figure
+       rise, the drawn rule, the four nth-of-type delay pairs and the
+       stat-rule keyframe. index.html carries why the section went.
 
-         TILE    fades up (hero-in). It is a box, and boxes fade — root.less
-                 draws that line and the hero follows it for its button row and
-                 its badge.
-         FIGURE  RISES (hero-rise), masked by its own .cs-rise. These are the
-                 largest type on the page after the h1, and until 2026-09-22
-                 they simply fell out of the tile's cross-fade, which meant the
-                 biggest numerals on the page spent most of their entrance
-                 sitting washed-out grey over the sand. Type slides and never
-                 fades: same rule, same keyframe, same easing as the headline.
-         RULE    draws left to right under the figure.
-
-       ⚠ The whole run still has to finish inside ~1.5s. That ceiling is set in
-       the --intro-dur / --intro-step comment above and it is not arbitrary:
-       past it the intro stops reading as considered and starts reading as
-       slow, and repeat visitors feel it most. The last tile is the binding
-       constraint, so the figure and the rule are deliberately SHORTER than the
-       0.9s the tiles get — 0.75s and 0.55s. Last tile: 0.65s delay + 0.065
-       offset + 0.75 = 1.465s. Lengthen either and the budget is gone. */
-    #stats {
-        .cs-item {
-            animation-name: hero-in;
-            animation-duration: var(--intro-dur);
-            animation-fill-mode: backwards;
-            animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
-        }
-
-        /* Half a step behind its own tile, so the figure rises INTO a card that
-           has already arrived rather than travelling inside something still
-           fading. At zero offset the rise happens under the fade and is simply
-           not seen. */
-        .cs-rise-in {
-            animation-name: hero-rise;
-            animation-duration: 0.75s;
-            animation-fill-mode: backwards;
-            animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
-        }
-
-        .cs-number:after {
-            animation-name: stat-rule;
-            animation-duration: 0.55s;
-            animation-fill-mode: backwards;
-            animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
-        }
-
-        .cs-item:nth-of-type(1) {
-            animation-delay: calc(var(--intro-step) * 3.5);
-
-            .cs-rise-in { animation-delay: calc(var(--intro-step) * 4); }
-            .cs-number:after { animation-delay: calc(var(--intro-step) * 4.2); }
-        }
-        .cs-item:nth-of-type(2) {
-            animation-delay: calc(var(--intro-step) * 4);
-
-            .cs-rise-in { animation-delay: calc(var(--intro-step) * 4.5); }
-            .cs-number:after { animation-delay: calc(var(--intro-step) * 4.7); }
-        }
-        .cs-item:nth-of-type(3) {
-            animation-delay: calc(var(--intro-step) * 4.5);
-
-            .cs-rise-in { animation-delay: calc(var(--intro-step) * 5); }
-            .cs-number:after { animation-delay: calc(var(--intro-step) * 5.2); }
-        }
-        .cs-item:nth-of-type(4) {
-            animation-delay: calc(var(--intro-step) * 5);
-
-            .cs-rise-in { animation-delay: calc(var(--intro-step) * 5.5); }
-            .cs-number:after { animation-delay: calc(var(--intro-step) * 5.7); }
-        }
-    }
-
-    /* the rule, drawn on from its left end */
-    @keyframes stat-rule {
-        from {
-            transform: scaleX(0);
-        }
-    }
+       What that frees is the back half of the intro budget. The run used to
+       be pinned at ~1.465s by the LAST stat tile, and the hero's own parts
+       all land well before it — so if the entrance is ever retuned, the
+       ceiling in the --intro-dur / --intro-step comment above is no longer
+       the binding constraint it describes. */
 
     /* Reduced motion: nothing animates in. Handled here rather than by refusing
        to add a flag class, which is how webhero.co does it — a media query
@@ -764,29 +717,17 @@
                 display: none;
             }
 
-            /* The curtain must not be left sitting over the scene. This has to
-               stay INSIDE #hero — nested one level deeper it compiles to
-               `#stats .cs-item .cs-image-group:after`, which matches nothing,
-               and the reveal keeps running under reduced motion. */
+            /* The curtain must not be left sitting over the scene. This has
+               to stay INSIDE #hero — nested one level deeper it compiled to
+               `#stats .cs-item .cs-image-group:after` back when a #stats block
+               followed it here, which matched nothing, and the reveal kept
+               running under reduced motion. */
             .cs-image-group:after {
                 animation-name: none;
                 display: none;
             }
         }
 
-        /* ⚠ All three, not just the tile. The figure's rise leaves it
-           translated 115% down behind its own clip if the animation is
-           cancelled without also cancelling the transform, and the rule would
-           sit at scaleX(0) — i.e. a reduced-motion visitor would get four
-           empty tiles with no figures and no rules. `animation-name: none`
-           drops the whole declaration, so each element renders at its authored
-           state. That is the same reason the hero lists every one of its
-           animated parts here rather than relying on a parent. */
-        #stats .cs-item,
-        #stats .cs-rise-in,
-        #stats .cs-number:after {
-            animation-name: none;
-        }
     }
 }
 
@@ -862,7 +803,25 @@
     #hero {
         .cs-container {
             flex-direction: row;
-            align-items: center;
+            /* ── the scene hangs from the TOP, it does not centre ──
+               ⚠ This was `center`, and centring is measured against the whole
+               text column — whose last element is the terms line, not the
+               buttons. So the scene's lowest point (the water diamond's bottom
+               vertex, a sharp corner sitting in empty sand) was pushed down
+               past the button row and became the lowest ink in the hero. It
+               also meant the scene moved vertically whenever the copy's line
+               count changed, which is how it drifted there in the first place.
+
+               flex-start plus the explicit offset on .cs-image-group below
+               pins both ends instead: the top sits a fixed distance under the
+               topper, the bottom lands just inside the buttons.
+
+               ⚠ DESKTOP ONLY. The 37.5-64rem block keeps `center` on purpose —
+               there the scene is 247px against a 395px column, so top-aligning
+               it would strand it high with the whole lower right of the hero
+               empty. This only pays off where the two columns are close in
+               height, which is 64rem up. */
+            align-items: flex-start;
             justify-content: space-between;
         }
 
@@ -917,7 +876,20 @@
         .cs-image-group {
             flex: 0 1 var(--sceneWidth);
             max-width: var(--sceneWidth);
-            margin: 0;
+            /* ⚠ The top offset is load-bearing — see .cs-container above, which
+               removed the centring this replaces. The badge is 92px at
+               top: -10px and overhangs the scene box, so this has to clear it;
+               at 20px the badge still sits ~60px below the marquee.
+
+               ⚠ 20px, NOT 30, and the reason is the hero's HEIGHT rather than
+               its composition. Measured at 1512x829: the text column runs 460px
+               and the scene 438px, so above an offset of ~22px the scene's box
+               becomes the taller of the two and starts setting the hero's
+               floor — the section was ending 16px below its own last line of
+               ink for no reason anyone could see. Under 22 the copy governs
+               again, which is the right way round: the hero is as tall as what
+               it says. Raise this and re-check which column wins. */
+            margin: (20/16rem) 0 0;
         }
 
         .cs-badge {
@@ -951,6 +923,15 @@
             .cs-text {
                 color: var(--rainGray);
             }
+
+            /* ⚠ A NEW ELEMENT IN #hero NEEDS A LINE HERE, and the cost of
+               forgetting is invisible rather than loud. The terms run that
+               briefly sat under the buttons was --pugetBlue: 4.80:1 on the
+               light hero and 2.23:1 the moment the section flipped, which is
+               the identical figure #pricing's dark block records for its own
+               .cs-term run. Both reached for the body-copy token without
+               checking it on navy, months apart. The copy around it looked
+               correct, which is why nobody saw it. */
 
             .cs-button-solid {
                 background-color: var(--coral);
@@ -994,231 +975,6 @@
                 border-radius: inherit;
                 background: radial-gradient(circle at 39% 34%, #cdbf98 0 11%, transparent 11%), radial-gradient(circle at 64% 53%, #d5c8a2 0 7.5%, transparent 7.5%), radial-gradient(circle at 29% 61%, #cdbf98 0 6%, transparent 6%), radial-gradient(circle at 73% 31%, #d5c8a2 0 4.5%, transparent 4.5%), radial-gradient(circle at 54% 73%, #cdbf98 0 5.5%, transparent 5.5%), radial-gradient(circle at 47% 47%, #d5c8a2 0 3%, transparent 3%), radial-gradient(circle at 69% 70%, #cdbf98 0 3.5%, transparent 3.5%), radial-gradient(circle at 24% 44%, #d5c8a2 0 3%, transparent 3%), radial-gradient(circle at 58% 22%, #d5c8a2 0 2.5%, transparent 2.5%);
             }
-        }
-    }
-}
-
-                                
-/*-- -------------------------- -->
-<---            Stats           -->
-<--- -------------------------- -*/
-
-/* Mobile - 360px */
-@media only screen and (min-width: 0rem) {
-    #stats {
-        /* ⚠ Literal rgba — LESS emits custom-property values verbatim, so no
-           (n/16rem) math is allowed in here. */
-        --statRule: rgba(27, 42, 56, 0.1);
-
-        /* carries the hero's sand through so the strip reads as one surface */
-        background-color: var(--warmSand);
-        padding: 0 (16/16rem) clamp(1.75rem, 7.82vw, 1.75rem);
-        position: relative;
-        z-index: 10;
-
-        /* Was `width: 70%`, which made this the only section on the page that
-           insets proportionally: at 1024 it gave a 694px container against the
-           hero's 992, squeezing four cards into 152px each. A flat cap keeps
-           the tiles chunky at the top end (1100 is within 2px of what 70% used
-           to yield at 1600) while letting the strip line up with the hero and
-           the sections below it everywhere narrower. */
-        .cs-container {
-            width: 100%;
-            max-width: (1100/16rem);
-            margin: auto;
-        }
-
-        .cs-card-group {
-            width: 100%;
-            margin: 0;
-            padding: 0;
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            /* 12px - 16px */
-            gap: clamp(0.75rem, 1.6vw, 1rem);
-        }
-
-        .cs-item {
-            list-style: none;
-            /* 18px - 26px */
-            padding: clamp(1.125rem, 2.6vw, 1.625rem);
-            /* frosted — see --glassCard in root.less for the alpha and for why
-               this reads as almost nothing on a flat tan ground */
-            background-color: var(--glassCard);
-            .glass();
-            border: 1px solid rgba(27, 42, 56, 0.08);
-            border-radius: (12/16rem);
-            box-shadow: 0 (6/16rem) (18/16rem) rgba(27, 42, 56, 0.06);
-            /* chunky, near-square tiles. A bounded min-height instead of an
-               aspect-ratio, so they don't balloon with column width. */
-            min-height: clamp(10em, 17vw, 10rem);
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            /* Figure pinned to the top, label pinned to the floor, slack in
-               between — the spec-sheet structure the #services cards use.
-               Anchoring both ends is also what keeps the four figures on one
-               baseline AND the four footer rules on one line; centring the
-               block did neither. */
-            justify-content: flex-start;
-            /* spacing is set as padding either side of the rule below, so the
-               figure and the label sit symmetrically around it */
-            gap: 0;
-            transition: transform 0.3s, box-shadow 0.3s;
-
-            &:hover {
-                transform: translateY(-0.25rem);
-                box-shadow: 0 (14/16rem) (30/16rem) rgba(27, 42, 56, 0.12);
-            }
-        }
-
-        /* mono category above the figure — the top tier of category / value /
-           note. Deliberately no coral tick: the figure below is already this
-           card's accent, and two coral marks in a 160px tile is one too many. */
-        .cs-kicker {
-            font-family: var(--monoFont);
-            font-size: (11/16rem);
-            font-weight: 500;
-            line-height: 1em;
-            text-transform: uppercase;
-            letter-spacing: 0.12em;
-            color: var(--pugetBlue);
-            opacity: 0.75;
-            /* 14px - 18px */
-            margin-bottom: clamp(0.875rem, 1.8vw, 1.125rem);
-        }
-
-        .cs-number {
-            font-family: var(--headerFont);
-            /* 44px - 76px. Pushed up from 40-60: in a stat strip the figure
-               IS the design, and two rounds of corner glyphs proved that
-               anything parked beside it competes rather than adds. Scale is
-               what gives this section presence. */
-            font-size: clamp(2.75rem, 6.5vw, 4.75rem);
-            font-weight: 800;
-            line-height: 1em;
-            letter-spacing: -0.02em;
-            /* --coralAccent, not --coral: these tiles turn navy in dark mode and
-               the fill coral measures only 2.4 against it. --coralAccent is the
-               same colour on light but flips lighter on dark surfaces. */
-            color: var(--coralAccent);
-            /* never let the label squash the figure */
-            flex: none;
-            /* Reserve one numeral's worth of height and sit the figure on its
-               floor, so every label in the row starts at the same y even if a
-               figure ever wraps or runs shorter. Matches the font-size above. */
-            min-height: clamp(2.75rem, 6.5vw, 4.75rem);
-            display: flex;
-            align-items: flex-end;
-            /* ── the spec rule, carried by the FIGURE, not the label ──
-               It was first hung off the label with `margin-top: auto` and a
-               reserved height. That aligned the figures but let the rules
-               staircase: at 320 and 360 the tiles are ~134px wide and two of
-               the labels wrap past any reserve, so their boxes grew upward and
-               the four rules landed 16px apart.
-               Anchored to the figure it is self-aligning — the figure block is
-               a fixed height at the top of every card, so the rule cannot
-               drift no matter how the label wraps underneath it. */
-            width: 100%;
-            box-sizing: border-box;
-            /* 14px - 18px */
-            padding-bottom: clamp(0.875rem, 1.8vw, 1.125rem);
-            /* the :after below needs an origin */
-            position: relative;
-        }
-
-        /* ── the spec rule ──
-           ⚠ A pseudo-element, not the inset box-shadow it was. The house rule
-           bans a real BORDER here because a border changes the box and shifts
-           what is measured around it; an absolutely positioned 1px line does
-           neither, and unlike a box-shadow it can be scaled. That is the whole
-           reason for the change: a shadow cannot be drawn on.
-
-           It is also why the colour moved out of the dark-mode block's
-           `.cs-number { box-shadow }` override and into a token here. */
-        .cs-number:after {
-            content: "";
-            height: 1px;
-            background-color: var(--statRule);
-            position: absolute;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            transform-origin: left center;
-        }
-
-        /* ── the currency mark and the plus ──
-           0.55em and raised, the way a price or a spec figure is actually set.
-           ⚠ The raise is a LENGTH, not `super`. `vertical-align: super` is a
-           font-relative shift the browser picks, so the mark lands at a
-           different height in Sora than it would anywhere else and there is
-           nothing to tune. 0.32em is the arithmetic: Sora's cap is ~0.72em, the
-           mark's own cap is 0.72 x 0.55 = 0.396em, and the difference is how far
-           its baseline has to rise for the two caps to line up.
-
-           This works because .cs-rise-in is a BLOCK, so its contents are in
-           normal inline flow. Inside a flex container vertical-align does
-           nothing at all — which is what the figure used to be. */
-        .cs-sym {
-            font-size: 0.55em;
-            font-weight: 700;
-            vertical-align: 0.32em;
-            /* the mark is not the number; let it sit back a touch */
-            opacity: 0.82;
-        }
-
-        .cs-label {
-            font-family: var(--bodyFont);
-            font-size: (13/16rem);
-            font-weight: 500;
-            line-height: 1.35em;
-            color: var(--pugetBlue);
-            /* Sits directly under the rule that .cs-number carries, matching
-               its padding so the hairline is centred in the gap. No reserved
-               height and no `margin-top: auto` here: the figure above is what
-               fixes the rule's position, so the label is free to wrap to
-               however many lines it needs without moving anything. */
-            padding-top: clamp(0.875rem, 1.8vw, 1.125rem);
-        }
-    }
-}
-
-/* Tablet - 768px — all four in one row.
-   This was 64rem, which left a 2x2 block sitting under a hero that had already
-   gone side by side. With the container above no longer clamped to 70% there
-   is room for the row here: 736px of container gives 173px cards, wider than
-   the 152px they used to get at 1024. Below 768 they stay 2x2. */
-@media only screen and (min-width: 48rem) {
-    #stats {
-        .cs-card-group {
-            grid-template-columns: repeat(4, 1fr);
-        }
-    }
-}
-
-/* Dark Mode */
-@media only screen and (min-width: 0rem) {
-    body.dark-mode {
-        #stats {
-            background-color: var(--dark);
-
-            .cs-item {
-                /* same token as light mode — it flips with the theme; the rule
-                   stays only because its neighbours in this block do */
-                background-color: var(--glassCard);
-                border-color: rgba(255, 255, 255, 0.08);
-                box-shadow: none;
-            }
-
-            .cs-label,
-            .cs-kicker {
-                color: var(--rainGray);
-            }
-
-            /* the spec rule has to flip for the raised --medium tile. One
-               token now, read by the .cs-number:after that draws it. */
-            --statRule: rgba(255, 255, 255, 0.12);
-
         }
     }
 }

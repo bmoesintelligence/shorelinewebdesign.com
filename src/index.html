@@ -77,6 +77,29 @@ tags: "sitemap" # content/content.json will make sure that all pages in content/
                          not scroll them to a three-item teaser of it. -->
                     <a href="/work/" class="cs-button-transparent">See the work<span class="cs-arrow" aria-hidden="true">&rarr;</span></a>
                 </div>
+                {# ⚠ #stats WAS DELETED 2026-09-30 and nothing replaced it.
+                   That section was a four-up strip of mono kicker + oversized
+                   coral figure + hairline + caption: $0, $150, 10+, 1 — the
+                   single most-produced block on template and AI-generated
+                   landing pages. Two of its four figures were filler:
+                   "TEAM / 1" is a one-person shop announcing it has one
+                   person, and "10+ years" restated a claim #about makes in
+                   prose two sections later. It also printed $150 at 76px two
+                   screens above #pricing printing $150 at 76px, so the page
+                   quoted its own price twice in two different grammars.
+
+                   A one-line mono terms run briefly stood here in its place
+                   ("$0 to start · $150/month · Cancel anytime") and was cut
+                   on 2026-09-30 as well: the hero's own paragraph already
+                   ends "everything included", the buttons already say what
+                   to do, and /pricing/ carries the terms in full. The hero
+                   ends on the button row.
+
+                   ⚠ Do not put a strip, a stat row or a terms line back here
+                   without a reason that is not "the hero looks empty". The
+                   space under the buttons is what lets #services' panel edge
+                   sit in the opening screen, which is doing more work than a
+                   fourth restatement of the price would. #}
             </div>
             <!-- Edmonds waterfront diorama. The ferry departs from the slip on scroll. -->
             <div class="cs-image-group">
@@ -173,65 +196,6 @@ tags: "sitemap" # content/content.json will make sure that all pages in content/
             </div>
         </div>
     </section>
-
-    <!-- ============================================ -->
-    <!--                    Stats                     -->
-    <!-- ============================================ -->
-
-    <section id="stats">
-        <div class="cs-container">
-            <!-- Terms, not credentials. The hero already claims fast/custom/hand-coded,
-                 so repeating those here says nothing new. These answer what the hero
-                 leaves open: what it costs, what the catch is, who you deal with. -->
-            {#
-              ── two wrappers per figure, and both earn their place ──
-
-              .cs-rise / .cs-rise-in is the site's masked-type vocabulary, the
-              same one the hero's h1 uses: the figure slides up from behind the
-              bottom edge of its own clip and is at FULL strength in every frame
-              of the entrance. The tile still fades, because a tile is a box and
-              boxes fade — that distinction is set out in root.less and it is
-              the reason this is two mechanisms and not one.
-
-              ⚠ .cs-rise must be a FLEX ITEM. It pads itself 0.12em/0.2em to
-              leave room for ascenders and descenders and then takes the space
-              back with equal negative margins, and those only cancel exactly
-              between flex siblings — as block siblings the margins would
-              collapse into each other and the figures would sit off their
-              baseline. .cs-number is already display:flex, so this is safe
-              here; it would not be inside a plain block.
-
-              .cs-sym is the currency mark and the plus. They are set smaller
-              and raised to cap height, which is how financial and spec figures
-              are actually set, and it is most of the difference between a
-              figure that looks typed and one that looks set. The numerals keep
-              the full size — they are the thing being read.
-            #}
-            <ul class="cs-card-group">
-                <li class="cs-item">
-                    <span class="cs-kicker">Upfront</span>
-                    <span class="cs-number"><span class="cs-rise"><span class="cs-rise-in"><span class="cs-sym">$</span>0</span></span></span>
-                    <span class="cs-label">to start, no contract</span>
-                </li>
-                <li class="cs-item">
-                    <span class="cs-kicker">Monthly</span>
-                    <span class="cs-number"><span class="cs-rise"><span class="cs-rise-in"><span class="cs-sym">$</span>150</span></span></span>
-                    <span class="cs-label">a month, everything included</span>
-                </li>
-                <li class="cs-item">
-                    <span class="cs-kicker">Experience</span>
-                    <span class="cs-number"><span class="cs-rise"><span class="cs-rise-in">10<span class="cs-sym">+</span></span></span></span>
-                    <span class="cs-label">years engineering experience</span>
-                </li>
-                <li class="cs-item">
-                    <span class="cs-kicker">Team</span>
-                    <span class="cs-number"><span class="cs-rise"><span class="cs-rise-in">1</span></span></span>
-                    <span class="cs-label">engineer, start to finish</span>
-                </li>
-            </ul>
-        </div>
-    </section>
-
 
     <!-- ============================================ -->
     <!--              What You Get                    -->
@@ -507,7 +471,25 @@ tags: "sitemap" # content/content.json will make sure that all pages in content/
                 </figure>
             </div>
             <div class="cs-content cs-fade-in">
-                <span class="cs-topper">Our story</span>
+{# ── no topper pill here, deliberately (2026-09-30) ──
+                   Seven of this page's sections opened with the identical
+                   three-part unit: coral mono pill, 44px Sora headline, 17px
+                   Inter subhead. Measured, five of those H2s were the same
+                   size, weight and tracking to the decimal. A template applies
+                   one header component per section; a person varies the
+                   entrance, because some sections deserve an announcement and
+                   some are continuing a thought.
+
+                   The pill now means something: it marks the three sections
+                   that introduce a NEW subject the reader has not been told
+                   about — #services, #pricing, #free-redesign. This one is the
+                   person behind the section directly above it, not a new
+                   topic, and it is already set apart by being the page's
+                   first asymmetric split.
+
+                   ⚠ .cs-topper is display:block globally, so its parent must
+                   stay flex-column/align-items:flex-start. Removing the span
+                   does not change that; adding anything back does. #}
                 <h2 class="cs-title cs-rise-lines">A software engineer, not a template shop.</h2>
                 {# Copy edit, 2026-09-22 — CONFIRMED by Bryan 2026-09-22.
                    The opening sentence was "Bryan spent over a decade building
@@ -599,7 +581,26 @@ tags: "sitemap" # content/content.json will make sure that all pages in content/
         </div>
         <div class="cs-container">
             <div class="cs-content cs-fade-in">
-                <span class="cs-topper">Performance</span>
+{# ── no topper pill here, deliberately (2026-09-30) ──
+                   Seven of this page's sections opened with the identical
+                   three-part unit: coral mono pill, 44px Sora headline, 17px
+                   Inter subhead. Measured, five of those H2s were the same
+                   size, weight and tracking to the decimal. A template applies
+                   one header component per section; a person varies the
+                   entrance, because some sections deserve an announcement and
+                   some are continuing a thought.
+
+                   The pill now means something: it marks the three sections
+                   that introduce a NEW subject the reader has not been told
+                   about — #services, #pricing, #free-redesign. Here the navy band IS the
+                   announcement — the page changes colour, and a pill saying
+                   PERFORMANCE above a headline saying "Speed isn't a
+                   nice-to-have" was the third time in one screen that the
+                   same idea got a label.
+
+                   ⚠ .cs-topper is display:block globally, so its parent must
+                   stay flex-column/align-items:flex-start. Removing the span
+                   does not change that; adding anything back does. #}
                 <h2 class="cs-title cs-rise-lines">Speed isn't a nice-to-have. It's the product.</h2>
                 <p class="cs-text cs-rise-lines">Every site is built to the same performance bar as production software, then measured with Google's own tools. The numbers below aren't marketing. You can check them yourself.
                 </p>
@@ -990,7 +991,26 @@ tags: "sitemap" # content/content.json will make sure that all pages in content/
     <section id="work">
         <div class="cs-container">
             <div class="cs-content cs-fade-in">
-                <span class="cs-topper">Our work</span>
+{# ── no topper pill here, deliberately (2026-09-30) ──
+                   Seven of this page's sections opened with the identical
+                   three-part unit: coral mono pill, 44px Sora headline, 17px
+                   Inter subhead. Measured, five of those H2s were the same
+                   size, weight and tracking to the decimal. A template applies
+                   one header component per section; a person varies the
+                   entrance, because some sections deserve an announcement and
+                   some are continuing a thought.
+
+                   The pill now means something: it marks the three sections
+                   that introduce a NEW subject the reader has not been told
+                   about — #services, #pricing, #free-redesign. "OUR WORK" over a heading
+                   reading "Recent work" was a label restating its own
+                   heading. This section also drops to a left-aligned opener
+                   in local.less, so it is the one grid on the page that does
+                   not announce itself from the centre.
+
+                   ⚠ .cs-topper is display:block globally, so its parent must
+                   stay flex-column/align-items:flex-start. Removing the span
+                   does not change that; adding anything back does. #}
                 <h2 class="cs-title cs-rise-lines">Recent work</h2>
             </div>
             <!-- Cards 01-02 are live CLIENT sites. Cards 03-04 are DEMOS - real,
@@ -1162,7 +1182,25 @@ tags: "sitemap" # content/content.json will make sure that all pages in content/
     <section id="service-area" class="cs-has-ferry">
         <div class="cs-container">
             <div class="cs-content cs-fade-in">
-                <span class="cs-topper">Service area</span>
+{# ── no topper pill here, deliberately (2026-09-30) ──
+                   Seven of this page's sections opened with the identical
+                   three-part unit: coral mono pill, 44px Sora headline, 17px
+                   Inter subhead. Measured, five of those H2s were the same
+                   size, weight and tracking to the decimal. A template applies
+                   one header component per section; a person varies the
+                   entrance, because some sections deserve an announcement and
+                   some are continuing a thought.
+
+                   The pill now means something: it marks the three sections
+                   that introduce a NEW subject the reader has not been told
+                   about — #services, #pricing, #free-redesign. The towns are named in the
+                   marquee at the very top of the page, so by here this is a
+                   reminder rather than news — and the section is already an
+                   asymmetric split with the diorama carrying it.
+
+                   ⚠ .cs-topper is display:block globally, so its parent must
+                   stay flex-column/align-items:flex-start. Removing the span
+                   does not change that; adding anything back does. #}
                 <h2 class="cs-title cs-rise-lines">Serving the greater Seattle area</h2>
                 <p class="cs-text cs-rise-lines">Working directly with small businesses across:</p>
                 <!-- Towns come from src/_data/serviceArea.js — the same source the

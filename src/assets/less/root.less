@@ -112,7 +112,10 @@
 		   below, where it is symmetric again for the same reason. */
 		--waveFoam: var(--rainGray);
 		--waveMid: var(--pugetBlue);
-		--waveDeep: var(--inkNavy);
+		/* ⚠ Reads --speedDeep (declared further down) rather than restating
+		   #speed's colour. That is the whole invariant this warning is about:
+		   two hand-kept copies is how it drifts. */
+		--waveDeep: var(--speedDeep);
 
 		/* ── CodeStitch semantic aliases (map kit vars → palette) ── */
 		--primary: var(--coral);
@@ -133,8 +136,35 @@
 		/* 31px - 49px */
 		--headerFontSize: clamp(1.9375rem, 3.9vw, 3.0625rem);
 		--bodyFontSize: 1rem;
+		/* ── the vertical rhythm: THREE steps, not one ─────────────────────
+		   ⚠ Every body section on the home page was `padding: var(--sectionPadding)`,
+		   measured identical to the pixel — 100px top and 100px bottom, eight
+		   times, so every gap on the page was exactly 200px. Uniform section
+		   padding is the clearest machine signature a layout can have: a page
+		   laid out by a person GROUPS, because some sections belong together
+		   and some start a new argument.
+
+		   --padTight    sections that are one act and should read as bound
+		   --padNormal   the default, and what the wave dividers require
+		   --padWide     an act break
+
+		   ⚠ --padNormal IS THE OLD VALUE, UNCHANGED, and three boundaries are
+		   pinned to it and must stay there: #speed's top and bottom and
+		   #footer's top. The wave divider costs zero page height by living
+		   inside the next section's top padding and breaking back into the
+		   previous one, and its maximum excursion is 1.74 x --waveH. The Wave
+		   Divider block in local.less does that arithmetic against exactly
+		   this number. Tighten either side of a divider and the foam lands on
+		   the next section's first line of type.
+
+		   The scalars exist because --sectionPadding is a SHORTHAND carrying
+		   the 1rem gutter too; a section that wants a different top can then
+		   set padding-top alone without restating the gutter. */
+		--padTight: clamp(2.5rem, 5vw, 3.5rem);
+		--padNormal: clamp(3.75rem, 7.82vw, 6.25rem);
+		--padWide: clamp(5rem, 10.5vw, 9rem);
 		/* 60px - 100px top and bottom */
-		--sectionPadding: clamp(3.75rem, 7.82vw, 6.25rem) 1rem;
+		--sectionPadding: var(--padNormal) 1rem;
 
 		/* ── the page width ──
 		   The outer edge every section lines up on: nav, hero, footer, page
@@ -229,6 +259,73 @@
 		--panelRadius: clamp(1.25rem, 2.5vw, 2rem);
 		/* 24px - 56px */
 		--panelPad: clamp(1.5rem, 4vw, 3.5rem);
+		/* ⚠ A panel is a SECTION-SCALE object and needs a section-scale
+		   shadow: the same 10/28 a card uses reads as nothing under a
+		   1280x700 block, because perceived lift scales with the box. This is
+		   the panel family's own elevation and is deliberately outside the
+		   two-step card scale below. Only #free-redesign's floating navy
+		   container uses it today. */
+		/* ⚠ LITERAL rem. LESS passes custom-property values through verbatim,
+		   so `(20/16rem)` emits as that string and the browser drops the whole
+		   declaration with no build error. House rule; it applies to every
+		   token in this block. */
+		--panelLift: 0 1.25rem 3.25rem rgba(27, 42, 56, 0.26);
+
+		/* ── the box scale: TWO radii, TWO elevations ──────────────────────
+		   Audited 2026-09-30: the home page was carrying seven card-scale
+		   radii (6, 8, 9, 10, 12, 16, 20, 48) and eight shadow recipes, with
+		   the inset hairline alone appearing at six different alphas (.05,
+		   .06, .07, .08, .09, .10, .16). Nothing was wrong with any single
+		   value; the problem is that a page where every box has a slightly
+		   different radius and a slightly different faint outline reads as
+		   generated, because nothing looks CHOSEN. A scale with two steps
+		   makes the steps mean something.
+
+		   --radiusCard   every box that sits ON a ground: service card,
+		                  portrait frame, score tile, pricing ticket, work
+		                  card, the redesign browser frame.
+		   --radiusInner  anything recessed INSIDE one of those: the proof
+		                  trays, the screenshot well inside a browser frame.
+
+		   Shape primitives are NOT part of this and keep their own values:
+		   50% circles, the 40px topper/link/chip pills, the 48px buttons, the
+		   speech-bubble tail in card 04. Those are shapes, not elevation.
+
+		   ⚠ 16px, not the 20-24 the page drifted toward. "Precise and
+		   geometric, never cute" is the brief, and a large soft radius is the
+		   single clearest tell of a template card. Going crisper is what lets
+		   the isometric artwork read as the soft thing on the page.
+
+		   ── the two elevations ──
+		   FLAT     box-shadow: var(--edge)
+		   RAISED   box-shadow: var(--edge), var(--lift)
+		   and nothing else. Which cards are raised did not change in this
+		   pass, only the values they use, so a card that floated still floats.
+
+		   ⚠ --edge and --lift are re-pointed wholesale in the dark block
+		   below. Call sites must NOT hardcode a white-alpha twin; that is how
+		   six alphas happened in the first place.
+
+		   ⚠ LITERAL rem here too, same reason as --panelLift above. */
+		--radiusCard: 1rem;
+		--radiusInner: 0.5rem;
+		--edge: inset 0 0 0 1px rgba(27, 42, 56, 0.1);
+		--lift: 0 0.625rem 1.75rem rgba(27, 42, 56, 0.1);
+		--liftHover: 0 1.125rem 2.5rem rgba(27, 42, 56, 0.14);
+
+		/* ── #speed's ground, named once ───────────────────────────────────
+		   ⚠ THE WAVE DIVIDERS ABOVE AND BELOW #speed MUST LAND ON EXACTLY
+		   THIS COLOUR. --waveDeep is painted last and owns the divider's
+		   finished state: when it settles it covers the other two bands edge
+		   to edge and the divider BECOMES the section below it. It does not
+		   sit next to that colour, so "close enough" is a seam running the
+		   full width of the page.
+
+		   That invariant used to be held by hand - #speed declared a
+		   background and the dark block wrote the composited result out as a
+		   literal, with a warning on each telling you to change the other.
+		   One token means it cannot drift. */
+		--speedDeep: var(--inkNavy);
 
 		/* ── the nav's glass ──────────────────────────────────────────────
 		   The bar, and the dropdown panel under it, are translucent and blur
@@ -489,15 +586,45 @@
 	   the ramp falls away underneath it.
 
 	   ⚠ --waveDeep must equal what #speed actually RENDERS as in dark mode, not
-	   what it is declared as. #speed is rgba(0, 0, 0, .25) over body.dark-mode's
-	   --dark (#1b2a38), which composites to #14202a. It is written out as a
-	   literal because a band cannot be a translucent black without dimming the
-	   two bands it overlaps. If #speed's dark treatment changes, this changes
-	   with it. */
+	   what it is declared as. It now reads --speedDeep, which #speed itself
+	   also paints from, so the two cannot disagree — previously both were
+	   hand-kept literals with a warning on each pointing at the other.
+
+	   ── #speed got MEASURABLY DEEPER here, 2026-09-30 ──
+	   It was rgba(0, 0, 0, .25) over --dark, compositing to #14202a against a
+	   page ground of #1b2a38. Measured, that is 1.13:1 — the one dark band on
+	   the page was doing no work at all in this theme, while the same band in
+	   light mode separates at 21.6:1. The whole page read as a single flat
+	   field of navy for 8,600px.
+
+	   #0e1720 measures 1.23:1. That still sounds small and the number is close
+	   to meaningless here: contrast ratio compresses hard at the bottom of the
+	   luminance range, where a ratio of 1.23 is a plainly visible step and
+	   1.13 was not. Judge this one from a render, not from the figure.
+
+	   ⚠ Do not chase a bigger ratio by going darker still. Reaching even 1.4
+	   needs L = 0.0012, i.e. near-black, which on a navy page reads as a hole
+	   punched in the section rather than as deep water — and the wave
+	   divider's deep band would go near-black with it. Deeper, never lighter,
+	   per the house rule for navy bands.
+
+	   ⚠ An OPAQUE literal, not rgba. A translucent black cannot be used for the
+	   wave's deep band without dimming the two bands it overlaps, so the
+	   divider needed a literal either way — declaring #speed the same way is
+	   what lets one token serve both. */
 	body.dark-mode {
 		--waveFoam: #3f5f7a;
 		--waveMid: var(--medium);
-		--waveDeep: #14202a;
+		--speedDeep: #0e1720;
+
+		/* ── the card scale, on dark ──
+		   Re-pointed wholesale so no call site has to carry a white-alpha
+		   twin of its own. --lift is nearly black rather than a lighter
+		   navy: on a dark ground a shadow is still an absence of light. */
+		--edge: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+		--lift: 0 0.625rem 1.75rem rgba(0, 0, 0, 0.38);
+		--liftHover: 0 1.125rem 2.5rem rgba(0, 0, 0, 0.48);
+		--panelLift: 0 1.25rem 3.25rem rgba(0, 0, 0, 0.5);
 	}
 
 	html,
