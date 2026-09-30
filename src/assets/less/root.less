@@ -165,6 +165,42 @@
 		   so they always render at the same size */
 		--sceneWidth: 40rem;
 
+		/* ── the night bloom's blur radius ──
+		   ⚠ A BLUR RADIUS IS ABSOLUTE AND THE ARTWORK IS NOT, and that mismatch
+		   is what made the night dioramas read almost unlit on a phone.
+
+		   The bloom is a blurred copy of the scene screened over itself, so the
+		   lamps spill glow. Blur spreads a highlight without adding light: the
+		   wider it spreads relative to the artwork, the lower the peak, and the
+		   less any single lamp reads. It was a flat `blur(104px)`, tuned against
+		   the 616px the scene renders at on a desktop - 16.9% of its width.
+		   Measured across the range, that same 104px is 28% of the scene at
+		   402px and 30% at 768px, so a phone was spreading every lamp over
+		   nearly twice the relative area and getting a dim wash instead of
+		   points of light. Reported as "the image looks super dark on mobile",
+		   which is exactly what it was.
+
+		   So the radius tracks the scene instead. Three regimes, measured, all
+		   holding ~16.9%:
+		     below 37.5rem  the scene is 90-94vw   -> 15.5vw
+		     above it       the scene is 44-46.5vw -> 7.7vw
+		     past ~1330px   the scene caps at --sceneWidth, and so does this, at
+		                    the 6.5rem/104px the desktop look was tuned at.
+		   `min()` expresses the last two as one value.
+
+		   ⚠ The two ferry values are DERIVED, not independently tuned: the hull
+		   is --hull-w (28%) of the scene, so its bloom has to shrink with the
+		   town's or the boat starts glowing harder than the harbour it is in.
+		   Keep them as ratios of the line above.
+
+		   ⚠ Literal values only in here, and `min()`/`calc()` are safe for the
+		   same reason the (n/16rem) house style is NOT: LESS emits a custom
+		   property's value verbatim without evaluating it, so this reaches the
+		   browser as written rather than being folded by LESS's own min(). */
+		--sceneGlowBlur: 15.5vw;
+		--ferryGlowBlur: calc(var(--sceneGlowBlur) * 0.144);
+		--ferrySpillBlur: calc(var(--sceneGlowBlur) * 0.058);
+
 		/* ── the lifted panel ──
 		   A rounded, inset ground a shade deeper than the page, so the cards and
 		   frames sitting ON it read as raised rather than as outlines drawn on
@@ -4065,6 +4101,19 @@ html.theme-anim .cs-nav-rule-fill {
         object-fit: fill;
     }
 
+    /* ── the bloom's second regime ──
+       Above 37.5rem the hero and #service-area go side-by-side and the scene
+       drops from ~92vw to ~45vw of the viewport, so the radius has to drop with
+       it. `min()` then holds it at the desktop value once the scene reaches its
+       --sceneWidth cap around 1330px. See the full measurement table on
+       --sceneGlowBlur in :root; the two ferry tokens derive from this one and
+       need no rule of their own. */
+    @media (min-width: 37.5rem) {
+        :root {
+            --sceneGlowBlur: min(7.7vw, 6.5rem);
+        }
+    }
+
     /* Night bloom over the whole diorama (dark mode only). A blurred, boosted
        copy of the night scene, screen-composited so the lit windows and lamps
        spill soft light while the near-black water and roofs add nothing. Laid
@@ -4086,7 +4135,10 @@ html.theme-anim .cs-nav-rule-fill {
            2. blur() blooms the surviving yellow highlights.
            3. saturate() warms them; the trailing brightness() boosts the bloom
               back up after the crush dimmed it. */
-        filter: brightness(0.82) contrast(2.2) blur(104px) saturate(0.1) brightness(1.7);
+        /* ⚠ blur() is the one length here that must scale with the artwork -
+           see --sceneGlowBlur in :root for the measurements. The rest of the
+           chain is unitless and correct at any size. */
+        filter: brightness(0.82) contrast(2.2) blur(var(--sceneGlowBlur)) saturate(0.1) brightness(1.7);
         mix-blend-mode: screen;
         opacity: 0.9;
         /* slow, low-amplitude breathe so the harbour reads as alive, not lit by
@@ -4151,7 +4203,9 @@ html.theme-anim .cs-nav-rule-fill {
         top: 0;
         left: 0;
         pointer-events: none;
-        filter: blur(15px) brightness(1.35) saturate(1.5);
+        /* derived from --sceneGlowBlur, so the boat's bloom shrinks with the
+           town's - see the note on that token */
+        filter: blur(var(--ferryGlowBlur)) brightness(1.35) saturate(1.5);
         mix-blend-mode: screen;
         opacity: 0.9;
         /* gentle breathe, like harbour lights (killed under reduced motion) */
@@ -4171,7 +4225,7 @@ html.theme-anim .cs-nav-rule-fill {
         height: 55%;
         transform: translate(-50%, -50%);
         background: radial-gradient(ellipse at center, rgba(242, 192, 120, 0.5) 0%, rgba(242, 192, 120, 0.16) 42%, transparent 70%);
-        filter: blur(6px);
+        filter: blur(var(--ferrySpillBlur));
         mix-blend-mode: screen;
         z-index: -1;
         pointer-events: none;
