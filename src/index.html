@@ -1019,6 +1019,18 @@ tags: "sitemap" # content/content.json will make sure that all pages in content/
                  row. The tilt below is per-card, so a fifth needs its own angle.
                  The .cs-placeholder / .cs-ph-* drop-zone styles this card used to
                  use are still in local.less, unused, in case a slot goes empty again. -->
+            {# ⚠ srcset + sizes, added 2026-09-30 with the two-across row.
+               The sources are 1000x750 and the image renders at 496 CSS px on
+               desktop, so a 2x display wants 992 — the 760w candidate these
+               cards used to serve unconditionally was undersized by a third
+               once they doubled in width, and an undersized screenshot goes
+               soft exactly where it shows, on the type inside it.
+
+               ⚠ The 760w candidate STAYS, and is what phones get: at 390 the
+               image renders ~326px, so 1000w would be more than twice what
+               the device can show. The `sizes` breakpoints mirror the grid's
+               own (64rem capped, 48rem two-up, else full width) — change one
+               and change the other. #}
             <ul class="cs-card-group cs-fade-in">
                 <li class="cs-item">
                     <figure class="cs-card">
@@ -1033,9 +1045,15 @@ tags: "sitemap" # content/content.json will make sure that all pages in content/
                                 </span>
                             </span>
                             <picture class="cs-thumb">
-                                <source srcset="{% getUrl "/assets/images/bryan-van-dusen.jpg" | resize({ width: 760, height: 570 }) | avif(codec.avif) %}" type="image/avif">
-                                <source srcset="{% getUrl "/assets/images/bryan-van-dusen.jpg" | resize({ width: 760, height: 570 }) | webp %}" type="image/webp">
-                                <img src="{% getUrl "/assets/images/bryan-van-dusen.jpg" | resize({ width: 760, height: 570 }) | jpeg %}" alt="Bryan Van Dusen children's author website homepage" width="760" height="570" loading="lazy" decoding="async">
+                                <source
+                                    type="image/avif"
+                                    sizes="(min-width: 64rem) 496px, (min-width: 48rem) 45vw, calc(100vw - 3.5rem)"
+                                    srcset="{% getUrl "/assets/images/bryan-van-dusen.jpg" | resize({ width: 760, height: 570 }) | avif(codec.avif) %} 760w, {% getUrl "/assets/images/bryan-van-dusen.jpg" | resize({ width: 1000, height: 750 }) | avif(codec.avif) %} 1000w">
+                                <source
+                                    type="image/webp"
+                                    sizes="(min-width: 64rem) 496px, (min-width: 48rem) 45vw, calc(100vw - 3.5rem)"
+                                    srcset="{% getUrl "/assets/images/bryan-van-dusen.jpg" | resize({ width: 760, height: 570 }) | webp %} 760w, {% getUrl "/assets/images/bryan-van-dusen.jpg" | resize({ width: 1000, height: 750 }) | webp %} 1000w">
+                                <img src="{% getUrl "/assets/images/bryan-van-dusen.jpg" | resize({ width: 1000, height: 750 }) | jpeg %}" alt="Bryan Van Dusen children's author website homepage" width="1000" height="750" loading="lazy" decoding="async">
                             </picture>
                             <span class="cs-visit" aria-hidden="true">Visit site{% include "components/icon-external.html" %}</span>
                         </a>
@@ -1062,9 +1080,15 @@ tags: "sitemap" # content/content.json will make sure that all pages in content/
                                 </span>
                             </span>
                             <picture class="cs-thumb">
-                                <source srcset="{% getUrl "/assets/images/bk2026.jpg" | resize({ width: 760, height: 570 }) | avif(codec.avif) %}" type="image/avif">
-                                <source srcset="{% getUrl "/assets/images/bk2026.jpg" | resize({ width: 760, height: 570 }) | webp %}" type="image/webp">
-                                <img src="{% getUrl "/assets/images/bk2026.jpg" | resize({ width: 760, height: 570 }) | jpeg %}" alt="Bryan and Katie wedding website homepage" width="760" height="570" loading="lazy" decoding="async">
+                                <source
+                                    type="image/avif"
+                                    sizes="(min-width: 64rem) 496px, (min-width: 48rem) 45vw, calc(100vw - 3.5rem)"
+                                    srcset="{% getUrl "/assets/images/bk2026.jpg" | resize({ width: 760, height: 570 }) | avif(codec.avif) %} 760w, {% getUrl "/assets/images/bk2026.jpg" | resize({ width: 1000, height: 750 }) | avif(codec.avif) %} 1000w">
+                                <source
+                                    type="image/webp"
+                                    sizes="(min-width: 64rem) 496px, (min-width: 48rem) 45vw, calc(100vw - 3.5rem)"
+                                    srcset="{% getUrl "/assets/images/bk2026.jpg" | resize({ width: 760, height: 570 }) | webp %} 760w, {% getUrl "/assets/images/bk2026.jpg" | resize({ width: 1000, height: 750 }) | webp %} 1000w">
+                                <img src="{% getUrl "/assets/images/bk2026.jpg" | resize({ width: 1000, height: 750 }) | jpeg %}" alt="Bryan and Katie wedding website homepage" width="1000" height="750" loading="lazy" decoding="async">
                             </picture>
                             <span class="cs-visit" aria-hidden="true">Visit site{% include "components/icon-external.html" %}</span>
                         </a>
@@ -1091,9 +1115,15 @@ tags: "sitemap" # content/content.json will make sure that all pages in content/
                                 </span>
                             </span>
                             <picture class="cs-thumb">
-                                <source srcset="{% getUrl "/assets/images/demo-teriyaki.jpg" | resize({ width: 760, height: 570 }) | avif(codec.avif) %}" type="image/avif">
-                                <source srcset="{% getUrl "/assets/images/demo-teriyaki.jpg" | resize({ width: 760, height: 570 }) | webp %}" type="image/webp">
-                                <img src="{% getUrl "/assets/images/demo-teriyaki.jpg" | resize({ width: 760, height: 570 }) | jpeg %}" alt="Example Teriyaki demo restaurant website homepage" width="760" height="570" loading="lazy" decoding="async">
+                                <source
+                                    type="image/avif"
+                                    sizes="(min-width: 64rem) 496px, (min-width: 48rem) 45vw, calc(100vw - 3.5rem)"
+                                    srcset="{% getUrl "/assets/images/demo-teriyaki.jpg" | resize({ width: 760, height: 570 }) | avif(codec.avif) %} 760w, {% getUrl "/assets/images/demo-teriyaki.jpg" | resize({ width: 1000, height: 750 }) | avif(codec.avif) %} 1000w">
+                                <source
+                                    type="image/webp"
+                                    sizes="(min-width: 64rem) 496px, (min-width: 48rem) 45vw, calc(100vw - 3.5rem)"
+                                    srcset="{% getUrl "/assets/images/demo-teriyaki.jpg" | resize({ width: 760, height: 570 }) | webp %} 760w, {% getUrl "/assets/images/demo-teriyaki.jpg" | resize({ width: 1000, height: 750 }) | webp %} 1000w">
+                                <img src="{% getUrl "/assets/images/demo-teriyaki.jpg" | resize({ width: 1000, height: 750 }) | jpeg %}" alt="Example Teriyaki demo restaurant website homepage" width="1000" height="750" loading="lazy" decoding="async">
                             </picture>
                             <span class="cs-visit" aria-hidden="true">Visit site{% include "components/icon-external.html" %}</span>
                         </a>
@@ -1120,9 +1150,15 @@ tags: "sitemap" # content/content.json will make sure that all pages in content/
                                 </span>
                             </span>
                             <picture class="cs-thumb">
-                                <source srcset="{% getUrl "/assets/images/demo-dog-food.jpg" | resize({ width: 760, height: 570 }) | avif(codec.avif) %}" type="image/avif">
-                                <source srcset="{% getUrl "/assets/images/demo-dog-food.jpg" | resize({ width: 760, height: 570 }) | webp %}" type="image/webp">
-                                <img src="{% getUrl "/assets/images/demo-dog-food.jpg" | resize({ width: 760, height: 570 }) | jpeg %}" alt="Moe Balls demo dog treat brand website homepage" width="760" height="570" loading="lazy" decoding="async">
+                                <source
+                                    type="image/avif"
+                                    sizes="(min-width: 64rem) 496px, (min-width: 48rem) 45vw, calc(100vw - 3.5rem)"
+                                    srcset="{% getUrl "/assets/images/demo-dog-food.jpg" | resize({ width: 760, height: 570 }) | avif(codec.avif) %} 760w, {% getUrl "/assets/images/demo-dog-food.jpg" | resize({ width: 1000, height: 750 }) | avif(codec.avif) %} 1000w">
+                                <source
+                                    type="image/webp"
+                                    sizes="(min-width: 64rem) 496px, (min-width: 48rem) 45vw, calc(100vw - 3.5rem)"
+                                    srcset="{% getUrl "/assets/images/demo-dog-food.jpg" | resize({ width: 760, height: 570 }) | webp %} 760w, {% getUrl "/assets/images/demo-dog-food.jpg" | resize({ width: 1000, height: 750 }) | webp %} 1000w">
+                                <img src="{% getUrl "/assets/images/demo-dog-food.jpg" | resize({ width: 1000, height: 750 }) | jpeg %}" alt="Moe Balls demo dog treat brand website homepage" width="1000" height="750" loading="lazy" decoding="async">
                             </picture>
                             <span class="cs-visit" aria-hidden="true">Visit site{% include "components/icon-external.html" %}</span>
                         </a>

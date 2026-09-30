@@ -112,10 +112,10 @@
 		   below, where it is symmetric again for the same reason. */
 		--waveFoam: var(--rainGray);
 		--waveMid: var(--pugetBlue);
-		/* ⚠ Reads --speedDeep (declared further down) rather than restating
+		/* ⚠ Reads --bandDeep (declared further down) rather than restating
 		   #speed's colour. That is the whole invariant this warning is about:
 		   two hand-kept copies is how it drifts. */
-		--waveDeep: var(--speedDeep);
+		--waveDeep: var(--bandDeep);
 
 		/* ── CodeStitch semantic aliases (map kit vars → palette) ── */
 		--primary: var(--coral);
@@ -313,7 +313,10 @@
 		--lift: 0 0.625rem 1.75rem rgba(27, 42, 56, 0.1);
 		--liftHover: 0 1.125rem 2.5rem rgba(27, 42, 56, 0.14);
 
-		/* ── #speed's ground, named once ───────────────────────────────────
+		/* ── the dark bands' ground, named once ────────────────────────────
+		   Shared by #speed and #work, the page's two dark bands. They are the
+		   same surface doing the same job and there is no reason for them to
+		   differ; naming it once is also what stops a second one drifting.
 		   ⚠ THE WAVE DIVIDERS ABOVE AND BELOW #speed MUST LAND ON EXACTLY
 		   THIS COLOUR. --waveDeep is painted last and owns the divider's
 		   finished state: when it settles it covers the other two bands edge
@@ -325,7 +328,7 @@
 		   background and the dark block wrote the composited result out as a
 		   literal, with a warning on each telling you to change the other.
 		   One token means it cannot drift. */
-		--speedDeep: var(--inkNavy);
+		--bandDeep: var(--inkNavy);
 
 		/* ── the nav's glass ──────────────────────────────────────────────
 		   The bar, and the dropdown panel under it, are translucent and blur
@@ -530,6 +533,7 @@
 	   It lives in root.less rather than each page sheet because root.css loads
 	   on every page and an unmatched selector costs nothing. */
 	#speed,
+	#work,
 	#included,
 	#footer,
 	#compare,
@@ -569,6 +573,27 @@
 		/* The panel lifts off navy instead of tan, so the tint inverts. Stays
 		   below --medium (#26384a) so the cards on it still read as raised. */
 		--panelLight: rgba(255, 255, 255, 0.04);
+		/* ── the box scale, on navy ──────────────────────────────────────
+		   ⚠ ADDED 2026-09-30, when #work became a navy band in BOTH themes
+		   and exposed the gap. --edge and --lift are declared light-first on
+		   :root and re-pointed under body.dark-mode, which was right while
+		   every navy surface only existed in dark mode. A section that is
+		   navy on a LIGHT page gets the dark hairline — invisible — and the
+		   light drop shadow, which is the wrong direction entirely.
+
+		   Same mechanism as --coralText above: custom properties inherit, so
+		   declaring them on the navy element re-points every card inside it
+		   and no component rule changes.
+
+		   This is what #speed's score tiles and #free-redesign's browser
+		   frame are hand-writing today, each with a comment explaining why
+		   they cannot use the token. They can now; those two hardcodes are
+		   redundant and can go the next time either is touched. */
+		--edge: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+		--lift: 0 0.625rem 1.75rem rgba(0, 0, 0, 0.38);
+		--liftHover: 0 1.125rem 2.5rem rgba(0, 0, 0, 0.48);
+		/* cards lift to --medium on navy, same alpha as the light-mode tint */
+		--glassCard: rgba(38, 56, 74, 0.72);
 		/* Same two lights, lifted to the values this site already uses on navy:
 		   --logoWave's dark blue and --coralAccent's dark coral. The light-mode
 		   pair is invisible on a dark ground. */
@@ -586,7 +611,7 @@
 	   the ramp falls away underneath it.
 
 	   ⚠ --waveDeep must equal what #speed actually RENDERS as in dark mode, not
-	   what it is declared as. It now reads --speedDeep, which #speed itself
+	   what it is declared as. It now reads --bandDeep, which #speed itself
 	   also paints from, so the two cannot disagree — previously both were
 	   hand-kept literals with a warning on each pointing at the other.
 
@@ -615,7 +640,7 @@
 	body.dark-mode {
 		--waveFoam: #3f5f7a;
 		--waveMid: var(--medium);
-		--speedDeep: #0e1720;
+		--bandDeep: #0e1720;
 
 		/* ── the card scale, on dark ──
 		   Re-pointed wholesale so no call site has to carry a white-alpha

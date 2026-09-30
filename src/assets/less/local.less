@@ -2309,12 +2309,12 @@
 @media only screen and (min-width: 0rem) {
     #speed {
         /* ── the one dark band in the middle of the page ──
-           ⚠ --speedDeep, NOT --inkNavy directly. The wave dividers above and
+           ⚠ --bandDeep, NOT --inkNavy directly. The wave dividers above and
            below paint their deep band from the same token, and that band has
            to land on this colour exactly or it draws a seam the full width of
            the page. root.less carries the full note. In light mode the token
            resolves to --inkNavy, so nothing moves here. */
-        background-color: var(--speedDeep);
+        background-color: var(--bandDeep);
         padding: var(--sectionPadding);
         /* anchors the orca pod. NOTE: deliberately no `overflow: hidden` — it
            would silently kill the pod's view() scroll-timeline. The pod hides
@@ -2959,14 +2959,14 @@
    than an omission. It used to be rgba(0,0,0,.25) over --dark, and root.less
    then had to write the composited result (#14202a) out by hand as --waveDeep
    so the dividers could land on it — two values kept in step by a warning on
-   each. Both now read --speedDeep, which the base rule above already paints
+   each. Both now read --bandDeep, which the base rule above already paints
    from, so this block has nothing left to say about colour.
 
    ── and it was far too shallow ──
    Measured 2026-09-30: that band came out 1.13:1 against the page ground it
    sat on. The one dark section on the page was doing no work at all in this
    theme, while the identical band in light mode separates at 21.6:1, and the
-   result was ~8,600px of unbroken navy. --speedDeep is deeper in dark mode for
+   result was ~8,600px of unbroken navy. --bandDeep is deeper in dark mode for
    exactly that reason; the number and the arithmetic are in root.less.
 
    Nothing needs doing to the coral arcs: #speed is already in root.less's
@@ -4154,7 +4154,24 @@
 /* Mobile - 360px */
 @media only screen and (min-width: 0rem) {
     #work {
-        background-color: var(--warmSand);
+        /* ── A NAVY BAND, in both themes (2026-09-30) ──
+           Two problems, one change. The page ran tan, tan, tan, NAVY, tan,
+           tan, tan, tan, navy — four consecutive tan sections after #speed,
+           against the house rule that three in a row is a smell. And the
+           portfolio, the only real proof on the page, had the least visual
+           weight on it: four screenshots at ~270px, physically smaller than
+           the mock-up trays in #services two sections above.
+
+           A navy ground fixes both at once, and the second one for free:
+           these are screenshots of bright websites, so a dark ground makes
+           them read as lit rather than as thumbnails pasted on the page.
+
+           ⚠ #work is now in root.less's navy-surface list. That is what
+           re-points --coralText, --panelLight, --panelGlow AND the box scale
+           (--edge / --lift / --glassCard) inside this section, so nothing
+           below hand-writes an on-navy value. Take it out of that list and
+           the cards go cream-on-navy with an invisible hairline. */
+        background-color: var(--inkNavy);
         padding: var(--sectionPadding);
 
         .cs-container {
@@ -4687,14 +4704,31 @@
     }
 }
 
-/* Desktop - 1024px */
-/* Four projects, so the row stays 2x2 here and only goes four-across at 80rem.
-   Three columns would orphan the last card on a row of its own, and four at
-   this width squeezes the thumbnail below the width its .cs-filename needs. */
-@media only screen and (min-width: 80rem) {
+/* Desktop - 1024px — it stays 2x2, and the grid is CAPPED.
+   ⚠ THE FOUR-ACROSS ROW AT 80rem IS GONE (2026-09-30). It put the four
+   screenshots at ~270px each, which made the only real proof on the page the
+   smallest thing on it — smaller than the mock-up trays in #services. Two
+   across takes them to ~496px, nearly double.
+
+   ⚠ THE CAP IS A RESOLUTION LIMIT, NOT A TASTE ONE, and it is the number to
+   check before touching this. The screenshot sources are 1000x750 (CLAUDE.md
+   says so and it is verified: all four are exactly that). A 2x display needs
+   the source to be twice the rendered width, so the image can never render
+   wider than 500 CSS px without going soft — and softness would land on the
+   fine type inside a screenshot, which is the worst place for it.
+
+       card  = (grid - 24px gap) / 2
+       image = card - 2 x 22px of card padding
+
+   Solving image <= 500 gives grid <= 1112px. 69rem is 1104, which lands the
+   image at 496 and the retina request at 992 — just inside the source.
+
+   Raise this cap and the screenshots start upscaling. The real fix for that is
+   re-capturing them at 1600px wide, not a bigger number here. */
+@media only screen and (min-width: 64rem) {
     #work {
         .cs-card-group {
-            grid-template-columns: repeat(4, minmax(0, 1fr));
+            max-width: (1104/16rem);
         }
     }
 }
@@ -4711,121 +4745,145 @@
     }
 }
 
-/* Dark Mode */
+/* ── the on-navy treatment ──
+   ⚠ NOT WRAPPED IN A NESTED @media, and that is not an oversight. This block
+   replaced a `body.dark-mode` rule that already sat inside the section's
+   `@media (min-width: 0rem)`, and the first version of it kept a media query
+   of its own. LESS compiled the pair to
+   `@media only screen and (min-width:0rem) and only screen and (min-width:0rem)`
+   — invalid, silently dropped by the browser, no build error — and every rule
+   below stopped applying. The section rendered navy-on-navy: the h2 measured
+   1.00:1 against its own background. House rule, and this is what it costs.
+
+   ⚠ THIS WAS A `body.dark-mode` BLOCK until 2026-09-30. Every rule in it is
+   unchanged; only its scope is. #work is a navy band in BOTH themes now, so
+   what used to be "how this section looks in dark mode" is simply how it
+   looks. Dark mode is left with one job below: deepening the band so it does
+   not vanish into a navy page.
+
+   It sits after the light-mode rules and wins on source order, the same way
+   the vertical-rhythm block at the foot of this file does. */
 @media only screen and (min-width: 0rem) {
-    body.dark-mode {
-        #work {
-            background-color: var(--dark);
-
-            .cs-title,
-            .cs-h3,
-            .cs-ph-label {
-                color: var(--bodyTextColorWhite);
-            }
-
-            /* see the note on #services .cs-number above - same pairing */
-            .cs-item-text,
-            .cs-number {
-                color: var(--rainGray);
-            }
-
-            /* ⚠ THE CARD IS .cs-item NOW, and only its GLOW is stated here.
-               The fill is var(--glassCard), which root.less already flips to
-               rgba(38,56,74,.72) for dark mode - restating it would be a second
-               source of truth for the same surface. The gradient hues are
-               hardcoded light values though, so those do have to flip. */
-            /* the on-dark pair, at the same proportional radii - see the
-               light-mode note for why these are percentages. --panelLight
-               itself flips on its own and is not restated. */
-            /* ⚠ The two box-shadow overrides that used to sit here are gone.
-               --edge, --lift and --liftHover re-point themselves in root.less's
-               dark block, so restating a white-alpha twin per card is exactly
-               the duplication the scale was introduced to remove. Only the
-               gradient hues still need flipping, because those are hardcoded
-               light values. */
-            .cs-item {
-                background-image:
-                    radial-gradient(ellipse 54% 95% at 6% -10%, rgba(123, 166, 201, 0.1), transparent 70%),
-                    radial-gradient(ellipse 48% 85% at 97% 4%, rgba(222, 100, 75, 0.09), transparent 68%);
-            }
-
-            /* the window on it: --warmSand is a page colour and reads as a
-               bright slab on navy */
-            .cs-card {
-                background-color: var(--accent);
-            }
-
-            /* ── the chrome, on dark ──
-               The bar's light values (--warmSand on a cream card) are correct
-               on the tan section and wrong the moment it flips: --warmSand is
-               a page colour, and on navy it reads as a bright slab rather than
-               as chrome. --accent is the same lift /work/ gives its frames on
-               dark panels. */
-            .cs-frame-bar {
-                background-color: var(--accent);
-                box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.08);
-            }
-
-            .cs-dot {
-                background-color: rgba(255, 255, 255, 0.2);
-            }
-
-            .cs-frame-url {
-                /* the light pill is a navy tint; on a dark card that is
-                   invisible, so it inverts to a light one */
-                background-color: rgba(255, 255, 255, 0.07);
-                box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
-            }
-
-            /* ⚠ ON .cs-url-text, NOT on the .cs-frame-url pill around it.
-               This override sat on the wrapper, and when the padlock went in
-               the domain moved into its own child that declares --pugetBlue -
-               which beats an inherited colour. Result: #366375 text on a
-               rgb(65,98,116) pill, measured 1.01:1. The address bars in dark
-               mode were EMPTY, and they looked like a design choice.
-
-               ⚠ Also not --rainGray, which is what light mode and /work/ use
-               here: on this pill #b8c4c9 comes out 4.39:1, under the 4.5 a
-               10px label needs. */
-            .cs-url-text {
-                color: rgba(255, 255, 255, 0.88);
-            }
-
-            /* the padlock and the Client/Demo tag are both --pugetBlue, a
-               body-copy-on-light token. On the dark card it is close to
-               invisible; both lift to the on-dark greys. */
-            /* matches the domain beside it — see the light-mode note on why
-               this carries no opacity */
-            .cs-lock {
-                color: rgba(255, 255, 255, 0.88);
-            }
-
-            .cs-tag {
-                color: var(--rainGray);
-                box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.22);
-            }
-
-            /* ⚠ the hover pill is --inkNavy, which IS the dark page. Left alone
-               it would be a navy chip on a navy-ish card with only its shadow
-               to find it by. --medium is the raised surface this section
-               already uses in dark mode. */
-            .cs-visit {
-                background-color: var(--medium);
-                box-shadow: 0 (8/16rem) (20/16rem) rgba(0, 0, 0, 0.5), inset 0 0 0 1px rgba(255, 255, 255, 0.14);
-            }
-
-            /* mirrors the #about and #pricing teasers' dark pill */
-            .cs-link {
-                color: var(--bodyTextColorWhite);
-                box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.25);
-            }
-
-
-            .cs-placeholder {
-                background-color: var(--accent);
-                color: var(--rainGray);
-            }
+    #work {
+        .cs-title,
+        .cs-h3,
+        .cs-ph-label {
+            color: var(--bodyTextColorWhite);
         }
+
+        /* see the note on #services .cs-number above - same pairing */
+        .cs-item-text,
+        .cs-number {
+            color: var(--rainGray);
+        }
+
+        /* ⚠ THE CARD IS .cs-item NOW, and only its GLOW is stated here.
+           The fill is var(--glassCard), which root.less already flips to
+           rgba(38,56,74,.72) for dark mode - restating it would be a second
+           source of truth for the same surface. The gradient hues are
+           hardcoded light values though, so those do have to flip. */
+        /* the on-dark pair, at the same proportional radii - see the
+           light-mode note for why these are percentages. --panelLight
+           itself flips on its own and is not restated. */
+        /* ⚠ The two box-shadow overrides that used to sit here are gone.
+           --edge, --lift and --liftHover re-point themselves in root.less's
+           dark block, so restating a white-alpha twin per card is exactly
+           the duplication the scale was introduced to remove. Only the
+           gradient hues still need flipping, because those are hardcoded
+           light values. */
+        .cs-item {
+            background-image:
+                radial-gradient(ellipse 54% 95% at 6% -10%, rgba(123, 166, 201, 0.1), transparent 70%),
+                radial-gradient(ellipse 48% 85% at 97% 4%, rgba(222, 100, 75, 0.09), transparent 68%);
+        }
+
+        /* the window on it: --warmSand is a page colour and reads as a
+           bright slab on navy */
+        .cs-card {
+            background-color: var(--accent);
+        }
+
+        /* ── the chrome, on dark ──
+           The bar's light values (--warmSand on a cream card) are correct
+           on the tan section and wrong the moment it flips: --warmSand is
+           a page colour, and on navy it reads as a bright slab rather than
+           as chrome. --accent is the same lift /work/ gives its frames on
+           dark panels. */
+        .cs-frame-bar {
+            background-color: var(--accent);
+            box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.08);
+        }
+
+        .cs-dot {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .cs-frame-url {
+            /* the light pill is a navy tint; on a dark card that is
+               invisible, so it inverts to a light one */
+            background-color: rgba(255, 255, 255, 0.07);
+            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+        }
+
+        /* ⚠ ON .cs-url-text, NOT on the .cs-frame-url pill around it.
+           This override sat on the wrapper, and when the padlock went in
+           the domain moved into its own child that declares --pugetBlue -
+           which beats an inherited colour. Result: #366375 text on a
+           rgb(65,98,116) pill, measured 1.01:1. The address bars in dark
+           mode were EMPTY, and they looked like a design choice.
+
+           ⚠ Also not --rainGray, which is what light mode and /work/ use
+           here: on this pill #b8c4c9 comes out 4.39:1, under the 4.5 a
+           10px label needs. */
+        .cs-url-text {
+            color: rgba(255, 255, 255, 0.88);
+        }
+
+        /* the padlock and the Client/Demo tag are both --pugetBlue, a
+           body-copy-on-light token. On the dark card it is close to
+           invisible; both lift to the on-dark greys. */
+        /* matches the domain beside it — see the light-mode note on why
+           this carries no opacity */
+        .cs-lock {
+            color: rgba(255, 255, 255, 0.88);
+        }
+
+        .cs-tag {
+            color: var(--rainGray);
+            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.22);
+        }
+
+        /* ⚠ the hover pill is --inkNavy, which IS the dark page. Left alone
+           it would be a navy chip on a navy-ish card with only its shadow
+           to find it by. --medium is the raised surface this section
+           already uses in dark mode. */
+        .cs-visit {
+            background-color: var(--medium);
+            box-shadow: 0 (8/16rem) (20/16rem) rgba(0, 0, 0, 0.5), inset 0 0 0 1px rgba(255, 255, 255, 0.14);
+        }
+
+        /* mirrors the #about and #pricing teasers' dark pill */
+        .cs-link {
+            color: var(--bodyTextColorWhite);
+            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.25);
+        }
+
+
+        .cs-placeholder {
+            background-color: var(--accent);
+            color: var(--rainGray);
+        }
+    }
+}
+
+/* Dark Mode — the band deepens, nothing else moves.
+   ⚠ --bandDeep, NOT --dark. In dark mode the page ground IS --inkNavy, so a
+   band declared --inkNavy would be the page: exactly the 1.13:1 failure that
+   #speed was carrying until this pass. The two dark bands share one token;
+   the reasoning and the measurement are in root.less. */
+@media only screen and (min-width: 0rem) {
+    body.dark-mode #work {
+        background-color: var(--bandDeep);
     }
 }
 
