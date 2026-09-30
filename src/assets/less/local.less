@@ -209,11 +209,14 @@
             }
         }
 
-        /* ── spec-sheet header: coral tick, mono index, hairline to the edge ──
-           The index used to be a lone 12px numeral floating ~24px above the
-           heading, which read as an orphan rather than as an index. Setting it
-           as a ruled header row gives the card a structure to hang off, and
-           both the tick and the rule are pseudo-elements, so no extra markup. */
+        /* ── spec-sheet header: mono category label, hairline to the edge ──
+           ⚠ THE NUMBERED TILE IS GONE (2026-09-30). The cards were indexed
+           01-06, which reads as a sequence, and these are parallel claims —
+           nothing is first and nothing follows anything. Removing it also
+           removes the only element in the card that had to invert on three
+           different grounds. The ruled header row stays: it is what gives the
+           card a structure to hang off, and the rule is a pseudo-element, so
+           there is still no extra markup. */
         .cs-number {
             font-family: var(--monoFont);
             font-size: (12/16rem);
@@ -277,18 +280,6 @@
            Deliberately NOT an icon. Six new glyphs would be six chances to look
            generic, and the index is already content. Geometry over decoration,
            which is the house line on the illustration too. */
-        .cs-index {
-            font-family: var(--monoFont);
-            font-size: (11/16rem);
-            font-weight: 600;
-            line-height: 1em;
-            letter-spacing: 0.08em;
-            color: var(--warmSand);
-            background-color: var(--inkNavy);
-            padding: (7/16rem) (8/16rem);
-            border-radius: (6/16rem);
-            flex: none;
-        }
 
         /* ── the category ──
            A taxonomy label, not a claim: it names the discipline the card sits
@@ -396,150 +387,6 @@
             font-family: var(--monoFont);
         }
 
-        /* ── 01 · Responsive — one frame, stretched through the widths ──
-           The phone grows into the tablet and the tablet into the desktop, in
-           the middle of the tray, with the device chrome cross-fading as it
-           goes and one width label at a time underneath.
-
-           ⚠ Why one frame and not three. A row of three reads as three devices
-           being COMPARED. The claim on the card is that a single layout carries
-           from 390 to 1280, which is a statement about one thing changing
-           shape, and only a morph can say it.
-
-           ⚠ Sizes are real proportions, not invented boxes: 22x40 is a phone,
-           36x46 a tablet, 64x42 a laptop. The frame keeps a 1.5px stroke at
-           every size because it is an inset box-shadow, which does not scale
-           with the box - that is the whole reason this can animate its
-           dimensions rather than its transform. See the note on the keyframes.
-
-           ⚠ The stage and the label slot are both FIXED height. The frame is
-           40px tall as a phone and 46 as a tablet, and the labels are three
-           different strings; without fixed boxes for each, the tray's contents
-           would shuffle vertically every time the frame changed shape. */
-        .cs-p-device {
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: (12/16rem);
-
-            .cs-stage {
-                height: (48/16rem);
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-
-            /* the resting state is the PHONE — it is what the card claims, and
-               it is what anyone with reduced motion sees, since the animation
-               block never matches for them */
-            .cs-scr {
-                width: (22/16rem);
-                height: (40/16rem);
-                box-shadow: inset 0 0 0 (1.5/16rem) var(--proofRule);
-                border-radius: (4/16rem);
-                display: block;
-                position: relative;
-            }
-
-            /* ── phone notch ──
-               The one coral detail in this tray, and it earns its place rather
-               than being decoration: the notch exists ONLY in the phone state
-               (it fades at 28% and does not return until 98%), so colouring it
-               marks the width the card is actually about without animating a
-               single colour. The frame stroke stays neutral at every size.
-
-               This replaced a coral FRAME on the phone. Once there was one
-               morphing frame instead of three, a coral stroke would have had to
-               fade to neutral as it stretched, which is a paint animation on
-               the one element already doing a layout animation. */
-            .cs-notch {
-                width: (8/16rem);
-                height: (2/16rem);
-                border-radius: (2/16rem);
-                background-color: var(--proofAccent);
-                position: absolute;
-                top: (3/16rem);
-                left: 50%;
-                transform: translateX(-50%);
-            }
-
-            /* home indicator — phone and tablet both have one */
-            .cs-home {
-                width: (10/16rem);
-                height: (1.5/16rem);
-                border-radius: (2/16rem);
-                background-color: var(--proofRule);
-                position: absolute;
-                bottom: (3/16rem);
-                left: 50%;
-                transform: translateX(-50%);
-            }
-
-            /* desktop browser bar — the /work/ chrome, miniaturised. Hidden at
-               rest and faded in only once the frame is laptop-shaped. */
-            .cs-bar {
-                height: (8/16rem);
-                border-bottom: (1/16rem) solid var(--proofRule);
-                display: flex;
-                align-items: center;
-                gap: (2/16rem);
-                padding-left: (3/16rem);
-                position: absolute;
-                top: 0;
-                left: 0;
-                right: 0;
-                opacity: 0;
-
-                i {
-                    width: (2/16rem);
-                    height: (2/16rem);
-                    border-radius: 50%;
-                    background-color: var(--proofRule);
-                    display: block;
-                }
-            }
-
-            /* ── the width labels ──
-               All three occupy the same slot, absolutely, so swapping them
-               moves nothing. Only 390 is visible at rest. */
-            .cs-widths {
-                width: 100%;
-                height: (10/16rem);
-                position: relative;
-
-                span {
-                    font-size: (9/16rem);
-                    font-weight: 600;
-                    letter-spacing: 0.04em;
-                    line-height: 1;
-                    color: var(--proofMuted);
-                    white-space: nowrap;
-                    position: absolute;
-                    top: 0;
-                    left: 50%;
-                    transform: translateX(-50%);
-                    opacity: 0;
-                }
-
-                /* the unit sits back so the NUMBER is what you read */
-                em {
-                    font-style: normal;
-                    font-size: (7/16rem);
-                    font-weight: 500;
-                    opacity: 0.7;
-                    margin-left: (1/16rem);
-                }
-
-                /* 390 is the one the card is about, so it carries the accent
-                   and it is the resting label. No colour is animated anywhere
-                   in this tray — the accent simply appears and leaves with its
-                   own label. */
-                .cs-w1 {
-                    color: var(--proofAccent);
-                    opacity: 1;
-                }
-            }
-        }
 
         /* ── 02 · Performance — a real Core Web Vitals readout ──
            ⚠ The only figures in the whole set, and neither is new: #speed
@@ -787,65 +634,6 @@
             }
         }
 
-        /* ── 05 · Infrastructure — what the fee actually covers ──
-           ⚠ Bare nouns, no quantities, and the rows are IDENTICAL. The tray
-           this replaced was a run of monitoring ticks and carried a warning
-           that is still live: on a card headed "Hosting and backups", anything
-           that varies between rows reads as an outage, and coral is the alarm
-           colour everywhere else on the web. Three checks that are always
-           present and always the same cannot be read that way, and none of
-           them claims a percentage or a frequency. */
-        .cs-p-status {
-            flex-direction: column;
-            justify-content: center;
-            gap: (6/16rem);
-
-            .cs-status-head {
-                font-size: (7.5/16rem);
-                font-weight: 600;
-                letter-spacing: 0.16em;
-                text-transform: uppercase;
-                line-height: 1;
-                color: var(--proofMuted);
-                padding-bottom: (6/16rem);
-                border-bottom: 1px solid var(--proofRule);
-            }
-
-            .cs-row {
-                display: flex;
-                align-items: center;
-                gap: (8/16rem);
-                font-size: (9/16rem);
-                font-weight: 500;
-                letter-spacing: 0.02em;
-                line-height: 1;
-                color: var(--proofInk);
-            }
-
-            /* a drawn check, not a glyph: a font's tick varies wildly by
-               fallback and would be the one place on the page using a system
-               face for something that reads as an icon */
-            .cs-check {
-                width: (11/16rem);
-                height: (11/16rem);
-                border-radius: 50%;
-                background-color: var(--proofAccent);
-                flex: none;
-                position: relative;
-
-                &:after {
-                    content: "";
-                    width: (2.5/16rem);
-                    height: (5/16rem);
-                    border-right: (1.5/16rem) solid var(--bodyTextColorWhite);
-                    border-bottom: (1.5/16rem) solid var(--bodyTextColorWhite);
-                    position: absolute;
-                    top: (2/16rem);
-                    left: (4/16rem);
-                    transform: rotate(45deg);
-                }
-            }
-        }
 
         /* ── 06 · Build — the site's own markup, in an editor ──
            Filename tab, line-number gutter, three tones of syntax. This really
@@ -901,6 +689,7 @@
             }
 
             .cs-in { padding-left: (12/16rem); }
+            .cs-in2 { padding-left: (24/16rem); }
 
             i {
                 font-style: normal;
@@ -1015,12 +804,6 @@
                 color: var(--rainGray);
             }
 
-            /* the tile inverts: navy-on-navy would vanish */
-            .cs-index {
-                background-color: var(--coral);
-                color: #fff;
-            }
-
             /* ── the tray on navy ──
                Five token values and nothing else. v1 listed each specimen's
                coloured part by name here (`.cs-fill, .cs-node-live,
@@ -1050,17 +833,16 @@
     }
 }
 
-/* Large phone - 430px — the six cards go two-up.
-   One per row made this the tallest section on the page at 1461px, and not
-   because the cards are big: they are 159px each, so it was purely the count.
-   Two-up takes it to 1096.
+/* Large phone - 430px — two-up.
+   ⚠ THE OLD NOTE HERE WAS ABOUT SIX CARDS and is kept because its floor still
+   binds: 430 was tried at 368 to catch the common 375 / 390 / 414 handsets and
+   the headings fell apart, breaking to three lines ("Loads in / under a /
+   second", "Hand-coded, / not / templated") in a 171px column. At 430 the
+   column is 191px and every heading holds to two lines or fewer. Don't lower
+   this without re-checking the h3 wrap.
 
-   430 is a FLOOR, not a guess. It was tried at 368 to catch the common 375 /
-   390 / 414 handsets, and the headings fell apart: a 171px column broke them
-   to three lines ("Loads in / under a / second", "Hand-coded, / not /
-   templated") to save 250px on a 10,500px page. At 430 the column is 191px
-   and every heading holds to two lines or fewer, all the way up. Don't lower
-   this without re-checking the h3 wrap. */
+   With four cards this is a plain 2x2 and the wide cards are not wide yet —
+   the zigzag needs three columns to exist, so it starts at 64rem. */
 @media only screen and (min-width: 26.875rem) {
     #services {
         .cs-card-group {
@@ -1078,11 +860,127 @@
     }
 }
 
-/* Desktop - 1024px */
+/* Desktop - 1024px — the zigzag.
+   ── this is the whole point of the rebuild ──
+   Three columns, four cards, two of them spanning two: the rows come out 2+1
+   and 1+2, so neither repeats the other and the section stops reading as a
+   grid of equal rectangles. It was 3x2 with six identical cards.
+
+   ⚠ Which card is wide is decided by its SPECIMEN, not by the copy's
+   importance. .cs-p-code and .cs-p-serp are wide objects in the world — a line
+   of markup and a search result — and at a third of the grid both were
+   breaking mid-attribute and wrapping the snippet to three lines. .cs-p-flow
+   (a message thread) and .cs-p-speed (a metric bar over a scale) are tall and
+   narrow by nature and read better in one column. Swap which cards are wide
+   and the trays are what will complain.
+
+   ⚠ The DOM order is the visual order and has to stay that way: the spans are
+   `span 2` with no explicit placement, so the cards flow. Reorder the <li>s
+   and the zigzag re-flows with them, which is the intended way to change it —
+   don't add grid-column-start to pin them, because the two-up layout above
+   relies on the same source order. */
 @media only screen and (min-width: 64rem) {
     #services {
         .cs-card-group {
             grid-template-columns: repeat(3, 1fr);
+        }
+
+        /* ── a wide card is a DIFFERENT CARD, not a stretched one ──
+           ⚠ Spanning two columns without this rule was worse than not
+           spanning at all: .cs-proof is width:100%, so the tray grew to the
+           full 1,090px while the three lines of markup inside it stayed ~300px
+           and hugged the left edge. Both wide cards read as half-empty, which
+           is the opposite of the emphasis the span was for.
+
+           So the extra column buys a second COLUMN rather than a longer line:
+           the header rule still runs the full width, the copy stays in a
+           readable measure on the left, and the specimen moves beside it.
+           That also makes "wide" structurally different from "narrow" instead
+           of being the same card at two sizes — which is what the six-equal
+           grid was doing wrong in the first place.
+
+           ⚠ .cs-verify is NOT placed here, deliberately. It is
+           position: absolute against the card's reserved bottom strip (see its
+           own note), so it is out of the grid flow entirely and stays pinned
+           to the card's bottom-left in both variants. */
+        .cs-item-wide {
+            grid-column: span 2;
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+            /* 24px - 40px */
+            column-gap: clamp(1.5rem, 3vw, 2.5rem);
+            /* ⚠ The LAST row takes the slack, which is what lets the tray
+               stretch. With `align-content: start` the three rows packed to
+               their content height and the leftover sat unallocated at the
+               card's floor, so `align-self: stretch` on the tray had nothing
+               to stretch into. 1fr on row 3 gives the copy column a tall row
+               its text simply sits at the top of, and gives the spanned tray
+               a real height. */
+            grid-template-rows: auto auto 1fr;
+
+            /* the ruled header spans both, so the hairline still runs edge to
+               edge and the two variants share one header treatment */
+            .cs-number {
+                grid-column: 1 / -1;
+            }
+
+            .cs-h3,
+            .cs-item-text {
+                grid-column: 1;
+            }
+
+            .cs-proof {
+                grid-column: 2;
+                grid-row: 2 / span 2;
+                /* ⚠ margin-top:auto is the FLEX trick that pins the tray to the
+                   card's floor so all the narrow cards' trays line up. In grid
+                   it would push the tray down its spanned rows instead, which
+                   un-aligns it from the heading it belongs to. */
+                margin-top: 0;
+
+                /* ── the tray fills its column ──
+                   ⚠ The narrow cards' trays are a fixed 118px (see .cs-proof's
+                   own note: equal heights are what make the row of them line
+                   up). Here that number is wrong twice over. The row's height
+                   is set by the NARROW card beside it, so a 118px tray left a
+                   ~250px void under the wide card's copy; and the specimen is
+                   already vertically centred inside the tray, so growing the
+                   tray does not move its contents — it just gives the panel the
+                   proportion the column actually has.
+
+                   min-height keeps the 118px floor for narrower desktops where
+                   the rows are shorter. */
+                align-self: stretch;
+                height: auto;
+                min-height: (118/16rem);
+            }
+
+            /* ── the specimens grow with their tray ──
+               ⚠ Every size in these two specimens was tuned against a tray
+               roughly a third of the grid wide. Spanning two columns and then
+               stretching the tray left the SAME 7.5-9px type floating in a
+               350x221 panel, which reads as a small thing in a big box rather
+               than as a panel. These are the tuned values scaled by ~1.25.
+
+               ⚠ They have to be restated one by one. The specimens are sized
+               in rem, not em, so setting a font-size on .cs-proof would not
+               reach them — that is deliberate elsewhere (a tray nested in a
+               card must not inherit the card's scale) and it is the cost here.
+               If a third wide specimen is ever added, that is the point to
+               move the whole set onto em and set one size on the tray. */
+            .cs-p-code {
+                .cs-file { font-size: (9/16rem); }
+                .cs-ln { font-size: (9/16rem); width: (7/16rem); }
+                .cs-code-l { font-size: (11/16rem); }
+            }
+
+            .cs-p-serp {
+                .cs-fav { width: (16/16rem); height: (16/16rem); }
+                .cs-serp-site { font-size: (10/16rem); }
+                .cs-serp-url { font-size: (9.5/16rem); }
+                .cs-serp-title { font-size: (14/16rem); }
+                .cs-serp-snip { font-size: (10.5/16rem); }
+            }
         }
     }
 }
@@ -1118,13 +1016,6 @@
                    its float in dark mode only. The tokens already re-point
                    themselves in root.less's dark block, so the correct rule
                    here is no rule at all. */
-            }
-
-            /* Navy on a navy card vanishes, so the tile lifts to the raised
-               surface above it and the numeral goes light. */
-            .cs-index {
-                background-color: var(--accent);
-                color: var(--bodyTextColorWhite);
             }
 
             /* The tray has to RECESS, and a 5% navy wash over --medium does
@@ -5309,9 +5200,17 @@
 <---   #services — live trays   -->
 <--- -------------------------- -*/
 
-/* The six .cs-proof specimens, animated. Each plays the claim printed above
-   it: the widths light in turn, the LCP bar draws, the search listing builds,
-   the message sends and publishes, the checks land, the markup reveals itself.
+/* The four .cs-proof specimens, animated. Each plays the claim printed above
+   it: the markup reveals itself line by line, the message sends and publishes,
+   the LCP bar draws, the search listing builds.
+
+   ⚠ It was SIX until 2026-09-30, when the grid went to four cards on a zigzag
+   (index.html carries why). The two that went were the device-morph on "Built
+   for phones first" and the landing checks on "Hosting and backups". The
+   device one is worth a note because it was the most expensive thing in this
+   file: it was the ONLY specimen that animated width and height rather than
+   transforms, with a long justification for the exception, and it drove a
+   layout pass on every frame it ran. Nothing here animates layout any more.
 
    ── five rules this block follows ──
 
@@ -5322,15 +5221,19 @@
       is a safe JS dependency; withholding CONTENT is not, which is the rule in
       root.less about .cs-rise-armed.
 
-   2. MOSTLY REST. Each cycle is a short action and a long hold. Six specimens
-      in continuous motion behind six sentences would be a section you cannot
-      read; the brief was "loops quietly", and quiet is bought with the hold.
+   2. MOSTLY REST. Each cycle is a short action and a long hold. Specimens in
+      continuous motion behind the sentences they illustrate would be a section
+      you cannot read; the brief was "loops quietly", and quiet is bought with
+      the hold. ⚠ This matters MORE at four cards, not less: the two wide ones
+      are physically bigger, so the same motion is more of the viewport.
 
-   3. NO TWO PERIODS MATCH. 5.5 / 6.5 / 7 / 7.5 / 8 / 9 seconds, sharing no
-      common factor, so the grid never drifts into phase and starts beating.
+   3. NO TWO PERIODS MATCH. 5.5 / 6.5 / 7.5 / 9 seconds, sharing no common
+      factor, so the grid never drifts into phase and starts beating. (It was
+      six values; 7 and 8 left with their specimens. The four that remain are
+      still mutually prime enough that the section does not visibly cycle.)
 
    4. TRANSFORM, OPACITY AND CLIP-PATH ONLY. No width, height or colour is
-      animated. ⚠ 06 reveals with clip-path rather than scaleX specifically
+      animated. ⚠ The Build card reveals with clip-path rather than scaleX specifically
       because it now contains REAL TEXT - scaling a line of type horizontally
       squashes the glyphs, which is exactly the cheap look the rebuild was
       meant to get rid of. clip-path wipes without touching the letterforms.
@@ -5344,52 +5247,7 @@
    without !important - but only while they sit BELOW those rules in the file. */
 
 @media (prefers-reduced-motion: no-preference) {
-    /* ── 01 · the phone stretches into the tablet, then into the laptop ──
-       One frame changing shape, with its chrome and its label cross-fading to
-       match. The cycle ends by morphing back down to the phone rather than
-       cutting, so the loop has no seam.
-
-       ⚠ THIS IS THE ONE PLACE IN THIS FILE THAT ANIMATES WIDTH AND HEIGHT, and
-       it is deliberate. Rule 4 at the top of this block says transform and
-       opacity only, because those run on the compositor. A transform cannot do
-       this job: going from 22x40 to 64x42 is scaleX 2.9 against scaleY 1.05,
-       and a scaled box takes its stroke with it — the 1.5px frame would render
-       at 4.4px on the vertical edges and 1.6px on the horizontal ones, and the
-       notch and the browser dots would smear with it.
-
-       Animating the box instead keeps the stroke honest at every size, because
-       it is an inset box-shadow and box-shadows do not scale with the element.
-       The cost is a layout pass on ONE absolutely-sized element inside a
-       fixed-height stage, so nothing outside it is measured again. That is a
-       fair trade for the only specimen on the page whose subject IS its
-       dimensions.
-
-       ⚠ The stage and the label slot are fixed-height for the same reason. If
-       either could grow, this would stop being a contained layout and start
-       reflowing the tray on every frame. */
-    #services .cs-card-group.is-in .cs-p-device .cs-scr {
-        animation: cs-dev-morph 7s ease-in-out infinite;
-    }
-    #services .cs-card-group.is-in .cs-p-device .cs-notch {
-        animation: cs-dev-notch 7s ease-in-out infinite;
-    }
-    #services .cs-card-group.is-in .cs-p-device .cs-home {
-        animation: cs-dev-home 7s ease-in-out infinite;
-    }
-    #services .cs-card-group.is-in .cs-p-device .cs-bar {
-        animation: cs-dev-bar 7s ease-in-out infinite;
-    }
-    #services .cs-card-group.is-in .cs-p-device .cs-w1 {
-        animation: cs-dev-w1 7s ease-in-out infinite;
-    }
-    #services .cs-card-group.is-in .cs-p-device .cs-w2 {
-        animation: cs-dev-w2 7s ease-in-out infinite;
-    }
-    #services .cs-card-group.is-in .cs-p-device .cs-w3 {
-        animation: cs-dev-w3 7s ease-in-out infinite;
-    }
-
-    /* ── 02 · the bar draws to its resting length ──
+    /* ── Performance · the bar draws to its resting length ──
        Ends at scaleX(0.62), which is where the static version sits, so the
        hold is the design rather than a pose the animation happens to stop in. */
     #services .cs-card-group.is-in .cs-p-speed .cs-fill {
@@ -5401,14 +5259,14 @@
         animation-delay: 0.3s;
     }
 
-    /* ── 03 · the listing builds, url then title then description ── */
+    /* ── Search · the listing builds, url then title then description ── */
     #services .cs-card-group.is-in .cs-p-serp > span {
         animation: cs-proof-in 9s ease-in-out infinite;
     }
     #services .cs-card-group.is-in .cs-p-serp .cs-serp-title { animation-delay: 0.2s; }
     #services .cs-card-group.is-in .cs-p-serp .cs-serp-snip { animation-delay: 0.4s; }
 
-    /* ── 04 · the request arrives, then it is published ── */
+    /* ── Support · the request arrives, then it is published ── */
     #services .cs-card-group.is-in .cs-p-flow .cs-msg {
         animation: cs-proof-in 6.5s ease-in-out infinite;
     }
@@ -5417,28 +5275,19 @@
         animation-delay: 0.55s;
     }
 
-    /* ── 05 · the checks land in sequence ──
-       ⚠ They land and then STAY for the rest of the cycle. Read the note on
-       .cs-p-status: on a card headed "Hosting and backups", a check that comes
-       and goes reads as a service flapping. The exit at the end of the loop is
-       the whole row fading together, never one at a time. */
-    #services .cs-card-group.is-in .cs-p-status .cs-row {
-        animation: cs-proof-in 8s ease-in-out infinite;
-    }
-    /* ⚠ 3 and 4, not 2 and 3. nth-child counts ALL siblings, and .cs-status-head
-       is now the first of them, so the three rows are children 2, 3 and 4. The
-       old numbers still matched two of the rows, which is the dangerous kind of
-       wrong: the sequence just quietly ran out of order. */
-    #services .cs-card-group.is-in .cs-p-status .cs-row:nth-child(3) { animation-delay: 0.16s; }
-    #services .cs-card-group.is-in .cs-p-status .cs-row:nth-child(4) { animation-delay: 0.32s; }
-
-    /* ── 06 · the markup reveals itself, line by line ── */
+    /* ── Build · the markup reveals itself, line by line ── */
     #services .cs-card-group.is-in .cs-p-code .cs-code-l {
         animation: cs-proof-wipe 7.5s ease-in-out infinite;
     }
-    /* same shift — .cs-file is child 1, so the code lines are 2, 3 and 4 */
+    /* ⚠ .cs-file is child 1, so code line N is child N+1. FIVE lines now that
+       this card is wide, so the ladder runs 3..6. The step stays 0.24s: five
+       lines at 0.24 finish wiping in 0.96s, which is still inside the "short
+       action, long hold" shape the block header sets out. Add a sixth line and
+       add its delay here, or it will wipe in on top of line 1. */
     #services .cs-card-group.is-in .cs-p-code .cs-code-l:nth-child(3) { animation-delay: 0.24s; }
     #services .cs-card-group.is-in .cs-p-code .cs-code-l:nth-child(4) { animation-delay: 0.48s; }
+    #services .cs-card-group.is-in .cs-p-code .cs-code-l:nth-child(5) { animation-delay: 0.72s; }
+    #services .cs-card-group.is-in .cs-p-code .cs-code-l:nth-child(6) { animation-delay: 0.96s; }
 }
 
 /* ── the keyframes ──
@@ -5446,81 +5295,6 @@
    media query only exist for that query, and keeping them together is how the
    "short action, long hold" shape gets checked - read the percentages down the
    page and the action should always be over inside the first fifth. */
-
-/* ── the morph, and the six fades timed against it ──
-   Read the percentages as one storyboard. The frame holds a shape for roughly
-   1.5s and changes over roughly 0.7s, three times in a 7s cycle: phone to 22%,
-   tablet 32-54%, laptop 64-86%, back to phone by 96%. Every other keyframe set
-   below hangs off those four numbers, so if the morph timing moves they all
-   move with it - the chrome would otherwise still be a notch while the frame is
-   a laptop. */
-@keyframes cs-dev-morph {
-    0% { width: (22/16rem); height: (40/16rem); border-radius: (4/16rem); }
-    22% { width: (22/16rem); height: (40/16rem); border-radius: (4/16rem); }
-    32% { width: (36/16rem); height: (46/16rem); border-radius: (3/16rem); }
-    54% { width: (36/16rem); height: (46/16rem); border-radius: (3/16rem); }
-    64% { width: (76/16rem); height: (44/16rem); border-radius: (3/16rem); }
-    86% { width: (76/16rem); height: (44/16rem); border-radius: (3/16rem); }
-    96% { width: (22/16rem); height: (40/16rem); border-radius: (4/16rem); }
-    100% { width: (22/16rem); height: (40/16rem); border-radius: (4/16rem); }
-}
-
-/* notch — phone only */
-@keyframes cs-dev-notch {
-    0% { opacity: 1; }
-    22% { opacity: 1; }
-    28% { opacity: 0; }
-    92% { opacity: 0; }
-    98% { opacity: 1; }
-    100% { opacity: 1; }
-}
-
-/* home indicator — phone and tablet, gone by the laptop */
-@keyframes cs-dev-home {
-    0% { opacity: 1; }
-    54% { opacity: 1; }
-    60% { opacity: 0; }
-    92% { opacity: 0; }
-    98% { opacity: 1; }
-    100% { opacity: 1; }
-}
-
-/* browser bar — laptop only */
-@keyframes cs-dev-bar {
-    0% { opacity: 0; }
-    60% { opacity: 0; }
-    68% { opacity: 1; }
-    88% { opacity: 1; }
-    94% { opacity: 0; }
-    100% { opacity: 0; }
-}
-
-@keyframes cs-dev-w1 {
-    0% { opacity: 1; }
-    24% { opacity: 1; }
-    30% { opacity: 0; }
-    92% { opacity: 0; }
-    98% { opacity: 1; }
-    100% { opacity: 1; }
-}
-
-@keyframes cs-dev-w2 {
-    0% { opacity: 0; }
-    26% { opacity: 0; }
-    34% { opacity: 1; }
-    56% { opacity: 1; }
-    62% { opacity: 0; }
-    100% { opacity: 0; }
-}
-
-@keyframes cs-dev-w3 {
-    0% { opacity: 0; }
-    58% { opacity: 0; }
-    66% { opacity: 1; }
-    88% { opacity: 1; }
-    94% { opacity: 0; }
-    100% { opacity: 0; }
-}
 
 @keyframes cs-proof-fill {
     0% { transform: scaleX(0); opacity: 1; }

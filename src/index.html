@@ -212,10 +212,40 @@ tags: "sitemap" # content/content.json will make sure that all pages in content/
                 </p>
             </div>
             <ul class="cs-card-group cs-fade-in">
-                {# Each card carries a .cs-proof tray: a small CSS-built specimen of
-                   the thing the card is claiming, in a recessed well at the card's
-                   floor. Three depths - panel, raised card, recessed tray - is what
-                   gives the grid structure instead of six flat rectangles.
+                {# ── FOUR cards on a 2+1 / 1+2 zigzag, rebuilt 2026-09-30 ──
+                   It was six equal cards in a 3x2 grid, numbered 01-06, and it
+                   was the largest single block on the page at 1,307px. Two
+                   things were wrong with it beyond the size:
+
+                     · SIX EQUAL RECTANGLES IS THE SHAPE, and the shape is what
+                       reads as generated. Every card had the same width, the
+                       same height, the same internal order and the same tray
+                       size, so nothing in the section was emphasised over
+                       anything else — a uniform N-up grid is what a tool
+                       produces when asked to illustrate N features.
+                     · THE NUMBERING IMPLIED A SEQUENCE THE CONTENT HAS NOT.
+                       01-06 reads as steps. These are parallel claims, so the
+                       index is gone and only the mono category label remains.
+
+                   Now two cards span two columns and two span one, arranged
+                   2+1 over 1+2, so neither row repeats the other's rhythm.
+                   Which card is wide is decided by its SPECIMEN, not by how
+                   important the copy is: the markup and the search listing are
+                   both wide objects in the world and were breaking badly in a
+                   third of the grid, while the message thread and the metric
+                   bar are naturally tall and narrow.
+
+                   Dropped with the two cards: "Built for phones first", whose
+                   tray was an empty grey box with a device outline in it and
+                   which the visitor's own phone proves anyway, and "Hosting
+                   and backups", whose claim the section's subhead already
+                   makes in so many words ("Built by hand, hosted, maintained").
+                   No fact left the page.
+
+                   Each card carries a .cs-proof tray: a small CSS-built
+                   specimen of the thing the card is claiming, in a recessed
+                   well at the card's floor. Three depths - panel, raised card,
+                   recessed tray - is what gives the grid structure.
 
                    ⚠ REBUILT 2026-09-20. v1 drew every specimen as grey rounded
                    rectangles of varying width in short rows, which is precisely the
@@ -230,9 +260,9 @@ tags: "sitemap" # content/content.json will make sure that all pages in content/
 
                    ⚠ Still no invented figures. Everything here is either the site's
                    own true copy (its domain, its own markup, its own headline) or a
-                   bare noun with no quantity attached. The one number is the LCP
-                   axis on 02, and it restates a claim #speed already makes and
-                   invites you to verify. No uptime percentage, no turnaround time,
+                   bare noun with no quantity attached. The one number is the
+                   LCP axis on the Performance card, and it restates a claim
+                   #speed already makes and invites you to verify. No uptime percentage, no turnaround time,
                    no review count - see the Status notes in CLAUDE.md.
 
                    They stay aria-hidden for the same reason the /work/ wireframes
@@ -265,52 +295,64 @@ tags: "sitemap" # content/content.json will make sure that all pages in content/
                    domain drives canonical, og:url and the sitemap, and a verify
                    link pointing at a different host than the rest of the site
                    would be its own small credibility problem. #}
-                <li class="cs-item">
+                {# ── 01 · Build (WIDE) ──
+                   The section's actual differentiator, so it leads and it gets
+                   the double column. The specimen is the site's own markup and
+                   it is the one that most needed the width: at a third of the
+                   grid the three lines were breaking mid-attribute, which is
+                   the opposite of what "hand-coded" is meant to look like. #}
+                <li class="cs-item cs-item-wide">
                     <span class="cs-number">
-                        <span class="cs-index">01</span>
-                        <span class="cs-tag">Responsive</span>
+                        <span class="cs-tag">Build</span>
                     </span>
-                    <h3 class="cs-h3">Built for phones first</h3>
+                    <h3 class="cs-h3">Hand-coded, not templated</h3>
                     <p class="cs-item-text">
-                        Most of your customers will find you on one.
+                        No page builder, no theme a hundred others are using. The repository is public, so this is checkable rather than claimed.
                     </p>
-                    {# ⚠ ONE frame that morphs, not three side by side.
+                    {# ⚠ FIVE lines, not three, since the card went wide.
+                       Every one of them is this page's REAL structure — there
+                       is a #hero section, it holds a .cs-container, and the h1
+                       inside it opens "The website your". Nothing here is
+                       invented markup dressed up to look like code, which is
+                       the whole reason the specimen is allowed to exist on a
+                       card headed "hand-coded": the repo is public and footer
+                       linked, so a visitor can check it.
 
-                       Numbers, not a miniature page: a phone frame with the real
-                       headline inside it was drawn first and cut, because at the
-                       ~54px the tray can give it body type lands around 4px and
-                       turns to mush, which is the same "meaningless grey" failure
-                       in a different costume.
-
-                       Three frames in a row came next and was replaced on
-                       2026-09-20: a row reads as three separate devices being
-                       compared, when the claim is that ONE layout carries from
-                       390 to 1280. A single frame stretching through the sizes
-                       says that; a row of three cannot.
-
-                       The chrome cross-fades with the size - notch for the phone,
-                       home bar for phone and tablet, browser bar for the desktop -
-                       and the three width labels are stacked in one slot so only
-                       the current one shows. That is why there is no layout here
-                       for them to push around. #}
-                    <span class="cs-proof cs-p-device" aria-hidden="true">
-                        <span class="cs-stage">
-                            <i class="cs-scr">
-                                <i class="cs-notch"></i>
-                                <i class="cs-home"></i>
-                                <i class="cs-bar"><i></i><i></i><i></i></i>
-                            </i>
-                        </span>
-                        <span class="cs-widths">
-                            <span class="cs-w1">390<em>px</em></span>
-                            <span class="cs-w2">768<em>px</em></span>
-                            <span class="cs-w3">1280<em>px</em></span>
-                        </span>
+                       ⚠ Adding or removing a line means editing the nth-child
+                       delays in the live-trays block at the foot of local.less.
+                       .cs-file is child 1, so line N is child N+1. #}
+                    <span class="cs-proof cs-p-code" aria-hidden="true">
+                        <span class="cs-file"><i></i>index.html</span>
+                        <span class="cs-code-l"><i class="cs-ln">1</i><span class="cs-c"><i class="cs-t">&lt;section</i> <i class="cs-a">id</i><i class="cs-p">=</i><i class="cs-v">"hero"</i><i class="cs-t">&gt;</i></span></span>
+                        <span class="cs-code-l"><i class="cs-ln">2</i><span class="cs-c cs-in"><i class="cs-t">&lt;div</i> <i class="cs-a">class</i><i class="cs-p">=</i><i class="cs-v">"cs-container"</i><i class="cs-t">&gt;</i></span></span>
+                        <span class="cs-code-l"><i class="cs-ln">3</i><span class="cs-c cs-in2"><i class="cs-t">&lt;h1&gt;</i>The website your<i class="cs-t">&lt;/h1&gt;</i></span></span>
+                        <span class="cs-code-l"><i class="cs-ln">4</i><span class="cs-c cs-in"><i class="cs-t">&lt;/div&gt;</i></span></span>
+                        <span class="cs-code-l"><i class="cs-ln">5</i><span class="cs-c"><i class="cs-t">&lt;/section&gt;</i></span></span>
+                    </span>
+                    <a class="cs-verify" href="{{ client.repo }}" target="_blank" rel="noopener noreferrer" aria-label="Read the full source for this site on GitHub (opens in a new tab)">Read the source on GitHub{% include "components/icon-external.html" %}</a>
+                </li>
+                {# ── 02 · Support (ACCENT, narrow) ──
+                   The card that pays off the section title, so it keeps the
+                   inverted treatment. Narrow on purpose: its specimen is a
+                   message bubble and a publish confirmation, which is the one
+                   tray that reads BETTER in a narrow column — a chat thread is
+                   a tall shape, not a wide one. #}
+                <li class="cs-item cs-item-featured">
+                    <span class="cs-number">
+                        <span class="cs-tag">Support</span>
+                    </span>
+                    <h3 class="cs-h3">Edits handled for you</h3>
+                    <p class="cs-item-text">
+                        Send the change, it goes live. No dashboard, no ticket.
+                    </p>
+                    <span class="cs-proof cs-p-flow" aria-hidden="true">
+                        <span class="cs-msg">Can you change the hours to 9&ndash;5?</span>
+                        <span class="cs-sent"><i class="cs-dbl"></i>Published<span class="cs-live"><i></i>Live</span></span>
                     </span>
                 </li>
+                {# ── 03 · Performance (narrow) ── #}
                 <li class="cs-item">
                     <span class="cs-number">
-                        <span class="cs-index">02</span>
                         <span class="cs-tag">Performance</span>
                     </span>
                     <h3 class="cs-h3">Loads in under a second</h3>
@@ -324,14 +366,17 @@ tags: "sitemap" # content/content.json will make sure that all pages in content/
                     </span>
                     <a class="cs-verify" href="https://pagespeed.web.dev/analysis?url={{ client.domain | urlencode }}%2F" target="_blank" rel="noopener noreferrer" aria-label="Verify this site's speed on Google PageSpeed Insights (opens in a new tab)">Verify on PageSpeed Insights{% include "components/icon-external.html" %}</a>
                 </li>
-                <li class="cs-item">
+                {# ── 04 · Search (WIDE) ──
+                   The second tray that earns a double column: a search listing
+                   is a wide object in the wild, and at a third of the grid the
+                   snippet wrapped to three lines and stopped looking like one. #}
+                <li class="cs-item cs-item-wide">
                     <span class="cs-number">
-                        <span class="cs-index">03</span>
                         <span class="cs-tag">Search</span>
                     </span>
                     <h3 class="cs-h3">Found on Google</h3>
                     <p class="cs-item-text">
-                        Structured so search engines can actually read it.
+                        Structured so search engines can actually read it, with the markup they ask for rather than the markup a theme happened to ship.
                     </p>
                     <span class="cs-proof cs-p-serp" aria-hidden="true">
                         <span class="cs-serp-head">
@@ -345,56 +390,6 @@ tags: "sitemap" # content/content.json will make sure that all pages in content/
                         <span class="cs-serp-snip">Hand-coded websites for small businesses across the North Sound.</span>
                     </span>
                     <a class="cs-verify" href="https://search.google.com/test/rich-results?url={{ client.domain | urlencode }}%2F" target="_blank" rel="noopener noreferrer" aria-label="Verify this site's structured data with Google's Rich Results Test (opens in a new tab)">Verify with Rich Results Test{% include "components/icon-external.html" %}</a>
-                </li>
-                <!-- the standout card, inverted per the comp. This is the one that
-                     pays off the section title, so it gets the emphasis. -->
-                <li class="cs-item cs-item-featured">
-                    <span class="cs-number">
-                        <span class="cs-index">04</span>
-                        <span class="cs-tag">Support</span>
-                    </span>
-                    <h3 class="cs-h3">Edits handled for you</h3>
-                    <p class="cs-item-text">
-                        Send the change, it goes live. No dashboard, no ticket.
-                    </p>
-                    <span class="cs-proof cs-p-flow" aria-hidden="true">
-                        <span class="cs-msg">Can you change the hours to 9&ndash;5?</span>
-                        <span class="cs-sent"><i class="cs-dbl"></i>Published<span class="cs-live"><i></i>Live</span></span>
-                    </span>
-                </li>
-                <li class="cs-item">
-                    <span class="cs-number">
-                        <span class="cs-index">05</span>
-                        <span class="cs-tag">Infrastructure</span>
-                    </span>
-                    <h3 class="cs-h3">Hosting and backups</h3>
-                    <p class="cs-item-text">
-                        Included and monitored. Nothing to set up or renew.
-                    </p>
-                    <span class="cs-proof cs-p-status" aria-hidden="true">
-                        <span class="cs-status-head">Included</span>
-                        <span class="cs-row"><i class="cs-check"></i>SSL certificate</span>
-                        <span class="cs-row"><i class="cs-check"></i>Offsite backups</span>
-                        <span class="cs-row"><i class="cs-check"></i>Uptime monitoring</span>
-                    </span>
-                    <a class="cs-verify" href="https://www.ssllabs.com/ssltest/analyze.html?d={{ client.domain | replace("https://", "") }}" target="_blank" rel="noopener noreferrer" aria-label="Verify this site's SSL certificate on Qualys SSL Labs (opens in a new tab)">Verify SSL{% include "components/icon-external.html" %}</a>
-                </li>
-                <li class="cs-item">
-                    <span class="cs-number">
-                        <span class="cs-index">06</span>
-                        <span class="cs-tag">Build</span>
-                    </span>
-                    <h3 class="cs-h3">Hand-coded, not templated</h3>
-                    <p class="cs-item-text">
-                        No page builder, no theme a hundred others are using.
-                    </p>
-                    <span class="cs-proof cs-p-code" aria-hidden="true">
-                        <span class="cs-file"><i></i>index.html</span>
-                        <span class="cs-code-l"><i class="cs-ln">1</i><span class="cs-c"><i class="cs-t">&lt;section</i> <i class="cs-a">id</i><i class="cs-p">=</i><i class="cs-v">"hero"</i><i class="cs-t">&gt;</i></span></span>
-                        <span class="cs-code-l"><i class="cs-ln">2</i><span class="cs-c cs-in"><i class="cs-t">&lt;h1&gt;</i>The website your<i class="cs-t">&lt;/h1&gt;</i></span></span>
-                        <span class="cs-code-l"><i class="cs-ln">3</i><span class="cs-c"><i class="cs-t">&lt;/section&gt;</i></span></span>
-                    </span>
-                    <a class="cs-verify" href="{{ client.repo }}" target="_blank" rel="noopener noreferrer" aria-label="Read the full source for this site on GitHub (opens in a new tab)">Read the source on GitHub{% include "components/icon-external.html" %}</a>
                 </li>
             </ul>
         </div>
