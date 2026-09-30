@@ -304,8 +304,56 @@
         if (split(el, html)) splits.push({ el: el, html: html });
     }
 
+    /* ── re-check once the real fonts are actually in ──
+       ⚠ runHero() splits the hero BEFORE document.fonts.ready, on the strength
+       of document.fonts.check('400 1rem "Inter"'). Chromium answers that
+       honestly. WEBKIT RETURNS TRUE AND THEN LAYS THE PARAGRAPH OUT WITH
+       DIFFERENT METRICS - so the hero split into three lines that each
+       re-wrapped to two the moment Inter really applied, which is the exact
+       ragged paragraph this splitter exists to prevent, on the engine every
+       iPhone and iPad uses for Safari AND Chrome.
+
+       The height check inside split() cannot catch it: at split time those
+       lines did fit. It has to be run again once the fonts are genuinely
+       there, which is here.
+
+       Anything that still does not fit on the second attempt is restored to
+       plain text by split() itself and dropped from `splits`, so a later
+       resize does not keep retrying a paragraph that cannot be split. */
+    function verify() {
+        for (var i = splits.length - 1; i >= 0; i--) {
+            var rec = splits[i];
+            var lh = parseFloat(window.getComputedStyle(rec.el).lineHeight) || 0;
+            if (!lh) continue;
+
+            var wrapped = [].slice
+                .call(rec.el.children)
+                .some(function (m) {
+                    return m.classList.contains("cs-rise") && m.getBoundingClientRect().height > lh * 1.6;
+                });
+            if (!wrapped) continue;
+
+            var wasIn = rec.el.classList.contains("is-in");
+            restore(rec);
+            if (split(rec.el, rec.html)) {
+                /* The hero's entrance runs off the stylesheet from page load,
+                   so it may already be in flight. Rebuilding it mid-animation
+                   would jump, and a jump on first paint beats a permanently
+                   broken paragraph - but it should SETTLE rather than replay,
+                   which is what .is-in does. Same reasoning as the resize
+                   handler below. */
+                if (wasIn) rec.el.classList.add("is-in");
+            } else {
+                splits.splice(i, 1);
+            }
+        }
+    }
+
     function run() {
         [].slice.call(document.querySelectorAll("." + LINES)).forEach(trySplit);
+
+        /* before arming, so what gets revealed is the corrected structure */
+        verify();
 
         /* Arm only AFTER splitting. Arming first would hide the lines that do
            not exist yet, and a failed split would leave the element hidden with
