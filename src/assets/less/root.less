@@ -616,6 +616,25 @@
 		--waveFoam: #3f5f7a;
 		--waveMid: var(--medium);
 		--speedDeep: #0e1720;
+		/* ⚠ --waveDeep MUST BE RE-DECLARED HERE, and the reason is a CSS rule
+		   that is easy to get wrong: a custom property whose value contains
+		   var() is substituted AT ITS OWN DECLARATION SITE, not at the point
+		   of use. `--waveDeep: var(--speedDeep)` lives on :root, so it
+		   resolves against :ROOT's --speedDeep (--inkNavy) and descendants
+		   inherit that already-finished value. Overriding --speedDeep down
+		   here never feeds back into it.
+
+		   Measured when this was missed: #speed rendered rgb(14,23,32) while
+		   the divider's deep band stayed rgb(27,42,56) — a seam the full width
+		   of the page at both of #speed's boundaries, in dark mode only, with
+		   no build error and nothing wrong in either declaration on its own.
+		   The footer divider was unaffected because it re-declares --waveDeep
+		   itself, with a literal, a few lines down in local.less.
+
+		   It reads var(--speedDeep) rather than repeating #0e1720 so the
+		   colour still lives in exactly one place; what matters is that the
+		   substitution now happens on an element that can see the override. */
+		--waveDeep: var(--speedDeep);
 
 		/* ── the card scale, on dark ──
 		   Re-pointed wholesale so no call site has to carry a white-alpha
