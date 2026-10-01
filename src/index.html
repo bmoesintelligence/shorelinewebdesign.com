@@ -309,7 +309,8 @@ tags: "sitemap" # content/content.json will make sure that all pages in content/
                     <p class="cs-item-text">
                         No page builder, no theme a hundred others are using. The repository is public, so this is checkable rather than claimed.
                     </p>
-                    {# ⚠ FIVE lines, not three, since the card went wide.
+                    {# ⚠ NINE lines, grown from three as the card went wide and then
+                       again when the tray was measured at 51% full.
                        Every one of them is this page's REAL structure — there
                        is a #hero section, it holds a .cs-container, and the h1
                        inside it opens "The website your". Nothing here is
@@ -318,6 +319,12 @@ tags: "sitemap" # content/content.json will make sure that all pages in content/
                        card headed "hand-coded": the repo is public and footer
                        linked, so a visitor can check it.
 
+                       ⚠ It is the real nesting now, not a flattened version of
+                       it: section > .cs-container > .cs-content > h1, which is
+                       exactly what this page's hero is. That is also where the
+                       extra height came from — four indent levels need
+                       .cs-in through .cs-in4 in local.less.
+
                        ⚠ Adding or removing a line means editing the nth-child
                        delays in the live-trays block at the foot of local.less.
                        .cs-file is child 1, so line N is child N+1. #}
@@ -325,9 +332,13 @@ tags: "sitemap" # content/content.json will make sure that all pages in content/
                         <span class="cs-file"><i></i>index.html</span>
                         <span class="cs-code-l"><i class="cs-ln">1</i><span class="cs-c"><i class="cs-t">&lt;section</i> <i class="cs-a">id</i><i class="cs-p">=</i><i class="cs-v">"hero"</i><i class="cs-t">&gt;</i></span></span>
                         <span class="cs-code-l"><i class="cs-ln">2</i><span class="cs-c cs-in"><i class="cs-t">&lt;div</i> <i class="cs-a">class</i><i class="cs-p">=</i><i class="cs-v">"cs-container"</i><i class="cs-t">&gt;</i></span></span>
-                        <span class="cs-code-l"><i class="cs-ln">3</i><span class="cs-c cs-in2"><i class="cs-t">&lt;h1&gt;</i>The website your<i class="cs-t">&lt;/h1&gt;</i></span></span>
-                        <span class="cs-code-l"><i class="cs-ln">4</i><span class="cs-c cs-in"><i class="cs-t">&lt;/div&gt;</i></span></span>
-                        <span class="cs-code-l"><i class="cs-ln">5</i><span class="cs-c"><i class="cs-t">&lt;/section&gt;</i></span></span>
+                        <span class="cs-code-l"><i class="cs-ln">3</i><span class="cs-c cs-in2"><i class="cs-t">&lt;div</i> <i class="cs-a">class</i><i class="cs-p">=</i><i class="cs-v">"cs-content"</i><i class="cs-t">&gt;</i></span></span>
+                        <span class="cs-code-l"><i class="cs-ln">4</i><span class="cs-c cs-in3"><i class="cs-t">&lt;h1</i> <i class="cs-a">class</i><i class="cs-p">=</i><i class="cs-v">"cs-title"</i><i class="cs-t">&gt;</i></span></span>
+                        <span class="cs-code-l"><i class="cs-ln">5</i><span class="cs-c cs-in4">The website your</span></span>
+                        <span class="cs-code-l"><i class="cs-ln">6</i><span class="cs-c cs-in3"><i class="cs-t">&lt;/h1&gt;</i></span></span>
+                        <span class="cs-code-l"><i class="cs-ln">7</i><span class="cs-c cs-in2"><i class="cs-t">&lt;/div&gt;</i></span></span>
+                        <span class="cs-code-l"><i class="cs-ln">8</i><span class="cs-c cs-in"><i class="cs-t">&lt;/div&gt;</i></span></span>
+                        <span class="cs-code-l"><i class="cs-ln">9</i><span class="cs-c"><i class="cs-t">&lt;/section&gt;</i></span></span>
                     </span>
                     <a class="cs-verify" href="{{ client.repo }}" target="_blank" rel="noopener noreferrer" aria-label="Read the full source for this site on GitHub (opens in a new tab)">Read the source on GitHub{% include "components/icon-external.html" %}</a>
                 </li>
@@ -345,8 +356,21 @@ tags: "sitemap" # content/content.json will make sure that all pages in content/
                     <p class="cs-item-text">
                         Send the change, it goes live. No dashboard, no ticket.
                     </p>
+                    {# ⚠ A THREAD, not one bubble. The tray measured 41% full.
+                       The second request is what makes this read as "send the
+                       change" rather than as a single scripted exchange, and
+                       it is the one addition here that is illustrative rather
+                       than quoted — everything else in these four specimens is
+                       the site's own true text.
+
+                       ⚠ STILL NO TIMESTAMP, NO "REPLIES IN N HOURS", NO QUEUE
+                       POSITION. /free-redesign/ commits to no turnaround and
+                       /thanks/redesign/ deliberately states none; a clock in
+                       here would be the same promise made in a picture. #}
                     <span class="cs-proof cs-p-flow" aria-hidden="true">
+                        <span class="cs-thread-head">Your request</span>
                         <span class="cs-msg">Can you change the hours to 9&ndash;5?</span>
+                        <span class="cs-msg">And swap the photo on the homepage.</span>
                         <span class="cs-sent"><i class="cs-dbl"></i>Published<span class="cs-live"><i></i>Live</span></span>
                     </span>
                 </li>
@@ -359,10 +383,25 @@ tags: "sitemap" # content/content.json will make sure that all pages in content/
                     <p class="cs-item-text">
                         Slow sites lose people before the page appears.
                     </p>
+                    {# ⚠ The header and footer rows are the fill, and BOTH ARE
+                       REAL. "Mobile" is the profile the figure below belongs
+                       to, and the date comes from _data/lighthouse.js — the
+                       same file #speed's four rings read, measured rather than
+                       typed. A specimen on a card that ends in "Verify on
+                       PageSpeed Insights" should say when it was last checked;
+                       that is the difference between a claim and a reading.
+
+                       ⚠ NO SECOND METRIC. CLS and INP would need figures this
+                       site has not stored, and lighthouse.js holds the four
+                       category scores and nothing else. Inventing two numbers
+                       to fill 20px is exactly what the no-invented-figures rule
+                       at the top of this section is for. #}
                     <span class="cs-proof cs-p-speed" aria-hidden="true">
+                        <span class="cs-gauge-head">PageSpeed Insights<i>Mobile</i></span>
                         <span class="cs-metric">Largest contentful paint<i class="cs-good">Good</i><em class="cs-cap">&lt;1s</em></span>
                         <span class="cs-track"><span class="cs-fill"></span></span>
                         <span class="cs-ticks"><span>0</span><span>0.5s</span><span>1.0s</span></span>
+                        <span class="cs-gauge-foot">Measured {{ lighthouse.measuredLabel }}</span>
                     </span>
                     <a class="cs-verify" href="https://pagespeed.web.dev/analysis?url={{ client.domain | urlencode }}%2F" target="_blank" rel="noopener noreferrer" aria-label="Verify this site's speed on Google PageSpeed Insights (opens in a new tab)">Verify on PageSpeed Insights{% include "components/icon-external.html" %}</a>
                 </li>
@@ -387,7 +426,25 @@ tags: "sitemap" # content/content.json will make sure that all pages in content/
                             </span>
                         </span>
                         <span class="cs-serp-title">Web Design in Richmond Beach, WA</span>
-                        <span class="cs-serp-snip">Hand-coded websites for small businesses across the North Sound.</span>
+                        <span class="cs-serp-snip">Hand-coded websites for small businesses across North Seattle, from {{ pricing.perMonth }}. Fast, custom, and built to be found.</span>
+                        {# ── sitelinks ──
+                           ⚠ Four REAL pages with their real paths, and that is
+                           the whole reason they belong on this card rather than
+                           being decoration: sitelinks are what Google shows when
+                           a site's structure is legible to it, which is the
+                           claim printed directly above. A made-up set here would
+                           be illustrating the claim with a counterfeit of the
+                           evidence for it.
+
+                           They also did the work of filling the tray. Measured
+                           before this went in, the specimen filled 38% of its
+                           height with 69px of dead space above and below. #}
+                        <span class="cs-serp-links">
+                            <span class="cs-serp-sl">Web design<i>/services/web-design/</i></span>
+                            <span class="cs-serp-sl">Pricing<i>/pricing/</i></span>
+                            <span class="cs-serp-sl">Work<i>/work/</i></span>
+                            <span class="cs-serp-sl">Free redesign<i>/free-redesign/</i></span>
+                        </span>
                     </span>
                     <a class="cs-verify" href="https://search.google.com/test/rich-results?url={{ client.domain | urlencode }}%2F" target="_blank" rel="noopener noreferrer" aria-label="Verify this site's structured data with Google's Rich Results Test (opens in a new tab)">Verify with Rich Results Test{% include "components/icon-external.html" %}</a>
                 </li>

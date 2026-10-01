@@ -359,17 +359,57 @@
             --proofRule: rgba(27, 42, 56, 0.14);
             --proofAccent: var(--coralText);
             --proofSurface: rgba(255, 255, 255, 0.5);
+            /* ⚠ A SIXTH TOKEN, and it exists because --proofAccent is not one
+               colour. On a light card it resolves to --coralText's dark
+               #963320 and wants a BONE label (7.03:1); on every navy ground it
+               resolves to the pale #e8846f and wants an INK one (5.55:1). Both
+               chips that fill with --proofAccent — the LIVE pill and the GOOD
+               badge — were hardcoding bone, so both measured 2.46:1 wherever
+               the accent went pale. The LIVE one was caught on 2026-09-30; the
+               GOOD one survived that pass because it only fails in dark mode
+               and the light card reads fine.
+
+               Same rule as CLAUDE.md's: light labels on an accent fill usually
+               fail, dark-on-accent is the safer default — but which is which
+               depends on the ground, so it has to be a token rather than a
+               decision made once at the call site. */
+            --proofOnAccent: var(--bodyTextColorWhite);
 
             width: 100%;
             box-sizing: border-box;
-            /* pins the tray to the floor so all six line up regardless of how
-               long the sentence above ran */
-            margin-top: auto;
-            /* 74 -> 104 -> 118. Real type needs the room, and the second
-               rise paid for the detail: a filename tab, a status header, a
-               favicon-and-breadcrumb head row. Every specimen is centred, so
-               the extra height is shared rather than pooling at one edge. */
-            height: (118/16rem);
+            /* ── the tray takes the card's slack ──
+               ⚠ THIS WAS `margin-top: auto`, which pinned the tray to the
+               card's floor and parked every spare pixel in ONE gap above it.
+               That was invisible while all six specimens were the same fixed
+               118px; once they were filled out on 2026-10-01 the rows grew to
+               the tallest card and the short ones opened a hole. Measured at
+               768: 122px of empty card between the Support copy and its tray,
+               114px on Performance. It read as a layout fault, because it was.
+
+               flex-grow puts the same pixels INSIDE the tray instead. The
+               specimens are all vertically centred, so the extra height reads
+               as a panel with generous padding — which is what a recessed
+               tinted well should look like — rather than as a hole in the card
+               above it. The bottom edges still line up across a row, which is
+               the alignment the old rule was really buying.
+
+               ⚠ No effect at 390 (one card per row, so no slack) and almost
+               none at 64rem+ (the narrow cards are naturally within ~24px of
+               the wide ones). It earns its place between 430 and 1023. */
+            flex: 1 1 auto;
+            /* 74 -> 104 -> 118, then min- rather than fixed.
+
+               ⚠ IT WAS A FIXED `height` AND THAT SILENTLY CLIPPED. The tray
+               sets `overflow: clip`, so once the specimens were filled out on
+               2026-09-30 the extra rows simply vanished below 64rem — where
+               the cards are narrow and the copy wraps further. Measured at
+               390: the code specimen lost 24px, the search listing 19px, and
+               nothing errored or scrolled. A tray whose content is variable
+               cannot have a fixed height.
+
+               The floor stays, because it is what keeps a short specimen from
+               collapsing into a strip. Above it the tray grows. */
+            min-height: (118/16rem);
             padding: (12/16rem);
             background-color: rgba(27, 42, 56, 0.05);
             /* hairline as an inset shadow, never a border — house rule.
@@ -402,6 +442,42 @@
             justify-content: center;
             gap: (9/16rem);
 
+            /* ── the source row and the date row ──
+               Added 2026-09-30: the tray measured 39% full. Both carry real
+               information rather than filling space — the profile the reading
+               belongs to, and when it was taken. The date reads
+               _data/lighthouse.js, the same file #speed's rings read. */
+            .cs-gauge-head {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: (8/16rem);
+                font-size: (7.5/16rem);
+                font-weight: 600;
+                letter-spacing: 0.16em;
+                text-transform: uppercase;
+                line-height: 1;
+                color: var(--proofMuted);
+                padding-bottom: (7/16rem);
+                border-bottom: 1px solid var(--proofRule);
+
+                i {
+                    font-style: normal;
+                    letter-spacing: 0.1em;
+                    color: var(--proofInk);
+                }
+            }
+
+            .cs-gauge-foot {
+                font-size: (7.5/16rem);
+                font-weight: 500;
+                letter-spacing: 0.06em;
+                line-height: 1;
+                color: var(--proofMuted);
+                padding-top: (7/16rem);
+                border-top: 1px solid var(--proofRule);
+            }
+
             .cs-metric {
                 display: flex;
                 align-items: center;
@@ -422,7 +498,7 @@
                 padding: (2.5/16rem) (5/16rem);
                 border-radius: (3/16rem);
                 background-color: var(--proofAccent);
-                color: var(--bodyTextColorWhite);
+                color: var(--proofOnAccent);
             }
 
             .cs-track {
@@ -534,6 +610,47 @@
                 line-height: 1.4;
                 color: var(--proofMuted);
             }
+
+            /* ── sitelinks ──
+               A 2x2 of the site's REAL pages, which is what Google renders
+               under a result whose structure it can read — the claim on this
+               card. Two columns because that is how they are laid out in the
+               wild, and because one column would run the tray past the card.
+
+               ⚠ The paths are real and must stay that way. A sitelink block is
+               evidence OF the claim, so inventing the entries would be
+               counterfeiting the evidence for it. */
+            .cs-serp-links {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: (7/16rem) (14/16rem);
+                margin-top: (7/16rem);
+                padding-top: (8/16rem);
+                border-top: 1px solid var(--proofRule);
+            }
+
+            .cs-serp-sl {
+                display: flex;
+                flex-direction: column;
+                gap: (2/16rem);
+                min-width: 0;
+                font-size: (9.5/16rem);
+                font-weight: 500;
+                line-height: 1.2;
+                color: var(--proofAccent);
+
+                i {
+                    font-style: normal;
+                    font-family: var(--monoFont);
+                    font-size: (8/16rem);
+                    font-weight: 400;
+                    letter-spacing: 0;
+                    color: var(--proofMuted);
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
+            }
         }
 
         /* ── 04 · Support — the request, delivered, then published ──
@@ -543,6 +660,22 @@
            timestamp beside them would quietly commit the business to a
            response time that /free-redesign/ deliberately does not promise. */
         .cs-p-flow {
+            /* ── the thread header ──
+               Same idiom as .cs-gauge-head on the Performance card: a ruled
+               label row saying what the tray is showing. It is what lets the
+               two bubbles below read as a thread rather than as one floating
+               quotation. */
+            .cs-thread-head {
+                font-size: (7.5/16rem);
+                font-weight: 600;
+                letter-spacing: 0.16em;
+                text-transform: uppercase;
+                line-height: 1;
+                color: var(--proofMuted);
+                padding-bottom: (7/16rem);
+                border-bottom: 1px solid var(--proofRule);
+            }
+
             flex-direction: column;
             justify-content: center;
             gap: (10/16rem);
@@ -621,14 +754,14 @@
                 padding: (3/16rem) (7/16rem) (3/16rem) (6/16rem);
                 border-radius: (20/16rem);
                 background-color: var(--proofAccent);
-                color: var(--inkNavy);
+                color: var(--proofOnAccent);
                 letter-spacing: 0.1em;
 
                 i {
                     width: (4/16rem);
                     height: (4/16rem);
                     border-radius: 50%;
-                    background-color: var(--inkNavy);
+                    background-color: var(--proofOnAccent);
                     display: block;
                 }
             }
@@ -688,8 +821,12 @@
                 flex: none;
             }
 
+            /* the indent ladder — one step per nesting level in the real
+               markup this specimen quotes */
             .cs-in { padding-left: (12/16rem); }
             .cs-in2 { padding-left: (24/16rem); }
+            .cs-in3 { padding-left: (36/16rem); }
+            .cs-in4 { padding-left: (48/16rem); }
 
             i {
                 font-style: normal;
@@ -822,6 +959,8 @@
                 --proofMuted: rgba(255, 255, 255, 0.52);
                 --proofRule: rgba(255, 255, 255, 0.2);
                 --proofSurface: rgba(255, 255, 255, 0.07);
+                /* the accent goes pale on navy, so its labels go dark */
+                --proofOnAccent: var(--inkNavy);
 
                 /* ⚠ No hairline override. --edge already flips to its
                    white-alpha value in root.less's dark block, and the
@@ -1033,6 +1172,8 @@
                 --proofMuted: rgba(255, 255, 255, 0.52);
                 --proofRule: rgba(255, 255, 255, 0.2);
                 --proofSurface: rgba(255, 255, 255, 0.07);
+                /* the accent goes pale on navy, so its labels go dark */
+                --proofOnAccent: var(--inkNavy);
 
                 /* the hairline comes from --edge, which root.less already
                    re-points for this theme */
@@ -5317,35 +5458,62 @@
         animation-delay: 0.3s;
     }
 
-    /* ── Search · the listing builds, url then title then description ── */
+    /* ── Search · the listing builds, head then title then snippet then links ──
+       ⚠ `> span` catches .cs-serp-links too, which is what you want: it is the
+       last beat of the build, the way a real result paints its sitelinks after
+       its body. Named explicitly rather than left to the 0s default so the
+       ladder reads down the page. */
     #services .cs-card-group.is-in .cs-p-serp > span {
         animation: cs-proof-in 9s ease-in-out infinite;
     }
     #services .cs-card-group.is-in .cs-p-serp .cs-serp-title { animation-delay: 0.2s; }
     #services .cs-card-group.is-in .cs-p-serp .cs-serp-snip { animation-delay: 0.4s; }
+    #services .cs-card-group.is-in .cs-p-serp .cs-serp-links { animation-delay: 0.6s; }
 
-    /* ── Support · the request arrives, then it is published ── */
+    /* ── Support · two requests arrive, then both are published ──
+       ⚠ The second bubble is a SECOND BEAT, not a simultaneous one. Two
+       messages fading in together reads as a screenshot appearing; 0.3s apart
+       reads as a thread. The publish line then waits for both, which is why
+       its delay moved 0.55 -> 0.85. */
     #services .cs-card-group.is-in .cs-p-flow .cs-msg {
         animation: cs-proof-in 6.5s ease-in-out infinite;
     }
+    /* ⚠ nth-of-type(3), NOT (2). nth-of-type counts siblings of the same
+       ELEMENT, and every child of this tray is a <span> — .cs-thread-head is
+       span 1, so the two messages are spans 2 and 3. Written as (2) it matched
+       the FIRST message and the thread played second-bubble-then-first, which
+       is the same class of error the .cs-p-code note below records: the
+       selector matched something, just not the thing meant. Measured: the
+       delays came out 0.3s then 0s. */
+    #services .cs-card-group.is-in .cs-p-flow .cs-msg:nth-of-type(3) {
+        animation-delay: 0.3s;
+    }
     #services .cs-card-group.is-in .cs-p-flow .cs-sent {
         animation: cs-proof-in 6.5s ease-in-out infinite;
-        animation-delay: 0.55s;
+        animation-delay: 0.85s;
     }
 
     /* ── Build · the markup reveals itself, line by line ── */
     #services .cs-card-group.is-in .cs-p-code .cs-code-l {
         animation: cs-proof-wipe 7.5s ease-in-out infinite;
     }
-    /* ⚠ .cs-file is child 1, so code line N is child N+1. FIVE lines now that
-       this card is wide, so the ladder runs 3..6. The step stays 0.24s: five
-       lines at 0.24 finish wiping in 0.96s, which is still inside the "short
-       action, long hold" shape the block header sets out. Add a sixth line and
-       add its delay here, or it will wipe in on top of line 1. */
-    #services .cs-card-group.is-in .cs-p-code .cs-code-l:nth-child(3) { animation-delay: 0.24s; }
-    #services .cs-card-group.is-in .cs-p-code .cs-code-l:nth-child(4) { animation-delay: 0.48s; }
-    #services .cs-card-group.is-in .cs-p-code .cs-code-l:nth-child(5) { animation-delay: 0.72s; }
-    #services .cs-card-group.is-in .cs-p-code .cs-code-l:nth-child(6) { animation-delay: 0.96s; }
+    /* ⚠ .cs-file is child 1, so code line N is child N+1 and the ladder runs
+       3..10 for nine lines.
+
+       ⚠ THE STEP DROPPED 0.24 -> 0.14s, and it had to. Nine lines at 0.24
+       would not finish until 1.92s, which breaks rule 2 at the top of this
+       block — the action is supposed to be over inside the first fifth of the
+       cycle, and a 7.5s cycle gives it 1.5s. At 0.14 the last line lands at
+       1.12s. Add a tenth line and re-check that sum rather than just adding a
+       row here. */
+    #services .cs-card-group.is-in .cs-p-code .cs-code-l:nth-child(3) { animation-delay: 0.14s; }
+    #services .cs-card-group.is-in .cs-p-code .cs-code-l:nth-child(4) { animation-delay: 0.28s; }
+    #services .cs-card-group.is-in .cs-p-code .cs-code-l:nth-child(5) { animation-delay: 0.42s; }
+    #services .cs-card-group.is-in .cs-p-code .cs-code-l:nth-child(6) { animation-delay: 0.56s; }
+    #services .cs-card-group.is-in .cs-p-code .cs-code-l:nth-child(7) { animation-delay: 0.70s; }
+    #services .cs-card-group.is-in .cs-p-code .cs-code-l:nth-child(8) { animation-delay: 0.84s; }
+    #services .cs-card-group.is-in .cs-p-code .cs-code-l:nth-child(9) { animation-delay: 0.98s; }
+    #services .cs-card-group.is-in .cs-p-code .cs-code-l:nth-child(10) { animation-delay: 1.12s; }
 }
 
 /* ── the keyframes ──
