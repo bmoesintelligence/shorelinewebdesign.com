@@ -128,6 +128,12 @@
            "gating" it afterwards is how consent banners end up decorative. With
            client.analytics.ga4 empty this script finds no banner and no-ops. #}
         <script defer src="/assets/js/consent.js"></script>
+        {# The page view counter: one message to this site's own /hq/v per page
+           opened, no cookie, nothing personal. See the header of the file and
+           /privacy-policy/, which describes it and changes with it.
+           data-hq-beacon is what the daily health check looks for; don't drop
+           it. The 404 page reports itself as /404, not the address asked for. #}
+        <script defer src="/assets/js/hq-beacon.js" data-hq-beacon{% if page.url == "/404.html" %} data-path="/404"{% endif %}></script>
         {# Splits headings and body copy into their rendered LINES and reveals
            them on scroll. Deferred and entirely optional: it arms its own
            hidden state, so if it never runs nothing is ever hidden. See the

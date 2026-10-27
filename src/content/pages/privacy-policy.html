@@ -1,11 +1,11 @@
 ---
-description: "What Shoreline Web Design collects, what it doesn't, and who else touches it. Analytics are off unless you allow them. No tracking pixels, no advertising, no mailing list."
+description: "What Shoreline Web Design collects, what it doesn't, and who else touches it. A page view count with no cookies, Google Analytics only if you allow it. No tracking pixels, no advertising, no mailing list."
 pageHero:
   topper: "Legal"
   title: "Privacy policy"
   accent: "."
   text:
-    - "There is very little to tell, which is rather the point. Analytics are off until you allow them, and there are no tracking pixels and no advertising either way. Otherwise the only information I hold is what you type into a form and send me."
+    - "There is very little to tell, which is rather the point. This site counts its own page views, with no cookies and nothing that identifies you. Google Analytics is off until you allow it, and there are no tracking pixels and no advertising either way. Beyond that, the only information I hold is what you type into a form and send me."
 eleventyComputed:
   title: "{{ page.fileSlug | titleCase }} | {{ client.name }} | {{ client.address.city }}, {{ client.address.state }}"
   permalink: "/{{ page.fileSlug | slugify }}/"
@@ -30,12 +30,19 @@ eleventyComputed:
          rail that toc.js builds at runtime from the h2s below.
 
          ⚠ EVERY FACTUAL CLAIM ON THIS PAGE WAS CHECKED against the codebase on
-         2026-08-03, and re-checked on 2026-08-13 when analytics went in:
+         2026-08-03, re-checked on 2026-08-13 when analytics went in, and again
+         on 2026-10-27 when the page view counter went in:
+           - the page view counter is assets/js/hq-beacon.js. It sends path (no
+             ?query, no #part), the referrer's HOST only, and the navigation type
+             to this site's /hq/v, which netlify.toml passes on, signed, to the
+             counter on Cloudflare. No cookie. The counter (Shoreline HQ, a
+             private repo) reads no other header and has Workers Logs off.
            - Google Analytics is CONSENT-GATED. gtag is not in any page's head;
              assets/js/consent.js injects it only after "granted" is stored.
              Decline and Google is never contacted and no cookie is set.
-           - localStorage keys are `theme` (assets/js/dark.js) and
-             `analytics-consent` (assets/js/consent.js). Nothing else.
+           - localStorage keys are `theme` (assets/js/dark.js),
+             `analytics-consent` (assets/js/consent.js) and `hq-skip`
+             (assets/js/hq-beacon.js, only after ?hq=off). Nothing else.
            - `document.cookie` still appears nowhere in src/ - the only cookies
              that can exist are the ones gtag sets after consent.
            - the whole thing is switched by client.analytics.ga4 in
@@ -70,7 +77,7 @@ eleventyComputed:
 
                     <h2>What I collect</h2>
                     <p>
-                        Only what you type into a form and choose to send. There are two forms on this site.
+                        A count of page views, described in the next section, which holds nothing about you. Beyond that, only what you type into a form and choose to send. There are two forms on this site.
                     </p>
                     <p>
                         <strong>The contact form</strong> asks for your name, your email address, your business name, what your enquiry is about, and your message. Name, email and message are required; the rest are optional.
@@ -80,6 +87,22 @@ eleventyComputed:
                     </p>
                     <p>
                         If you email me directly instead, then I have whatever your email contains, which is how email has always worked.
+                    </p>
+
+                    <h2>Counting page views</h2>
+                    <p>
+                        This site counts its own page views, so I know how many people read it without asking anyone to accept a cookie. When a page opens, your browser sends one short message back to this site. It holds three things:
+                    </p>
+                    <ul>
+                        <li>the page's address on this site, without anything after a <code>?</code> or <code>#</code>;</li>
+                        <li>the name of the website you came from, such as <code>www.google.com</code>, if your browser says. Only the name, never the full address;</li>
+                        <li>whether the page was opened fresh, reloaded, or returned to with the Back button.</li>
+                    </ul>
+                    <p>
+                        That is all. No cookie is set, and the message carries no name, no identifier and nothing that links one page view to another. I can see that a page was read and roughly how people found the site. I cannot see who read it, or tell whether two page views were the same person.
+                    </p>
+                    <p>
+                        The message is passed on to my own counter, which runs on Cloudflare. Like any request on the internet, it arrives with your IP address and browser type attached. The counter does not read or keep either of them, and its logging is switched off.
                     </p>
 
                     <h2>Analytics, and how to refuse them</h2>
@@ -99,7 +122,7 @@ eleventyComputed:
                         This section is the important one, and it is short on purpose.
                     </p>
                     <ul>
-                        <li><strong>No tracking pixels and no advertising.</strong> Nothing here reports back to Meta, LinkedIn or anyone else, and this site takes no part in any advertising network. Google Analytics, if you allow it, is the only third party involved and it is not used for advertising.</li>
+                        <li><strong>No tracking pixels and no advertising.</strong> Nothing here reports back to Meta, LinkedIn or anyone else, and this site takes no part in any advertising network. The page view counter is my own and reports to no one else. Google Analytics, if you allow it, is the only outside analytics service involved, and it is not used for advertising.</li>
                         <li><strong>No mailing list.</strong> Sending a form does not subscribe you to anything, because there is nothing to subscribe to. If I reply, it is a person writing back about your enquiry.</li>
                         <li><strong>No selling or sharing.</strong> I do not sell, rent or trade what you send me, and I do not hand it to anyone else for their own purposes.</li>
                     </ul>
@@ -120,10 +143,15 @@ eleventyComputed:
 
                     <h2>What is stored in your browser</h2>
                     <p>
-                        One thing. If you use the light and dark toggle in the navigation, your choice is saved in your browser's local storage under the name <code>theme</code>, so the site remembers it next time.
+                        Up to three small values, in your browser's local storage:
                     </p>
+                    <ul>
+                        <li><code>theme</code>, if you use the light and dark toggle in the navigation, so the site remembers your choice next time.</li>
+                        <li><code>analytics-consent</code>, your answer to the Google Analytics banner, so it isn't asked again.</li>
+                        <li><code>hq-skip</code>, which stops the page view counter counting that browser. I set it on my own devices so my visits don't count. You won't have it unless you set it.</li>
+                    </ul>
                     <p>
-                        That value never leaves your device and I cannot see it. It is not a cookie and it is not an identifier. Clearing your browsing data removes it.
+                        Those values never leave your device and I cannot see them. None is a cookie and none is an identifier. Clearing your browsing data removes them.
                     </p>
 
                     <h2>Who else is involved</h2>
@@ -132,8 +160,8 @@ eleventyComputed:
                     </p>
                     <ul>
                         <li><strong>Netlify</strong> hosts this site and receives the form submissions. As with any web host, their servers record technical information about requests, which can include your IP address and browser type. That is their standard logging, not something I set up or can switch off.</li>
+                        <li><strong>Cloudflare</strong> runs my page view counter. Each page view message passes through Netlify to it, and arrives with your IP address and browser type, as any request does. My counter does not read, keep or log them; it keeps only the three things listed under Counting page views.</li>
                         <li><strong>Porkbun</strong> registers the domain and forwards email sent to my address on to my personal inbox.</li>
-                        <li><strong>DigitalOcean</strong> serves one small icon used by the dark mode button, so your browser makes a request to their network when a page loads. That is left over from the starter template this site was built on, and I intend to remove it by hosting the icon here instead.</li>
                     </ul>
                     <p>
                         Each of those has its own privacy policy covering what it does with that information.
@@ -148,6 +176,9 @@ eleventyComputed:
                          "I delete enquiries that did not turn into work after
                          twelve months." A stated number is stronger - but only
                          state one you will actually honour. -->
+                    <p>
+                        Page view messages are kept with no end date. They hold nothing that identifies anyone, and a long history is what makes the counts useful.
+                    </p>
                     <p>
                         Records relating to actual client work are kept while I am working with that client, and afterwards for as long as I need them for tax and accounting purposes.
                     </p>
@@ -174,7 +205,7 @@ eleventyComputed:
 
                     <h2>Security, honestly stated</h2>
                     <p>
-                        This site is static, has no database and has no login, so there is no store of user accounts here to breach. Form submissions travel over an encrypted connection and sit in Netlify's dashboard and my email, both protected by strong passwords and two-factor authentication.
+                        This site is static and has no login, so there is no store of user accounts here to breach. The page view counter does write to a small database of mine at Cloudflare, but each row holds only the three things a message carries, nothing that identifies anyone. Form submissions travel over an encrypted connection and sit in Netlify's dashboard and my email, both protected by strong passwords and two-factor authentication.
                     </p>
                     <p>
                         Nobody can promise perfect security and I am not going to. What I can tell you is that the amount of information held here is very small, and that is the most effective protection there is.
@@ -192,7 +223,7 @@ eleventyComputed:
                 </div>
 
                 <div class="cs-foot">
-                    <p class="cs-updated">Last updated 3 August 2026</p>
+                    <p class="cs-updated">Last updated 27 October 2026</p>
                 </div>
             </div>
         </div>

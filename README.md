@@ -20,7 +20,7 @@ checkable.
 
 No runtime JavaScript framework. The JS that ships is a handful of small progressive
 enhancements — navigation, an FAQ accordion, a theme toggle, a table-of-contents builder for
-long-form pages.
+long-form pages. There is also a page view counter, described below.
 
 ## Running it locally
 
@@ -70,7 +70,14 @@ one stylesheet rather than duplicating it.
   JavaScript.
 
 18 pages. Every font, icon and script is served from the same origin, so **a visitor who
-declines analytics makes no third-party requests at all and is sent no cookies.**
+declines Google Analytics makes no third-party requests at all and is sent no cookies.**
+
+Page views are **counted without cookies**: `assets/js/hq-beacon.js` sends one message per
+page to the site's own `/hq/v`, holding the path (no query string), the host the visitor
+came from, and how the page was opened. Nothing else, and no identifier. A signed,
+rate-limited rule in `netlify.toml` passes it on to a counter on Cloudflare, so the browser
+still only ever talks to this site. It sends nothing from deploy previews, local copies or
+automated browsers.
 
 Google Analytics is **consent-gated, and the gate is real**: `gtag` appears in no page's
 head. `assets/js/consent.js` injects it only after a visitor accepts, so declining means
