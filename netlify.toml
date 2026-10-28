@@ -2,6 +2,27 @@
   publish = "public/"
   command = "npm run build"
 
+# The page view counter (assets/js/hq-beacon.js). Passes each message on to the
+# counter, which runs on Cloudflare. `signed` makes Netlify add an x-nf-sign header,
+# signed with the HQ_SIGN_SECRET environment variable (scope must include Runtime),
+# so the counter can tell a message that came through this site's production deploy
+# from one posted straight to it. Must live here, not in _redirects: neither
+# `signed` nor `rate_limit` work there.
+# The rate limit is per visitor address: past 30 a minute Netlify answers 429 itself
+# and the counter isn't reached. A rule that fails validation does NOT fail the
+# deploy; check the deploy log's post-processing step.
+[[redirects]]
+  from = "/hq/v"
+  to = "https://shoreline-beacon.bmoesintelligence.workers.dev/v/1"
+  status = 200
+  force = true
+  signed = "HQ_SIGN_SECRET"
+
+  [redirects.rate_limit]
+    window_limit = 30
+    window_size = 60
+    aggregate_by = ["ip", "domain"]
+
 [[plugins]]
 package = "netlify-plugin-cache"
 
