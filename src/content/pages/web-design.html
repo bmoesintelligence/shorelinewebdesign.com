@@ -5,7 +5,7 @@ pageHero:
   title: "Hand-built, not builder-made"
   accent: "."
   text:
-    - "A custom website for your small business, coded from scratch. Fast, mobile-first, easy to find on Google, and yours to run without ever opening a dashboard."
+    - "A custom website for your small business in Shoreline or nearby, coded from scratch. Fast, mobile-first, easy to find on Google, and yours to run without ever opening a dashboard."
     - "No templates, no page builders, no bloat. Just a site that loads instantly and works everywhere, built and looked after by one engineer."
   buttons:
     - label: "Get started"
@@ -16,7 +16,9 @@ pageHero:
 eleventyComputed:
   # ⚠ quotes the price — see _data/pricing.js
   description: "Custom, hand-coded websites for small businesses across the North Sound. Fast, mobile-first, built to be found on Google, from {{ pricing.perMonth }}."
-  title: "{{ page.fileSlug | titleCase }} | {{ client.name }} | {{ client.address.city }}, {{ client.address.state }}"
+  # HQ SEO review 1, item 2 (2026-11-24): names Shoreline rather than the
+  # Richmond Beach the other pages' pattern produces. 50 chars.
+  title: "Web Design in Shoreline, WA | {{ client.name }}"
 faqs:
   - q: >-
       What does a website cost?
@@ -416,6 +418,9 @@ service:
             <div class="cs-content">
                 <span class="cs-topper">Why not a builder</span>
                 <h2 class="cs-title">Two ways to get a website<span class="cs-accent">.</span></h2>
+                <p class="cs-text">
+                    Most small businesses can use a builder. <a href="/blog/squarespace-wix-or-hand-coded/">Squarespace, Wix, or hand-coded</a> is an honest look at how to tell whether you're one of them.
+                </p>
             </div>
             <div class="cs-compare">
                 <div class="cs-col cs-col-them">

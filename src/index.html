@@ -2,14 +2,15 @@
 # Every other page is "X | Shoreline Web Design | Richmond Beach, WA".
 # This one was the bare brand name — the page that matters most for local
 # search carried neither a service term beyond the name nor a location.
-# 59 chars, so it stays clear of the ~60-char SERP truncation.
-title: "Shoreline Web Design | Hand-coded websites in North Seattle"
+# 60 chars, so it stays clear of the ~60-char SERP truncation. Names
+# Shoreline itself, not North Seattle (HQ SEO review 1, item 1, 2026-11-24).
+title: "Shoreline Web Design | Small business websites, Shoreline WA"
 permalink: "/"
 # ⚠ description is COMPUTED, below. It quotes the price, and a meta description
 # that disagrees with the page is a quoted figure a prospect can hold you to.
 # YAML is not run through Nunjucks, so it has to be an eleventyComputed key.
 eleventyComputed:
-  description: "Hand-coded websites for small businesses across North Seattle, from {{ pricing.perMonth }}."
+  description: "Hand-coded websites for small businesses in Shoreline, Richmond Beach and Edmonds. Built, hosted and looked after by one engineer. From {{ pricing.perMonth }}."
 tags: "sitemap" # content/content.json will make sure that all pages in content/ are marked with a "sitemap" tag, for automatic sitemap generation. As index.html is not in content/, we need to add it here to ensure the root page is included in the sitemap generation
 ---
 
@@ -69,7 +70,7 @@ tags: "sitemap" # content/content.json will make sure that all pages in content/
                     <span class="cs-rise"><span class="cs-rise-in">small business</span></span>
                     <span class="cs-rise"><span class="cs-rise-in cs-title-accent">actually deserves.</span></span>
                 </h1>
-                <p class="cs-text cs-rise-lines"><span class="cs-rise-in">Fast, custom, and built to be found. Hand-coded by a professional software engineer serving small businesses across North Seattle. {{ pricing.perMonth }}, everything included.</span></p>
+                <p class="cs-text cs-rise-lines"><span class="cs-rise-in">Fast, custom, and built to be found. Hand-coded by a professional software engineer serving small businesses in Shoreline and across North Seattle. {{ pricing.perMonth }}, everything included.</span></p>
                 <div class="cs-button-group">
                     <a href="/contact/" class="cs-button-solid">Get started</a>
                     <!-- /work/, not the home page's own #work section. The hero's

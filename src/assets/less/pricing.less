@@ -388,6 +388,18 @@
             max-width: 56ch;
             margin: (18/16rem) 0 0;
             color: var(--rainGray);
+
+            a {
+                color: var(--bodyTextColorWhite);
+                font-weight: 600;
+                text-decoration: underline;
+                text-underline-offset: (3/16rem);
+                transition: color 0.25s;
+
+                &:hover {
+                    color: var(--coralText);
+                }
+            }
         }
 
         .cs-group {

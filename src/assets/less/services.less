@@ -1696,6 +1696,27 @@
             }
         }
 
+        /* one line under the title, linking the builder comparison post */
+        .cs-text {
+            font-size: (16/16rem);
+            line-height: 1.65em;
+            max-width: 56ch;
+            margin: (18/16rem) 0 0;
+            color: var(--rainGray);
+
+            a {
+                color: var(--bodyTextColorWhite);
+                font-weight: 600;
+                text-decoration: underline;
+                text-underline-offset: (3/16rem);
+                transition: color 0.25s;
+
+                &:hover {
+                    color: var(--coralText);
+                }
+            }
+        }
+
         .cs-compare {
             display: grid;
             grid-template-columns: 1fr;
