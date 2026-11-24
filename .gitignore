@@ -7,3 +7,11 @@ public
 # Internal working notes - LOCAL ONLY. This repo is public; keep it that way.
 # Back these up to a private repo or gist, never this one.
 CLAUDE.md
+
+# Internal design canon + agent definitions - LOCAL ONLY, same rule as CLAUDE.md.
+# CANON.md names what is weak and what was tried and rejected; that is the content
+# that stops agents re-proposing it, and it is not for prospects.
+design/CANON.md
+.claude/agents/
+.claude/commands/
+design/reviews/
