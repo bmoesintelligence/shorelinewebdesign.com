@@ -42,16 +42,16 @@ eleventyComputed:
     <section id="story">
         <div class="cs-container">
           <div class="cs-panel">
-            <div class="cs-content">
+            <div class="cs-content cs-fade-in">
                 <span class="cs-topper">The short version</span>
-                <h2 class="cs-title">Why an engineer builds small business sites<span class="cs-accent">.</span></h2>
-                <p class="cs-text">
+                <h2 class="cs-title cs-rise-lines">Why an engineer builds small business sites<span class="cs-accent">.</span></h2>
+                <p class="cs-text cs-rise-lines">
                     A decade of production software teaches you a particular kind of paranoia. Work gets measured before it ships and measured again after. Nothing goes live because it looked fine on the laptop it was built on.
                 </p>
-                <p class="cs-text">
+                <p class="cs-text cs-rise-lines">
                     Almost no small business website is held to that standard. It gets assembled in a builder, it looks right on the one screen it was made on, and nobody ever checks what happens on a five-year-old phone on a weak connection in a car park.
                 </p>
-                <p class="cs-text">
+                <p class="cs-text cs-rise-lines">
                     So this is the same work at a smaller scale. Hand-written code, a performance budget, testing on real devices, and one person who is still around six months after launch.
                 </p>
 
@@ -73,10 +73,10 @@ eleventyComputed:
                          nowhere else. Why Richmond Beach, what you do when you
                          aren't at a keyboard.
 
-                     Drop them in as <p class="cs-text"> and delete this block.
+                     Drop them in as <p class="cs-text cs-rise-lines"> and delete this block.
                      ========================================================== -->
             </div>
-            <figure class="cs-photo-frame">
+            <figure class="cs-photo-frame cs-fade-in">
                 <picture class="cs-photo">
                     <source srcset="{% getUrl "/assets/images/headshot.jpg" | resize({ width: 900, height: 1125 }) | avif(codec.avif) %}" type="image/avif">
                     <source srcset="{% getUrl "/assets/images/headshot.jpg" | resize({ width: 900, height: 1125 }) | webp %}" type="image/webp">
@@ -98,16 +98,16 @@ eleventyComputed:
          sides carry the same weight. -->
 
     <section id="fit">
-        <div class="cs-container">
-            <div class="cs-content">
+        <div class="cs-container cs-panel">
+            <div class="cs-content cs-fade-in">
                 <span class="cs-topper">Fit</span>
-                <h2 class="cs-title">Who this is for<span class="cs-accent">.</span></h2>
-                <p class="cs-text">
+                <h2 class="cs-title cs-rise-lines">Who this is for<span class="cs-accent">.</span></h2>
+                <p class="cs-text cs-rise-lines">
                     One person can only build so much, so it is worth being straight about where that works well and where it doesn't.
                 </p>
             </div>
-            <div class="cs-panels">
-                <div class="cs-panel cs-panel-yes">
+            <div class="cs-panels cs-fade-in">
+                <div class="cs-fit-card cs-panel-yes">
                     <h3 class="cs-panel-title">A good fit if</h3>
                     <ul class="cs-panel-list">
                         <li>You run a small business in the North Sound and want to be found locally</li>
@@ -116,7 +116,7 @@ eleventyComputed:
                         <li>You want one person who knows your site, not a rotating team</li>
                     </ul>
                 </div>
-                <div class="cs-panel cs-panel-no">
+                <div class="cs-fit-card cs-panel-no">
                     <h3 class="cs-panel-title">Probably not me if</h3>
                     <ul class="cs-panel-list">
                         <li>You need an online store carrying hundreds of products</li>

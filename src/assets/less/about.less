@@ -27,8 +27,14 @@
         /* the raised panel, same lift as #steps-276, #fit and the /work/ rows */
         .cs-panel {
             box-sizing: border-box;
-            background-color: rgba(27, 42, 56, 0.05);
-            border-radius: clamp(1.25rem, 2.5vw, 2rem);
+            /* the shared surface tokens, not literals: --panelLight and
+               --panelGlow both flip themselves in dark mode, so this panel no
+               longer owes a hand-written twin below. The glow is the two soft
+               radials the home page's panels carry - it is what stops a panel
+               reading as a flat grey wash. */
+            background-color: var(--panelLight);
+            background-image: var(--panelGlow);
+            border-radius: var(--panelRadius);
             /* 24px - 64px */
             padding: clamp(1.5rem, 4.5vw, 4rem);
             display: flex;
@@ -41,10 +47,11 @@
             margin: 0;
             padding: (12/16rem);
             background-color: #fdfbf4;
-            border-radius: (12/16rem);
+            border-radius: var(--radiusInner);
             /* hairline as inset shadow, never border - a real border shifts the
-               positioning origin and the grid tracks */
-            box-shadow: inset 0 0 0 1px rgba(27, 42, 56, 0.1), 0 (14/16rem) (32/16rem) rgba(27, 42, 56, 0.14);
+               positioning origin and the grid tracks. Both halves come from the
+               box scale, so both flip in dark mode on their own. */
+            box-shadow: var(--edge), var(--lift);
             display: flex;
             flex-direction: column;
             gap: (10/16rem);
@@ -150,13 +157,13 @@
         #story {
             background-color: var(--dark);
 
-            .cs-panel {
-                background-color: rgba(255, 255, 255, 0.04);
-            }
+            /* .cs-panel needs no twin here: --panelLight and --panelGlow
+               are already re-declared for dark mode in root.less. */
 
             .cs-photo-frame {
+                /* on tan the raised card is #fdfbf4; on navy it is --medium.
+                   The shadow comes from the box scale and flips itself. */
                 background-color: var(--medium);
-                box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08), 0 (14/16rem) (32/16rem) rgba(0, 0, 0, 0.35);
             }
 
             .cs-caption,
@@ -248,11 +255,16 @@
             gap: clamp(1.25rem, 2.5vw, 2rem);
         }
 
-        .cs-panel {
+        /* TWO LAYERS, the way #services is built on the home page: the
+           .cs-container carries the shared .cs-panel (recessed, glowing), and
+           these two sit ON it as raised cards. A panel with nothing raised on
+           it is one layer, which is what made this section read flat. */
+        .cs-fit-card {
             box-sizing: border-box;
-            /* a touch deeper than the tan it sits on - same lift as #steps-276 */
-            background-color: rgba(27, 42, 56, 0.05);
-            border-radius: clamp(1.25rem, 2.5vw, 2rem);
+            /* on tan the raised card is #fdfbf4; on navy it is --medium */
+            background-color: #fdfbf4;
+            border-radius: var(--radiusCard);
+            box-shadow: var(--edge), var(--lift);
             /* 24px - 48px */
             padding: clamp(1.5rem, 3.5vw, 3rem);
         }
@@ -352,8 +364,8 @@
                 color: var(--rainGray);
             }
 
-            .cs-panel {
-                background-color: rgba(255, 255, 255, 0.04);
+            .cs-fit-card {
+                background-color: var(--medium);
             }
 
             .cs-panel-title {
